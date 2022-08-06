@@ -14,6 +14,7 @@ class CreateMahasiswasTable extends Migration
     public function up()
     {
         Schema::create('mahasiswas', function (Blueprint $table) {
+            $table->id();
             $table->string('nim')->unique();
             $table->string('nama');
             $table->string('thmasuk');

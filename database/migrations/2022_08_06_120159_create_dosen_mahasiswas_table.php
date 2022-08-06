@@ -14,16 +14,10 @@ class CreateDosenMahasiswasTable extends Migration
     public function up()
     {
         Schema::create('dosen_mahasiswas', function (Blueprint $table) {
-            $table->id();
-            $table->integer('nim')->unsigned()->unique();
-            $table->integer('dosbim_utama')->unsigned();
-            $table->integer('dosbim_pendamping')->unsigned();
-            $table->integer('dosen_penguji')->unsigned();
+            $table->foreignId('mahasiswa_id');
+            $table->foreignId('dosen_id');
+            $table->string('status')->nullable();
             $table->timestamps();
-            $table->foreign('nim')->references('nim')->on('mahasiswas');
-            $table->foreign('dosbim_utama')->references('nidn')->on('dosens');
-            $table->foreign('dosbim_pendamping')->references('nidn')->on('dosens');
-            $table->foreign('dosen_penguji')->references('nidn')->on('dosens');
         });
     }
 

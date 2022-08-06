@@ -20,5 +20,7 @@ class VerifyCsrfToken extends Middleware
         '/pengajuan/revisi',
         '/pengajuan/tolak',
         '/pengajuan/revisi/delete',
+        '/ploting/pembimbing',
+        '/ploting/penguji',
     ];
 }

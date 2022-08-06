@@ -13,7 +13,6 @@ class PengajuanController extends Controller
     {
         // $pengajuans = Pengajuan::where(['nim' => 2020150031])->with(['revisis'])->get(); // Get pengajuan mahasiswa
         $pengajuans = Pengajuan::with(['revisis'])->get(); // Get semua pengajuan
-        // $pengajuans = Pengajuan::all();
         return $pengajuans;
     }
 
@@ -97,10 +96,6 @@ class PengajuanController extends Controller
                 'status' => 'diterima',
                 'tanggal_acc' => now(),
             ]);
-
-            $pembimbing = new DosenMahasiswa;
-            $pembimbing->dosbim_utama = 1001;
-            $pembimbing->dosbim_pembimbing = 1002;
 
             return $pengajuan;
         }

@@ -25,8 +25,10 @@ class Mahasiswa extends Model
         'pass',
     ];
 
-    public function dosen()
+    public function dosens()
     {
-        return $this->hasMany(DosenMahasiswa::class);
+        return $this->belongsToMany(Dosen::class, 'dosen_mahasiswas', 'mahasiswa_id', 'dosen_id')
+            ->withTimestamps()
+            ->withPivot(['status']);
     }
 }

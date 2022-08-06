@@ -15,11 +15,10 @@ class CreateRevisiPengajuansTable extends Migration
     {
         Schema::create('revisi_pengajuans', function (Blueprint $table) {
             $table->id();
-            $table->integer('pengajuan_id')->unsigned()->change();
             $table->string('catatan');
             $table->string('lampiran')->nullable();
             $table->timestamps();
-            $table->foreign('pengajuan_id')->references('id')->on('pengajuans');
+            $table->foreignId('pengajuan_id')->constrained();
         });
     }
 
