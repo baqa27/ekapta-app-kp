@@ -31,4 +31,14 @@ class Mahasiswa extends Model
             ->withTimestamps()
             ->withPivot(['status']);
     }
+
+    public function bimbingans()
+    {
+        return $this->hasMany(Bimbingan::class);
+    }
+
+    public function bagians()
+    {
+        return $this->belongsToMany(Bagian::class, 'bimbingans');
+    }
 }

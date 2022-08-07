@@ -11,8 +11,8 @@ class PengajuanController extends Controller
 {
     public function index()
     {
-        // $pengajuans = Pengajuan::where(['nim' => 2020150031])->with(['revisis'])->get(); // Get pengajuan mahasiswa
-        $pengajuans = Pengajuan::with(['revisis'])->get(); // Get semua pengajuan
+        $pengajuans = Pengajuan::where('nim', 2020150031)->with(['revisis'])->get(); // Get pengajuan mahasiswa
+        // $pengajuans = Pengajuan::with(['revisis'])->get(); // Get semua pengajuan
         return $pengajuans;
     }
 
@@ -22,7 +22,7 @@ class PengajuanController extends Controller
 
     public function store(Request $request)
     {
-        $cekPengajuan = Pengajuan::where('nim', $request->nim)->get();
+        $cekPengajuan = Pengajuan::where('nim', $request->nim)->whereIn('status', ['review', 'revisi', 'diterima'])->get();
         if ($cekPengajuan->isEmpty()) {
             $validatedData = $request->validate([
                 'judul' => 'required',
@@ -30,11 +30,7 @@ class PengajuanController extends Controller
                 'lampiran' => ['required', 'mimes:pdf'],
             ]);
             if ($request->file('lampiran')) {
-                $lampiran = $request->file('lampiran');
-                $lampiranName = uniqid() . '.' . $lampiran->extension();
-                $lampiran->move(public_path('/lampiran-pengajuan'), $lampiranName);
-                $lampiranPath = '/lampiran-pengajuan/' . $lampiranName;
-                $validatedData['lampiran'] = $lampiranPath;
+                $validatedData['lampiran'] = $this->uploadLampiran($request->lampiran, 'lampiran-pengajuan');
             }
             $validatedData['nim'] = $request->nim;
             Pengajuan::create($validatedData);
@@ -59,14 +55,8 @@ class PengajuanController extends Controller
         ]);
 
         if ($request->file('lampiran')) {
-            if (file_exists(public_path($pengajuan->lampiran))) {
-                unlink(public_path($pengajuan->lampiran));
-            }
-            $lampiran = $request->file('lampiran');
-            $lampiranName = uniqid() . '.' . $lampiran->extension();
-            $lampiran->move(public_path('/lampiran-pengajuan'), $lampiranName);
-            $lampiranPath = '/lampiran-pengajuan/' . $lampiranName;
-            $validatedData['lampiran'] = $lampiranPath;
+            $this->deleteLampiran($pengajuan->lampiran);
+            $validatedData['lampiran'] = $this->uploadLampiran($request->lampiran, 'lampiran-pengajuan');
         }
 
         $validatedData['nim'] = 2020150031;
@@ -89,13 +79,21 @@ class PengajuanController extends Controller
     public function accPengajuan(Request $request)
     {
         $pengajuan = Pengajuan::findOrFail($request->id);
-        if ($pengajuan->status == 'diterima') {
-            return 'pengajuan sudah di acc';
+        if ($pengajuan->status == 'diterima' || $pengajuan->status == 'ditolak') {
+            return 'pengajuan sudah tidak bisa di acc';
         } else {
+            $revisi = new RevisiPengajuan;
+            $revisi->catatan = $request->catatan;
+
+            if ($request->file('lampiran')) {
+                $revisi->lampiran = $this->uploadLampiran($request->lampiran, 'lampiran-revisi');
+            }
+
             $pengajuan->update([
                 'status' => 'diterima',
                 'tanggal_acc' => now(),
             ]);
+            $pengajuan->revisis()->save($revisi);
 
             return $pengajuan;
         }
@@ -104,42 +102,71 @@ class PengajuanController extends Controller
     public function tolakPengajuan(Request $request)
     {
         $pengajuan = Pengajuan::findOrFail($request->id);
-        $pengajuan->update([
-            'status' => 'ditolak',
-        ]);
-        return $pengajuan;
+        if ($pengajuan->status == 'diterima' || $pengajuan->status == 'ditolak') {
+            return 'pengajuan sudah tidak bisa ditolak';
+        } else {
+            $revisi = new RevisiPengajuan;
+            $revisi->catatan = $request->catatan;
+
+            if ($request->file('lampiran')) {
+                $revisi->lampiran = $this->uploadLampiran($request->lampiran, 'lampiran-revisi');
+            }
+
+            $pengajuan->update([
+                'status' => 'ditolak',
+            ]);
+
+            $pengajuan->revisis()->save($revisi);
+
+            return $pengajuan;
+        }
     }
 
     public function revisiPengajuan(Request $request)
     {
         $pengajuan = Pengajuan::findOrFail($request->id);
+        if ($pengajuan->status == 'diterima' || $pengajuan->status == 'ditolak') {
+            return 'Pengajuan tidak bisa direvisi';
+        } else {
+            $revisi = new RevisiPengajuan;
+            $revisi->catatan = $request->catatan;
 
-        $revisi = new RevisiPengajuan;
-        $revisi->catatan = $request->catatan;
-        if ($request->file('lampiran')) {
-            $lampiran = $request->file('lampiran');
-            $lampiranName = uniqid() . '.' . $lampiran->extension();
-            $lampiran->move(public_path('/lampiran-revisi'), $lampiranName);
-            $lampiranPath = '/lampiran-revisi/' . $lampiranName;
-            $revisi->lampiran = $lampiranPath;
+            if ($request->file('lampiran')) {
+                $revisi->lampiran = $this->uploadLampiran($request->lampiran, 'lampiran-revisi');
+            }
+
+            $pengajuan->update([
+                'status' => 'revisi',
+            ]);
+
+            $pengajuan->revisis()->save($revisi);
+
+            return $pengajuan->revisis;
         }
-
-        $pengajuan->update([
-            'status' => 'revisi',
-        ]);
-
-        $pengajuan->revisis()->save($revisi);
-
-        return $pengajuan->revisis;
     }
 
     public function deleteRevisiPengajuan(Request $request)
     {
         $revisi = RevisiPengajuan::findOrFail($request->id);
-        if (file_exists(public_path($revisi->lampiran))) {
-            unlink(public_path($revisi->lampiran));
-        }
+        $this->deleteLampiran($revisi->lampiran);
         $revisi->delete();
         return 'revisi berhasil dihapus';
+    }
+
+    public function uploadLampiran($lampiran, $path)
+    {
+        if ($lampiran) {
+            $lampiranName = uniqid() . '.' . $lampiran->extension();
+            $lampiran->move(public_path('/' . $path), $lampiranName);
+            $lampiranPath = '/' . $path . '/' . $lampiranName;
+            return $lampiranPath;
+        }
+    }
+
+    public function deleteLampiran($lampiran)
+    {
+        if (file_exists(public_path($lampiran))) {
+            unlink(public_path($lampiran));
+        }
     }
 }

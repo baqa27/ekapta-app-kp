@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePengajuansTable extends Migration
+class CreateRevisiPendaftaransTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,12 @@ class CreatePengajuansTable extends Migration
      */
     public function up()
     {
-        Schema::create('pengajuans', function (Blueprint $table) {
+        Schema::create('revisi_pendaftarans', function (Blueprint $table) {
             $table->id();
-            $table->string('nim');
-            $table->string('judul');
-            $table->text('deskripsi');
-            $table->string('lampiran');
-            $table->dateTime('tanggal_acc')->nullable();
-            $table->string('status')->default('review');
+            $table->text('catatan')->nullable();
+            $table->string('lampiran')->nullable();
             $table->timestamps();
+            $table->foreignId('pendaftaran_id')->constrained();
         });
     }
 
@@ -32,6 +29,6 @@ class CreatePengajuansTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('pengajuans');
+        Schema::dropIfExists('revisi_pendaftarans');
     }
 }

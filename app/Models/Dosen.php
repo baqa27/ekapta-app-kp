@@ -29,4 +29,14 @@ class Dosen extends Model
             ->withTimestamps()
             ->withPivot(['status']);
     }
+
+    public function revisis()
+    {
+        return $this->hasMany(RevisiBimbingan::class);
+    }
+
+    public function bimbingans()
+    {
+        return $this->belongsToMany(Bimbingan::class, 'revisi_bimbingans');
+    }
 }

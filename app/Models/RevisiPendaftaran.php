@@ -5,20 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Prodi extends Model
+class RevisiPendaftaran extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'kode',
-        'namaprodi',
-        'jenjang',
-        'kodekaprodi',
-        'pass',
+        'pendaftaran_id',
+        'catatan',
+        'lampiran',
     ];
 
-    public function bagians()
+    public function pendaftarans()
     {
-        return $this->hasMany(Bagian::class);
+        return $this->belongsTo(Pendaftaran::class);
     }
 }
