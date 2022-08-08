@@ -37,7 +37,7 @@ class DatabaseSeeder extends Seeder
                 'kelas' => 1,
                 'status' => 'aktif',
                 'alamat' => $faker->address(),
-                'pass' => Hash::make($nims[$i]),
+                'password' => Hash::make($nims[$i]),
             ]);
         }
 
@@ -55,7 +55,7 @@ class DatabaseSeeder extends Seeder
                 'email' => $faker->email(),
                 'hp' => $faker->phoneNumber(),
                 'kodeprodi' => 2001,
-                'pass' => Hash::make($nidns[$i]),
+                'password' => Hash::make($nidns[$i]),
             ]);
         }
 
@@ -64,7 +64,7 @@ class DatabaseSeeder extends Seeder
             'namaprodi' => 'Teknik Informatika',
             'jenjang' => 'S1',
             'kodekaprodi' => 4001,
-            'pass' => Hash::make(2001)
+            'password' => Hash::make(2001)
         ]);
 
         Admin::create([
@@ -76,7 +76,7 @@ class DatabaseSeeder extends Seeder
             'alamat' => $faker->address(),
             'email' => $faker->email(),
             'hp' => $faker->phoneNumber(),
-            'pass' => Hash::make(12345),
+            'password' => Hash::make(12345),
         ]);
     }
 }

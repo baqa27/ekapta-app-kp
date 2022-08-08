@@ -4,8 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\Dosen as Authenticatable;
 
-class Dosen extends Model
+class Dosen extends Authenticatable
 {
     use HasFactory;
 
@@ -20,7 +21,11 @@ class Dosen extends Model
         'email',
         'hp',
         'kodeprodi',
-        'pass',
+        'password',
+    ];
+
+    protected $hidden = [
+        'password'
     ];
 
     public function mahasiswas()

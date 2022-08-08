@@ -27,7 +27,7 @@ class CreateMahasiswasTable extends Migration
             $table->string('kelas');
             $table->string('status');
             $table->string('alamat');
-            $table->string('pass');
+            $table->string('password');
             $table->timestamps();
         });
     }

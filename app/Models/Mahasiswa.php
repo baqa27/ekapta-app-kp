@@ -4,10 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\Mahasiswa as Authenticatable;
 
-class Mahasiswa extends Model
+class Mahasiswa extends Authenticatable
 {
     use HasFactory;
+
+    protected $hidden = [
+        'password',
+    ];
 
     protected $fillable = [
         'nim',
@@ -22,7 +27,7 @@ class Mahasiswa extends Model
         'kelas',
         'status',
         'alamat',
-        'pass',
+        'password',
     ];
 
     public function dosens()

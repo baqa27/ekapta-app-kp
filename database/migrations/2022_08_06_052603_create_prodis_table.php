@@ -19,7 +19,7 @@ class CreateProdisTable extends Migration
             $table->string('namaprodi');
             $table->string('jenjang');
             $table->string('kodekaprodi');
-            $table->string('pass');
+            $table->string('password');
             $table->timestamps();
         });
     }

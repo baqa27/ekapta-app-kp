@@ -13,16 +13,16 @@
             <div class="card p-3 col-md-5">
                 <h5 class="fw-bold">Login to Ekapta</h5>
                 <hr>
-                <form action="{{ route('cek.mahasiswa') }}" method="post">
+                <form action="{{ route('cek.prodi') }}" method="post">
                     @csrf
                     <div class="form-group mb-3">
-                        <label for="nim" class="form-label fw-semibold">NIM</label>
+                        <label for="nim" class="form-label fw-semibold">Kode Prodi</label>
                         <div class="input-group">
                             <span class="input-group-text" id="inputGroup-sizing-default"><i
                                     class="bi bi-person-fill"></i></span>
                             <input type="text" class="form-control" aria-label="Sizing example input"
-                                aria-describedby="inputGroup-sizing-default" name="nim" placeholder="Masukkan nim..."
-                                required>
+                                aria-describedby="inputGroup-sizing-default" name="kode"
+                                placeholder="Masukkan kode prodi..." required>
                         </div>
                     </div>
                     <div class="form-group mb-3">

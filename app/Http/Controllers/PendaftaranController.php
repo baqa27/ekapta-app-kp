@@ -5,6 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Pendaftaran;
 use App\Models\RevisiPendaftaran;
 use Illuminate\Http\Request;
+use App\Helpers\AppHelper;
+use App\Models\Bimbingan;
+use App\Models\Mahasiswa;
+use App\Models\Pengajuan;
+use Illuminate\Support\Facades\Auth;
 
 class PendaftaranController extends Controller
 {
@@ -15,22 +20,50 @@ class PendaftaranController extends Controller
         return $pendaftarans;
     }
 
+    public function pendaftaranMahasiswa()
+    {
+        $mahasiswa = Mahasiswa::where('nim', Auth::guard('mahasiswa')->user()->nim)->first();
+        $dosenUtama = $mahasiswa->dosens()->where('status', 'utama')->first();
+        $dosenPendamping = $mahasiswa->dosens()->where('status', 'pendamping')->first();
+        $pendaftarans = Pendaftaran::where('nim', Auth::guard('mahasiswa')->user()->nim)->with(['revisis'])->get();
+        return view('pages.mahasiswa.pendaftaran.pendaftaran', [
+            'title' => 'Pendaftaran Tugas Akhir',
+            'active' => 'pendaftaran',
+            'pendaftarans' => $pendaftarans,
+            'dosen_utama' => $dosenUtama,
+            'dosen_pendamping' => $dosenPendamping,
+        ]);
+    }
+
     public function create()
     {
+        $mahasiswa = Mahasiswa::where('nim', Auth::guard('mahasiswa')->user()->nim)->first();
+        $dosenUtama = $mahasiswa->dosens()->where('status', 'utama')->first();
+        $dosenPendamping = $mahasiswa->dosens()->where('status', 'pendamping')->first();
+        $pengajuan = Pengajuan::where('nim', Auth::guard('mahasiswa')->user()->nim)->where('status', 'diterima')->first();
+
+        return view('pages.mahasiswa.pendaftaran.create', [
+            'title' => 'Form Pendaftaran Tugas Akhir',
+            'active' => 'pendaftaran',
+            'dosen_utama' => $dosenUtama,
+            'dosen_pendamping' => $dosenPendamping,
+            'pengajuan' => $pengajuan,
+        ]);
     }
 
     public function store(Request $request)
     {
-        $cekPendaftaran = Pendaftaran::where('nim', $request->nim)->get();
-        if ($cekPendaftaran->isEmpty()) {
+        $pengajuan = Pengajuan::where('nim', Auth::guard('mahasiswa')->user()->nim)->where('status', 'diterima')->first();
+        $cekPendaftaran = Pendaftaran::where('nim', Auth::guard('mahasiswa')->user()->nim)->first();
+        if ($cekPendaftaran) {
+            return redirect('pendaftaran-mahasiswa')->with('warning', 'Anda sudah melakukan pendaftaran');
+        } else {
             $validatedData = $request->validate([
-                'nim' => 'required',
-                'judul' => 'required',
-                'email' => 'required',
+                'email' => ['required', 'email:dns', 'unique:pendaftarans'],
                 'hp' => 'required',
                 'semester' => 'required',
                 'nomor_pembayaran' => 'required',
-                // 'tanggal_pembayaran' => 'required',
+                'tanggal_pembayaran' => 'required',
                 'biaya' => 'required',
                 'lampiran_1' => ['required', 'mimes:pdf'],
                 'lampiran_2' => ['required', 'mimes:pdf'],
@@ -39,19 +72,18 @@ class PendaftaranController extends Controller
                 'lampiran_5' => ['required', 'mimes:pdf'],
             ]);
 
-            $validatedData['lampiran_1'] = $this->uploadLampiran($request->file('lampiran_1'), 'lampiran-pendaftaran');
-            $validatedData['lampiran_2'] = $this->uploadLampiran($request->file('lampiran_2'), 'lampiran-pendaftaran');
-            $validatedData['lampiran_3'] = $this->uploadLampiran($request->file('lampiran_3'), 'lampiran-pendaftaran');
-            $validatedData['lampiran_4'] = $this->uploadLampiran($request->file('lampiran_4'), 'lampiran-pendaftaran');
-            $validatedData['lampiran_5'] = $this->uploadLampiran($request->file('lampiran_5'), 'lampiran-pendaftaran');
+            $validatedData['lampiran_1'] = AppHelper::instance()->uploadLampiran($request->file('lampiran_1'), 'lampiran-pendaftaran');
+            $validatedData['lampiran_2'] = AppHelper::instance()->uploadLampiran($request->file('lampiran_2'), 'lampiran-pendaftaran');
+            $validatedData['lampiran_3'] = AppHelper::instance()->uploadLampiran($request->file('lampiran_3'), 'lampiran-pendaftaran');
+            $validatedData['lampiran_4'] = AppHelper::instance()->uploadLampiran($request->file('lampiran_4'), 'lampiran-pendaftaran');
+            $validatedData['lampiran_5'] = AppHelper::instance()->uploadLampiran($request->file('lampiran_5'), 'lampiran-pendaftaran');
 
-
-            $validatedData['tanggal_pembayaran'] = now();
+            $validatedData['nim'] = Auth::guard('mahasiswa')->user()->nim;
+            $validatedData['judul'] = $pengajuan->judul;
+            $validatedData['tanggal_pembayaran'] = $request->tanggal_pembayaran;
 
             Pendaftaran::create($validatedData);
-            return $validatedData;
-        } else {
-            return 'sudah melakukan pendaftaran';
+            return redirect('pendaftaran-mahasiswa')->with('success', 'Berhasil melakukan pendaftaran');
         }
     }
 
@@ -59,6 +91,23 @@ class PendaftaranController extends Controller
     {
         $pendaftaran = Pendaftaran::findOrFail($request->id);
         return $pendaftaran;
+    }
+
+    public function pendaftaranDetail($id)
+    {
+        $pendaftaran = Pendaftaran::where('nim', Auth::guard('mahasiswa')->user()->nim)->first();
+        $mahasiswa = Mahasiswa::where('nim', Auth::guard('mahasiswa')->user()->nim)->first();
+        $dosenUtama = $mahasiswa->dosens()->where('status', 'utama')->first();
+        $dosenPendamping = $mahasiswa->dosens()->where('status', 'pendamping')->first();
+
+        return view('pages.mahasiswa.pendaftaran.detail', [
+            'title' => 'Detail Pendaftaran Tugas Akhir',
+            'active' => 'pendaftaran',
+            'dosen_utama' => $dosenUtama,
+            'dosen_pendamping' => $dosenPendamping,
+            'pendaftaran' => $pendaftaran,
+            'revisis' => $pendaftaran->revisis()->orderBy('created_at', 'desc')->paginate(3),
+        ]);
     }
 
     public function update(Request $request)
@@ -71,24 +120,24 @@ class PendaftaranController extends Controller
             'hp' => 'required',
             'semester' => 'required',
             'nomor_pembayaran' => 'required',
-            // 'tanggal_pembayaran' => 'required',
+            'tanggal_pembayaran' => 'required',
             'biaya' => 'required',
         ]);
 
         if ($request->file('lampiran_1') || $request->file('lampiran_2') || $request->file('lampiran_3') || $request->file('lampiran_4') || $request->file('lampiran_5')) {
-            $this->deleteLampiran($pendaftaran->lampiran_1);
-            $this->deleteLampiran($pendaftaran->lampiran_2);
-            $this->deleteLampiran($pendaftaran->lampiran_3);
-            $this->deleteLampiran($pendaftaran->lampiran_4);
-            $this->deleteLampiran($pendaftaran->lampiran_5);
-            $validatedData['lampiran_1'] = $this->uploadLampiran($request->lampiran_1, 'lampiran-pendaftaran');
-            $validatedData['lampiran_2'] = $this->uploadLampiran($request->lampiran_2, 'lampiran-pendaftaran');
-            $validatedData['lampiran_3'] = $this->uploadLampiran($request->lampiran_3, 'lampiran-pendaftaran');
-            $validatedData['lampiran_4'] = $this->uploadLampiran($request->lampiran_4, 'lampiran-pendaftaran');
-            $validatedData['lampiran_5'] = $this->uploadLampiran($request->lampiran_5, 'lampiran-pendaftaran');
+            AppHelper::instance()->deleteLampiran($pendaftaran->lampiran_1);
+            AppHelper::instance()->deleteLampiran($pendaftaran->lampiran_2);
+            AppHelper::instance()->deleteLampiran($pendaftaran->lampiran_3);
+            AppHelper::instance()->deleteLampiran($pendaftaran->lampiran_4);
+            AppHelper::instance()->deleteLampiran($pendaftaran->lampiran_5);
+            $validatedData['lampiran_1'] = AppHelper::instance()->uploadLampiran($request->lampiran_1, 'lampiran-pendaftaran');
+            $validatedData['lampiran_2'] = AppHelper::instance()->uploadLampiran($request->lampiran_2, 'lampiran-pendaftaran');
+            $validatedData['lampiran_3'] = AppHelper::instance()->uploadLampiran($request->lampiran_3, 'lampiran-pendaftaran');
+            $validatedData['lampiran_4'] = AppHelper::instance()->uploadLampiran($request->lampiran_4, 'lampiran-pendaftaran');
+            $validatedData['lampiran_5'] = AppHelper::instance()->uploadLampiran($request->lampiran_5, 'lampiran-pendaftaran');
         }
 
-        $validatedData['tanggal_pembayaran'] = now();
+        $validatedData['tanggal_pembayaran'] = $request->tanggal_pembayaran;
 
         $pendaftaran->update($validatedData);
         return $validatedData;
@@ -98,14 +147,14 @@ class PendaftaranController extends Controller
     {
         $pendaftaran = Pendaftaran::findOrFail($request->id);
         if ($pendaftaran->status == 'diterima') {
-            return 'failed';
+            return back()->with('error', 'Pendaftaran gagal dihapus');
         } else {
-            $this->deleteLampiran($pendaftaran->lampiran_2);
-            $this->deleteLampiran($pendaftaran->lampiran_3);
-            $this->deleteLampiran($pendaftaran->lampiran_4);
-            $this->deleteLampiran($pendaftaran->lampiran_5);
+            AppHelper::instance()->deleteLampiran($pendaftaran->lampiran_2);
+            AppHelper::instance()->deleteLampiran($pendaftaran->lampiran_3);
+            AppHelper::instance()->deleteLampiran($pendaftaran->lampiran_4);
+            AppHelper::instance()->deleteLampiran($pendaftaran->lampiran_5);
             $pendaftaran->delete();
-            return 'berhasil dihapus';
+            return back()->with('success', 'Pendaftaran berhasil dihapus');
         }
     }
 
@@ -118,7 +167,7 @@ class PendaftaranController extends Controller
             $pendaftaran->update([
                 'status' => 'diterima',
                 'tanggal_acc' => now(),
-                'lampiran_acc' => $this->uploadLampiran($request->lampiran_acc, 'lampiran-pendaftaran'),
+                'lampiran_acc' => AppHelper::instance()->uploadLampiran($request->lampiran_acc, 'lampiran-pendaftaran'),
             ]);
             return 'berhasil di acc';
         }
@@ -130,9 +179,9 @@ class PendaftaranController extends Controller
         if ($pendaftaran->status != 'diterima') {
             return 'failed';
         } else {
-            $this->deleteLampiran($pendaftaran->lampiran_acc);
+            AppHelper::instance()->deleteLampiran($pendaftaran->lampiran_acc);
             $pendaftaran->update([
-                'lampiran_acc' => $this->uploadLampiran($request->lampiran_acc, 'lampiran-pendaftaran'),
+                'lampiran_acc' => AppHelper::instance()->uploadLampiran($request->lampiran_acc, 'lampiran-pendaftaran'),
             ]);
             return 'berhasil di update';
         }
@@ -146,7 +195,7 @@ class PendaftaranController extends Controller
         $revisi->catatan = $request->catatan;
 
         if ($request->file('lampiran')) {
-            $revisi->lampiran = $this->uploadLampiran($request->lampiran, 'lampiran-revisi');
+            $revisi->lampiran = AppHelper::instance()->uploadLampiran($request->lampiran, 'lampiran-revisi');
         }
 
         $pendaftaran->update([
@@ -161,25 +210,8 @@ class PendaftaranController extends Controller
     public function deleteRevisiPendaftaran(Request $request)
     {
         $revisi = RevisiPendaftaran::findOrFail($request->id);
-        $this->deleteLampiran($revisi->lampiran);
+        AppHelper::instance()->deleteLampiran($revisi->lampiran);
         $revisi->delete();
         return 'success';
-    }
-
-    public function uploadLampiran($lampiran, $path)
-    {
-        if ($lampiran) {
-            $lampiranName = uniqid() . '.' . $lampiran->extension();
-            $lampiran->move(public_path('/' . $path), $lampiranName);
-            $lampiranPath = '/' . $path . '/' . $lampiranName;
-            return $lampiranPath;
-        }
-    }
-
-    public function deleteLampiran($lampiran)
-    {
-        if (file_exists(public_path($lampiran))) {
-            unlink(public_path($lampiran));
-        }
     }
 }

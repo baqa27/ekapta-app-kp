@@ -25,5 +25,18 @@
     <script src="{{ asset('ekapta') }}/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{{ asset('ekapta') }}/assets/js/jquery-1.10.2.js"></script>
     <script src="{{ asset('ekapta') }}/assets/js/main.js"></script>
+    <!-- Swetalert -->
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    @if (session('error'))
+    <script>
+        Swal.fire({
+            position: 'top-end',
+            icon: 'error',
+            title: '{{ session('error') }}',
+            showConfirmButton: false,
+            timer: 1500
+        })
+    </script>
+    @endif
 </body>
 </html>

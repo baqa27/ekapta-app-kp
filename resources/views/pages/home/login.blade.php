@@ -14,7 +14,7 @@
                 <h5 class="fw-bold">Login</h5>
                 <hr>
                 <a href="{{ route('login.mahasiswa') }}" class="btn btn-primary-me mb-3">Login Mahasiswa</a>
-                <a href="dashboard/prodi/dashboard.html" class="btn btn-primary-me mb-3">Login Prodi</a>
+                <a href="{{ route('login.prodi') }}" class="btn btn-primary-me mb-3">Login Prodi</a>
                 <a href="dashboard/dosen/dashboard.html" class="btn btn-primary-me mb-3">Login Dosen</a>
                 <a href="dashboard/admin/dashboard.html" class="btn btn-primary-me mb-3">Login Admin</a>
             </div>

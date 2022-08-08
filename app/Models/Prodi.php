@@ -4,8 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\Prodi as Authenticatable;
 
-class Prodi extends Model
+class Prodi extends Authenticatable
 {
     use HasFactory;
 
@@ -14,7 +15,11 @@ class Prodi extends Model
         'namaprodi',
         'jenjang',
         'kodekaprodi',
-        'pass',
+        'password',
+    ];
+
+    protected $hidden = [
+        'password'
     ];
 
     public function bagians()

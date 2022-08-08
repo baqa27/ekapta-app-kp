@@ -22,7 +22,7 @@ class CreateAdminsTable extends Migration
             $table->string('alamat');
             $table->string('email');
             $table->string('hp');
-            $table->string('pass');
+            $table->string('password');
             $table->timestamps();
         });
     }

@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
@@ -15,6 +17,38 @@ class LoginController extends Controller
 
     public function cekMahasiswa(Request $request)
     {
-        dd($request->all());
+        $credentials = $request->validate([
+            'nim' => ['required'],
+            'password' => ['required'],
+        ]);
+
+        if (Auth::guard('mahasiswa')->attempt($credentials)) {
+            $request->session()->regenerate();
+            return redirect()->intended('dashboard-mahasiswa');
+        }
+
+        return back()->with('error', 'User tidak ditemukan');
+    }
+
+    public function loginProdi()
+    {
+        return view('pages.prodi.login', [
+            'title' => 'Login Prodi',
+        ]);
+    }
+
+    public function cekProdi(Request $request)
+    {
+        $credentials = $request->validate([
+            'kode' => ['required'],
+            'password' => ['required'],
+        ]);
+
+        if (Auth::guard('prodi')->attempt($credentials)) {
+            $request->session()->regenerate();
+            return redirect()->intended('dashboard-prodi');
+        }
+
+        return back()->with('error', 'User tidak ditemukan');
     }
 }

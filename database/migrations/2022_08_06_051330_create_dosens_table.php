@@ -25,7 +25,7 @@ class CreateDosensTable extends Migration
             $table->string('email');
             $table->string('hp');
             $table->string('kodeprodi');
-            $table->string('pass');
+            $table->string('password');
             $table->timestamps();
         });
     }
