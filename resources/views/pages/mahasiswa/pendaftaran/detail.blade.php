@@ -146,7 +146,7 @@
                             <div class="col-md-8">
                                 <span class="mr-3">:</span>
                                 <a href="{{ asset($pendaftaran->lampiran_1) }}" target="_blank"><i
-                                        class="fas fa-paperclip"></i> Lampiran.pdf</a>
+                                        class="fas fa-paperclip"></i> Lampiran</a>
                             </div>
                         </div>
                         <hr>
@@ -158,7 +158,7 @@
                             <div class="col-md-8">
                                 <span class="mr-3">:</span>
                                 <a href="{{ asset($pendaftaran->lampiran_2) }}" target="_blank"><i
-                                        class="fas fa-paperclip"></i> Lampiran.pdf</a>
+                                        class="fas fa-paperclip"></i> Lampiran</a>
                             </div>
                         </div>
                         <hr>
@@ -170,7 +170,7 @@
                             <div class="col-md-8">
                                 <span class="mr-3">:</span>
                                 <a href="{{ asset($pendaftaran->lampiran_3) }}" target="_blank"><i
-                                        class="fas fa-paperclip"></i> Lampiran.pdf</a>
+                                        class="fas fa-paperclip"></i> Lampiran</a>
                             </div>
                         </div>
                         <hr>
@@ -182,7 +182,7 @@
                             <div class="col-md-8">
                                 <span class="mr-3">:</span>
                                 <a href="{{ asset($pendaftaran->lampiran_4) }}" target="_blank"><i
-                                        class="fas fa-paperclip"></i> Lampiran.pdf</a>
+                                        class="fas fa-paperclip"></i> Lampiran</a>
                             </div>
                         </div>
                         <hr>
@@ -194,7 +194,7 @@
                             <div class="col-md-8">
                                 <span class="mr-3">:</span>
                                 <a href="{{ asset($pendaftaran->lampiran_5) }}" target="_blank"><i
-                                        class="fas fa-paperclip"></i> Lampiran.pdf</a>
+                                        class="fas fa-paperclip"></i> Lampiran</a>
                             </div>
                         </div>
                         <hr>
@@ -250,12 +250,21 @@
                             </div>
                             <div class="col-md-8">
                                 <span class="mr-3">:</span>
-                                <b>{{$pendaftaran->tanggal_acc }}</b>
+                                @if ($pendaftaran->tanggal_acc)
+                                <b class="text-success">{{ date('d M y H:m',strtotime($pendaftaran->tanggal_acc)) }}</b>
+                                @endif
                             </div>
+
                         </div>
 
                     </div>
-                    <!-- /.card-body -->
+                    @if ($pendaftaran->lampiran_acc)
+                    <div class="card-footer">
+                        <a href="{{ asset($pendaftaran->lampiran_acc) }}" class="btn btn-success btn-sm"
+                            target="_blank"><i class="fas fa-download mr-1"></i>
+                            Surat Tugas Bimbingan TA</a>
+                    </div>
+                    @endif
                 </div>
 
                 <div class="card card-primary card-outline mt-2">
@@ -272,7 +281,7 @@
                         <div class="card bg-light">
                             <div class="card-header"><i class="fas fa-calendar mr-2"></i> {{
                                 $revisi->created_at->format('y M
-                                d H:m:s') }}</div>
+                                d H:m') }}</div>
                             <div class="card-body">
                                 {!! nl2br($revisi->catatan) !!}
                             </div>
@@ -280,7 +289,7 @@
                                 Lampiran :
                                 @if ($revisi->lampiran)
                                 <a href="{{ asset($revisi->lampiran) }}" class="ml-3" target="_blank"><i
-                                        class="fas fa-paperclip"></i> Lampiran.pdf</a>
+                                        class="fas fa-paperclip"></i> Lampiran</a>
                                 @endif
                             </div>
                         </div>

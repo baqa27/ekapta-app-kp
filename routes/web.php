@@ -18,6 +18,8 @@ Route::get('/login/mahasiswa', [LoginController::class, 'loginMahasiswa'])->name
 Route::post('/login/mahasiswa', [LoginController::class, 'cekMahasiswa'])->name('cek.mahasiswa');
 Route::get('/login/prodi', [LoginController::class, 'loginProdi'])->name('login.prodi');
 Route::post('/login/prodi', [LoginController::class, 'cekProdi'])->name('cek.prodi');
+Route::get('/login/admin', [LoginController::class, 'loginAdmin'])->name('login.admin');
+Route::post('/login/admin', [LoginController::class, 'cekAdmin'])->name('cek.admin');
 
 // Dashboard
 Route::get('/dashboard-mahasiswa', [DashboardController::class, 'dashboardMahasiswa'])->name('dashboard.mahasiswa');
@@ -26,11 +28,12 @@ Route::get('/dashboard-dosen', [DashboardController::class, 'dashboardDosen'])->
 Route::get('/dashboard-admin', [DashboardController::class, 'dashboardAdmin'])->name('dashboard.admin');
 
 // Pengajuan TA
+Route::get('/pengajuan-admin', [PengajuanController::class, 'pengajuanAdmin'])->name('pengajuan.admin');
 Route::get('/pengajuan-prodi', [PengajuanController::class, 'pengajuanProdi'])->name('pengajuan.prodi');
 Route::get('/pengajuan-mahasiswa', [PengajuanController::class, 'pengajuanMahasiswa'])->name('pengajuan.mahasiswa');
 Route::get('/pengajuan/create', [PengajuanController::class, 'create'])->name('pengajuan.create');
 Route::post('/pengajuan/store', [PengajuanController::class, 'store'])->name('pengajuan.store');
-Route::post('/pengajuan/edit', [PengajuanController::class, 'edit'])->name('pengajuan.edit');
+Route::get('/pengajuan/edit/{id}', [PengajuanController::class, 'edit']);
 Route::post('/pengajuan/update', [PengajuanController::class, 'update'])->name('pengajuan.update');
 Route::post('/pengajuan/delete', [PengajuanController::class, 'delete'])->name('pengajuan.delete');
 Route::post('/pengajuan/acc', [PengajuanController::class, 'accPengajuan'])->name('pengajuan.acc');
@@ -39,17 +42,20 @@ Route::post('/pengajuan/revisi/delete', [PengajuanController::class, 'deleteRevi
 Route::post('/pengajuan/tolak', [PengajuanController::class, 'tolakPengajuan'])->name('pengajuan.tolak');
 Route::get('/pengajuan/detail/{id}', [PengajuanController::class, 'pengajuanDetail']);
 Route::get('/pengajuan/review/{id}', [PengajuanController::class, 'pengajuanReview']);
+Route::get('/pengajuan/review-admin/{id}', [PengajuanController::class, 'pengajuanReviewAdmin']);
 
 // Ploting pembimbing
 Route::post('/ploting/pembimbing', [PlotingController::class, 'plotingPembimbing'])->name('ploting.pembimbing');
 Route::post('/ploting/penguji', [PlotingController::class, 'plotingPenguji'])->name('ploting.penguji');
 
 // Pendaftaran TA
+Route::get('/pendaftarans', [PendaftaranController::class, 'index'])->name('pendaftarans');
 Route::get('/pendaftaran-mahasiswa', [PendaftaranController::class, 'pendaftaranMahasiswa'])->name('pendaftaran.mahasiswa');
 Route::get('/pendaftaran/create', [PendaftaranController::class, 'create'])->name('pendaftaran.create');
 Route::get('/pendaftaran/detail/{id}', [PendaftaranController::class, 'pendaftaranDetail']);
+Route::get('/pendaftaran/review/{id}', [PendaftaranController::class, 'pendaftaranReview']);
 Route::post('/pendaftaran/store', [PendaftaranController::class, 'store'])->name('pendaftaran.store');
-Route::post('/pendaftaran/edit', [PendaftaranController::class, 'edit'])->name('pendaftaran.edit');
+Route::get('/pendaftaran/edit/{id}', [PendaftaranController::class, 'edit']);
 Route::post('/pendaftaran/update', [PendaftaranController::class, 'update'])->name('pendaftaran.update');
 Route::post('/pendaftaran/delete', [PendaftaranController::class, 'delete'])->name('pendaftaran.delete');
 Route::post('/pendaftaran/acc', [PendaftaranController::class, 'accPendaftaran'])->name('pendaftaran.acc');

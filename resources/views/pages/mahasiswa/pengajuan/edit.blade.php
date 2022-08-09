@@ -32,7 +32,9 @@
                     <div class="card-body">
                         <form action="{{ route('pengajuan.update') }}" method="post" enctype="multipart/form-data">
                             @csrf
+
                             <input type="hidden" name="id" value="{{ $pengajuan->id }}">
+
                             <div class="form-group">
                                 <label for="exampleInputEmail1">Judul</label>
                                 <input type="text" class="form-control @error('judul') is-invalid @enderror"
@@ -53,10 +55,21 @@
                             </div>
                             <div class="form-group">
                                 <label for="exampleInputFile">Lampiran</label>
-                                <input type="file" class="form-control @error('lampiran') is-invalid @enderror"
-                                    id="exampleInputFile" name="lampiran">
+                                <div class="input-group mb-3">
+                                    <div class="custom-file">
+                                        <input type="file"
+                                            class="custom-file-input @error('lampiran')is-invalid @enderror"
+                                            name="lampiran">
+                                        <label class="custom-file-label" for="exampleInputFile">Choose
+                                            file</label>
+                                    </div>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">Dokumen</span>
+                                    </div>
+                                </div>
                                 @error('lampiran')
-                                <div class="invalid-feedback">{{ $message }}</div>
+                                <small class="text-danger" style="position:relative;top:-15px;left:5px">{{ $message
+                                    }}</small>
                                 @enderror
                             </div>
                             <div>

@@ -38,6 +38,7 @@
                                     <th>Mahasiswa</th>
                                     <th>Prodi</th>
                                     <th>Judul</th>
+                                    <th>Status</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
@@ -45,20 +46,31 @@
                                 @php
                                 $no = 1;
                                 @endphp
-                                @foreach ($pengajuans as $pengajuan)
+                                @foreach ($pendaftarans as $pendaftaran)
                                 <tr>
                                     <td>{{ $no++ }}</td>
                                     <td>
-                                        {{ \App\Helpers\AppHelper::instance()->getNamaMahasiswa($pengajuan->nim) }}
-                                        {{ '('.$pengajuan->nim.')' }}
+                                        {{ \App\Helpers\AppHelper::instance()->getNamaMahasiswa($pendaftaran->nim) }}
+                                        {{ '('.$pendaftaran->nim.')' }}
                                     </td>
                                     <td>
-                                        {{ \App\Helpers\AppHelper::instance()->getProdiMahasiswa($pengajuan->nim) }}
+                                        {{ \App\Helpers\AppHelper::instance()->getProdiMahasiswa($pendaftaran->nim) }}
                                     </td>
-                                    <td>{{ $pengajuan->judul }}</td>
+                                    <td>{{ $pendaftaran->judul }}</td>
                                     <td>
-                                        <a href="{{ url('/pengajuan/review/'.$pengajuan->id) }}"
-                                            class="btn btn-primary btn-sm shadow">
+                                        @if ($pendaftaran->status == 'review')
+                                        <span class="badge bg-secondary">Review</span>
+                                        @elseif ($pendaftaran->status == 'revisi')
+                                        <span class="badge bg-warning">Revisi</span>
+                                        @elseif ($pendaftaran->status == 'diterima')
+                                        <span class="badge bg-success">Diterima</span>
+                                        @elseif ($pendaftaran->status == 'ditolak')
+                                        <span class="badge bg-danger">Ditolak</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        <a href="{{ url('/pendaftaran/review/'.$pendaftaran->id) }}"
+                                            class="btn btn-info btn-sm shadow">
                                             <i class="fas fa-check-circle mr-1"></i> Review
                                         </a>
                                     </td>
@@ -72,6 +84,7 @@
                                     <th>Mahasiswa</th>
                                     <th>Prodi</th>
                                     <th>Judul</th>
+                                    <th>Status</th>
                                     <th>Aksi</th>
                                 </tr>
                             </tfoot>

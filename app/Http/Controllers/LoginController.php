@@ -51,4 +51,26 @@ class LoginController extends Controller
 
         return back()->with('error', 'User tidak ditemukan');
     }
+
+    public function loginAdmin()
+    {
+        return view('pages.admin.login', [
+            'title' => 'Login Admin',
+        ]);
+    }
+
+    public function cekAdmin(Request $request)
+    {
+        $credentials = $request->validate([
+            'kode' => ['required'],
+            'password' => ['required'],
+        ]);
+
+        if (Auth::guard('admin')->attempt($credentials)) {
+            $request->session()->regenerate();
+            return redirect()->intended('dashboard-admin');
+        }
+
+        return back()->with('error', 'User tidak ditemukan');
+    }
 }

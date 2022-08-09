@@ -1,4 +1,4 @@
-@extends('layouts.dashboardMahasiswa')
+@extends('layouts.dashboard')
 
 @section('content')
 
@@ -41,15 +41,35 @@
                             {{ $pengajuan->status }}
                         </div>
                     </div>
-                    <div class="card-header">
-                        <h3 class="card-title"><strong>Judul </strong>{{ $pengajuan->judul }}</h3>
-                    </div>
                     <div class="card-body">
+                        <table>
+                            <tr>
+                                <td><b class="mr-3">Nim</b></td>
+                                <td>:</td>
+                                <td>{{ $pengajuan->nim }}</td>
+                            </tr>
+                            <tr>
+                                <td><b class="mr-3">Nama</b></td>
+                                <td>:</td>
+                                <td>{{ \App\Helpers\AppHelper::instance()->getNamaMahasiswa($pengajuan->nim) }}</td>
+                            </tr>
+                            <tr>
+                                <td><b class="mr-3">Prodi</b></td>
+                                <td>:</td>
+                                <td>{{ \App\Helpers\AppHelper::instance()->getProdiMahasiswa($pengajuan->nim) }}</td>
+                            </tr>
+                            <tr>
+                                <td><b class="mr-3">Judul</b></td>
+                                <td>:</td>
+                                <td>{{ $pengajuan->judul }}</td>
+                            </tr>
+
+                        </table>
+                        <hr>
                         <p><b>Deskripsi</b></p>
                         {!! nl2br($pengajuan->deskripsi) !!}
                         <div class="mt-3 text-secondary"><i class="fas fa-calendar mr-2"></i> {{
-                            $pengajuan->created_at->format('y M
-                            d H:m') }}
+                            $pengajuan->created_at->format('d M y H:m') }}
                         </div>
                         @if ($pengajuan->tanggal_acc)
                         <div class="text-success"><i class="fas fa-calendar-check mr-2"></i>
@@ -58,9 +78,9 @@
                         @endif
                         <hr>
                         <p class="mt-3"><b>Lampiran : </b> <a href="{{ asset($pengajuan->lampiran) }}" class="ml-3"
-                                target="_blank"><i class="fas fa-paperclip"></i> Lampiran</a></p>
+                                target="_blank"><i class="fas fa-paperclip"></i> Lampiran.pdf</a></p>
                     </div>
-                    <!-- /.card-body -->
+
                 </div>
 
                 <div class="card card-primary card-outline mt-2">
@@ -72,12 +92,11 @@
                         </h3>
                     </div>
                     <div class="card-body">
-
                         @foreach ($revisis as $revisi)
                         <div class="card bg-light">
                             <div class="card-header"><i class="fas fa-calendar mr-2"></i> {{
-                                $revisi->created_at->format('y M
-                                d H:m') }}</div>
+                                $revisi->created_at->format('d M y H:m') }}
+                            </div>
                             <div class="card-body">
                                 {!! nl2br($revisi->catatan) !!}
                             </div>
@@ -85,7 +104,7 @@
                                 Lampiran :
                                 @if ($revisi->lampiran)
                                 <a href="{{ asset($revisi->lampiran) }}" class="ml-3" target="_blank"><i
-                                        class="fas fa-paperclip"></i> Lampiran</a>
+                                        class="fas fa-paperclip"></i> Lampiran.pdf</a>
                                 @endif
                             </div>
                         </div>
@@ -102,5 +121,6 @@
     </div>
 </div>
 <!-- /.content -->
+
 
 @endsection

@@ -21,7 +21,7 @@ class CreatePendaftaransTable extends Migration
             $table->string('hp');
             $table->string('semester');
             $table->string('nomor_pembayaran');
-            $table->dateTime('tanggal_pembayaran');
+            $table->string('tanggal_pembayaran');
             $table->string('biaya');
             $table->string('lampiran_1');
             $table->string('lampiran_2');
@@ -29,7 +29,7 @@ class CreatePendaftaransTable extends Migration
             $table->string('lampiran_4');
             $table->string('lampiran_5');
             $table->string('lampiran_acc')->nullable();
-            $table->dateTime('tanggal_acc')->nullable();
+            $table->date('tanggal_acc')->nullable();
             $table->string('status')->default('review');
             $table->timestamps();
         });

@@ -38,6 +38,7 @@
                                     <th>Mahasiswa</th>
                                     <th>Prodi</th>
                                     <th>Judul</th>
+                                    <th>Status</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
@@ -57,9 +58,20 @@
                                     </td>
                                     <td>{{ $pengajuan->judul }}</td>
                                     <td>
-                                        <a href="{{ url('/pengajuan/review/'.$pengajuan->id) }}"
-                                            class="btn btn-primary btn-sm shadow">
-                                            <i class="fas fa-check-circle mr-1"></i> Review
+                                        @if ($pengajuan->status == 'review')
+                                        <span class="badge bg-secondary">Review</span>
+                                        @elseif ($pengajuan->status == 'revisi')
+                                        <span class="badge bg-warning">Revisi</span>
+                                        @elseif ($pengajuan->status == 'diterima')
+                                        <span class="badge bg-success">Diterima</span>
+                                        @elseif ($pengajuan->status == 'ditolak')
+                                        <span class="badge bg-danger">Ditolak</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        <a href="{{ url('/pengajuan/review-admin/'.$pengajuan->id) }}"
+                                            class="btn btn-info btn-sm shadow">
+                                            <i class="fas fa-info-circle mr-1"></i> Detail
                                         </a>
                                     </td>
                                 </tr>
@@ -72,6 +84,7 @@
                                     <th>Mahasiswa</th>
                                     <th>Prodi</th>
                                     <th>Judul</th>
+                                    <th>Status</th>
                                     <th>Aksi</th>
                                 </tr>
                             </tfoot>

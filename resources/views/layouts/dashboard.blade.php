@@ -163,6 +163,30 @@
     </script>
     @endif
 
+    @error('lampiran')
+    <script>
+        $(document).Toasts('create', {
+            class : 'bg-danger mt-5 mr-3',
+            title: 'Error',
+            autohide: true,
+            delay: 3000,
+            body: '{{$message}}'
+        })
+    </script>
+    @enderror
+
+    @error('lampiran_acc')
+    <script>
+        $(document).Toasts('create', {
+            class : 'bg-danger mt-5 mr-3',
+            title: 'Error',
+            autohide: true,
+            delay: 3000,
+            body: '{{$message}}'
+        })
+    </script>
+    @enderror
+
     <script>
         // Summernote
         $(function () {

@@ -76,26 +76,19 @@
                                     </td>
                                     <td>
                                         @if ($pendaftaran->status =='diterima')
-                                        <a href="" class="btn btn-success btn-sm"><i class="fas fa-download mr-1"></i>
+                                        <a href="{{ asset($pendaftaran->lampiran_acc) }}" class="btn btn-success btn-sm"
+                                            target="_blank"><i class="fas fa-download mr-1"></i>
                                             Surat Tugas Bimbingan TA</a>
 
                                         @elseif ($pendaftaran->status =='revisi')
-                                        <a href="" class="btn btn-primary btn-sm"><i class="fas fa-pen mr-1"></i>
+                                        <a href="{{ url('pendaftaran/edit/'.$pendaftaran->id) }}"
+                                            class="btn btn-primary btn-sm"><i class="fas fa-pen mr-1"></i>
                                             Edit</a>
 
                                         @elseif ($pendaftaran->status =='review')
                                         <a href="{{ url('pendaftaran/detail/'.$pendaftaran->id) }}"
                                             class="btn btn-primary btn-sm"><i
                                                 class="fas fa-info-circle mr-1"></i>Detail</a>
-
-                                        {{-- <form action="{{ route('pendaftaran.delete')}}" method="post">
-                                            @csrf
-                                            <input type="hidden" name="id" value="{{ $pendaftaran->id }}">
-                                            <button class="btn btn-danger btn-sm shadow" type="submit"
-                                                onclick="confirmDelete()">
-                                                <i class="fas fa-trash mr-1"
-                                                    onclick="confirmDelete()"></i>Hapus</button>
-                                        </form> --}}
 
                                         @endif
 

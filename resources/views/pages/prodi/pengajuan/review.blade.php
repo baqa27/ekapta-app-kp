@@ -54,17 +54,22 @@
                                 <td>{{ \App\Helpers\AppHelper::instance()->getNamaMahasiswa($pengajuan->nim) }}</td>
                             </tr>
                             <tr>
+                                <td><b class="mr-3">Prodi</b></td>
+                                <td>:</td>
+                                <td>{{ \App\Helpers\AppHelper::instance()->getProdiMahasiswa($pengajuan->nim) }}</td>
+                            </tr>
+                            <tr>
                                 <td><b class="mr-3">Judul</b></td>
                                 <td>:</td>
                                 <td>{{ $pengajuan->judul }}</td>
                             </tr>
+
                         </table>
                         <hr>
                         <p><b>Deskripsi</b></p>
                         {!! nl2br($pengajuan->deskripsi) !!}
                         <div class="mt-3 text-secondary"><i class="fas fa-calendar mr-2"></i> {{
-                            $pengajuan->created_at->format('y M
-                            d H:m:s') }}
+                            $pengajuan->created_at->format('d M y H:m') }}
                         </div>
                         <hr>
                         <p class="mt-3"><b>Lampiran : </b> <a href="{{ asset($pengajuan->lampiran) }}" class="ml-3"
@@ -102,8 +107,8 @@
                         @foreach ($revisis as $revisi)
                         <div class="card bg-light">
                             <div class="card-header"><i class="fas fa-calendar mr-2"></i> {{
-                                $revisi->created_at->format('y M
-                                d H:m:s') }}
+                                $revisi->created_at->format('d M
+                                y H:m') }}
                                 <div class="float-right">
                                     <form action="{{ route('pengajuan.revisi.delete') }}" method="post">
                                         @csrf
@@ -202,7 +207,21 @@
                     </div>
                     <div class="form-group">
                         <label for="" class="form-label">Lampiran</label>
-                        <input type="file" class="form-control" name="lampiran">
+                        <div class="input-group mb-3">
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input @error('lampiran')is-invalid @enderror"
+                                    name="lampiran">
+                                <label class="custom-file-label" for="exampleInputFile">Choose
+                                    file</label>
+                            </div>
+                            <div class="input-group-append">
+                                <span class="input-group-text">Dokumen</span>
+                            </div>
+                        </div>
+                        @error('lampiran')
+                        <small class="text-danger" style="position:relative;top:-15px;left:5px">{{ $message
+                            }}</small>
+                        @enderror
                     </div>
                 </div>
                 <div class="modal-footer justify-content-between">
@@ -215,7 +234,7 @@
     <!-- /.modal-dialog -->
 </div>
 
-<!-- Modal Revisi -->
+<!-- Modal Tolak -->
 <div class="modal fade" id="modal-tolak">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -236,7 +255,21 @@
                     </div>
                     <div class="form-group">
                         <label for="" class="form-label">Lampiran</label>
-                        <input type="file" class="form-control" name="lampiran">
+                        <div class="input-group mb-3">
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input @error('lampiran') is-invalid @enderror"
+                                    name="lampiran">
+                                <label class="custom-file-label" for="exampleInputFile">Choose
+                                    file</label>
+                            </div>
+                            <div class="input-group-append">
+                                <span class="input-group-text">Dokumen</span>
+                            </div>
+                        </div>
+                        @error('lampiran')
+                        <small class="text-danger" style="position:relative;top:-15px;left:5px">{{ $message
+                            }}</small>
+                        @enderror
                     </div>
                 </div>
                 <div class="modal-footer justify-content-between">

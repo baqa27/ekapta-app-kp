@@ -13,6 +13,12 @@ class AppHelper
         return $manahasiswa->nama;
     }
 
+    public function getProdiMahasiswa($nim)
+    {
+        $manahasiswa = Mahasiswa::where('nim', $nim)->first();
+        return $manahasiswa->prodi;
+    }
+
     public function uploadLampiran($lampiran, $path)
     {
         if ($lampiran) {

@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Helpers\AppHelper;
 use App\Models\Dosen;
 use App\Models\Mahasiswa;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 
 class PengajuanController extends Controller
@@ -34,6 +35,17 @@ class PengajuanController extends Controller
         $pengajuans = Pengajuan::where('nim', Auth::guard('mahasiswa')->user()->nim)->orderBy('created_at', 'desc')->get();
         return view('pages.mahasiswa.pengajuan.pengajuan', [
             'title' => 'Pengajuan Tugas Akhir',
+            'active' => 'pengajuan',
+            'pengajuans' => $pengajuans,
+        ]);
+    }
+
+    public function pengajuanAdmin()
+    {
+        $pengajuans = Pengajuan::orderBy('created_at', 'desc')->get();
+        return view('pages.admin.pengajuan.pengajuan', [
+            'title' => 'Pengajuan Tugas Akhir',
+            'sidebar' => 'partials.sidebarAdmin',
             'active' => 'pengajuan',
             'pengajuans' => $pengajuans,
         ]);
@@ -72,12 +84,24 @@ class PengajuanController extends Controller
         ]);
     }
 
+    public function pengajuanReviewAdmin($id)
+    {
+        $pengajuan = Pengajuan::findOrFail($id);
+        return view('pages.admin.pengajuan.review', [
+            'title' => 'Review pengajuan',
+            'active' => 'pengajuan',
+            'pengajuan' => $pengajuan,
+            'sidebar' => 'partials.sidebarAdmin',
+            'revisis' => $pengajuan->revisis()->orderBy('created_at', 'desc')->paginate(3),
+        ]);
+    }
+
     public function store(Request $request)
     {
         $cekPengajuan = Pengajuan::where('nim', Auth::guard('mahasiswa')->user()->nim)->whereIn('status', ['review', 'revisi', 'diterima'])->get();
         if ($cekPengajuan->isEmpty()) {
             $validatedData = $request->validate([
-                'judul' => 'required',
+                'judul' => ['required', 'min:5'],
                 'deskripsi' => ['required', 'min:100'],
                 'lampiran' => ['required', 'mimes:pdf'],
             ]);
@@ -92,9 +116,9 @@ class PengajuanController extends Controller
         }
     }
 
-    public function edit(Request $request)
+    public function edit($id)
     {
-        $pengajuan = Pengajuan::findOrFail($request->id);
+        $pengajuan = Pengajuan::findOrFail($id);
         return view('pages.mahasiswa.pengajuan.edit', [
             'title' => 'Form Edit Pengajuan Tugas Akhir',
             'active' => 'pengajuan',
@@ -106,8 +130,14 @@ class PengajuanController extends Controller
     {
         $pengajuan = Pengajuan::findOrFail($request->id);
         $validatedData = $request->validate([
-            'judul' => 'required',
-            'deskripsi' => 'required',
+            'judul' => ['required', 'min:5'],
+            'deskripsi' => ['required', 'min:100'],
+            'lampiran' => [Rule::requiredIf(function () {
+                if (empty($this->request->lampiran)) {
+                    return false;
+                }
+                return true;
+            }), 'mimes:pdf']
         ]);
 
         if ($request->file('lampiran')) {
@@ -120,6 +150,7 @@ class PengajuanController extends Controller
 
         $pengajuan->update($validatedData);
         return redirect('pengajuan-mahasiswa')->with('success', 'Berhasil melakukan pengajuan tugas akhir');
+        return $validatedData;
     }
 
     public function delete(Request $request)
@@ -173,17 +204,27 @@ class PengajuanController extends Controller
         if ($pengajuan->status == 'diterima' || $pengajuan->status == 'ditolak') {
             return back()->with('warning', 'pengajuan sudah tidak bisa ditolak');
         } else {
-            $pengajuan->update([
-                'status' => 'ditolak',
-            ]);
-
             if ($request->catatan) {
                 $revisi = new RevisiPengajuan;
                 $revisi->catatan = $request->catatan;
 
+                $request->validate([
+                    'lampiran' => [Rule::requiredIf(function () {
+                        if (empty($this->request->lampiran)) {
+                            return false;
+                        }
+                        return true;
+                    }), 'mimes:pdf']
+                ]);
+
                 if ($request->file('lampiran')) {
                     $revisi->lampiran = AppHelper::instance()->uploadLampiran($request->lampiran, 'lampiran-revisi');
                 }
+
+                $pengajuan->update([
+                    'status' => 'ditolak',
+                ]);
+
                 $pengajuan->revisis()->save($revisi);
             }
 
@@ -197,16 +238,27 @@ class PengajuanController extends Controller
         if ($pengajuan->status == 'diterima' || $pengajuan->status == 'ditolak') {
             return back()->with('warning', 'Pengajuan sudah tidak bisa direvisi');
         } else {
-            $pengajuan->update([
-                'status' => 'revisi',
-            ]);
-
             if ($request->catatan) {
                 $revisi = new RevisiPengajuan;
                 $revisi->catatan = $request->catatan;
+
+                $request->validate([
+                    'lampiran' => [Rule::requiredIf(function () {
+                        if (empty($this->request->lampiran)) {
+                            return false;
+                        }
+                        return true;
+                    }), 'mimes:pdf']
+                ]);
+
                 if ($request->file('lampiran')) {
                     $revisi->lampiran = AppHelper::instance()->uploadLampiran($request->lampiran, 'lampiran-revisi');
                 }
+
+                $pengajuan->update([
+                    'status' => 'revisi',
+                ]);
+
                 $pengajuan->revisis()->save($revisi);
             }
 
