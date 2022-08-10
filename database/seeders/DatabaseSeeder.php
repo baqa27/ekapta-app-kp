@@ -63,7 +63,7 @@ class DatabaseSeeder extends Seeder
             'kode' => 2001,
             'namaprodi' => 'Teknik Informatika',
             'jenjang' => 'S1',
-            'kodekaprodi' => 4001,
+            'kodekaprodi' => 1001,
             'password' => Hash::make(2001)
         ]);
 

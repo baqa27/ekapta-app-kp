@@ -42,8 +42,7 @@
                             <div class="form-group">
                                 <label for="exampleInputEmail1">Nama Lengkap</label>
                                 <input type="text" class="form-control"
-                                    value="{{ \App\Helpers\AppHelper::instance()->getNamaMahasiswa(Auth::guard('mahasiswa')->user()->nim) }}"
-                                    disabled>
+                                    value="{{ Auth::guard('mahasiswa')->user()->nama  }}" disabled>
                             </div>
 
                             <div class="form-group">
@@ -100,20 +99,8 @@
                                 <select class="form-control @error('semester') is-invalid @enderror" name="semester"
                                     required>
                                     <option value="">Pilih</option>
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                    <option value="5">5</option>
-                                    <option value="6">6</option>
-                                    <option value="7">7</option>
-                                    <option value="8">8</option>
-                                    <option value="9">9</option>
-                                    <option value="10">10</option>
-                                    <option value="11">11</option>
-                                    <option value="12">12</option>
-                                    <option value="13">13</option>
-                                    <option value="14">14</option>
+                                    @for ($i = 1; $i <= 14; $i++) <option value="{{ $i }}">{{ $i }}</option>
+                                        @endfor
                                 </select>
                                 @error('semester')
                                 <div class="invalid-feedback">{{ $message }}</div>

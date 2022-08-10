@@ -8,45 +8,42 @@ use Illuminate\Http\Request;
 
 class BagianController extends Controller
 {
-    public function index()
-    {
-        $prodis = Prodi::with(['bagians'])->get();
-        return $prodis;
-    }
-
-    public function create()
-    {
-    }
-
     public function store(Request $request)
     {
         $prodi = Prodi::findOrFail($request->prodi_id);
+        $cekBagian = $prodi->bagians()->where('bagian', $request->bagian)->first();
+        if ($cekBagian) {
+            return back()->with('warning', 'Nama bagian yang sama sudah dibuat');
+        }
         $validatedData = $request->validate([
             'bagian' => 'required',
         ]);
         $bagian = new Bagian;
         $bagian->bagian = $validatedData['bagian'];
         $prodi->bagians()->save($bagian);
-        return $prodi->bagians;
-    }
-
-    public function edit(Request $request)
-    {
-        $bagian = Bagian::findOrFail($request->id);
-        return $bagian;
+        return back()->with('success', 'Bagian berhasil dibuat');
     }
 
     public function update(Request $request)
     {
         $bagian = Bagian::findOrFail($request->id);
+        if (Bagian::where(['id' => $request->id, 'bagian' => $request->bagian])->first()) {
+            return back()->with('warning', 'Nama bagian yang sama sudah dibuat');
+        }
         $validatedData = $request->validate([
             'bagian' => 'required',
         ]);
         $bagian->update($validatedData);
-        return $bagian;
+        return back()->with('success', 'Bagian berhasil diedit');
     }
 
     public function delete(Request $request)
     {
+        $bagian = Bagian::findOrFail($request->id);
+        if (count($bagian->bimbingans) != 0) {
+            return back()->with('warning', 'Tidak dapat menghapus bagian bimbingan');
+        }
+        $bagian->delete();
+        return back()->with('success', 'Bagian berhasil dihapus');
     }
 }

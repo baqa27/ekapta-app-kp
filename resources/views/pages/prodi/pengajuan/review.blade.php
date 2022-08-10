@@ -51,12 +51,12 @@
                             <tr>
                                 <td><b class="mr-3">Nama</b></td>
                                 <td>:</td>
-                                <td>{{ \App\Helpers\AppHelper::instance()->getNamaMahasiswa($pengajuan->nim) }}</td>
+                                <td>{{ \App\Helpers\AppHelper::instance()->getMahasiswa($pengajuan->nim)->nama }}</td>
                             </tr>
                             <tr>
                                 <td><b class="mr-3">Prodi</b></td>
                                 <td>:</td>
-                                <td>{{ \App\Helpers\AppHelper::instance()->getProdiMahasiswa($pengajuan->nim) }}</td>
+                                <td>{{ \App\Helpers\AppHelper::instance()->getMahasiswa($pengajuan->nim)->prodi }}</td>
                             </tr>
                             <tr>
                                 <td><b class="mr-3">Judul</b></td>
@@ -95,6 +95,7 @@
                     </div>
                 </div>
 
+                {{-- Revisi --}}
                 <div class="card card-primary card-outline mt-2">
                     <div class="card-header">
                         <h3 class="card-title"><strong>Revisi</strong>

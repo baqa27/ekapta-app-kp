@@ -64,7 +64,7 @@
                 <li class="nav-item">
                     <a href="{{ route('dashboard.admin') }}"
                         class="nav-link {{ $active=='dashboard' ? 'active' : '' }}">
-                        <i class="nav-icon bi bi-house-fill"></i>
+                        <i class="nav-icon fas fa-tachometer-alt"></i>
                         <p>
                             Dashboard
                         </p>
@@ -74,7 +74,7 @@
                 <li class="nav-item">
                     <a href="{{ route('pengajuan.admin') }}"
                         class="nav-link {{ $active=='pengajuan' ? 'active' : '' }}">
-                        <i class="nav-icon bi bi-journal-check"></i>
+                        <i class="nav-icon fas fa-th"></i>
                         <p>
                             Pengajuan TA
                         </p>
@@ -83,7 +83,7 @@
 
                 <li class="nav-item">
                     <a href="{{ route('pendaftarans') }}" class="nav-link {{ $active=='pendaftaran' ? 'active' : '' }}">
-                        <i class="nav-icon bi bi-ui-checks"></i>
+                        <i class="nav-icon fas fa-check"></i>
                         <p>
                             Validasi Pendaftaran TA
                         </p>
@@ -91,7 +91,7 @@
                 </li>
                 <li class="nav-item">
                     <a href="#" class="nav-link {{ $active=='seminar' ? 'active' : '' }}">
-                        <i class="nav-icon bi bi-journal-bookmark-fill"></i>
+                        <i class="nav-icon fas fa-th"></i>
                         <p>
                             Seminar Proposal TA
                         </p>
@@ -99,11 +99,29 @@
                 </li>
                 <li class="nav-item">
                     <a href="#" class="nav-link {{ $active=='ujian' ? 'active' : '' }}">
-                        <i class="nav-icon bi bi-book-half"></i>
+                        <i class="nav-icon fas fa-th"></i>
                         <p>
                             Ujian Pendadaran TA
                         </p>
                     </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon far fa-folder"></i>
+                        <p>
+                            Master Data
+                            <i class="fa fa-angle-right right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ route('prodis') }}" class="nav-link {{ $active=='prodi' ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Prodi</p>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
             </ul>
         </nav>

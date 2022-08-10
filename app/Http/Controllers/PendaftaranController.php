@@ -150,7 +150,7 @@ class PendaftaranController extends Controller
     {
         $pendaftaran = Pendaftaran::findOrFail($request->id);
         $validatedData = $request->validate([
-            'email' => 'required',
+            'email' => ['required', 'email:dns', 'unique:pendaftarans'],
             'hp' => 'required',
             'semester' => 'required',
             'nomor_pembayaran' => 'required',

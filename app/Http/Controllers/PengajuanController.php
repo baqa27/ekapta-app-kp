@@ -18,9 +18,8 @@ class PengajuanController extends Controller
 
     public function pengajuanProdi()
     {
-        $pengajuans = Pengajuan::where('status', 'review')
-            ->orderBy('created_at', 'desc')
-            ->get();
+        $pengajuans = Pengajuan::where('status', 'review')->orderBy('created_at', 'desc')->get();
+        // $pengajuans = Pengajuan::all();
         return view('pages.prodi.pengajuan.pengajuan', [
             'title' => 'Pengajuan Tugas Akhir',
             'active' => 'pengajuan',

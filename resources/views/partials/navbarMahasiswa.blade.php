@@ -31,7 +31,7 @@
                         class="nav-link {{ $active == 'pendaftaran' ? 'active' : '' }}">Pendaftaran TA</a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('bimbingans') }}"
+                    <a href="{{ route('bimbingan.mahasiswa') }}"
                         class="nav-link {{ $active == 'bimbingan' ? 'active' : '' }}">Bimbingan</a>
                 </li>
                 <li class="nav-item">

@@ -15,7 +15,7 @@
                 <hr>
                 <a href="{{ route('login.mahasiswa') }}" class="btn btn-primary-me mb-3">Login Mahasiswa</a>
                 <a href="{{ route('login.prodi') }}" class="btn btn-primary-me mb-3">Login Prodi</a>
-                <a href="dashboard/dosen/dashboard.html" class="btn btn-primary-me mb-3">Login Dosen</a>
+                <a href="{{ route('login.dosen') }}" class="btn btn-primary-me mb-3">Login Dosen</a>
                 <a href="{{ route('login.admin') }}" class="btn btn-primary-me mb-3">Login Admin</a>
             </div>
         </div>

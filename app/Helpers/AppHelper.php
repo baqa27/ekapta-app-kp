@@ -2,21 +2,44 @@
 
 namespace App\Helpers;
 
+use App\Models\Bimbingan;
+use App\Models\Dosen;
 use App\Models\Mahasiswa;
+use App\Models\Pendaftaran;
 use App\Models\Prodi;
 
 class AppHelper
 {
-    public function getNamaMahasiswa($nim)
+    public function getMahasiswa($nim)
     {
-        $manahasiswa = Mahasiswa::where('nim', $nim)->first();
-        return $manahasiswa->nama;
+        $mahasiswa = Mahasiswa::where('nim', $nim)->first();
+        if ($mahasiswa) {
+            return $mahasiswa;
+        }
     }
 
-    public function getProdiMahasiswa($nim)
+    public function getDosen($nidn)
     {
-        $manahasiswa = Mahasiswa::where('nim', $nim)->first();
-        return $manahasiswa->prodi;
+        $dosen = Dosen::where('nidn', $nidn)->first();
+        if ($dosen) {
+            return $dosen;
+        }
+    }
+
+    public function getPendaftaran($nim)
+    {
+        $pendaftaran = Pendaftaran::where('nim', $nim)->first();
+        if ($pendaftaran) {
+            return $pendaftaran;
+        }
+    }
+
+    public function cekBagianIsAcc($bagian_id)
+    {
+        $bimbingan = Bimbingan::where('bagian_id', $bagian_id)->where('status', 'diterima')->first();
+        if ($bimbingan) {
+            return true;
+        }
     }
 
     public function uploadLampiran($lampiran, $path)

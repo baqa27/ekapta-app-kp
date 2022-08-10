@@ -32,4 +32,13 @@ class DashboardController extends Controller
             'sidebar' => 'partials.sidebarAdmin',
         ]);
     }
+
+    public function dashboardDosen()
+    {
+        return view('pages.dosen.dashboard.home', [
+            'title' => 'Dashboard',
+            'active' => 'dashboard',
+            'sidebar' => 'partials.sidebarDosen',
+        ]);
+    }
 }

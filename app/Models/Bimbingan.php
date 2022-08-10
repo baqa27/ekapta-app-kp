@@ -35,6 +35,7 @@ class Bimbingan extends Model
 
     public function dosens()
     {
-        return $this->belongsToMany(Dosen::class, 'revisi_bimbingans');
+        return $this->belongsToMany(Dosen::class, 'dosen_bimbingans', 'bimbingan_id', 'dosen_id',)
+            ->withTimestamps();
     }
 }

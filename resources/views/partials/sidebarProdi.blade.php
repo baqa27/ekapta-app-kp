@@ -64,7 +64,7 @@
                 <li class="nav-item">
                     <a href="{{ route('dashboard.prodi') }}"
                         class="nav-link {{ $active=='dashboard' ? 'active' : '' }}">
-                        <i class="nav-icon bi bi-house-fill"></i>
+                        <i class="nav-icon fas fa-tachometer-alt"></i>
                         <p>
                             Dashboard
                         </p>
@@ -74,7 +74,7 @@
                 <li class="nav-item">
                     <a href="{{ route('pengajuan.prodi') }}"
                         class="nav-link {{ $active=='pengajuan' ? 'active' : '' }}">
-                        <i class="nav-icon bi bi-journal-check"></i>
+                        <i class="nav-icon fas fa-check"></i>
                         <p>
                             Validasi Pengajuan TA
                         </p>
@@ -83,15 +83,15 @@
 
                 <li class="nav-item">
                     <a href="#" class="nav-link">
-                        <i class="nav-icon bi bi-ui-checks"></i>
+                        <i class="nav-icon fas fa-th"></i>
                         <p>
-                            Pendaftaran TA
+                            Bimbingan TA
                         </p>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="#" class="nav-link">
-                        <i class="nav-icon bi bi-journal-bookmark-fill"></i>
+                        <i class="nav-icon fas fa-th"></i>
                         <p>
                             Seminar Proposal TA
                         </p>
@@ -99,7 +99,7 @@
                 </li>
                 <li class="nav-item">
                     <a href="#" class="nav-link">
-                        <i class="nav-icon bi bi-book-half"></i>
+                        <i class="nav-icon fas fa-th"></i>
                         <p>
                             Ujian Pendadaran TA
                         </p>

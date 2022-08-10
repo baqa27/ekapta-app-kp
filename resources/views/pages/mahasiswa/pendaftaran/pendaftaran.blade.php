@@ -62,7 +62,7 @@
                                             $pendaftaran->judul }}</a>
                                     </td>
                                     <td>{{ $pendaftaran->created_at->format('y M d H:m') }}</td>
-                                    <td>{{ $pendaftaran->tanggal_acc }}</td>
+                                    <td>{{ date('d M y H:m', strtotime($pendaftaran->tanggal_acc)) }}</td>
                                     <td>
                                         @if ($pendaftaran->status =='diterima')
                                         <span class="badge bg-success">Diterima</span>

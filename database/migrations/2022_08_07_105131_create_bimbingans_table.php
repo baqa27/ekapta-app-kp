@@ -17,7 +17,7 @@ class CreateBimbingansTable extends Migration
             $table->id();
             $table->string('keterangan')->nullable();
             $table->string('lampiran');
-            $table->dateTime('tanggal_acc')->nullable();
+            $table->date('tanggal_acc')->nullable();
             $table->string('status')->default('review');
             $table->timestamps();
             $table->foreignId('mahasiswa_id')->constrained('mahasiswas');

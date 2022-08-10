@@ -57,7 +57,7 @@
                             </div>
                             <div class="col-md-7">
                                 <span class="mr-3">:</span>
-                                <b>{{ Auth::guard('mahasiswa')->user()->nama }}</b>
+                                <b>{{ \App\Helpers\AppHelper::instance()->getMahasiswa($pendaftaran->nim)->nama }}</b>
                             </div>
                         </div>
                         <hr>
@@ -68,7 +68,7 @@
                             </div>
                             <div class="col-md-7">
                                 <span class="mr-3">:</span>
-                                <b>{{ Auth::guard('mahasiswa')->user()->prodi }}</b>
+                                <b>{{ \App\Helpers\AppHelper::instance()->getMahasiswa($pendaftaran->nim)->prodi }}</b>
                             </div>
                         </div>
                         <hr>

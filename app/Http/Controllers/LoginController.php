@@ -73,4 +73,26 @@ class LoginController extends Controller
 
         return back()->with('error', 'User tidak ditemukan');
     }
+
+    public function loginDosen()
+    {
+        return view('pages.dosen.login', [
+            'title' => 'Login Dosen',
+        ]);
+    }
+
+    public function cekDosen(Request $request)
+    {
+        $credentials = $request->validate([
+            'nidn' => ['required'],
+            'password' => ['required'],
+        ]);
+
+        if (Auth::guard('dosen')->attempt($credentials)) {
+            $request->session()->regenerate();
+            return redirect()->intended('dashboard-dosen');
+        }
+
+        return back()->with('error', 'User tidak ditemukan');
+    }
 }

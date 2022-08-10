@@ -23,7 +23,7 @@
 <!-- Main content -->
 <section class="content">
     <div class="container-fluid">
-        <div class="row mb-4">
+        {{-- <div class="row mb-4">
             <!-- Pengajuan TA -->
             <div class="col-md-3">
                 <div class="card card-primary card-outline">
@@ -140,7 +140,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
 
         <div class="row">
             <div class="col-md-12">

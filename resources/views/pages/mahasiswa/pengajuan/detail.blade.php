@@ -48,8 +48,8 @@
                         <p><b>Deskripsi</b></p>
                         {!! nl2br($pengajuan->deskripsi) !!}
                         <div class="mt-3 text-secondary"><i class="fas fa-calendar mr-2"></i> {{
-                            $pengajuan->created_at->format('y M
-                            d H:m') }}
+                            $pengajuan->created_at->format('d M
+                            y H:m') }}
                         </div>
                         @if ($pengajuan->tanggal_acc)
                         <div class="text-success"><i class="fas fa-calendar-check mr-2"></i>

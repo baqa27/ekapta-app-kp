@@ -8,6 +8,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PendaftaranController;
 use App\Http\Controllers\PengajuanController;
 use App\Http\Controllers\PlotingController;
+use App\Http\Controllers\ProdiController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -18,6 +19,8 @@ Route::get('/login/mahasiswa', [LoginController::class, 'loginMahasiswa'])->name
 Route::post('/login/mahasiswa', [LoginController::class, 'cekMahasiswa'])->name('cek.mahasiswa');
 Route::get('/login/prodi', [LoginController::class, 'loginProdi'])->name('login.prodi');
 Route::post('/login/prodi', [LoginController::class, 'cekProdi'])->name('cek.prodi');
+Route::get('/login/dosen', [LoginController::class, 'loginDosen'])->name('login.dosen');
+Route::post('/login/dosen', [LoginController::class, 'cekDosen'])->name('cek.dosen');
 Route::get('/login/admin', [LoginController::class, 'loginAdmin'])->name('login.admin');
 Route::post('/login/admin', [LoginController::class, 'cekAdmin'])->name('cek.admin');
 
@@ -64,19 +67,24 @@ Route::post('/pendaftaran/revisi', [PendaftaranController::class, 'revisiPendaft
 Route::post('/pendaftaran/revisi/delete', [PendaftaranController::class, 'deleteRevisiPendaftaran'])->name('pendaftaran.revisi.delete');
 
 // Bagian-bagian bimbingan
-Route::get('/bagians', [BagianController::class, 'index'])->name('bagians');
-Route::get('/bagian/create', [BagianController::class, 'create'])->name('bagian.create');
 Route::post('/bagian/store', [BagianController::class, 'store'])->name('bagian.store');
-Route::post('/bagian/edit', [BagianController::class, 'edit'])->name('bagians.edit');
 Route::post('/bagian/update', [BagianController::class, 'update'])->name('bagian.update');
-Route::post('/bagian/delete', [BagianController::class, 'delete'])->name('bagians.delete');
+Route::post('/bagian/delete', [BagianController::class, 'delete'])->name('bagian.delete');
 
 // Bimbingan TA
-Route::get('/bimbingans', [BimbinganController::class, 'index'])->name('bimbingans');
+Route::get('/bimbingan-dosen', [BimbinganController::class, 'bimbinganDosen'])->name('bimbingan.dosen');
+Route::get('/bimbingan-mahasiswa', [BimbinganController::class, 'bimbinganMahasiswa'])->name('bimbingan.mahasiswa');
 Route::get('/bimbingan/create', [BimbinganController::class, 'create'])->name('bimbingan.create');
 Route::post('/bimbingan/store', [BimbinganController::class, 'store'])->name('bimbingan.store');
-Route::post('/bimbingan/edit', [BimbinganController::class, 'edit'])->name('bimbingan.edit');
+Route::get('/bimbingan/edit/{id}', [BimbinganController::class, 'edit']);
 Route::post('/bimbingan/update', [BimbinganController::class, 'update'])->name('bimbingan.update');
+Route::post('/bimbingan/delete', [BimbinganController::class, 'delete'])->name('bimbingan.delete');
 Route::post('/bimbingan/acc', [BimbinganController::class, 'accBimbingan'])->name('bimbingan.acc');
 Route::post('/bimbingan/revisi/store', [BimbinganController::class, 'revisiBimbingan'])->name('bimbingan.revisi.store');
 Route::post('/bimbingan/revisi/delete', [BimbinganController::class, 'deleteRevisiBimbingan'])->name('bimbingan.revisi.delete');
+Route::get('/bimbingan/detail/{id}', [BimbinganController::class, 'bimbinganDetail']);
+Route::get('/bimbingan/review/{id}', [BimbinganController::class, 'bimbinganReview']);
+
+// Prodi
+Route::get('/prodis', [ProdiController::class, 'index'])->name('prodis');
+Route::get('/prodi/{id}', [ProdiController::class, 'detail']);
