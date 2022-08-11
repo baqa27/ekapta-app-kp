@@ -16,6 +16,7 @@ class CreatePengajuansTable extends Migration
         Schema::create('pengajuans', function (Blueprint $table) {
             $table->id();
             $table->string('nim');
+            $table->string('prodi');
             $table->string('judul');
             $table->text('deskripsi');
             $table->string('lampiran');

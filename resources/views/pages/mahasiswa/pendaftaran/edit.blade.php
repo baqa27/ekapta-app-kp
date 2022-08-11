@@ -162,7 +162,7 @@
                                     }}</small>
                                 @enderror
                                 <div class="mt-1">
-                                    <span class="mr-3">:</span>
+                                    <span class="mr-3">Lampiran :</span>
                                     <a href="{{ asset($pendaftaran->lampiran_2) }}" target="_blank"><i
                                             class="fas fa-paperclip"></i> Lampiran.pdf</a>
                                 </div>
@@ -190,7 +190,7 @@
                                     }}</small>
                                 @enderror
                                 <div class="mt-1">
-                                    <span class="mr-3">:</span>
+                                    <span class="mr-3">Lampiran :</span>
                                     <a href="{{ asset($pendaftaran->lampiran_3) }}" target="_blank"><i
                                             class="fas fa-paperclip"></i> Lampiran.pdf</a>
                                 </div>
@@ -216,7 +216,7 @@
                                     }}</small>
                                 @enderror
                                 <div class="mt-1">
-                                    <span class="mr-3">:</span>
+                                    <span class="mr-3">Lampiran :</span>
                                     <a href="{{ asset($pendaftaran->lampiran_4) }}" target="_blank"><i
                                             class="fas fa-paperclip"></i> Lampiran.pdf</a>
                                 </div>
@@ -243,7 +243,7 @@
                                     }}</small>
                                 @enderror
                                 <div class="mt-1">
-                                    <span class="mr-3">:</span>
+                                    <span class="mr-3">Lampiran :</span>
                                     <a href="{{ asset($pendaftaran->lampiran_5) }}" target="_blank"><i
                                             class="fas fa-paperclip"></i> Lampiran.pdf</a>
                                 </div>

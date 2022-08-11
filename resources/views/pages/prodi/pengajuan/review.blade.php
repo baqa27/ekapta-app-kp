@@ -71,15 +71,21 @@
                         <div class="mt-3 text-secondary"><i class="fas fa-calendar mr-2"></i> {{
                             $pengajuan->created_at->format('d M y H:m') }}
                         </div>
+                        @if ($pengajuan->tanggal_acc)
+                        <div class="text-success"><i class="fas fa-calendar-check mr-2"></i>
+                            {{ date('d M y H:m', strtotime($pengajuan->tanggal_acc)) }}
+                        </div>
+                        @endif
                         <hr>
                         <p class="mt-3"><b>Lampiran : </b> <a href="{{ asset($pengajuan->lampiran) }}" class="ml-3"
                                 target="_blank"><i class="fas fa-paperclip"></i> Lampiran.pdf</a></p>
                     </div>
                     <div class="card-footer">
                         <div class="d-flex">
+                            @if ($pengajuan->status =='review')
                             <button type="button" class="btn btn-primary mr-2" data-toggle="modal"
                                 data-target="#modal-revisi">
-                                <i class="fas fa-question-circle mr-2"></i> Revisi Pengajuan
+                                <i class="bi bi-pencil-square mr-2"></i> Revisi Pengajuan
                             </button>
 
                             <button type="button" class="btn btn-success mr-2" data-toggle="modal"
@@ -91,6 +97,12 @@
                                 data-target="#modal-tolak">
                                 <i class="fas fa-x mr-2"></i> Tolak Pengajuan
                             </button>
+                            @elseif($pengajuan->status == 'diterima')
+                            <button type="button" class="btn btn-primary mr-2" data-toggle="modal"
+                                data-target="#modal-edit">
+                                <i class="bi bi-pencil-square mr-2"></i> Edit Dosen Pendamping
+                            </button>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -163,6 +175,7 @@
                     <div class="form-group">
                         <label for="" class="form-label">Dosen Pembimbing Utama</label>
                         <select class="form-control" name="dosen_utama" required>
+                            <option value="">Pilih</option>
                             @foreach ($dosens as $dosen)
                             <option value="{{ $dosen->id }}">{{ $dosen->nama.'.'.$dosen->gelar }}</option>
                             @endforeach
@@ -171,6 +184,7 @@
                     <div class="form-group">
                         <label for="" class="form-label">Dosen Pembimbing Pendamping</label>
                         <select class="form-control" name="dosen_pendamping" required>
+                            <option value="">Pilih</option>
                             @foreach ($dosens as $dosen)
                             <option value="{{ $dosen->id }}">{{ $dosen->nama.'.'.$dosen->gelar }}</option>
                             @endforeach
@@ -283,5 +297,54 @@
     <!-- /.modal-dialog -->
 </div>
 
+<!-- Modal Edit -->
+@if ($pengajuan->status =='diterima')
+<div class="modal fade" id="modal-edit">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="{{ route('pengajuan.acc') }}" method="post">
+                @csrf
+                <input type="hidden" name="id" value="{{ $pengajuan->id }}">
+                <input type="hidden" name="nim" value="{{ $pengajuan->nim }}">
+                <div class="modal-header">
+                    <h4 class="modal-title">Acc Pengajuan</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="" class="form-label">Dosen Pembimbing Utama</label>
+                        <select class="form-control" name="dosen_utama" required>
+                            <option value="">Pilih</option>
+                            @foreach ($dosens as $dosen)
+                            <option value="{{ $dosen->id }}" @if ($dosen_utama) {{ $dosen_utama->id == $dosen->id ?
+                                'selected' : '' }}
+                                @endif >{{ $dosen->nama.'.'.$dosen->gelar }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="" class="form-label">Dosen Pembimbing Pendamping</label>
+                        <select class="form-control" name="dosen_pendamping" required>
+                            <option value="">Pilih</option>
+                            @foreach ($dosens as $dosen)
+                            <option value="{{ $dosen->id }}" @if ($dosen_pendamping) {{ $dosen_pendamping->id ==
+                                $dosen->id ? 'selected' : '' }}
+                                @endif >{{ $dosen->nama.'.'.$dosen->gelar }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button type="submit" class="btn btn-success">Simpan</button>
+                </div>
+            </form>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+@endif
 
 @endsection

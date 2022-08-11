@@ -16,13 +16,14 @@ class PendaftaranController extends Controller
 {
     public function index()
     {
-        // $pendaftarans = Pendaftaran::where('status', 'review')->orderBy('created_at', 'desc')->get();
-        $pendaftarans = Pendaftaran::orderBy('created_at', 'desc')->get();
+        $pendaftarans = Pendaftaran::where('status', 'review')->orderBy('created_at', 'desc')->get();
+        $pendaftarans_acc = Pendaftaran::where('status', 'diterima')->orderBy('created_at', 'desc')->get();
         return view('pages.admin.pendaftaran.pendaftaran', [
             'title' => 'Pendaftaran Tugas Akhir',
             'active' => 'pendaftaran',
             'sidebar' => 'partials.sidebarAdmin',
             'pendaftarans' => $pendaftarans,
+            'pendaftarans_acc' => $pendaftarans_acc,
         ]);
     }
 
@@ -32,6 +33,10 @@ class PendaftaranController extends Controller
         $dosenUtama = $mahasiswa->dosens()->where('status', 'utama')->first();
         $dosenPendamping = $mahasiswa->dosens()->where('status', 'pendamping')->first();
         $pendaftarans = Pendaftaran::where('nim', Auth::guard('mahasiswa')->user()->nim)->with(['revisis'])->get();
+        $cekPengajuan = Pengajuan::where('nim', Auth::guard('mahasiswa')->user()->nim)->where('status', 'diterima')->first();
+        if (!$cekPengajuan) {
+            return back()->with('warning', 'Silahkan melakukan Pengajuan Tugas Akhir terlebih dahulu');
+        }
         return view('pages.mahasiswa.pendaftaran.pendaftaran', [
             'title' => 'Pendaftaran Tugas Akhir',
             'active' => 'pendaftaran',
@@ -113,6 +118,9 @@ class PendaftaranController extends Controller
     public function pendaftaranReview($id)
     {
         $pendaftaran = Pendaftaran::findOrFail($id);
+        if ($pendaftaran->status == 'revisi') {
+            return back()->with('warning', 'Pendaftaran tidak ditemukan');
+        }
         $mahasiswa = Mahasiswa::where('nim', $pendaftaran->nim)->first();
         $dosenUtama = $mahasiswa->dosens()->where('status', 'utama')->first();
         $dosenPendamping = $mahasiswa->dosens()->where('status', 'pendamping')->first();
@@ -135,6 +143,9 @@ class PendaftaranController extends Controller
         $mahasiswa = Mahasiswa::where('nim', Auth::guard('mahasiswa')->user()->nim)->first();
         $dosenUtama = $mahasiswa->dosens()->where('status', 'utama')->first();
         $dosenPendamping = $mahasiswa->dosens()->where('status', 'pendamping')->first();
+        if (!$pendaftaran) {
+            return back()->with('warning', 'Pendaftaran tidak ditemukan');
+        }
 
         return view('pages.mahasiswa.pendaftaran.detail', [
             'title' => 'Detail Pendaftaran Tugas Akhir',
@@ -150,7 +161,7 @@ class PendaftaranController extends Controller
     {
         $pendaftaran = Pendaftaran::findOrFail($request->id);
         $validatedData = $request->validate([
-            'email' => ['required', 'email:dns', 'unique:pendaftarans'],
+            'email' => ['required', 'email:dns'],
             'hp' => 'required',
             'semester' => 'required',
             'nomor_pembayaran' => 'required',

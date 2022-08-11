@@ -35,9 +35,16 @@
                     </div>
                     <div class="card-body">
 
-                        Dosen Pembimbing (1) : <strong>{{ $dosen_utama->nama.', '.$dosen_utama->gelar }}</strong> <br>
-                        Dosen Pembimbing (2) : <strong>{{ $dosen_pendamping->nama.', '.$dosen_pendamping->gelar
-                            }}</strong>
+                        Dosen Pembimbing (1) : <strong>
+                            @if ($dosen_utama)
+                            {{ $dosen_utama->nama.', '.$dosen_utama->gelar }}
+                            @endif
+                        </strong> <br>
+                        Dosen Pembimbing (2) : <strong>
+                            @if ($dosen_pendamping)
+                            {{ $dosen_pendamping->nama.', '.$dosen_pendamping->gelar }}
+                            @endif
+                        </strong>
 
                         <table id="example1" class="table table-bordered">
                             <thead>
@@ -60,7 +67,7 @@
                                     <td>{{ $bimbingan->bagian->bagian }}</td>
                                     <td>{{ $bimbingan->created_at->format('d M y H:m') }}</td>
                                     <td>
-                                        @if ($bimbingan->tanggal_acc != null)
+                                        @if ($bimbingan->tanggal_acc)
                                         {{ date('d M y H:m', strtotime($bimbingan->tanggal_acc)); }}
                                         @endif
                                     </td>

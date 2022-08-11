@@ -80,13 +80,27 @@
                         </button>
 
                         <ul class="list-group mt-3">
+                            @php
+                            $no=1
+                            @endphp
 
                             @foreach ($prodi->bagians as $bagian)
-                            <li class="list-group-item text-secondary">
-                                <small><i class="bi bi-circle-fill mr-2"></i></small> {{ $bagian->bagian }}
+                            <li
+                                class="list-group-item text-secondary {{ count($bagian->bimbingans) != 0 ? 'border-success' :''}}">
+                                <span
+                                    class="badge {{ count($bagian->bimbingans) != 0 ? 'badge-success' :'badge-secondary'}} mr-2">{{
+                                    $no++ }}</span>
+                                <span style="position: relative;top:2px;">{{ $bagian->bagian }}</span>
 
                                 <div class="float-right">
                                     <div class="d-flex">
+                                        @if (count($bagian->bimbingans) != 0)
+                                        <div class="badge badge-info mr-2">
+                                            <span style="position: relative;top:5px;">
+                                                Mahasiswa : <b>{{ count($bagian->bimbingans) }}</b>
+                                            </span>
+                                        </div>
+                                        @endif
                                         <button type="button" class="btn btn-primary btn-sm mr-2" data-toggle="modal"
                                             data-target="#modal-edit-{{ $bagian->id }}">
                                             <i class="bi bi-pencil-square"></i>

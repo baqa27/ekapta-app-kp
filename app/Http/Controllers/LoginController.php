@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
+
     public function loginMahasiswa()
     {
         return view('pages.mahasiswa.login', [

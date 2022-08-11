@@ -19,10 +19,10 @@
 
                 <div class="dropdown-divider"></div>
                 <a href="#" class="dropdown-item">
-                    {{ Auth::guard('prodi')->user()->namaprodi }} {{ '('.Auth::guard('prodi')->user()->kode.')' }}
+                    {{ Auth::guard('dosen')->user()->nama }} {{ '('.Auth::guard('dosen')->user()->nidn.')' }}
                 </a>
                 <div class="dropdown-divider"></div>
-                <a href="#" class="dropdown-item dropdown-footer bg-danger">Logout <i
+                <a href="{{ route('logout.dosen') }}" class="dropdown-item dropdown-footer bg-danger">Logout <i
                         class="bi bi-box-arrow-right ml-2"></i></a>
             </div>
         </li>
@@ -49,11 +49,12 @@
         <!-- Sidebar user panel (optional) -->
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
             <div class="image">
-                <img src="{{ asset('ekapta') }}/adminLTE/dist/img/user2-160x160.jpg" class="img-circle elevation-2"
+                <img src="{{ asset('ekapta') }}/adminLTE/dist/img/default-profile.png" class="img-circle elevation-2"
                     alt="User Image">
             </div>
             <div class="info">
-                <a href="#" class="d-block">{{ Auth::guard('dosen')->user()->nama }}</a>
+                <a href="#" class="d-block">{{ Auth::guard('dosen')->user()->nama.',
+                    '.Auth::guard('dosen')->user()->gelar }}</a>
             </div>
         </div>
 

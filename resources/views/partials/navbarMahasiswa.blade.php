@@ -35,11 +35,11 @@
                         class="nav-link {{ $active == 'bimbingan' ? 'active' : '' }}">Bimbingan</a>
                 </li>
                 <li class="nav-item">
-                    <a href="seminar.html" class="nav-link {{ $active == 'seminar' ? 'active' : '' }}">Seminar
+                    <a href="" class="nav-link {{ $active == 'seminar' ? 'active' : '' }}">Seminar
                         Proposal</a>
                 </li>
                 <li class="nav-item">
-                    <a href="ujian.html" class="nav-link {{ $active == 'ujian' ? 'active' : '' }}">Ujian
+                    <a href="" class="nav-link {{ $active == 'ujian' ? 'active' : '' }}">Ujian
                         Pendadaran</a>
                 </li>
             </ul>
@@ -60,8 +60,9 @@
                         {{ '('.Auth::guard('mahasiswa')->user()->nim.')' }}
                     </a>
                     <div class="dropdown-divider"></div>
-                    <a href="#" class="dropdown-item dropdown-footer bg-danger">Logout <i
+                    <a href="{{ route('logout.mahasiswa') }}" class="dropdown-item dropdown-footer bg-danger">Logout <i
                             class="bi bi-box-arrow-right"></i></a>
+
                 </div>
             </li>
             <li class="nav-item">

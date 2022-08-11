@@ -15,7 +15,7 @@ class CreateBimbingansTable extends Migration
     {
         Schema::create('bimbingans', function (Blueprint $table) {
             $table->id();
-            $table->string('keterangan')->nullable();
+            $table->text('keterangan')->nullable();
             $table->string('lampiran');
             $table->date('tanggal_acc')->nullable();
             $table->string('status')->default('review');

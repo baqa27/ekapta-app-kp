@@ -42,6 +42,7 @@
                         </div>
                     </div>
                     <div class="card-body">
+
                         <table>
                             <tr>
                                 <td><b class="mr-3">Nim</b></td>
@@ -95,23 +96,33 @@
 
                         <hr>
                         <div class="bordered mt-2">
-                            <b>Riwayat Bimbingan</b>
-                            <div class="d-flex mt-2">
+                            <b>Bagian Bimbingan Tugas Akhir</b>
+
+                            <div class="d-flex mt-2 border p-2 rounded">
 
                                 @foreach ($bagians as $bagian)
-
-                                @if (\App\Helpers\AppHelper::instance()->cekBagianIsAcc($bagian->id))
-                                <div class="border bg-success mb-2 rounded" style="padding: 2px 15px 3px 15px;">
-                                    <small><b><i class="fas fa-check-circle mr-2"></i> {{ $bagian->bagian }}</b></small>
-                                </div>
+                                @if(\App\Helpers\AppHelper::instance()->cekBagianIsAcc($bagian->id))
+                                <span class="badge badge-success mr-1">
+                                    <i class="fas fa-check-circle mr-1"></i>
+                                    {{$bagian->bagian }}
+                                </span>
                                 @else
-                                <div class="border bg-secondary mb-2 rounded" style="padding: 2px 15px 3px 15px;">
-                                    <small><b><i class="fas fa-circle mr-2"></i> {{$bagian->bagian }}</b></small>
-                                </div>
+                                <span class="badge badge-secondary mr-1">
+                                    <i class="fas fa-circle mr-1"></i>
+                                    {{$bagian->bagian }}
+                                </span>
                                 @endif
-
                                 @endforeach
 
+                            </div>
+                            <div class="mt-2">
+                                ket :
+                                <span class="badge badge-success mr-1"> <i class="fas fa-check-circle mr-1"></i>
+                                    Bagian Sudah Di Acc
+                                </span>
+                                <span class="badge badge-secondary mr-1"> <i class="fas fa-circle mr-1"></i>
+                                    Bagian Belum Dikerjakan
+                                </span>
                             </div>
                         </div>
 

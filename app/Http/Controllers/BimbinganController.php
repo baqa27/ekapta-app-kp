@@ -11,11 +11,25 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Helpers\AppHelper;
 use App\Models\Dosen;
+use App\Models\Pendaftaran;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
 class BimbinganController extends Controller
 {
+
+    public function bimbinganProdi()
+    {
+        $mahasiswas = Mahasiswa::where('prodi', Auth::guard('prodi')->user()->namaprodi)->with(['bimbingans'])->get();
+
+        return view('pages.prodi.bimbingan.bimbingan', [
+            'title' => 'Bimbingan Tugas Akhir',
+            'active' => 'bimbingan',
+            'sidebar' => 'partials.sidebarProdi',
+            'mahasiswas' => $mahasiswas,
+        ]);
+    }
+
     public function bimbinganDosen()
     {
         $dosen = Dosen::findOrFail(Auth::guard('dosen')->user()->id);
@@ -33,6 +47,10 @@ class BimbinganController extends Controller
         $mahasiswa = Mahasiswa::findOrFail(Auth::guard('mahasiswa')->user()->id);
         $dosenUtama = $mahasiswa->dosens()->where('status', 'utama')->first();
         $dosenPendamping = $mahasiswa->dosens()->where('status', 'pendamping')->first();
+        $cekPendaftaranAcc = Pendaftaran::where('nim', Auth::guard('mahasiswa')->user()->nim)->where('status', 'diterima')->first();
+        if (!$cekPendaftaranAcc) {
+            return back()->with('warning', 'Silahkan melakukan Pendaftaran Tugas Akhir terlebih dahulu');
+        }
         return view('pages.mahasiswa.bimbingan.bimbingan', [
             'title' => 'Bimbingan Tugas Akhir',
             'active' => 'bimbingan',
@@ -130,6 +148,8 @@ class BimbinganController extends Controller
         $mahasiswa = Mahasiswa::find($bimbingan->mahasiswa->id);
         $prodi = Prodi::where('namaprodi', $mahasiswa->prodi)->first();
 
+        $bimbingans_acc = $mahasiswa->bimbingans()->where('status', 'diterima')->get();
+
         return view('pages.dosen.bimbingan.review', [
             'title' => 'Review Bimbingan Tugas Akhir',
             'bimbingan' => $bimbingan,
@@ -137,6 +157,7 @@ class BimbinganController extends Controller
             'sidebar' => 'partials.sidebarDosen',
             'revisis' => $bimbingan->revisis()->orderBy('created_at', 'desc')->paginate(3),
             'bagians' => $prodi->bagians,
+            'bimbingans_acc' => $bimbingans_acc,
         ]);
     }
 

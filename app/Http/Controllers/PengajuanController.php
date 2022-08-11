@@ -18,14 +18,15 @@ class PengajuanController extends Controller
 
     public function pengajuanProdi()
     {
-        $pengajuans = Pengajuan::where('status', 'review')->orderBy('created_at', 'desc')->get();
-        // $pengajuans = Pengajuan::all();
+        $pengajuans = Pengajuan::where('status', 'review')->where('prodi', Auth::guard('prodi')->user()->namaprodi)->orderBy('created_at', 'desc')->get();
+        $pengajuans_acc = Pengajuan::where('status', 'diterima')->where('prodi', Auth::guard('prodi')->user()->namaprodi)->orderBy('created_at', 'desc')->get();
         return view('pages.prodi.pengajuan.pengajuan', [
             'title' => 'Pengajuan Tugas Akhir',
             'active' => 'pengajuan',
             'pengajuans' => $pengajuans,
             'sidebar' => 'partials.sidebarProdi',
             'active' => 'pengajuan',
+            'pengajuans_acc' => $pengajuans_acc,
         ]);
     }
 
@@ -61,6 +62,9 @@ class PengajuanController extends Controller
     public function pengajuanDetail($id)
     {
         $pengajuan = Pengajuan::findOrFail($id);
+        if ($pengajuan->nim != Auth::guard('mahasiswa')->user()->nim) {
+            return back()->with('warning', 'Pengajuan tidak ditemukan');
+        }
         return view('pages.mahasiswa.pengajuan.detail', [
             'title' => 'Detail pengajuan',
             'active' => 'pengajuan',
@@ -72,6 +76,12 @@ class PengajuanController extends Controller
     public function pengajuanReview($id)
     {
         $pengajuan = Pengajuan::findOrFail($id);
+        if ($pengajuan->status == 'ditolak' || $pengajuan->status == 'revisi') {
+            return back()->with('warning', 'Pengajuan tidak ditemukan');
+        }
+        $mahasiswa = Mahasiswa::where('nim', $pengajuan->nim)->first();
+        $dosenUtama = $mahasiswa->dosens()->where('status', 'utama')->first();
+        $dosenPendamping = $mahasiswa->dosens()->where('status', 'pendamping')->first();
         $dosens = Dosen::all();
         return view('pages.prodi.pengajuan.review', [
             'title' => 'Review pengajuan',
@@ -80,6 +90,8 @@ class PengajuanController extends Controller
             'dosens' => $dosens,
             'sidebar' => 'partials.sidebarProdi',
             'revisis' => $pengajuan->revisis()->orderBy('created_at', 'desc')->paginate(3),
+            'dosen_utama' => $dosenUtama,
+            'dosen_pendamping' => $dosenPendamping,
         ]);
     }
 
@@ -108,6 +120,7 @@ class PengajuanController extends Controller
                 $validatedData['lampiran'] = AppHelper::instance()->uploadLampiran($request->lampiran, 'lampiran-pengajuan');
             }
             $validatedData['nim'] = Auth::guard('mahasiswa')->user()->nim;
+            $validatedData['prodi'] = Auth::guard('mahasiswa')->user()->prodi;
             Pengajuan::create($validatedData);
             return redirect('pengajuan-mahasiswa')->with('success', 'Berhasil melakukan pengajuan tugas akhir');
         } else {
@@ -169,17 +182,34 @@ class PengajuanController extends Controller
     public function accPengajuan(Request $request)
     {
         $pengajuan = Pengajuan::findOrFail($request->id);
-        if ($pengajuan->status == 'diterima' || $pengajuan->status == 'ditolak') {
-            return back()->with('error', 'Pengajuan sudah diacc');
+        if ($pengajuan->status == 'ditolak') {
+            return back()->with('error', 'Pengajuan tidak bisa diedit');
         } else {
-            $pengajuan->update([
-                'status' => 'diterima',
-                'tanggal_acc' => now(),
-            ]);
-
             Dosen::findOrFail($request->dosen_utama);
             Dosen::findOrFail($request->dosen_pendamping);
             $mahasiswa = Mahasiswa::where(['nim' => $request->nim])->first();
+
+            if ($pengajuan->status == 'review') {
+                $pengajuan->update([
+                    'status' => 'diterima',
+                    'tanggal_acc' => now(),
+                ]);
+
+                if ($mahasiswa->dosens()->get()->isEmpty()) {
+                    $mahasiswa->dosens()->attach([
+                        $request->dosen_utama => ['status' => 'utama'],
+                        $request->dosen_pendamping => ['status' => 'pendamping'],
+                    ]);
+                } else {
+                    DB::table('dosen_mahasiswas')->where(['mahasiswa_id' => $mahasiswa->id])->whereIn('status', ['utama', 'pendamping'])->delete();
+                    $mahasiswa->dosens()->attach([
+                        $request->dosen_utama => ['status' => 'utama'],
+                        $request->dosen_pendamping => ['status' => 'pendamping'],
+                    ]);
+                }
+                return redirect('pengajuan-prodi')->with('success', 'Pengajuan berhasil diacc');
+            }
+
             if ($mahasiswa->dosens()->get()->isEmpty()) {
                 $mahasiswa->dosens()->attach([
                     $request->dosen_utama => ['status' => 'utama'],
@@ -192,8 +222,7 @@ class PengajuanController extends Controller
                     $request->dosen_pendamping => ['status' => 'pendamping'],
                 ]);
             }
-
-            return redirect('pengajuan-prodi')->with('success', 'Pengajuan berhasil diacc');
+            return redirect('pengajuan-prodi')->with('success', 'Dosen pendamping berhasil diedit');
         }
     }
 

@@ -11,6 +11,7 @@ class Pengajuan extends Model
 
     protected $fillable = [
         'nim',
+        'prodi',
         'judul',
         'deskripsi',
         'lampiran',

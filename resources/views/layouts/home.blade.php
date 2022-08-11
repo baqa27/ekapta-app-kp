@@ -38,5 +38,6 @@
         })
     </script>
     @endif
+
 </body>
 </html>

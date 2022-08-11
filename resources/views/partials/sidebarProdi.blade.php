@@ -22,7 +22,7 @@
                     {{ Auth::guard('prodi')->user()->namaprodi }} {{ '('.Auth::guard('prodi')->user()->kode.')' }}
                 </a>
                 <div class="dropdown-divider"></div>
-                <a href="#" class="dropdown-item dropdown-footer bg-danger">Logout <i
+                <a href="{{ route('logout.prodi') }}" class="dropdown-item dropdown-footer bg-danger">Logout <i
                         class="bi bi-box-arrow-right ml-2"></i></a>
             </div>
         </li>
@@ -49,7 +49,7 @@
         <!-- Sidebar user panel (optional) -->
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
             <div class="image">
-                <img src="{{ asset('ekapta') }}/adminLTE/dist/img/user2-160x160.jpg" class="img-circle elevation-2"
+                <img src="{{ asset('ekapta') }}/adminLTE/dist/img/default-profile.png" class="img-circle elevation-2"
                     alt="User Image">
             </div>
             <div class="info">
@@ -82,7 +82,8 @@
                 </li>
 
                 <li class="nav-item">
-                    <a href="#" class="nav-link">
+                    <a href="{{ route('bimbingan.prodi') }}"
+                        class="nav-link {{ $active=='bimbingan' ? 'active' : '' }}">
                         <i class="nav-icon fas fa-th"></i>
                         <p>
                             Bimbingan TA
@@ -90,7 +91,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link">
+                    <a href="#" class="nav-link {{ $active=='seminar' ? 'active' : '' }}">
                         <i class="nav-icon fas fa-th"></i>
                         <p>
                             Seminar Proposal TA
@@ -98,7 +99,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link">
+                    <a href="#" class="nav-link {{ $active=='ujian' ? 'active' : '' }}">
                         <i class="nav-icon fas fa-th"></i>
                         <p>
                             Ujian Pendadaran TA

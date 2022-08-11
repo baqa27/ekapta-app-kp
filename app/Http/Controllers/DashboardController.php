@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
+
     public function dashboardMahasiswa()
     {
         return view('pages.mahasiswa.dashboard.home', [

@@ -35,9 +35,16 @@
                     </div>
                     <div class="card-body">
 
-                        Dosen Pembimbing (1) : <strong>{{ $dosen_utama->nama.', '.$dosen_utama->gelar }}</strong> <br>
-                        Dosen Pembimbing (2) : <strong>{{ $dosen_pendamping->nama.', '.$dosen_pendamping->gelar
-                            }}</strong>
+                        Dosen Pembimbing (1) : <strong>
+                            @if ($dosen_utama)
+                            {{ $dosen_utama->nama.', '.$dosen_utama->gelar }}
+                            @endif
+                        </strong> <br>
+                        Dosen Pembimbing (2) : <strong>
+                            @if ($dosen_pendamping)
+                            {{ $dosen_pendamping->nama.', '.$dosen_pendamping->gelar }}
+                            @endif
+                        </strong>
 
                         <table id="example1" class="table table-bordered table-striped">
                             <thead>
@@ -62,7 +69,11 @@
                                             $pendaftaran->judul }}</a>
                                     </td>
                                     <td>{{ $pendaftaran->created_at->format('y M d H:m') }}</td>
-                                    <td>{{ date('d M y H:m', strtotime($pendaftaran->tanggal_acc)) }}</td>
+                                    <td>
+                                        @if ($pendaftaran->tanggal_acc)
+                                        {{ date('d M y H:m', strtotime($pendaftaran->tanggal_acc)) }}
+                                        @endif
+                                    </td>
                                     <td>
                                         @if ($pendaftaran->status =='diterima')
                                         <span class="badge bg-success">Diterima</span>
