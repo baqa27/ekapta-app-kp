@@ -16,9 +16,10 @@ class CreateBimbingansTable extends Migration
         Schema::create('bimbingans', function (Blueprint $table) {
             $table->id();
             $table->text('keterangan')->nullable();
-            $table->string('lampiran');
+            $table->string('lampiran')->nullable();
             $table->date('tanggal_acc')->nullable();
-            $table->string('status')->default('review');
+            $table->string('status')->nullable();
+            $table->string('pembimbing')->nullable();
             $table->timestamps();
             $table->foreignId('mahasiswa_id')->constrained('mahasiswas');
             $table->foreignId('bagian_id')->constrained('bagians');

@@ -92,6 +92,7 @@ class PengajuanController extends Controller
             'revisis' => $pengajuan->revisis()->orderBy('created_at', 'desc')->paginate(3),
             'dosen_utama' => $dosenUtama,
             'dosen_pendamping' => $dosenPendamping,
+            'mahasiswa' => $mahasiswa,
         ]);
     }
 
@@ -210,18 +211,21 @@ class PengajuanController extends Controller
                 return redirect('pengajuan-prodi')->with('success', 'Pengajuan berhasil diacc');
             }
 
-            if ($mahasiswa->dosens()->get()->isEmpty()) {
-                $mahasiswa->dosens()->attach([
-                    $request->dosen_utama => ['status' => 'utama'],
-                    $request->dosen_pendamping => ['status' => 'pendamping'],
-                ]);
-            } else {
-                DB::table('dosen_mahasiswas')->where(['mahasiswa_id' => $mahasiswa->id])->whereIn('status', ['utama', 'pendamping'])->delete();
-                $mahasiswa->dosens()->attach([
-                    $request->dosen_utama => ['status' => 'utama'],
-                    $request->dosen_pendamping => ['status' => 'pendamping'],
-                ]);
+            if (count($mahasiswa->bimbingans) == 0) {
+                if ($mahasiswa->dosens()->get()->isEmpty()) {
+                    $mahasiswa->dosens()->attach([
+                        $request->dosen_utama => ['status' => 'utama'],
+                        $request->dosen_pendamping => ['status' => 'pendamping'],
+                    ]);
+                } else {
+                    DB::table('dosen_mahasiswas')->where(['mahasiswa_id' => $mahasiswa->id])->whereIn('status', ['utama', 'pendamping'])->delete();
+                    $mahasiswa->dosens()->attach([
+                        $request->dosen_utama => ['status' => 'utama'],
+                        $request->dosen_pendamping => ['status' => 'pendamping'],
+                    ]);
+                }
             }
+
             return redirect('pengajuan-prodi')->with('success', 'Dosen pendamping berhasil diedit');
         }
     }

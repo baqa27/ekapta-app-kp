@@ -37,8 +37,8 @@
 
                             <div class="form-group">
                                 <label for="exampleInputEmail1">Bagian Bimbingan</label>
-                                <select class="form-control @error('bagian_id') is-invalid @enderror" name="bagian_id"
-                                    required>
+                                {{-- <select class="form-control @error('bagian_id') is-invalid @enderror"
+                                    name="bagian_id" required>
                                     <option value="">Pilih</option>
                                     @foreach ($bagians as $bagian)
                                     <option value="{{ $bagian->id }}" {{ $bagian->id == $bimbingan->bagian_id ?
@@ -48,7 +48,9 @@
                                 </select>
                                 @error('bagian_id')
                                 <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
+                                @enderror --}}
+                                <input type="text" class="form-control" value="{{ $bimbingan->bagian->bagian }}"
+                                    disabled>
                             </div>
                             <div class="form-group">
                                 <label for="exampleInputEmail1">Keterangan</label>
@@ -80,9 +82,11 @@
                             </div>
                             <div>
                                 <b>Lampiran sebelumnya : </b>
+                                @if ($bimbingan->lampiran)
                                 <a href="{{ asset($bimbingan->lampiran) }}" class="ml-3" target="_blank"><i
                                         class="fas fa-paperclip mr-2"></i>
                                     Lampiran.pdf</a>
+                                @endif
                             </div>
                             <div class="form-group mt-4">
                                 <button type="submit" class="btn btn-success">Submit</button>

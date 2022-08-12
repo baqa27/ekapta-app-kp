@@ -98,10 +98,17 @@
                                 <i class="fas fa-x mr-2"></i> Tolak Pengajuan
                             </button>
                             @elseif($pengajuan->status == 'diterima')
+                            @if (count($mahasiswa->bimbingans) == 0)
                             <button type="button" class="btn btn-primary mr-2" data-toggle="modal"
                                 data-target="#modal-edit">
                                 <i class="bi bi-pencil-square mr-2"></i> Edit Dosen Pendamping
                             </button>
+                            @else
+                            <button type="button" class="btn btn-info mr-2" data-toggle="modal"
+                                data-target="#modal-show">
+                                <i class="bi bi-info-circle mr-2"></i> Dosen Pendamping
+                            </button>
+                            @endif
                             @endif
                         </div>
                     </div>
@@ -195,6 +202,36 @@
                     <button type="submit" class="btn btn-success">Simpan</button>
                 </div>
             </form>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<!-- Modal Show Pembimbing -->
+<div class="modal fade" id="modal-show">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h4 class="modal-title">Dosen Pembimbing</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="" class="form-label">Dosen Pembimbing Utama </label>
+                    <input type="text" class="form-control" value="{{ $dosen_utama->nama.', '.$dosen_utama->gelar }}"
+                        disabled>
+                </div>
+                <div class="form-group">
+                    <label for="" class="form-label">Dosen Pembimbing Pendamping </label>
+                    <input type="text" class="form-control"
+                        value="{{ $dosen_pendamping->nama.', '.$dosen_pendamping->gelar }}" disabled>
+                </div>
+            </div>
+
         </div>
         <!-- /.modal-content -->
     </div>

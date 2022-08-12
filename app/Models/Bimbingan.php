@@ -16,6 +16,7 @@ class Bimbingan extends Model
         'mahasiswa_id',
         'bagian_id',
         'tanggal_acc',
+        'pembimbing',
     ];
 
     public function mahasiswa()

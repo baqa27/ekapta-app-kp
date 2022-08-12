@@ -278,7 +278,7 @@
                         <div class="d-flex">
                             <button type="button" class="btn btn-primary mr-2" data-toggle="modal"
                                 data-target="#modal-revisi">
-                                <i class="fas fa-question-circle mr-2"></i> Revisi Pendaftaran
+                                <i class="bi bi-pencil-square mr-2"></i> Revisi Pendaftaran
                             </button>
 
                             <button type="button" class="btn btn-success mr-2" data-toggle="modal"
@@ -289,7 +289,7 @@
                         @else
                         <button type="button" class="btn btn-primary mr-2" data-toggle="modal"
                             data-target="#modal-edit">
-                            <i class="fas fa-pen-square mr-2"></i> Edit Surat Tugas Bimbingan TA
+                            <i class="bi bi-pencil-square mr-2"></i> Edit Surat Tugas Bimbingan TA
                         </button>
                         @endif
                     </div>

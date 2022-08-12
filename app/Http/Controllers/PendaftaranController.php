@@ -9,6 +9,7 @@ use App\Helpers\AppHelper;
 use App\Models\Bimbingan;
 use App\Models\Mahasiswa;
 use App\Models\Pengajuan;
+use App\Models\Prodi;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
@@ -126,7 +127,7 @@ class PendaftaranController extends Controller
         $dosenPendamping = $mahasiswa->dosens()->where('status', 'pendamping')->first();
 
         return view('pages.admin.pendaftaran.review', [
-            'title' => 'Detail Pendaftaran Tugas Akhir',
+            'title' => 'Review Pendaftaran Tugas Akhir',
             'active' => 'pendaftaran',
             'sidebar' => 'partials.sidebarAdmin',
             'dosen_utama' => $dosenUtama,
@@ -247,7 +248,16 @@ class PendaftaranController extends Controller
     public function accPendaftaran(Request $request)
     {
         $pendaftaran = Pendaftaran::findOrFail($request->id);
-        if ($pendaftaran->status == 'diterima') {
+
+        $mahasiswa = Mahasiswa::where('nim', $pendaftaran->nim)->first();
+        $dosenUtama = $mahasiswa->dosens()->where('status', 'utama')->first();
+        $dosenPendamping = $mahasiswa->dosens()->where('status', 'pendamping')->first();
+
+        $prodi = Prodi::where('namaprodi', $mahasiswa->prodi)->first();
+
+        if (count($prodi->bagians) == 0) {
+            return back()->with('warning', 'Bagian bimbingan untuk prodi' . $mahasiswa->prodi . ' masih kosong');
+        } elseif ($pendaftaran->status == 'diterima') {
             return back()->with('warning', 'Pendaftaran sudah diacc');
         } else {
             $request->validate([
@@ -258,6 +268,27 @@ class PendaftaranController extends Controller
                 'tanggal_acc' => now(),
                 'lampiran_acc' => AppHelper::instance()->uploadLampiran($request->lampiran_acc, 'lampiran-pendaftaran'),
             ]);
+
+            // Otomatis create bimbingan dengan pembimbing dosen utam
+            foreach ($prodi->bagians as $bagian) {
+                $bimbingan = Bimbingan::create([
+                    'mahasiswa_id' => $mahasiswa->id,
+                    'bagian_id' => $bagian->id,
+                    'pembimbing' => 'utama',
+                ]);
+                $bimbingan->dosens()->attach([$dosenUtama->id]);
+            }
+
+            // Otomatis create bimbingan dengan pembimbing dosen pendamping
+            foreach ($prodi->bagians as $bagian) {
+                $bimbingan = Bimbingan::create([
+                    'mahasiswa_id' => $mahasiswa->id,
+                    'bagian_id' => $bagian->id,
+                    'pembimbing' => 'pendamping',
+                ]);
+                $bimbingan->dosens()->attach([$dosenPendamping->id]);
+            }
+
             return back()->with('success', 'Pendaftaran berhasil diacc');
         }
     }

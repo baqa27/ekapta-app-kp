@@ -131,7 +131,7 @@
                         <div class="d-flex">
                             <button type="button" class="btn btn-primary mr-2" data-toggle="modal"
                                 data-target="#modal-revisi">
-                                <i class="fas fa-question-circle mr-2"></i> Revisi bimbingan
+                                <i class="bi bi-pencil-square mr-2"></i> Revisi bimbingan
                             </button>
 
                             <button type="button" class="btn btn-success mr-2" data-toggle="modal"

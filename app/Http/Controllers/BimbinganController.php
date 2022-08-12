@@ -54,7 +54,8 @@ class BimbinganController extends Controller
         return view('pages.mahasiswa.bimbingan.bimbingan', [
             'title' => 'Bimbingan Tugas Akhir',
             'active' => 'bimbingan',
-            'bimbingans' => $mahasiswa->bimbingans()->orderBy('created_at', 'desc')->get(),
+            'bimbingans_utama' => $mahasiswa->bimbingans()->where('pembimbing', 'utama')->get(),
+            'bimbingans_pendamping' => $mahasiswa->bimbingans()->where('pembimbing', 'pendamping')->get(),
             'dosen_utama' => $dosenUtama,
             'dosen_pendamping' => $dosenPendamping,
         ]);
@@ -130,6 +131,9 @@ class BimbinganController extends Controller
         if ($bimbingan->mahasiswa->nim != Auth::guard('mahasiswa')->user()->nim) {
             return back()->with('warning', 'Bimbingan tidak ditemukan');
         }
+        if ($bimbingan->status == null) {
+            return back()->with('warning', 'Harap edit Bimbingan terlebih dahulu');
+        }
         return view('pages.mahasiswa.bimbingan.detail', [
             'title' => 'Detail Bimbingan Tugas Akhir',
             'bimbingan' => $bimbingan,
@@ -164,28 +168,32 @@ class BimbinganController extends Controller
     public function update(Request $request)
     {
         $bimbingan = Bimbingan::findOrFail($request->id);
-        if ($bimbingan->status == 'diterima' || $bimbingan->status == 'review') {
-            return redirect('bimbingan-mahasiswa')->with('warning', 'Bimbingan tidak bisa diedit');
+        $cekBimbingan = Bimbingan::where('mahasiswa_id', Auth::guard('mahasiswa')->user()->id)->where('status', 'review')->get();
+        if (count($cekBimbingan) >= 2) {
+            return redirect('bimbingan-mahasiswa')->with('warning', 'Harap menunggu Acc bimbingan dari dosen Pembimbing');
+        } else {
+            if ($bimbingan->status == 'diterima' || $bimbingan->status == 'review') {
+                return redirect('bimbingan-mahasiswa')->with('warning', 'Bimbingan tidak bisa diedit');
+            }
+            $validatedData = $request->validate([
+                // 'bagian_id' => 'required',
+                'lampiran' => [Rule::requiredIf(function () {
+                    if (empty($this->request->lampiran)) {
+                        return false;
+                    }
+                    return true;
+                }), 'mimes:pdf']
+            ]);
+            if ($request->file('lampiran')) {
+                AppHelper::instance()->deleteLampiran($bimbingan->lampiran);
+                $validatedData['lampiran'] = AppHelper::instance()->uploadLampiran($request->lampiran, 'lampiran-bimbingan');
+            }
+            $validatedData['keterangan'] = $request->keterangan;
+            // $validatedData['bagian_id'] = $request->bagian_id;
+            $validatedData['status'] = 'review';
+            $bimbingan->update($validatedData);
+            return redirect('bimbingan-mahasiswa')->with('success', 'Bimbingan berhasil diupdate. Silahkan tunggu review dari dosen pembimbing');
         }
-
-        $validatedData = $request->validate([
-            'bagian_id' => 'required',
-            'lampiran' => [Rule::requiredIf(function () {
-                if (empty($this->request->lampiran)) {
-                    return false;
-                }
-                return true;
-            }), 'mimes:pdf']
-        ]);
-        if ($request->file('lampiran')) {
-            AppHelper::instance()->deleteLampiran($bimbingan->lampiran);
-            $validatedData['lampiran'] = AppHelper::instance()->uploadLampiran($request->lampiran, 'lampiran-bimbingan');
-        }
-        $validatedData['keterangan'] = $request->keterangan;
-        $validatedData['bagian_id'] = $request->bagian_id;
-        $validatedData['status'] = 'review';
-        $bimbingan->update($validatedData);
-        return redirect('bimbingan-mahasiswa')->with('success', 'Bimbingan berhasil diupdate. Silahkan tunggu review dari dosen pembimbing');
     }
 
     public function delete(Request $request)
