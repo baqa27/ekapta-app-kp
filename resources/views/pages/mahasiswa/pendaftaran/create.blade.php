@@ -76,35 +76,22 @@
 
                             <div class="form-group">
                                 <label for="exampleInputEmail1">Email</label>
-                                <input type="email" class="form-control @error('email') is-invalid @enderror"
-                                    placeholder="Masukkan email..." name="email" value="{{ old('email') }}" required>
-                                @error('email')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
+                                <input type="email" class="form-control"
+                                    value="{{ Auth::guard('mahasiswa')->user()->email }}" disabled>
                             </div>
 
                             <div class="form-group">
                                 <label for="exampleInputEmail1">No. HP <br> <small>Yang Terdaftar di
                                         WhatsApp
                                         dan Telegram</small> </label>
-                                <input type="number" class="form-control @error('hp') is-invalid @enderror"
-                                    placeholder="Masukkan no hp..." name="hp" value="{{ old('hp') }}" required>
-                                @error('hp')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
+                                <input type="text" class="form-control"
+                                    value="{{ Auth::guard('mahasiswa')->user()->hp }}" disabled>
                             </div>
 
                             <div class="form-group">
                                 <label for="exampleInputEmail1">Semester</label>
-                                <select class="form-control @error('semester') is-invalid @enderror" name="semester"
-                                    required>
-                                    <option value="">Pilih</option>
-                                    @for ($i = 1; $i <= 14; $i++) <option value="{{ $i }}">{{ $i }}</option>
-                                        @endfor
-                                </select>
-                                @error('semester')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
+                                <input type="text" class="form-control"
+                                    value="{{ Auth::guard('mahasiswa')->user()->semester }}" disabled>
                             </div>
 
                             <div class="form-group">

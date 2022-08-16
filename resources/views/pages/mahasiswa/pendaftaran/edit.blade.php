@@ -75,29 +75,21 @@
 
                             <div class="form-group">
                                 <label for="exampleInputEmail1">Email</label>
-                                <input type="email" class="form-control @error('email') is-invalid @enderror"
-                                    placeholder="Masukkan email..." name="email" value="{{ $pendaftaran->email }}"
-                                    required>
-                                @error('email')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
+                                <input type="email" class="form-control" value="{{ $mahasiswa->email }}" disabled>
                             </div>
 
                             <div class="form-group">
                                 <label for="exampleInputEmail1">No. HP <br> <small>Yang Terdaftar di
                                         WhatsApp
                                         dan Telegram</small> </label>
-                                <input type="number" class="form-control @error('hp') is-invalid @enderror"
-                                    placeholder="Masukkan no hp..." name="hp" value="{{ $pendaftaran->hp }}" required>
-                                @error('hp')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
+                                <input type="text" class="form-control" value="{{ $mahasiswa->hp }}" disabled>
                             </div>
 
                             <div class="form-group">
                                 <label for="exampleInputEmail1">Semester</label>
-                                <select class="form-control @error('semester') is-invalid @enderror" name="semester"
-                                    required>
+                                <input type="text" class="form-control" value="{{ $mahasiswa->semester }}" disabled>
+                                {{-- <select class="form-control @error('semester') is-invalid @enderror"
+                                    name="semester" required>
                                     <option value="">Pilih</option>
                                     @for ($i = 1; $i <= 14; $i++) <option value="{{ $i }}" @if ($i==$pendaftaran->
                                         semester)
@@ -107,7 +99,7 @@
                                 </select>
                                 @error('semester')
                                 <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
+                                @enderror --}}
                             </div>
 
                             <div class="form-group">

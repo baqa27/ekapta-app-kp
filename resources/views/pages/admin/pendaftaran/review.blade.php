@@ -112,7 +112,7 @@
                             </div>
                             <div class="col-md-7">
                                 <span class="mr-3">:</span>
-                                <b>{{$pendaftaran->email}}</b>
+                                <b>{{\App\Helpers\AppHelper::instance()->getMahasiswa($pendaftaran->nim)->email}}</b>
                             </div>
                         </div>
                         <hr>
@@ -123,7 +123,7 @@
                             </div>
                             <div class="col-md-7">
                                 <span class="mr-3">:</span>
-                                <b>{{$pendaftaran->hp}}</b>
+                                <b>{{\App\Helpers\AppHelper::instance()->getMahasiswa($pendaftaran->nim)->hp}}</b>
                             </div>
                         </div>
                         <hr>
@@ -134,7 +134,7 @@
                             </div>
                             <div class="col-md-7">
                                 <span class="mr-3">:</span>
-                                <b>{{$pendaftaran->semester}}</b>
+                                <b>{{\App\Helpers\AppHelper::instance()->getMahasiswa($pendaftaran->nim)->semester}}</b>
                             </div>
                         </div>
                         <hr>

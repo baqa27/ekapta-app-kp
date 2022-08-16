@@ -5,6 +5,7 @@ use App\Http\Controllers\BimbinganController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\PendaftaranController;
 use App\Http\Controllers\PengajuanController;
 use App\Http\Controllers\PlotingController;
@@ -92,6 +93,10 @@ Route::get('/bimbingan/review/{id}', [BimbinganController::class, 'bimbinganRevi
 Route::get('/prodis', [ProdiController::class, 'index'])->name('prodis')->middleware('isAdmin');
 Route::get('/prodi/{id}', [ProdiController::class, 'detail'])->middleware('isAdmin');
 
+// Mahasiswa
+Route::get('profile', [MahasiswaController::class, 'profile'])->name('profile');
+Route::post('profile/update', [MahasiswaController::class, 'update'])->name('profile.update');
+
 // Logout
 Route::get('/logout/mahasiswa', function (Request $request) {
     if (Auth::guard('mahasiswa')->check()) {
@@ -132,3 +137,18 @@ Route::get('/logout/admin', function (Request $request) {
         return redirect()->route('login.admin');
     }
 })->name('logout.admin');
+
+// Back Dashboard
+Route::get('/back/dashboard', function () {
+    if (Auth::guard('mahasiswa')->check()) {
+        return redirect('dashboard-mahasiswa');
+    } elseif (Auth::guard('dosen')->check()) {
+        return redirect('dashboard-dosen');
+    } elseif (Auth::guard('prodi')->check()) {
+        return redirect('dashboard-prodi');
+    } elseif (Auth::guard('admin')->check()) {
+        return redirect('dashboard-admin');
+    } else {
+        return redirect('login');
+    }
+})->name('back.dashboard');

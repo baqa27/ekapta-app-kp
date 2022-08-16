@@ -24,8 +24,17 @@
 <div class="content">
     <div class="container">
 
+        @if (count($pendaftaranIsAcc) == 0)
         <a href="{{ route('pendaftaran.create') }}" class="btn btn-primary mb-4"><i class="fas fa-plus mr-2"></i>
             {{ $title }}</a>
+        @else
+        <div class="alert alert-success alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            Selamat! Pendaftaran tugas akhir anda sudah di Acc oleh Admin, anda bisa memulai <b><a
+                    href="{{ route('bimbingan.mahasiswa') }}">Bimbingan Tugas
+                    Akhir.</a></b>
+        </div>
+        @endif
 
         <div class="row">
             <div class="col-md-12">

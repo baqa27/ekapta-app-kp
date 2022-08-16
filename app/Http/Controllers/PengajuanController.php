@@ -33,10 +33,12 @@ class PengajuanController extends Controller
     public function pengajuanMahasiswa()
     {
         $pengajuans = Pengajuan::where('nim', Auth::guard('mahasiswa')->user()->nim)->orderBy('created_at', 'desc')->get();
+        $pengajuanIsAcc = Pengajuan::where('nim', Auth::guard('mahasiswa')->user()->nim)->where('status', 'diterima')->get();
         return view('pages.mahasiswa.pengajuan.pengajuan', [
             'title' => 'Pengajuan Tugas Akhir',
             'active' => 'pengajuan',
             'pengajuans' => $pengajuans,
+            'pengajuanIsAcc' => $pengajuanIsAcc,
         ]);
     }
 
@@ -83,6 +85,7 @@ class PengajuanController extends Controller
         $dosenUtama = $mahasiswa->dosens()->where('status', 'utama')->first();
         $dosenPendamping = $mahasiswa->dosens()->where('status', 'pendamping')->first();
         $dosens = Dosen::all();
+        $pengajuanCekIsPlagiat = Pengajuan::where('judul', 'LIKE', '%' . $pengajuan->judul . '%')->get();
         return view('pages.prodi.pengajuan.review', [
             'title' => 'Review pengajuan',
             'active' => 'pengajuan',
@@ -93,6 +96,7 @@ class PengajuanController extends Controller
             'dosen_utama' => $dosenUtama,
             'dosen_pendamping' => $dosenPendamping,
             'mahasiswa' => $mahasiswa,
+            'pengajuanCekIsPlagiat' => $pengajuanCekIsPlagiat,
         ]);
     }
 

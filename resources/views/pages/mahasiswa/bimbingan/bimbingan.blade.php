@@ -71,7 +71,12 @@
                                         <tr>
                                             <td>{{ $no++ }}</td>
                                             <td>{{ $bimbingan->bagian->bagian }}</td>
-                                            <td>{{ $bimbingan->created_at->format('d M y H:m') }}</td>
+                                            <td>
+                                                {{-- {{ $bimbingan->tanggal_bimbingan->format('d M y H:m') }} --}}
+                                                @if ($bimbingan->tanggal_bimbingan)
+                                                {{ date('d M y H:m', strtotime($bimbingan->tanggal_bimbingan)); }}
+                                                @endif
+                                            </td>
                                             <td>
                                                 @if ($bimbingan->tanggal_acc)
                                                 {{ date('d M y H:m', strtotime($bimbingan->tanggal_acc)); }}
@@ -172,7 +177,12 @@
                                         <tr>
                                             <td>{{ $no++ }}</td>
                                             <td>{{ $bimbingan->bagian->bagian }}</td>
-                                            <td>{{ $bimbingan->created_at->format('d M y H:m') }}</td>
+                                            <td>
+                                                {{-- {{ $bimbingan->created_at->format('d M y H:m') }} --}}
+                                                @if ($bimbingan->tanggal_bimbingan)
+                                                {{ date('d M y H:m', strtotime($bimbingan->tanggal_bimbingan)); }}
+                                                @endif
+                                            </td>
                                             <td>
                                                 @if ($bimbingan->tanggal_acc)
                                                 {{ date('d M y H:m', strtotime($bimbingan->tanggal_acc)); }}

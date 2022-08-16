@@ -80,8 +80,9 @@
 
                         {!! nl2br($bimbingan->keterangan) !!}
 
-                        <div class="mt-4 text-secondary"><i class="fas fa-calendar mr-2"></i> {{
-                            $bimbingan->created_at->format('d M y H:m') }}
+                        <div class="mt-4 text-secondary"><i class="fas fa-calendar mr-2"></i>
+                            {{-- {{ $bimbingan->created_at->format('d M y H:m') }} --}}
+                            {{ date('d M y H:m', strtotime($bimbingan->tanggal_bimbingan)) }}
                         </div>
 
                         @if ($bimbingan->tanggal_acc)

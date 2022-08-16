@@ -47,9 +47,8 @@
                     <div class="card-body">
                         <p><b>Keterangan</b></p>
                         {!! nl2br($bimbingan->keterangan) !!}
-                        <div class="mt-3 text-secondary"><i class="fas fa-calendar mr-2"></i> {{
-                            $bimbingan->created_at->format('d M
-                            y H:m') }}
+                        <div class="mt-3 text-secondary"><i class="fas fa-calendar mr-2"></i>
+                            {{ date('d M y H:m', strtotime($bimbingan->tanggal_bimbingan)) }}
                         </div>
                         @if ($bimbingan->tanggal_acc)
                         <div class="text-success"><i class="fas fa-calendar-check mr-2"></i>

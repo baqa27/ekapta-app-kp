@@ -24,8 +24,17 @@
 <div class="content">
     <div class="container">
 
+        @if (count($pengajuanIsAcc) == 0)
         <a href="{{ route('pengajuan.create') }}" class="btn btn-primary mb-4"><i class="fas fa-plus mr-2"></i> Buat
             Pengajuan TA</a>
+        @else
+        <div class="alert alert-success alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            Selamat! Pengajuan tugas akhir anda sudah di Acc oleh Prodi, silahkan lakukan <b><a
+                    href="{{ route('pendaftaran.create') }}">Pendaftaran Tugas
+                    Akhir.</a></b>
+        </div>
+        @endif
 
         <div class="row">
             <div class="col-md-12">

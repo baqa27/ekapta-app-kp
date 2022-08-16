@@ -15,6 +15,7 @@ class Bimbingan extends Model
         'status',
         'mahasiswa_id',
         'bagian_id',
+        'tanggal_bimbingan',
         'tanggal_acc',
         'pembimbing',
     ];

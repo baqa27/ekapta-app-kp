@@ -112,7 +112,7 @@
                             </div>
                             <div class="col-md-8">
                                 <span class="mr-3">:</span>
-                                <b>{{$pendaftaran->email}}</b>
+                                <b>{{ Auth::guard('mahasiswa')->user()->email }}</b>
                             </div>
                         </div>
                         <hr>
@@ -123,7 +123,7 @@
                             </div>
                             <div class="col-md-8">
                                 <span class="mr-3">:</span>
-                                <b>{{$pendaftaran->hp}}</b>
+                                <b>{{ Auth::guard('mahasiswa')->user()->hp }}</b>
                             </div>
                         </div>
                         <hr>
@@ -134,7 +134,7 @@
                             </div>
                             <div class="col-md-8">
                                 <span class="mr-3">:</span>
-                                <b>{{$pendaftaran->semester}}</b>
+                                <b>{{ Auth::guard('mahasiswa')->user()->semester }}</b>
                             </div>
                         </div>
                         <hr>
@@ -238,7 +238,7 @@
                             </div>
                             <div class="col-md-8">
                                 <span class="mr-3">:</span>
-                                <b>{{$pendaftaran->created_at->format('y M d H:m')
+                                <b>{{$pendaftaran->created_at->format('d M y H:m')
                                     }}</b>
                             </div>
                         </div>

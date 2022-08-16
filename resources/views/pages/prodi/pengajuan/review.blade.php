@@ -61,7 +61,19 @@
                             <tr>
                                 <td><b class="mr-3">Judul</b></td>
                                 <td>:</td>
-                                <td>{{ $pengajuan->judul }}</td>
+                                <td>
+                                    @if ($pengajuan->status =='diterima')
+                                    {{ $pengajuan->judul }}
+                                    @else
+                                    <span
+                                        class="text-{{ count($pengajuanCekIsPlagiat) <= 1 ? 'success' : 'warning' }}">{{
+                                        $pengajuan->judul }}</span>
+
+                                    <a type="button" class="ml-2" data-toggle="modal" data-target="#modal-cek">
+                                        <i class="bi bi-check-circle mr-1"></i> Check Plagiarism
+                                    </a>
+                                    @endif
+                                </td>
                             </tr>
 
                         </table>
@@ -208,30 +220,48 @@
     <!-- /.modal-dialog -->
 </div>
 
-<!-- Modal Show Pembimbing -->
-<div class="modal fade" id="modal-show">
+<!-- Modal Cek Is Plagiat -->
+<div class="modal fade" id="modal-cek">
     <div class="modal-dialog">
         <div class="modal-content">
-
             <div class="modal-header">
-                <h4 class="modal-title">Dosen Pembimbing</h4>
+                <h4 class="modal-title">Check Plagiarism</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <div class="form-group">
-                    <label for="" class="form-label">Dosen Pembimbing Utama </label>
-                    <input type="text" class="form-control" value="{{ $dosen_utama->nama.', '.$dosen_utama->gelar }}"
-                        disabled>
-                </div>
-                <div class="form-group">
-                    <label for="" class="form-label">Dosen Pembimbing Pendamping </label>
-                    <input type="text" class="form-control"
-                        value="{{ $dosen_pendamping->nama.', '.$dosen_pendamping->gelar }}" disabled>
-                </div>
-            </div>
+                <b> Judul Pengajuan Tugas Akhir :</b> <br>
+                <span class="text-{{ count($pengajuanCekIsPlagiat) <= 1 ? 'success' : 'warning' }}">{{
+                    $pengajuan->judul }} <i
+                        class="bi bi-{{ count($pengajuanCekIsPlagiat) <= 1 ? 'check' : 'info' }}-circle ml-1"></i></span>
+                <hr>
+                <b> Semua Judul Pengajuan Tugas Akhir :</b> <br>
+                @php
+                $no=1;
+                @endphp
+                @foreach ($pengajuanCekIsPlagiat as $result)
+                @if ($result->nim == $pengajuan->nim)
+                <del>
+                    <span class="text-secondary">
+                        [{{ $no++ }}]
+                        [Judul : {{ $result->judul }}]
+                        [Prodi : {{ $result->prodi }} ]
+                        [Status : {{ $result->status }} ]</span>
+                </del>
+                <br>
+                @else
+                <span class="text-primary">[{{ $no++ }}][Judul : {{ $result->judul }}]</span>
+                <span class="text-info">[Prodi : {{ $result->prodi }} ]</span>
+                <span class="text-{{ $result->status=='review' ? 'secondary' : 'success' }}">
+                    [Status : {{ $result->status }} ]
+                </span>
+                <br>
+                @endif
 
+                @endforeach
+
+            </div>
         </div>
         <!-- /.modal-content -->
     </div>
@@ -377,6 +407,36 @@
                     <button type="submit" class="btn btn-success">Simpan</button>
                 </div>
             </form>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<!-- Modal Show Pembimbing -->
+<div class="modal fade" id="modal-show">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h4 class="modal-title">Dosen Pembimbing</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="" class="form-label">Dosen Pembimbing Utama </label>
+                    <input type="text" class="form-control" value="{{ $dosen_utama->nama.', '.$dosen_utama->gelar }}"
+                        disabled>
+                </div>
+                <div class="form-group">
+                    <label for="" class="form-label">Dosen Pembimbing Pendamping </label>
+                    <input type="text" class="form-control"
+                        value="{{ $dosen_pendamping->nama.', '.$dosen_pendamping->gelar }}" disabled>
+                </div>
+            </div>
+
         </div>
         <!-- /.modal-content -->
     </div>

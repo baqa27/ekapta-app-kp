@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $faker = \Faker\Factory::create();
+        $faker = \Faker\Factory::create('id_ID');
         $nims = [2020150031, 2020150032, 2020150033, 2020150034];
         $jenisKelamin = ['Laki-laki', 'Perempuan'];
 
@@ -27,14 +27,17 @@ class DatabaseSeeder extends Seeder
             Mahasiswa::create([
                 'nim' => $nims[$i],
                 'nama' => $faker->name(),
-                'thmasuk' => $faker->year(),
+                'thmasuk' => 2020,
                 'prodi' => "Teknik Informatika",
                 'tptlahir' => 'Wonosobo',
                 'tgllahir' => $faker->date(),
                 'jeniskelamin' => $jenisKelamin[rand(0, 1)],
-                'kodedosenwali' => 001,
-                'nik' => $faker->randomDigit(),
-                'kelas' => 1,
+                'kodedosenwali' => 1001,
+                'nik' => rand(pow(10, 16 - 1), pow(10, 16) - 1),
+                'kelas' => 'Reguler',
+                'email' => $faker->email(),
+                'hp' => $faker->phoneNumber(),
+                'semester' => rand(7, 14),
                 'status' => 'aktif',
                 'alamat' => $faker->address(),
                 'password' => Hash::make($nims[$i]),
@@ -46,7 +49,7 @@ class DatabaseSeeder extends Seeder
         for ($i = 0; $i < sizeof($nidns); $i++) {
             Dosen::create([
                 'nidn' => $nidns[$i],
-                'nik' => $faker->randomDigit(),
+                'nik' => rand(pow(10, 16 - 1), pow(10, 16) - 1),
                 'nama' => $faker->name(),
                 'gelar' => "M.Kom.",
                 'tgllahir' => $faker->date(),
@@ -69,7 +72,7 @@ class DatabaseSeeder extends Seeder
 
         Admin::create([
             'kode' => 12345,
-            'nik' => $faker->randomDigit(),
+            'nik' => rand(pow(10, 16 - 1), pow(10, 16) - 1),
             'nama' => $faker->name(),
             'tgllahir' => $faker->date(),
             'tptlahir' => 'Wonosobo',

@@ -38,7 +38,7 @@ class BimbinganController extends Controller
             'title' => 'Bimbingan Tugas Akhir',
             'active' => 'bimbingan',
             'sidebar' => 'partials.sidebarDosen',
-            'bimbingans' => $dosen->bimbingans()->where('status', 'review')->orderBy('created_at', 'desc')->get(),
+            'bimbingans' => $dosen->bimbingans()->where('status', 'review')->orderBy('tanggal_bimbingan', 'desc')->get(),
         ]);
     }
 
@@ -176,7 +176,6 @@ class BimbinganController extends Controller
                 return redirect('bimbingan-mahasiswa')->with('warning', 'Bimbingan tidak bisa diedit');
             }
             $validatedData = $request->validate([
-                // 'bagian_id' => 'required',
                 'lampiran' => [Rule::requiredIf(function () {
                     if (empty($this->request->lampiran)) {
                         return false;
@@ -189,7 +188,9 @@ class BimbinganController extends Controller
                 $validatedData['lampiran'] = AppHelper::instance()->uploadLampiran($request->lampiran, 'lampiran-bimbingan');
             }
             $validatedData['keterangan'] = $request->keterangan;
-            // $validatedData['bagian_id'] = $request->bagian_id;
+            if ($bimbingan->status == null) {
+                $validatedData['tanggal_bimbingan'] = now();
+            }
             $validatedData['status'] = 'review';
             $bimbingan->update($validatedData);
             return redirect('bimbingan-mahasiswa')->with('success', 'Bimbingan berhasil diupdate. Silahkan tunggu review dari dosen pembimbing');

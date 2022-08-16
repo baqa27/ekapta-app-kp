@@ -23,8 +23,12 @@
             </ul>
             <hr class="border-nav m-3">
             <div class="text-right container-login-register">
+                @if(Auth::guard('mahasiswa')->user() ||Auth::guard('dosen')->user() || Auth::guard('prodi')->user() ||
+                Auth::guard('admin')->user())
+                <a href="{{ route('back.dashboard') }}" class="btn btn-primary-me btn-login">Dashboard</a>
+                @else
                 <a href="{{ route('login') }}" class="btn btn-primary-me btn-login">Login</a>
-                {{-- <a href="redirect.html" class="btn btn-primary-me btn-login">Dashboard</a> --}}
+                @endif
             </div>
         </div>
     </div>

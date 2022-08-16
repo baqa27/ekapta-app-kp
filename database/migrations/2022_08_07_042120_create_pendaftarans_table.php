@@ -17,9 +17,9 @@ class CreatePendaftaransTable extends Migration
             $table->id();
             $table->string('nim')->unique();
             $table->string('judul');
-            $table->string('email');
-            $table->string('hp');
-            $table->string('semester');
+            // $table->string('email');
+            // $table->string('hp');
+            // $table->string('semester');
             $table->string('nomor_pembayaran');
             $table->string('tanggal_pembayaran');
             $table->string('biaya');

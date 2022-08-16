@@ -34,16 +34,18 @@ class PendaftaranController extends Controller
         $dosenUtama = $mahasiswa->dosens()->where('status', 'utama')->first();
         $dosenPendamping = $mahasiswa->dosens()->where('status', 'pendamping')->first();
         $pendaftarans = Pendaftaran::where('nim', Auth::guard('mahasiswa')->user()->nim)->with(['revisis'])->get();
-        $cekPengajuan = Pengajuan::where('nim', Auth::guard('mahasiswa')->user()->nim)->where('status', 'diterima')->first();
-        if (!$cekPengajuan) {
+        $pengajuanIsAcc = Pengajuan::where('nim', Auth::guard('mahasiswa')->user()->nim)->where('status', 'diterima')->first();
+        if (!$pengajuanIsAcc) {
             return back()->with('warning', 'Silahkan melakukan Pengajuan Tugas Akhir terlebih dahulu');
         }
+        $pendaftaranIsAcc = Pendaftaran::where('nim', Auth::guard('mahasiswa')->user()->nim)->with(['revisis'])->where('status', 'diterima')->get();
         return view('pages.mahasiswa.pendaftaran.pendaftaran', [
             'title' => 'Pendaftaran Tugas Akhir',
             'active' => 'pendaftaran',
             'pendaftarans' => $pendaftarans,
             'dosen_utama' => $dosenUtama,
             'dosen_pendamping' => $dosenPendamping,
+            'pendaftaranIsAcc' => $pendaftaranIsAcc,
         ]);
     }
 
@@ -71,9 +73,9 @@ class PendaftaranController extends Controller
             return redirect('pendaftaran-mahasiswa')->with('warning', 'Anda sudah melakukan pendaftaran');
         } else {
             $validatedData = $request->validate([
-                'email' => ['required', 'email:dns', 'unique:pendaftarans'],
-                'hp' => 'required',
-                'semester' => 'required',
+                // 'email' => ['required', 'email:dns', 'unique:pendaftarans'],
+                // 'hp' => 'required',
+                // 'semester' => 'required',
                 'nomor_pembayaran' => 'required',
                 'tanggal_pembayaran' => 'required',
                 'biaya' => 'required',
@@ -162,9 +164,9 @@ class PendaftaranController extends Controller
     {
         $pendaftaran = Pendaftaran::findOrFail($request->id);
         $validatedData = $request->validate([
-            'email' => ['required', 'email:dns'],
-            'hp' => 'required',
-            'semester' => 'required',
+            // 'email' => ['required', 'email:dns'],
+            // 'hp' => 'required',
+            // 'semester' => 'required',
             'nomor_pembayaran' => 'required',
             'tanggal_pembayaran' => 'required',
             'biaya' => 'required',
