@@ -51,6 +51,10 @@ class PendaftaranController extends Controller
 
     public function create()
     {
+        $cekPendaftaranAcc = Pendaftaran::where('nim', Auth::guard('mahasiswa')->user()->nim)->first();
+        if ($cekPendaftaranAcc) {
+            return redirect('pendaftaran-mahasiswa')->with('warning', 'Anda sudah melakukan pendaftaran tugas akhir');
+        }
         $mahasiswa = Mahasiswa::where('nim', Auth::guard('mahasiswa')->user()->nim)->first();
         $dosenUtama = $mahasiswa->dosens()->where('status', 'utama')->first();
         $dosenPendamping = $mahasiswa->dosens()->where('status', 'pendamping')->first();
@@ -104,6 +108,9 @@ class PendaftaranController extends Controller
     public function edit($id)
     {
         $pendaftaran = Pendaftaran::findOrFail($id);
+        if ($pendaftaran->status == 'review' ||  $pendaftaran->status == 'diterima') {
+            return back()->with('warning', 'Pendaftaran tidak bisa diedit');
+        }
         $mahasiswa = Mahasiswa::where('nim', $pendaftaran->nim)->first();
         $dosenUtama = $mahasiswa->dosens()->where('status', 'utama')->first();
         $dosenPendamping = $mahasiswa->dosens()->where('status', 'pendamping')->first();

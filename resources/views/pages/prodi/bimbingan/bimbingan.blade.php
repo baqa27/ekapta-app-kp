@@ -67,19 +67,50 @@
                                     <td>{{ \App\Helpers\AppHelper::instance()->getPendaftaran($mahasiswa->nim)->judul }}
                                     </td>
                                     <td>
-                                        @foreach ($mahasiswa->bimbingans as $bimbingan)
-                                        @if(\App\Helpers\AppHelper::instance()->cekBagianIsAcc($bimbingan->bagian->id))
-                                        <span class="badge badge-success">
-                                            <i class="fas fa-check-circle mr-1"></i>
-                                            {{$bimbingan->bagian->bagian }}
-                                        </span>
-                                        @else
-                                        <span class="badge badge-secondary">
-                                            <i class="fas fa-circle mr-1"></i>
-                                            {{$bimbingan->bagian->bagian }}
-                                        </span>
-                                        @endif
-                                        @endforeach
+                                        @php
+                                        $dosen_utama = $mahasiswa->dosens()->where('status','utama')->first();
+                                        $dosen_pendamping = $mahasiswa->dosens()->where('status','pendamping')->first();
+                                        @endphp
+                                        <div class="mt-2 border p-2 rounded">
+                                            <small>oleh Dosen Pembimbing utama <b>{{$dosen_utama->nama.',
+                                                    '.$dosen_utama->gelar}}</b>
+                                            </small><br>
+                                            @foreach ($mahasiswa->bimbingans as $bimbingan)
+                                            @if ($bimbingan->pembimbing == 'utama')
+                                            @if(\App\Helpers\AppHelper::instance()->cekBagianIsAcc($bimbingan->id))
+                                            <span class="badge badge-success">
+                                                <i class="fas fa-check-circle mr-1"></i>
+                                                {{$bimbingan->bagian->bagian }}
+                                            </span>
+                                            @else
+                                            <span class="badge badge-secondary">
+                                                <i class="fas fa-circle mr-1"></i>
+                                                {{$bimbingan->bagian->bagian }}
+                                            </span>
+                                            @endif
+                                            @endif
+                                            @endforeach
+                                        </div>
+                                        <div class="mt-2 border p-2 rounded">
+                                            <small>oleh Dosen Pembimbing Pendamping <b>{{$dosen_pendamping->nama.',
+                                                    '.$dosen_pendamping->gelar}}</b>
+                                            </small><br>
+                                            @foreach ($mahasiswa->bimbingans as $bimbingan)
+                                            @if ($bimbingan->pembimbing == 'pendamping')
+                                            @if(\App\Helpers\AppHelper::instance()->cekBagianIsAcc($bimbingan->id))
+                                            <span class="badge badge-success">
+                                                <i class="fas fa-check-circle mr-1"></i>
+                                                {{$bimbingan->bagian->bagian }}
+                                            </span>
+                                            @else
+                                            <span class="badge badge-secondary">
+                                                <i class="fas fa-circle mr-1"></i>
+                                                {{$bimbingan->bagian->bagian }}
+                                            </span>
+                                            @endif
+                                            @endif
+                                            @endforeach
+                                        </div>
                                     </td>
                                 </tr>
                                 @endif

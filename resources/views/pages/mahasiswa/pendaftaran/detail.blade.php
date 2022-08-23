@@ -79,7 +79,7 @@
                             </div>
                             <div class="col-md-8">
                                 <span class="mr-3">:</span>
-                                <b>{{$dosen_utama->nama}}</b>
+                                <b>{{$dosen_utama->nama.', '. $dosen_utama->gelar}}</b>
                             </div>
                         </div>
                         <hr>
@@ -90,7 +90,7 @@
                             </div>
                             <div class="col-md-8">
                                 <span class="mr-3">:</span>
-                                <b>{{$dosen_pendamping->nama}}</b>
+                                <b>{{$dosen_pendamping->nama.', '. $dosen_pendamping->gelar }}</b>
                             </div>
                         </div>
                         <hr>

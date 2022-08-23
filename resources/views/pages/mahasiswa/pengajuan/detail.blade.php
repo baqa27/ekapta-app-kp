@@ -2,6 +2,8 @@
 
 @section('content')
 
+@include('partials.setLocaleTime')
+
 <!-- Content Header (Page header) -->
 <div class="content-header">
     <div class="container">
@@ -47,13 +49,15 @@
                     <div class="card-body">
                         <p><b>Deskripsi</b></p>
                         {!! nl2br($pengajuan->deskripsi) !!}
-                        <div class="mt-3 text-secondary"><i class="fas fa-calendar mr-2"></i> {{
-                            $pengajuan->created_at->format('d M
-                            y H:m') }}
+                        <div class="mt-3 text-secondary"><i class="fas fa-calendar mr-2"></i>
+                            {{-- {{ $pengajuan->created_at->isoFormat('dddd, D MMMM Y') }} --}}
+                            {{ $pengajuan->created_at->format('d M y H:s') }}
                         </div>
                         @if ($pengajuan->tanggal_acc)
                         <div class="text-success"><i class="fas fa-calendar-check mr-2"></i>
-                            {{ date('d M y H:m', strtotime($pengajuan->tanggal_acc)) }}
+                            {{ date('d M y H:s', strtotime($pengajuan->tanggal_acc)) }}
+                            {{-- {{\Carbon\Carbon::parse($pengajuan->tanggal_acc)->formatLocalized('%A, %d %B %Y')}}
+                            --}}
                         </div>
                         @endif
                         <hr>

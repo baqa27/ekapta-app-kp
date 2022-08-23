@@ -196,7 +196,7 @@
                         <select class="form-control" name="dosen_utama" required>
                             <option value="">Pilih</option>
                             @foreach ($dosens as $dosen)
-                            <option value="{{ $dosen->id }}">{{ $dosen->nama.'.'.$dosen->gelar }}</option>
+                            <option value="{{ $dosen->id }}">{{ $dosen->nama.', '.$dosen->gelar }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -205,7 +205,7 @@
                         <select class="form-control" name="dosen_pendamping" required>
                             <option value="">Pilih</option>
                             @foreach ($dosens as $dosen)
-                            <option value="{{ $dosen->id }}">{{ $dosen->nama.'.'.$dosen->gelar }}</option>
+                            <option value="{{ $dosen->id }}">{{ $dosen->nama.', '.$dosen->gelar }}</option>
                             @endforeach
                         </select>
                     </div>

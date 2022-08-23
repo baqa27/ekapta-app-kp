@@ -17,8 +17,8 @@ class CreateBimbingansTable extends Migration
             $table->id();
             $table->text('keterangan')->nullable();
             $table->string('lampiran')->nullable();
-            $table->date('tanggal_bimbingan')->nullable();
-            $table->date('tanggal_acc')->nullable();
+            $table->timestamp('tanggal_bimbingan')->nullable();
+            $table->timestamp('tanggal_acc')->nullable();
             $table->string('status')->nullable();
             $table->string('pembimbing')->nullable();
             $table->timestamps();

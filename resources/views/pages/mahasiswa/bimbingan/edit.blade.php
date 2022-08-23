@@ -81,8 +81,8 @@
                                 @enderror
                             </div>
                             <div>
-                                <b>Lampiran sebelumnya : </b>
                                 @if ($bimbingan->lampiran)
+                                <b>Lampiran sebelumnya : </b>
                                 <a href="{{ asset($bimbingan->lampiran) }}" class="ml-3" target="_blank"><i
                                         class="fas fa-paperclip mr-2"></i>
                                     Lampiran.pdf</a>

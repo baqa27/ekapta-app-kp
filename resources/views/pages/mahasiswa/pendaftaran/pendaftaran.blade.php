@@ -44,7 +44,31 @@
                     </div>
                     <div class="card-body">
 
-                        Dosen Pembimbing (1) : <strong>
+                        <table>
+                            <tr>
+                                <td><span class="mr-2">Dosen Pembimbing Utama</span></td>
+                                <td><span class="mr-2">:</span></td>
+                                <td><strong>
+                                        @if ($dosen_utama)
+                                        {{ $dosen_utama->nama.', '.$dosen_utama->gelar }}
+                                        @endif
+                                    </strong>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td><span class="mr-2">Dosen Pembimbing Pendamping</span></td>
+                                <td><span class="mr-2">:</span></td>
+                                <td><strong>
+                                        @if ($dosen_pendamping)
+                                        {{ $dosen_pendamping->nama.', '.$dosen_pendamping->gelar }}
+                                        @endif
+                                    </strong>
+                                </td>
+                            </tr>
+                        </table>
+
+                        {{-- Dosen Pembimbing (1) : <strong>
                             @if ($dosen_utama)
                             {{ $dosen_utama->nama.', '.$dosen_utama->gelar }}
                             @endif
@@ -53,7 +77,7 @@
                             @if ($dosen_pendamping)
                             {{ $dosen_pendamping->nama.', '.$dosen_pendamping->gelar }}
                             @endif
-                        </strong>
+                        </strong> --}}
 
                         <table id="example1" class="table table-bordered table-striped">
                             <thead>

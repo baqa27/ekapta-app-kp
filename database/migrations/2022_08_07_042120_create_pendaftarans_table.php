@@ -29,7 +29,7 @@ class CreatePendaftaransTable extends Migration
             $table->string('lampiran_4');
             $table->string('lampiran_5');
             $table->string('lampiran_acc')->nullable();
-            $table->date('tanggal_acc')->nullable();
+            $table->timestamp('tanggal_acc')->nullable();
             $table->string('status')->default('review');
             $table->timestamps();
         });

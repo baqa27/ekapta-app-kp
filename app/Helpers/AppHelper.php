@@ -7,6 +7,7 @@ use App\Models\Dosen;
 use App\Models\Mahasiswa;
 use App\Models\Pendaftaran;
 use App\Models\Prodi;
+use Illuminate\Support\Facades\Storage;
 
 class AppHelper
 {
@@ -34,9 +35,9 @@ class AppHelper
         }
     }
 
-    public function cekBagianIsAcc($bagian_id)
+    public function cekBagianIsAcc($id)
     {
-        $bimbingan = Bimbingan::where('bagian_id', $bagian_id)->where('status', 'diterima')->first();
+        $bimbingan = Bimbingan::where('id', $id)->where('status', 'diterima')->first();
         if ($bimbingan) {
             return true;
         }
@@ -45,9 +46,11 @@ class AppHelper
     public function uploadLampiran($lampiran, $path)
     {
         if ($lampiran) {
-            $lampiranName = uniqid() . '.' . $lampiran->extension();
-            $lampiran->move(public_path('/' . $path), $lampiranName);
-            $lampiranPath = '/' . $path . '/' . $lampiranName;
+            // $lampiranName = uniqid() . '.' . $lampiran->extension();
+            // $lampiran->move(public_path('/' . $path), $lampiranName);
+            // $lampiranPath = '/' . $path . '/' . $lampiranName;
+            // return $lampiranPath;
+            $lampiranPath = $lampiran->store($path, 'public');
             return $lampiranPath;
         }
     }

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\DosenMahasiswa;
 use App\Models\Pengajuan;
 use App\Models\RevisiPengajuan;
 use Illuminate\Http\Request;
@@ -136,6 +135,9 @@ class PengajuanController extends Controller
     public function edit($id)
     {
         $pengajuan = Pengajuan::findOrFail($id);
+        if ($pengajuan->status == 'review' || $pengajuan->status == 'diterima') {
+            return back()->with('warning', 'Pengajuan tidak bisa diedit');
+        }
         return view('pages.mahasiswa.pengajuan.edit', [
             'title' => 'Form Edit Pengajuan Tugas Akhir',
             'active' => 'pengajuan',

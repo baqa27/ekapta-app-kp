@@ -2,6 +2,8 @@
 
 @section('content')
 
+@include('partials.setLocaleTime')
+
 <!-- Content Header (Page header) -->
 <div class="content-header">
     <div class="container">
@@ -63,10 +65,16 @@
                                     <td>{{ $no++ }}</td>
                                     <td><a href="{{ url('/pengajuan/detail/'.$pengajuan->id) }}">{{ $pengajuan->judul
                                             }}</a></td>
-                                    <td>{{ $pengajuan->created_at->format('d M y H:m') }}</td>
+                                    <td>
+                                        {{-- {{ $pengajuan->created_at->isoFormat('dddd, D MMMM Y') }} --}}
+                                        {{ $pengajuan->created_at->format('d M Y H:m') }}
+                                    </td>
                                     <td>
                                         @if ($pengajuan->tanggal_acc != null)
                                         {{ date('d M y H:m', strtotime($pengajuan->tanggal_acc)); }}
+                                        {{-- {{\Carbon\Carbon::parse($pengajuan->tanggal_acc)->formatLocalized('%A, %d
+                                        %B
+                                        %Y')}} --}}
                                         @endif
                                     </td>
                                     <td>

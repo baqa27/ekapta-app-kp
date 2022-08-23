@@ -20,7 +20,7 @@ class CreatePengajuansTable extends Migration
             $table->string('judul');
             $table->text('deskripsi');
             $table->string('lampiran');
-            $table->date('tanggal_acc')->nullable();
+            $table->timestamp('tanggal_acc')->nullable();
             $table->string('status')->default('review');
             $table->timestamps();
         });

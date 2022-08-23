@@ -18,12 +18,16 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/login', [HomeController::class, 'login'])->name('login');
 
 // Login User
-Route::get('/login/mahasiswa', [LoginController::class, 'loginMahasiswa'])->name('login.mahasiswa')->middleware('isMahasiswaLogin');
-Route::post('/login/mahasiswa', [LoginController::class, 'cekMahasiswa'])->name('cek.mahasiswa')->middleware('isMahasiswaLogin');;
+// Route::get('/login/mahasiswa', [LoginController::class, 'loginMahasiswa'])->name('login.mahasiswa')->middleware('isMahasiswaLogin');
+// Route::post('/login/mahasiswa', [LoginController::class, 'cekMahasiswa'])->name('cek.mahasiswa')->middleware('isMahasiswaLogin');
+Route::get('/login/mahasiswa', [LoginController::class, 'loginMahasiswa'])->name('login.mahasiswa');
+Route::post('/login/mahasiswa', [LoginController::class, 'cekMahasiswa'])->name('cek.mahasiswa');
 Route::get('/login/prodi', [LoginController::class, 'loginProdi'])->name('login.prodi')->middleware('isProdiLogin');
 Route::post('/login/prodi', [LoginController::class, 'cekProdi'])->name('cek.prodi')->middleware('isProdiLogin');
-Route::get('/login/dosen', [LoginController::class, 'loginDosen'])->name('login.dosen')->middleware('isDosenLogin');
-Route::post('/login/dosen', [LoginController::class, 'cekDosen'])->name('cek.dosen')->middleware('isDosenLogin');
+// Route::get('/login/dosen', [LoginController::class, 'loginDosen'])->name('login.dosen')->middleware('isDosenLogin');
+// Route::post('/login/dosen', [LoginController::class, 'cekDosen'])->name('cek.dosen')->middleware('isDosenLogin');
+Route::get('/login/dosen', [LoginController::class, 'loginDosen'])->name('login.dosen');
+Route::post('/login/dosen', [LoginController::class, 'cekDosen'])->name('cek.dosen');
 Route::get('/login/admin', [LoginController::class, 'loginAdmin'])->name('login.admin')->middleware('isAdminLogin');
 Route::post('/login/admin', [LoginController::class, 'cekAdmin'])->name('cek.admin')->middleware('isAdminLogin');
 
@@ -96,6 +100,13 @@ Route::get('/prodi/{id}', [ProdiController::class, 'detail'])->middleware('isAdm
 // Mahasiswa
 Route::get('profile', [MahasiswaController::class, 'profile'])->name('profile');
 Route::post('profile/update', [MahasiswaController::class, 'update'])->name('profile.update');
+
+// Validasi Read File
+Route::get('/lampiran-pengajuan', function () {
+    if (!Auth::guard('mahasiswa')->user() || !Auth::guard('dosen')->user() || !Auth::guard('prodi')->user() || !Auth::guard('admin')->user()) {
+        // abort(404);
+    }
+});
 
 // Logout
 Route::get('/logout/mahasiswa', function (Request $request) {

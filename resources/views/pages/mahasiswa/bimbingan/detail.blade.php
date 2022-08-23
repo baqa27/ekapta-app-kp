@@ -76,7 +76,7 @@
                         @foreach ($revisis as $revisi)
                         <div class="card bg-light">
                             <div class="card-header">
-                                <span class="mr-5">Di revisi oleh
+                                <span class="mr-5">Direview oleh
                                     <b>{{ $revisi->dosen->nama.', '.$revisi->dosen->gelar }}</b>
                                 </span>
                                 <div class="float-right">

@@ -79,7 +79,7 @@
                             </div>
                             <div class="col-md-7">
                                 <span class="mr-3">:</span>
-                                <b>{{$dosen_utama->nama}}</b>
+                                <b>{{$dosen_utama->nama.', '. $dosen_utama->gelar}}</b>
                             </div>
                         </div>
                         <hr>
@@ -90,7 +90,7 @@
                             </div>
                             <div class="col-md-7">
                                 <span class="mr-3">:</span>
-                                <b>{{$dosen_pendamping->nama}}</b>
+                                <b>{{$dosen_pendamping->nama.', '. $dosen_pendamping->gelar}}</b>
                             </div>
                         </div>
                         <hr>
@@ -238,7 +238,7 @@
                             </div>
                             <div class="col-md-7">
                                 <span class="mr-3">:</span>
-                                <b>{{$pendaftaran->created_at->format('y M d H:m')
+                                <b>{{$pendaftaran->created_at->format('d M y H:m')
                                     }}</b>
                             </div>
                         </div>
@@ -254,11 +254,10 @@
                                 <b>{{ date('d M y H:m',strtotime($pendaftaran->tanggal_acc)) }}</b>
                                 @endif
                             </div>
-
                         </div>
-                        <hr>
 
                         @if ($pendaftaran->lampiran_acc)
+                        <hr>
                         <div class="row">
                             <div class="col-md-5">
                                 Surat Tugas Bimbingan

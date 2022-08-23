@@ -36,6 +36,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         href="{{ asset('ekapta') }}/adminLTE/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
 </head>
 <body class="hold-transition layout-top-nav">
+
     <div class="wrapper">
 
         <!-- Navbar -->

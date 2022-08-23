@@ -101,19 +101,46 @@
 
                             <div class="d-flex mt-2 border p-2 rounded">
 
-                                @foreach ($bagians as $bagian)
-                                @if(\App\Helpers\AppHelper::instance()->cekBagianIsAcc($bagian->id))
+                                @php
+                                $dosenPembimbing =
+                                $mahasiswa->dosens()->where('dosen_id',Auth::guard('dosen')->user()->id)->first();
+                                @endphp
+
+                                {{--Bimbingan Dosen Utama --}}
+                                @if ($dosenPembimbing->pivot->status == 'utama')
+                                @foreach ($mahasiswa->bimbingans()->where('pembimbing','utama')->get() as
+                                $bimbingan)
+                                @if(\App\Helpers\AppHelper::instance()->cekBagianIsAcc($bimbingan->id))
                                 <span class="badge badge-success mr-1">
                                     <i class="fas fa-check-circle mr-1"></i>
-                                    {{$bagian->bagian }}
+                                    {{$bimbingan->bagian->bagian }}
                                 </span>
                                 @else
                                 <span class="badge badge-secondary mr-1">
                                     <i class="fas fa-circle mr-1"></i>
-                                    {{$bagian->bagian }}
+                                    {{$bimbingan->bagian->bagian }}
                                 </span>
                                 @endif
                                 @endforeach
+
+                                {{-- Bimbingan Dosen Pendamping --}}
+                                @elseif ($dosenPembimbing->pivot->status == 'pendamping')
+                                @foreach ($mahasiswa->bimbingans()->where('pembimbing','pendamping')->get() as
+                                $bimbingan)
+                                @if(\App\Helpers\AppHelper::instance()->cekBagianIsAcc($bimbingan->id))
+                                <span class="badge badge-success mr-1">
+                                    <i class="fas fa-check-circle mr-1"></i>
+                                    {{$bimbingan->bagian->bagian }}
+                                </span>
+                                @else
+                                <span class="badge badge-secondary mr-1">
+                                    <i class="fas fa-circle mr-1"></i>
+                                    {{$bimbingan->bagian->bagian }}
+                                </span>
+                                @endif
+                                @endforeach
+
+                                @endif
 
                             </div>
                             <div class="mt-2">
@@ -156,7 +183,7 @@
                         @foreach ($revisis as $revisi)
                         <div class="card bg-light">
                             <div class="card-header">
-                                <span class="mr-5">Di revisi oleh
+                                <span class="mr-5">Direview oleh
                                     @if ($revisi->dosen->id == Auth::guard('dosen')->user()->id)
                                     <b>Anda</b>
                                     @else

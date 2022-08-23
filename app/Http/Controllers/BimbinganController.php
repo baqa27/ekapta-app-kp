@@ -94,14 +94,14 @@ class BimbinganController extends Controller
                     'lampiran' => ['required', 'mimes:pdf'],
                     'bagian_id' => 'required',
                 ]);
-                $bimbingan = new Bimbingan;
-                $bimbingan->lampiran = AppHelper::instance()->uploadLampiran($request->lampiran, 'lampiran-bimbingan');
-                $bimbingan->keterangan = $request->keterangan;
-                $bimbingan->bagian_id = $request->bagian_id;
+                // $bimbingan = new Bimbingan;
+                // $bimbingan->lampiran = AppHelper::instance()->uploadLampiran($request->lampiran, 'lampiran-bimbingan');
+                // $bimbingan->keterangan = $request->keterangan;
+                // $bimbingan->bagian_id = $request->bagian_id;
 
-                $mahasiswa->bimbingans()->save($bimbingan);
+                // $mahasiswa->bimbingans()->save($bimbingan);
 
-                $bimbingan->dosens()->attach([$dosenUtama->id, $dosenPendamping->id]);
+                // $bimbingan->dosens()->attach([$dosenUtama->id, $dosenPendamping->id]);
 
                 return redirect('bimbingan-mahasiswa')->with('success', 'Bimbingan berhasil dibuat. Silahkan tunggu review dari dosen pembiming');
             } else {
@@ -117,6 +117,9 @@ class BimbinganController extends Controller
         $mahasiswa = Mahasiswa::findOrFail(Auth::guard('mahasiswa')->user()->id);
         $prodi = Prodi::where('namaprodi', $mahasiswa->prodi)->first();
         $bimbingan = Bimbingan::findOrFail($id);
+        if ($bimbingan->status == 'review' || $bimbingan->status == 'ditolak' || $bimbingan->status == 'diterima') {
+            return back()->with('warning', 'Bimbingan tidak dapat diedit');
+        }
         return view('pages.mahasiswa.bimbingan.edit', [
             'title' => 'Form Edit Bimbingan Tugas Akhir',
             'bimbingan' => $bimbingan,
@@ -162,6 +165,7 @@ class BimbinganController extends Controller
             'revisis' => $bimbingan->revisis()->orderBy('created_at', 'desc')->paginate(3),
             'bagians' => $prodi->bagians,
             'bimbingans_acc' => $bimbingans_acc,
+            'mahasiswa' => $mahasiswa,
         ]);
     }
 
