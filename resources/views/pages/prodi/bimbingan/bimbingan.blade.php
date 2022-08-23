@@ -33,10 +33,10 @@
                     <div class="card-body">
 
                         <span class="badge badge-success"> <i class="fas fa-check-circle mr-1"></i>
-                            Diterima
+                            Diterima/Acc
                         </span>
                         <span class="badge badge-secondary"> <i class="fas fa-circle mr-1"></i>
-                            Review
+                            Review/Belum Di Acc
                         </span>
 
                         <table id="example1" class="table table-bordered">
@@ -72,9 +72,10 @@
                                         $dosen_pendamping = $mahasiswa->dosens()->where('status','pendamping')->first();
                                         @endphp
                                         <div class="mt-2 border p-2 rounded">
-                                            <small>oleh Dosen Pembimbing utama <b>{{$dosen_utama->nama.',
+                                            <small>Dosen Pembimbing utama <b>{{$dosen_utama->nama.',
                                                     '.$dosen_utama->gelar}}</b>
-                                            </small><br>
+                                            </small>
+                                            <br>
                                             @foreach ($mahasiswa->bimbingans as $bimbingan)
                                             @if ($bimbingan->pembimbing == 'utama')
                                             @if(\App\Helpers\AppHelper::instance()->cekBagianIsAcc($bimbingan->id))
@@ -92,9 +93,10 @@
                                             @endforeach
                                         </div>
                                         <div class="mt-2 border p-2 rounded">
-                                            <small>oleh Dosen Pembimbing Pendamping <b>{{$dosen_pendamping->nama.',
+                                            <small>Dosen Pembimbing Pendamping <b>{{$dosen_pendamping->nama.',
                                                     '.$dosen_pendamping->gelar}}</b>
-                                            </small><br>
+                                            </small>
+                                            <br>
                                             @foreach ($mahasiswa->bimbingans as $bimbingan)
                                             @if ($bimbingan->pembimbing == 'pendamping')
                                             @if(\App\Helpers\AppHelper::instance()->cekBagianIsAcc($bimbingan->id))

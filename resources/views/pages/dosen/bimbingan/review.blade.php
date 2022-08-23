@@ -42,7 +42,6 @@
                         </div>
                     </div>
                     <div class="card-body">
-
                         <table>
                             <tr>
                                 <td><b class="mr-3">Nim</b></td>
@@ -76,8 +75,8 @@
 
                         </table>
                         <hr>
-                        <p><b>Keterangan</b></p>
 
+                        <p><b>Keterangan</b></p>
                         {!! nl2br($bimbingan->keterangan) !!}
 
                         <div class="mt-4 text-secondary"><i class="fas fa-calendar mr-2"></i>
@@ -109,16 +108,16 @@
                                 {{--Bimbingan Dosen Utama --}}
                                 @if ($dosenPembimbing->pivot->status == 'utama')
                                 @foreach ($mahasiswa->bimbingans()->where('pembimbing','utama')->get() as
-                                $bimbingan)
-                                @if(\App\Helpers\AppHelper::instance()->cekBagianIsAcc($bimbingan->id))
+                                $bimbinganMahasiswa)
+                                @if(\App\Helpers\AppHelper::instance()->cekBagianIsAcc($bimbinganMahasiswa->id))
                                 <span class="badge badge-success mr-1">
                                     <i class="fas fa-check-circle mr-1"></i>
-                                    {{$bimbingan->bagian->bagian }}
+                                    {{$bimbinganMahasiswa->bagian->bagian }}
                                 </span>
                                 @else
                                 <span class="badge badge-secondary mr-1">
                                     <i class="fas fa-circle mr-1"></i>
-                                    {{$bimbingan->bagian->bagian }}
+                                    {{$bimbinganMahasiswa->bagian->bagian }}
                                 </span>
                                 @endif
                                 @endforeach
@@ -126,16 +125,16 @@
                                 {{-- Bimbingan Dosen Pendamping --}}
                                 @elseif ($dosenPembimbing->pivot->status == 'pendamping')
                                 @foreach ($mahasiswa->bimbingans()->where('pembimbing','pendamping')->get() as
-                                $bimbingan)
-                                @if(\App\Helpers\AppHelper::instance()->cekBagianIsAcc($bimbingan->id))
+                                $bimbinganMahasiswa)
+                                @if(\App\Helpers\AppHelper::instance()->cekBagianIsAcc($bimbinganMahasiswa->id))
                                 <span class="badge badge-success mr-1">
                                     <i class="fas fa-check-circle mr-1"></i>
-                                    {{$bimbingan->bagian->bagian }}
+                                    {{$bimbinganMahasiswa->bagian->bagian }}
                                 </span>
                                 @else
                                 <span class="badge badge-secondary mr-1">
                                     <i class="fas fa-circle mr-1"></i>
-                                    {{$bimbingan->bagian->bagian }}
+                                    {{$bimbinganMahasiswa->bagian->bagian }}
                                 </span>
                                 @endif
                                 @endforeach
@@ -149,7 +148,7 @@
                                     Bagian Sudah Di Acc
                                 </span>
                                 <span class="badge badge-secondary mr-1"> <i class="fas fa-circle mr-1"></i>
-                                    Bagian Belum Dikerjakan
+                                    Bagian Belum Di Acc
                                 </span>
                             </div>
                         </div>
