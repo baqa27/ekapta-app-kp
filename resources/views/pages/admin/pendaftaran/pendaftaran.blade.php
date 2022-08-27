@@ -36,6 +36,8 @@
                             </li>
                             <li class="nav-item"><a class="nav-link" href="#tab_2" data-toggle="tab">Pendaftaran
                                     Diterima</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#tab_3" data-toggle="tab">Pendaftaran
+                                    Revisi</a></li>
                         </ul>
                     </div><!-- /.card-header -->
                     <div class="card-body">
@@ -123,6 +125,91 @@
                                         $no = 1;
                                         @endphp
                                         @foreach ($pendaftarans_acc as $pendaftaran)
+                                        <tr>
+                                            <td>{{ $no++ }}</td>
+                                            <td>
+                                                {{
+                                                \App\Helpers\AppHelper::instance()->getMahasiswa($pendaftaran->nim)->nama
+                                                }}
+                                                {{ '('.$pendaftaran->nim.')' }}
+                                            </td>
+                                            <td>
+                                                {{
+                                                \App\Helpers\AppHelper::instance()->getMahasiswa($pendaftaran->nim)->prodi
+                                                }}
+                                            </td>
+                                            <td>{{ $pendaftaran->judul }}</td>
+                                            <td>
+                                                @if ($pendaftaran->status == 'review')
+                                                <span class="badge bg-secondary">Review</span>
+                                                @elseif ($pendaftaran->status == 'revisi')
+                                                <span class="badge bg-warning">Revisi</span>
+                                                @elseif ($pendaftaran->status == 'diterima')
+                                                <span class="badge bg-success">Diterima</span>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                <div class="d-flex">
+                                                    <a href="{{ url('/pendaftaran/review/'.$pendaftaran->id) }}"
+                                                        class="btn btn-info btn-sm shadow mr-2">
+                                                        <i class="fas fa-info-circle mr-1"></i> Detail
+                                                    </a>
+
+                                                    @php
+                                                    $cekBimbinganIsActive =
+                                                    \App\Helpers\AppHelper::instance()->getMahasiswa($pendaftaran->nim)->bimbingans()->whereIn('status',['review','revisi','diterima'])->get();
+                                                    @endphp
+                                                    @if (count($cekBimbinganIsActive) == 0)
+                                                    <div onclick="confirmCancel()">
+                                                        <form action="{{ route('pendaftaran.cancel.acc') }}"
+                                                            method="post">
+                                                            @csrf
+                                                            <input type="hidden" name="id"
+                                                                value="{{ $pendaftaran->id }}">
+                                                            <button class="btn btn-danger btn-sm shadow">
+                                                                <i class="bi bi-x-circle mr-1"></i>Batalkan
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                    @endif
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th>No</th>
+                                            <th>Mahasiswa</th>
+                                            <th>Prodi</th>
+                                            <th>Judul</th>
+                                            <th>Status</th>
+                                            <th>Aksi</th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+
+                            </div>
+                            <!-- /.tab-pane -->
+                            <div class="tab-pane" id="tab_3">
+
+                                <table id="example2" class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>No</th>
+                                            <th>Mahasiswa</th>
+                                            <th>Prodi</th>
+                                            <th>Judul</th>
+                                            <th>Status</th>
+                                            <th>Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @php
+                                        $no = 1;
+                                        @endphp
+                                        @foreach ($pendaftarans_revisi as $pendaftaran)
                                         <tr>
                                             <td>{{ $no++ }}</td>
                                             <td>

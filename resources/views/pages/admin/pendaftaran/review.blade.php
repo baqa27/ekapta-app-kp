@@ -256,7 +256,7 @@
                             </div>
                         </div>
 
-                        @if ($pendaftaran->lampiran_acc)
+                        @if ($pendaftaran->status == 'diterima')
                         <hr>
                         <div class="row">
                             <div class="col-md-5">
@@ -264,7 +264,7 @@
                             </div>
                             <div class="col-md-7">
                                 <span class="mr-3">:</span>
-                                <a href="{{ asset($pendaftaran->lampiran_acc) }}" target="_blank"><i
+                                <a href="{{ url('cetak/surat-tugas-bimbingan/'.$pendaftaran->id) }}" target="_blank"><i
                                         class="fas fa-download"></i> Surat tugas bimbingan TA</a>
                             </div>
                         </div>
@@ -272,26 +272,26 @@
 
                     </div>
 
+                    @if ($pendaftaran->status == 'review')
                     <div class="card-footer">
-                        @if ($pendaftaran->status == 'review')
                         <div class="d-flex">
                             <button type="button" class="btn btn-primary mr-2" data-toggle="modal"
                                 data-target="#modal-revisi">
                                 <i class="bi bi-pencil-square mr-2"></i> Revisi Pendaftaran
                             </button>
 
-                            <button type="button" class="btn btn-success mr-2" data-toggle="modal"
-                                data-target="#modal-acc">
-                                <i class="fas fa-check mr-2"></i> Acc Pendaftaran
-                            </button>
+                            <div onclick="confirmAcc()">
+                                <form action="{{ route('pendaftaran.acc') }}" method="post">
+                                    @csrf
+                                    <input type="hidden" name="id" value="{{ $pendaftaran->id }}">
+                                    <button type="submit" class="btn btn-success mr-2">
+                                        <i class="fas fa-check mr-2"></i> Acc Pendaftaran
+                                    </button>
+                                </form>
+                            </div>
                         </div>
-                        @else
-                        <button type="button" class="btn btn-primary mr-2" data-toggle="modal"
-                            data-target="#modal-edit">
-                            <i class="bi bi-pencil-square mr-2"></i> Edit Surat Tugas Bimbingan TA
-                        </button>
-                        @endif
                     </div>
+                    @endif
                 </div>
 
                 {{-- Revisi --}}
@@ -302,6 +302,14 @@
                                 {{ count($pendaftaran->revisis) }}
                             </span>
                         </h3>
+                        @if ($pendaftaran->status =='revisi')
+                        <div class="float-right">
+                            <button type="button" class="btn btn-primary mr-2" data-toggle="modal"
+                                data-target="#modal-revisi">
+                                <i class="bi bi-plus-square mr-2"></i> Tambahkan Revisi
+                            </button>
+                        </div>
+                        @endif
                     </div>
                     <div class="card-body">
 
@@ -311,13 +319,12 @@
                                 <i class="fas fa-calendar mr-2"></i> {{
                                 $revisi->created_at->format('y M
                                 d H:m') }}
-                                <div class="float-right">
+                                <div class="float-right" onclick="confirmDelete()">
                                     <form action="{{ route('pendaftaran.revisi.delete') }}" method="post">
                                         @csrf
                                         <input type="hidden" name="id" value="{{ $revisi->id }}">
-                                        <button class="btn btn-danger btn-sm float-right" type="submit"
-                                            onclick="confirmDelete()">
-                                            <i class="fas fa-trash" onclick="confirmDelete()"></i></button>
+                                        <button class="btn btn-danger btn-sm float-right" type="submit">
+                                            <i class="fas fa-trash"></i></button>
                                     </form>
                                 </div>
                             </div>
@@ -347,6 +354,7 @@
 <!-- /.content -->
 
 <!-- Modal Revisi -->
+@if ($pendaftaran->status != 'diterima')
 <div class="modal fade" id="modal-revisi">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -393,96 +401,6 @@
     </div>
     <!-- /.modal-dialog -->
 </div>
-
-<!-- Modal Acc -->
-<div class="modal fade" id="modal-acc">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form action="{{ route('pendaftaran.acc') }}" method="post" enctype="multipart/form-data">
-                @csrf
-
-                <input type="hidden" name="id" value="{{ $pendaftaran->id }}">
-
-                <div class="modal-header">
-                    <h4 class="modal-title">Acc Pendaftaran</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="" class="form-label">Upload Surat Tugas Bimbingan TA</label>
-                        <div class="input-group mb-3">
-                            <div class="custom-file">
-                                <input type="file" class="custom-file-input @error('lampiran_acc')is-invalid @enderror"
-                                    name="lampiran_acc" required>
-                                <label class="custom-file-label" for="exampleInputFile">Choose
-                                    file</label>
-                            </div>
-                            <div class="input-group-append">
-                                <span class="input-group-text">Dokumen</span>
-                            </div>
-                        </div>
-
-                        @error('lampiran_acc')
-                        <small class="text-danger" style="position:relative;top:-15px;left:5px">{{ $message
-                            }}</small>
-                        @enderror
-                    </div>
-                </div>
-                <div class="modal-footer justify-content-between">
-                    <button type="submit" class="btn btn-success">Simpan</button>
-                </div>
-            </form>
-        </div>
-        <!-- /.modal-content -->
-    </div>
-    <!-- /.modal-dialog -->
-</div>
-
-{{-- Modal Update Acc --}}
-<div class="modal fade" id="modal-edit">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form action="{{ route('pendaftaran.acc.update') }}" method="post" enctype="multipart/form-data">
-                @csrf
-                <input type="hidden" name="id" value="{{ $pendaftaran->id }}">
-
-                <div class="modal-header">
-                    <h4 class="modal-title">Acc Pendaftaran</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="" class="form-label">Upload Surat Tugas Bimbingan TA</label>
-                        <div class="input-group mb-3">
-                            <div class="custom-file">
-                                <input type="file" class="custom-file-input @error('lampiran_acc')is-invalid @enderror"
-                                    name="lampiran_acc" required>
-                                <label class="custom-file-label" for="exampleInputFile">Choose
-                                    file</label>
-                            </div>
-                            <div class="input-group-append">
-                                <span class="input-group-text">Dokumen</span>
-                            </div>
-                        </div>
-
-                        @error('lampiran_acc')
-                        <small class="text-danger" style="position:relative;top:-15px;left:5px">{{ $message
-                            }}</small>
-                        @enderror
-                    </div>
-                </div>
-                <div class="modal-footer justify-content-between">
-                    <button type="submit" class="btn btn-success">Simpan</button>
-                </div>
-            </form>
-        </div>
-        <!-- /.modal-content -->
-    </div>
-    <!-- /.modal-dialog -->
-</div>
+@endif
 
 @endsection

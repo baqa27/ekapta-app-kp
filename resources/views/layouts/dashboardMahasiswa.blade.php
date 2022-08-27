@@ -95,12 +95,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <script src="{{ asset('ekapta') }}/adminLTE/plugins/summernote/summernote-bs4.min.js"></script>
     <!-- bs-custom-file-input -->
     <script src="{{ asset('ekapta') }}/adminLTE/plugins/bs-custom-file-input/bs-custom-file-input.min.js"></script>
+    {{--
     <!-- daterangepicker -->
     <script src="{{ asset('ekapta') }}/adminLTE/plugins/moment/moment.min.js"></script>
     <script src="{{ asset('ekapta') }}/adminLTE/plugins/daterangepicker/daterangepicker.js"></script>
     <!-- Tempusdominus Bootstrap 4 -->
     <script src="{{ asset('ekapta') }}/adminLTE/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js">
-    </script>
+    </script> --}}
     <!-- Toastr -->
     <script src="{{ asset('ekapta') }}/adminLTE/plugins/toastr/toastr.min.js"></script>
     <!-- SweetAlert2 -->
@@ -186,11 +187,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
             }).buttons().container().appendTo('#example2_wrapper .col-md-6:eq(0)');
 
         });
-        // Calendar
-        $('#calendar').datetimepicker({
-            format: 'L',
-            inline: true
-        })
     </script>
 </body>
 </html>

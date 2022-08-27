@@ -119,6 +119,8 @@ class BimbinganController extends Controller
         $bimbingan = Bimbingan::findOrFail($id);
         if ($bimbingan->status == 'review' || $bimbingan->status == 'ditolak' || $bimbingan->status == 'diterima') {
             return back()->with('warning', 'Bimbingan tidak dapat diedit');
+        } elseif (count($mahasiswa->bimbingans()->where('status', 'review')->get()) >= 2) {
+            return back()->with('warning', 'Tunggu sampai bimbingan di Acc oleh dosen');
         }
         return view('pages.mahasiswa.bimbingan.edit', [
             'title' => 'Form Edit Bimbingan Tugas Akhir',

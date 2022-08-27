@@ -10,6 +10,7 @@ use App\Models\Bimbingan;
 use App\Models\Mahasiswa;
 use App\Models\Pengajuan;
 use App\Models\Prodi;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
@@ -19,12 +20,14 @@ class PendaftaranController extends Controller
     {
         $pendaftarans = Pendaftaran::where('status', 'review')->orderBy('created_at', 'desc')->get();
         $pendaftarans_acc = Pendaftaran::where('status', 'diterima')->orderBy('created_at', 'desc')->get();
+        $pendaftarans_revisi = Pendaftaran::where('status', 'revisi')->orderBy('created_at', 'desc')->get();
         return view('pages.admin.pendaftaran.pendaftaran', [
             'title' => 'Pendaftaran Tugas Akhir',
             'active' => 'pendaftaran',
             'sidebar' => 'partials.sidebarAdmin',
             'pendaftarans' => $pendaftarans,
             'pendaftarans_acc' => $pendaftarans_acc,
+            'pendaftarans_revisi' => $pendaftarans_revisi,
         ]);
     }
 
@@ -77,17 +80,14 @@ class PendaftaranController extends Controller
             return redirect('pendaftaran-mahasiswa')->with('warning', 'Anda sudah melakukan pendaftaran');
         } else {
             $validatedData = $request->validate([
-                // 'email' => ['required', 'email:dns', 'unique:pendaftarans'],
-                // 'hp' => 'required',
-                // 'semester' => 'required',
                 'nomor_pembayaran' => 'required',
                 'tanggal_pembayaran' => 'required',
                 'biaya' => 'required',
                 'lampiran_1' => ['required', 'mimes:pdf'],
                 'lampiran_2' => ['required', 'mimes:pdf'],
                 'lampiran_3' => ['required', 'mimes:pdf'],
-                'lampiran_4' => ['required', 'mimes:pdf'],
-                'lampiran_5' => ['required', 'mimes:pdf'],
+                'lampiran_4' => ['required', 'mimes:pdf,png,jpg,jpeg'],
+                'lampiran_5' => ['required', 'mimes:pdf,png,jpg,jpeg'],
             ]);
 
             $validatedData['lampiran_1'] = AppHelper::instance()->uploadLampiran($request->file('lampiran_1'), 'lampiran-pendaftaran');
@@ -98,7 +98,10 @@ class PendaftaranController extends Controller
 
             $validatedData['nim'] = Auth::guard('mahasiswa')->user()->nim;
             $validatedData['judul'] = $pengajuan->judul;
-            $validatedData['tanggal_pembayaran'] = $request->tanggal_pembayaran;
+
+            setlocale(LC_TIME, 'id');
+            $tanggal_pembayaran = Carbon::parse($request->tanggal_pembayaran)->formatLocalized('%d %B %Y');
+            $validatedData['tanggal_pembayaran'] = $tanggal_pembayaran;
 
             Pendaftaran::create($validatedData);
             return redirect('pendaftaran-mahasiswa')->with('success', 'Berhasil melakukan pendaftaran');
@@ -128,9 +131,6 @@ class PendaftaranController extends Controller
     public function pendaftaranReview($id)
     {
         $pendaftaran = Pendaftaran::findOrFail($id);
-        if ($pendaftaran->status == 'revisi') {
-            return back()->with('warning', 'Pendaftaran tidak ditemukan');
-        }
         $mahasiswa = Mahasiswa::where('nim', $pendaftaran->nim)->first();
         $dosenUtama = $mahasiswa->dosens()->where('status', 'utama')->first();
         $dosenPendamping = $mahasiswa->dosens()->where('status', 'pendamping')->first();
@@ -171,11 +171,7 @@ class PendaftaranController extends Controller
     {
         $pendaftaran = Pendaftaran::findOrFail($request->id);
         $validatedData = $request->validate([
-            // 'email' => ['required', 'email:dns'],
-            // 'hp' => 'required',
-            // 'semester' => 'required',
             'nomor_pembayaran' => 'required',
-            'tanggal_pembayaran' => 'required',
             'biaya' => 'required',
             'lampiran_1' => [Rule::requiredIf(function () {
                 if (empty($this->request->lampiran_1)) {
@@ -200,13 +196,13 @@ class PendaftaranController extends Controller
                     return false;
                 }
                 return true;
-            }), 'mimes:pdf'],
+            }), 'mimes:pdf,png,jpg,jpeg'],
             'lampiran_5' => [Rule::requiredIf(function () {
                 if (empty($this->request->lampiran_5)) {
                     return false;
                 }
                 return true;
-            }), 'mimes:pdf'],
+            }), 'mimes:pdf,png,jpg,jpeg'],
         ]);
 
         if ($request->file('lampiran_1')) {
@@ -232,8 +228,13 @@ class PendaftaranController extends Controller
 
         $validatedData['nim'] = Auth::guard('mahasiswa')->user()->nim;
         $validatedData['judul'] = $pendaftaran->judul;
-        $validatedData['tanggal_pembayaran'] = $request->tanggal_pembayaran;
         $validatedData['status'] = 'review';
+
+        if ($request->tanggal_pembayaran) {
+            setlocale(LC_TIME, 'id');
+            $tanggal_pembayaran = Carbon::parse($request->tanggal_pembayaran)->formatLocalized('%d %B %Y');
+            $validatedData['tanggal_pembayaran'] = $tanggal_pembayaran;
+        }
 
         $pendaftaran->update($validatedData);
         return redirect('pendaftaran-mahasiswa')->with('success', 'Pendaftaran berhasil diupdate');
@@ -269,13 +270,9 @@ class PendaftaranController extends Controller
         } elseif ($pendaftaran->status == 'diterima') {
             return back()->with('warning', 'Pendaftaran sudah diacc');
         } else {
-            $request->validate([
-                'lampiran_acc' => ['required', 'mimes:pdf,docx'],
-            ]);
             $pendaftaran->update([
                 'status' => 'diterima',
                 'tanggal_acc' => now(),
-                'lampiran_acc' => AppHelper::instance()->uploadLampiran($request->lampiran_acc, 'lampiran-pendaftaran'),
             ]);
 
             // Otomatis create bimbingan dengan pembimbing dosen utam
@@ -302,30 +299,27 @@ class PendaftaranController extends Controller
         }
     }
 
-    public function accPendaftaranUpdate(Request $request)
+    public function cancelAcc(Request $request)
     {
         $pendaftaran = Pendaftaran::findOrFail($request->id);
+        $mahasiswa = Mahasiswa::where('nim', $pendaftaran->nim)->first();
         if ($pendaftaran->status != 'diterima') {
-            return back()->with('error', 'Gagal diupdate');
+            return back()->with('error', 'Pendaftaran tidak ditemukan');
         } else {
-            $request->validate([
-                'lampiran_acc' => ['required', 'mimes:pdf,docx'],
-            ]);
-            AppHelper::instance()->deleteLampiran($pendaftaran->lampiran_acc);
             $pendaftaran->update([
-                'lampiran_acc' => AppHelper::instance()->uploadLampiran($request->lampiran_acc, 'lampiran-pendaftaran'),
+                'status' => 'review',
+                'tanggal_acc' => null,
             ]);
-            return back()->with('success', 'Berhasil diupdate');
+            $mahasiswa->bimbingans->each->delete();
+            return redirect('pendaftaran/review/' . $pendaftaran->id)->with('success', 'Acc pendaftaran berhasil dibatalkan');
         }
     }
 
     public function revisiPendaftaran(Request $request)
     {
         $pendaftaran = Pendaftaran::findOrFail($request->id);
-
         $revisi = new RevisiPendaftaran;
         $revisi->catatan = $request->catatan;
-
         $request->validate([
             'lampiran' => [Rule::requiredIf(function () {
                 if (empty($this->request->lampiran)) {
@@ -334,18 +328,19 @@ class PendaftaranController extends Controller
                 return true;
             }), 'mimes:pdf']
         ]);
-
         if ($request->file('lampiran')) {
             $revisi->lampiran = AppHelper::instance()->uploadLampiran($request->lampiran, 'lampiran-revisi');
         }
-
-        $pendaftaran->update([
-            'status' => 'revisi',
-        ]);
-
-        $pendaftaran->revisis()->save($revisi);
-
-        return redirect('pendaftarans')->with('success', 'Pendaftaran berhasil direvisi');
+        if ($pendaftaran->status == 'review') {
+            $pendaftaran->update([
+                'status' => 'revisi',
+            ]);
+            $pendaftaran->revisis()->save($revisi);
+            return redirect('pendaftarans')->with('success', 'Pendaftaran berhasil direvisi');
+        } elseif ($pendaftaran->status == 'revisi') {
+            $pendaftaran->revisis()->save($revisi);
+            return back()->with('success', 'Revisi berhasil ditambahkan');
+        }
     }
 
     public function deleteRevisiPendaftaran(Request $request)

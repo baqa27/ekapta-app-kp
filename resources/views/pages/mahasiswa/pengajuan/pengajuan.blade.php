@@ -110,13 +110,19 @@
                                         @elseif ($pengajuan->status == 'revisi')
                                         <a href="{{ url('/pengajuan/edit/'.$pengajuan->id) }}"
                                             class="btn btn-primary btn-sm shadow" type="submit"><i
-                                                class="fas fa-pen mr-1"></i>Edit</a>
+                                                class="fas fa-upload mr-1"></i>Submit</a>
 
                                         @elseif ($pengajuan->status == 'diterima')
-                                        <a href="{{ url('/pengajuan/detail/'.$pengajuan->id) }}"
-                                            class="btn btn-primary btn-sm shadow">
-                                            <i class="fas fa-info-circle mr-1"></i> Detail
-                                        </a>
+                                        <div class="d-flex">
+                                            <a href="{{ url('/pengajuan/detail/'.$pengajuan->id) }}"
+                                                class="btn btn-primary btn-sm shadow mr-2">
+                                                <i class="fas fa-info-circle mr-1"></i> Detail
+                                            </a>
+                                            <a href="{{ route('cetak.lembar.persetujuan.mahasiswa') }}"
+                                                class="btn btn-success btn-sm shadow" target="_blank">
+                                                <i class="bi bi-download"></i> Lembar Persetujuan Pembimbing
+                                            </a>
+                                        </div>
 
                                         @elseif ($pengajuan->status == 'ditolak')
                                         <form action="{{ route('pengajuan.delete')}}" method="post">

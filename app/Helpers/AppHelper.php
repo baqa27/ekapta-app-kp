@@ -6,6 +6,7 @@ use App\Models\Bimbingan;
 use App\Models\Dosen;
 use App\Models\Mahasiswa;
 use App\Models\Pendaftaran;
+use App\Models\Pengajuan;
 use App\Models\Prodi;
 use Illuminate\Support\Facades\Storage;
 
@@ -24,6 +25,14 @@ class AppHelper
         $dosen = Dosen::where('nidn', $nidn)->first();
         if ($dosen) {
             return $dosen;
+        }
+    }
+
+    public function getPengajuan($nim)
+    {
+        $pengajuan = Pengajuan::where('nim', $nim)->first();
+        if ($pengajuan) {
+            return $pengajuan;
         }
     }
 

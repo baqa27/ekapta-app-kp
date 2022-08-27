@@ -53,20 +53,22 @@
 
                             <div class="form-group">
                                 <label for="exampleInputEmail1">Pembimbing Utama (1) Tugas Akhir <br>
-                                    <small>Lembar Bimbingan Pembimbing Utama Bisa didownload disini : <a
+                                    {{-- <small>Lembar Bimbingan Pembimbing Utama Bisa didownload disini : <a
                                             href="https://drive.google.com/file/d/1Velgma6Skdufta177kz6Z4DEFVAI50F9/view?usp=sharing"
-                                            target="_blank">Download</a></small>
+                                            target="_blank">Download</a></small> --}}
                                 </label>
-                                <input type="text" class="form-control" value="{{ $dosen_utama->nama }}" disabled>
+                                <input type="text" class="form-control"
+                                    value="{{ $dosen_utama->nama.', '.$dosen_utama->gelar }}" disabled>
                             </div>
 
                             <div class="form-group">
                                 <label for="exampleInputEmail1">Pembimbing Pendamping (2) Tugas Akhir <br>
-                                    <small>Lembar Bimbingan Pembimbing Pendamping Bisa didownload disini :
+                                    {{-- <small>Lembar Bimbingan Pembimbing Pendamping Bisa didownload disini :
                                         <a href="https://drive.google.com/file/d/1UWl33hEeZMSDpLTmxlXXKNYAlbwLJG3T/view?usp=sharing"
-                                            target="_blank">Download</a></small>
+                                            target="_blank">Download</a></small> --}}
                                 </label>
-                                <input type="text" class="form-control" value="{{ $dosen_pendamping->nama }}" disabled>
+                                <input type="text" class="form-control"
+                                    value="{{ $dosen_pendamping->nama.', '.$dosen_pendamping->gelar }}" disabled>
                             </div>
 
                             <div class="form-group">
@@ -95,9 +97,10 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="exampleInputFile">Dokumen Acc. Kaprodi <br> <small>Bukti
-                                        Foto/File
-                                        sudah disetujui oleh Kaprodi</small> </label>
+                                <label for="exampleInputFile">Dokumen Acc. Kaprodi <br>
+                                    <small>Download disini : <a href="{{ route('cetak.lembar.persetujuan.mahasiswa') }}"
+                                            target="_blank">Download</a></small>
+                                </label>
                                 <div class="input-group mb-3">
                                     <div class="custom-file">
                                         <input type="file"
@@ -120,8 +123,7 @@
                                 <label for="exampleInputEmail1">Bukti Lembar Pernyataan Keaslian Hasil Tugas
                                     Akhir
                                     <br>
-                                    <small>Contoh bisa didownload di link berikut :
-                                        <a href="https://drive.google.com/file/d/1PHySzONI1Wf4hWN6CBgODJoonAV0IRyS/view?usp=sharing"
+                                    <small>Download disini : <a href="{{ route('cetak.lembar.pernyataan.keaslian') }}"
                                             target="_blank">Download</a></small>
                                 </label>
                                 <div class="input-group mb-3">

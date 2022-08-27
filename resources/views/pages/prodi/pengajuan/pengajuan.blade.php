@@ -36,6 +36,10 @@
                             </li>
                             <li class="nav-item"><a class="nav-link" href="#tab_2" data-toggle="tab">Pengajuan
                                     Diterima</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#tab_3" data-toggle="tab">Pengajuan
+                                    Revisi</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#tab_4" data-toggle="tab">Pengajuan
+                                    Ditolak</a></li>
                         </ul>
                     </div><!-- /.card-header -->
                     <div class="card-body">
@@ -149,10 +153,172 @@
                                                 @endif
                                             </td>
                                             <td>
+                                                <div class="d-flex">
+                                                    <a href="{{ url('/pengajuan/review/'.$pengajuan->id) }}"
+                                                        class="btn btn-info btn-sm shadow mr-2">
+                                                        <i class="fas fa-info-circle mr-1"></i> Detail
+                                                    </a>
+                                                    @if(\App\Helpers\AppHelper::instance()->getPendaftaran($pengajuan->nim)
+                                                    == null)
+                                                    @if(count(\App\Helpers\AppHelper::instance()->getMahasiswa($pengajuan->nim)->dosens)
+                                                    == 0)
+                                                    <form action="{{ route('pengajuan.cancel.acc') }}" method="post">
+                                                        @csrf
+                                                        <input type="hidden" name="id" value="{{ $pengajuan->id }}">
+                                                        <button class="btn btn-danger btn-sm mr-2 shadow" type="submit">
+                                                            <i class="bi bi-x-circle mr-1"></i> Batalkan
+                                                        </button>
+                                                    </form>
+                                                    @endif
+                                                    @endif
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th>No</th>
+                                            <th>Mahasiswa</th>
+                                            <th>Prodi</th>
+                                            <th>Judul</th>
+                                            <th>Status</th>
+                                            <th>Aksi</th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+
+                            </div>
+                            <!-- /.tab-pane -->
+                            <div class="tab-pane" id="tab_3">
+
+                                <table id="example2" class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>No</th>
+                                            <th>Mahasiswa</th>
+                                            <th>Prodi</th>
+                                            <th>Judul</th>
+                                            <th>Status</th>
+                                            <th>Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @php
+                                        $no = 1;
+                                        @endphp
+                                        @foreach ($pengajuans_revisi as $pengajuan)
+                                        <tr>
+                                            <td>{{ $no++ }}</td>
+                                            <td>
+                                                {{
+                                                \App\Helpers\AppHelper::instance()->getMahasiswa($pengajuan->nim)->nama
+                                                }}
+                                                {{ '('.$pengajuan->nim.')' }}
+                                            </td>
+                                            <td>
+                                                {{
+                                                \App\Helpers\AppHelper::instance()->getMahasiswa($pengajuan->nim)->prodi
+                                                }}
+                                            </td>
+                                            <td>{{ $pengajuan->judul }}</td>
+                                            <td>
+                                                @if ($pengajuan->status == 'review')
+                                                <span class="badge bg-secondary">Review</span>
+                                                @elseif ($pengajuan->status == 'revisi')
+                                                <span class="badge bg-warning">Revisi</span>
+                                                @elseif ($pengajuan->status == 'diterima')
+                                                <span class="badge bg-success">Diterima</span>
+                                                @elseif ($pengajuan->status == 'ditolak')
+                                                <span class="badge bg-danger">Ditolak</span>
+                                                @endif
+                                            </td>
+                                            <td>
                                                 <a href="{{ url('/pengajuan/review/'.$pengajuan->id) }}"
                                                     class="btn btn-info btn-sm shadow">
                                                     <i class="fas fa-info-circle mr-1"></i> Detail
                                                 </a>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th>No</th>
+                                            <th>Mahasiswa</th>
+                                            <th>Prodi</th>
+                                            <th>Judul</th>
+                                            <th>Status</th>
+                                            <th>Aksi</th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+
+                            </div>
+                            <!-- /.tab-pane -->
+                            <div class="tab-pane" id="tab_4">
+
+                                <table id="example2" class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>No</th>
+                                            <th>Mahasiswa</th>
+                                            <th>Prodi</th>
+                                            <th>Judul</th>
+                                            <th>Status</th>
+                                            <th>Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @php
+                                        $no = 1;
+                                        @endphp
+                                        @foreach ($pengajuans_ditolak as $pengajuan)
+                                        <tr>
+                                            <td>{{ $no++ }}</td>
+                                            <td>
+                                                {{
+                                                \App\Helpers\AppHelper::instance()->getMahasiswa($pengajuan->nim)->nama
+                                                }}
+                                                {{ '('.$pengajuan->nim.')' }}
+                                            </td>
+                                            <td>
+                                                {{
+                                                \App\Helpers\AppHelper::instance()->getMahasiswa($pengajuan->nim)->prodi
+                                                }}
+                                            </td>
+                                            <td>{{ $pengajuan->judul }}</td>
+                                            <td>
+                                                @if ($pengajuan->status == 'review')
+                                                <span class="badge bg-secondary">Review</span>
+                                                @elseif ($pengajuan->status == 'revisi')
+                                                <span class="badge bg-warning">Revisi</span>
+                                                @elseif ($pengajuan->status == 'diterima')
+                                                <span class="badge bg-success">Diterima</span>
+                                                @elseif ($pengajuan->status == 'ditolak')
+                                                <span class="badge bg-danger">Ditolak</span>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                <div class="d-flex">
+                                                    <a href="{{ url('/pengajuan/review/'.$pengajuan->id) }}"
+                                                        class="btn btn-info btn-sm shadow mr-2">
+                                                        <i class="fas fa-info-circle mr-1"></i> Detail
+                                                    </a>
+                                                    @if(\App\Helpers\AppHelper::instance()->getPengajuan($pengajuan->nim)->status
+                                                    == 'diterima')
+                                                    <form action="{{ route('pengajuan.cancel.tolak') }}" method="post">
+                                                        @csrf
+                                                        <input type="hidden" name="id" value="{{ $pengajuan->id }}">
+                                                        <input type="hidden" name="nim" value="{{ $pengajuan->nim }}">
+                                                        <button class="btn btn-danger btn-sm mr-2 shadow" type="submit">
+                                                            <i class="bi bi-x-circle mr-1"></i> Batalkan
+                                                        </button>
+                                                    </form>
+                                                    @endif
+                                                </div>
                                             </td>
                                         </tr>
                                         @endforeach

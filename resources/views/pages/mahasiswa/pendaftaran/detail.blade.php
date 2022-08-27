@@ -258,9 +258,9 @@
                         </div>
 
                     </div>
-                    @if ($pendaftaran->lampiran_acc)
+                    @if ($pendaftaran->status == 'diterima')
                     <div class="card-footer">
-                        <a href="{{ asset($pendaftaran->lampiran_acc) }}" class="btn btn-success btn-sm"
+                        <a href="{{  route('cetak.surat.tugas.bimbingan') }}" class="btn btn-success btn-sm"
                             target="_blank"><i class="fas fa-download mr-1"></i>
                             Surat Tugas Bimbingan TA</a>
                     </div>

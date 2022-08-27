@@ -120,14 +120,15 @@
                                     </td>
                                     <td>
                                         @if ($pendaftaran->status =='diterima')
-                                        <a href="{{ asset($pendaftaran->lampiran_acc) }}" class="btn btn-success btn-sm"
-                                            target="_blank"><i class="fas fa-download mr-1"></i>
+                                        <a href="{{ route('cetak.surat.tugas.bimbingan') }}"
+                                            class="btn btn-success btn-sm" target="_blank"><i
+                                                class="fas fa-download mr-1"></i>
                                             Surat Tugas Bimbingan TA</a>
 
                                         @elseif ($pendaftaran->status =='revisi')
                                         <a href="{{ url('pendaftaran/edit/'.$pendaftaran->id) }}"
-                                            class="btn btn-primary btn-sm"><i class="fas fa-pen mr-1"></i>
-                                            Edit</a>
+                                            class="btn btn-primary btn-sm"><i class="fa fa-upload mr-1"></i>
+                                            Submit</a>
 
                                         @elseif ($pendaftaran->status =='review')
                                         <a href="{{ url('pendaftaran/detail/'.$pendaftaran->id) }}"

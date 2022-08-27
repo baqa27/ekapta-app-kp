@@ -25,7 +25,7 @@ class MahasiswaController extends Controller
         $validatedData = $request->validate([
             'email' => ['required', 'email:dns'],
             'hp' => 'required',
-            'semester' => 'required',
+            // 'semester' => 'required',
             'alamat' => 'required',
         ]);
         $mahasiswa->update($validatedData);

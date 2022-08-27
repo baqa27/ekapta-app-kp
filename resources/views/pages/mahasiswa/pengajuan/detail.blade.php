@@ -2,8 +2,6 @@
 
 @section('content')
 
-@include('partials.setLocaleTime')
-
 <!-- Content Header (Page header) -->
 <div class="content-header">
     <div class="container">

@@ -100,10 +100,13 @@
                                 <i class="bi bi-pencil-square mr-2"></i> Revisi Pengajuan
                             </button>
 
-                            <button type="button" class="btn btn-success mr-2" data-toggle="modal"
-                                data-target="#modal-acc">
-                                <i class="fas fa-check mr-2"></i> Acc Pengajuan
-                            </button>
+                            <form action="{{ route('pengajuan.acc') }}" method="post">
+                                @csrf
+                                <input type="hidden" name="id" value="{{ $pengajuan->id }}">
+                                <button type="submit" class="btn btn-success mr-2">
+                                    <i class="fas fa-check mr-2"></i> Acc Pengajuan
+                                </button>
+                            </form>
 
                             <button type="button" class="btn btn-danger mr-2" data-toggle="modal"
                                 data-target="#modal-tolak">
@@ -113,7 +116,7 @@
                             @if (count($mahasiswa->bimbingans) == 0)
                             <button type="button" class="btn btn-primary mr-2" data-toggle="modal"
                                 data-target="#modal-edit">
-                                <i class="bi bi-pencil-square mr-2"></i> Edit Dosen Pendamping
+                                <i class="bi bi-pencil-square mr-2"></i> Ploting Dosen Pendamping
                             </button>
                             @else
                             <button type="button" class="btn btn-info mr-2" data-toggle="modal"
@@ -176,50 +179,6 @@
 </div>
 <!-- /.content -->
 
-<!-- Modal Acc -->
-<div class="modal fade" id="modal-acc">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form action="{{ route('pengajuan.acc') }}" method="post">
-                @csrf
-                <input type="hidden" name="id" value="{{ $pengajuan->id }}">
-                <input type="hidden" name="nim" value="{{ $pengajuan->nim }}">
-                <div class="modal-header">
-                    <h4 class="modal-title">Acc Pengajuan</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="" class="form-label">Dosen Pembimbing Utama</label>
-                        <select class="form-control" name="dosen_utama" required>
-                            <option value="">Pilih</option>
-                            @foreach ($dosens as $dosen)
-                            <option value="{{ $dosen->id }}">{{ $dosen->nama.', '.$dosen->gelar }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="" class="form-label">Dosen Pembimbing Pendamping</label>
-                        <select class="form-control" name="dosen_pendamping" required>
-                            <option value="">Pilih</option>
-                            @foreach ($dosens as $dosen)
-                            <option value="{{ $dosen->id }}">{{ $dosen->nama.', '.$dosen->gelar }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
-                <div class="modal-footer justify-content-between">
-                    <button type="submit" class="btn btn-success">Simpan</button>
-                </div>
-            </form>
-        </div>
-        <!-- /.modal-content -->
-    </div>
-    <!-- /.modal-dialog -->
-</div>
-
 <!-- Modal Cek Is Plagiat -->
 <div class="modal fade" id="modal-cek">
     <div class="modal-dialog">
@@ -236,7 +195,7 @@
                     $pengajuan->judul }} <i
                         class="bi bi-{{ count($pengajuanCekIsPlagiat) <= 1 ? 'check' : 'info' }}-circle ml-1"></i></span>
                 <hr>
-                <b> Semua Judul Pengajuan Tugas Akhir :</b> <br>
+                <b> Semua judul pengajuan tugas akhir yang sudah digunakan :</b> <br>
                 @php
                 $no=1;
                 @endphp
@@ -364,17 +323,19 @@
     <!-- /.modal-dialog -->
 </div>
 
-<!-- Modal Edit -->
 @if ($pengajuan->status =='diterima')
+
+@if (count($mahasiswa->bimbingans) == 0)
+<!-- Modal Ploting Dosen Pembimbing -->
 <div class="modal fade" id="modal-edit">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form action="{{ route('pengajuan.acc') }}" method="post">
+            <form action="{{ route('ploting.pembimbing') }}" method="post">
                 @csrf
                 <input type="hidden" name="id" value="{{ $pengajuan->id }}">
                 <input type="hidden" name="nim" value="{{ $pengajuan->nim }}">
                 <div class="modal-header">
-                    <h4 class="modal-title">Acc Pengajuan</h4>
+                    <h4 class="modal-title">Edit Dosen Pembimbing</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -412,7 +373,9 @@
     </div>
     <!-- /.modal-dialog -->
 </div>
+@endif
 
+@if (count($mahasiswa->dosens) != 0)
 <!-- Modal Show Pembimbing -->
 <div class="modal fade" id="modal-show">
     <div class="modal-dialog">
@@ -442,6 +405,7 @@
     </div>
     <!-- /.modal-dialog -->
 </div>
+@endif
 @endif
 
 @endsection

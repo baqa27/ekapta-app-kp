@@ -22,19 +22,21 @@ class PlotingController extends Controller
         Dosen::findOrFail($request->dosen_utama);
         Dosen::findOrFail($request->dosen_pendamping);
         $mahasiswa = Mahasiswa::where(['nim' => $request->nim])->first();
-        if ($mahasiswa->dosens()->get()->isEmpty()) {
-            $mahasiswa->dosens()->attach([
-                $request->dosen_utama => ['status' => 'utama'],
-                $request->dosen_pendamping => ['status' => 'pendamping'],
-            ]);
-        } else {
-            DB::table('dosen_mahasiswas')->where(['mahasiswa_id' => $mahasiswa->id])->whereIn('status', ['utama', 'pendamping'])->delete();
-            $mahasiswa->dosens()->attach([
-                $request->dosen_utama => ['status' => 'utama'],
-                $request->dosen_pendamping => ['status' => 'pendamping'],
-            ]);
+        if (count($mahasiswa->bimbingans) == 0) {
+            if ($mahasiswa->dosens()->get()->isEmpty()) {
+                $mahasiswa->dosens()->attach([
+                    $request->dosen_utama => ['status' => 'utama'],
+                    $request->dosen_pendamping => ['status' => 'pendamping'],
+                ]);
+            } else {
+                DB::table('dosen_mahasiswas')->where(['mahasiswa_id' => $mahasiswa->id])->whereIn('status', ['utama', 'pendamping'])->delete();
+                $mahasiswa->dosens()->attach([
+                    $request->dosen_utama => ['status' => 'utama'],
+                    $request->dosen_pendamping => ['status' => 'pendamping'],
+                ]);
+            }
+            return back()->with('success', 'Ploting dosen pembimbing berhasil');
         }
-        return $mahasiswa->dosens()->get();
     }
 
     public function plotingPenguji(Request $request)

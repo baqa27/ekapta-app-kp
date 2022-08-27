@@ -103,9 +103,10 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="exampleInputFile">Dokumen Acc. Kaprodi <br> <small>Bukti
-                                        Foto/File
-                                        sudah disetujui oleh Kaprodi</small> </label>
+                                <label for="exampleInputFile">Dokumen Acc. Kaprodi <br>
+                                    <small>Download disini : <a href="{{ route('cetak.lembar.persetujuan.mahasiswa') }}"
+                                            target="_blank">Download</a></small>
+                                </label>
                                 <div class="input-group mb-3">
                                     <div class="custom-file">
                                         <input type="file"
@@ -133,8 +134,7 @@
                                 <label for="exampleInputEmail1">Bukti Lembar Pernyataan Keaslian Hasil Tugas
                                     Akhir
                                     <br>
-                                    <small>Contoh bisa didownload di link berikut :
-                                        <a href="https://drive.google.com/file/d/1PHySzONI1Wf4hWN6CBgODJoonAV0IRyS/view?usp=sharing"
+                                    <small>Download disini : <a href="{{ route('cetak.lembar.pernyataan.keaslian') }}"
                                             target="_blank">Download</a></small>
                                 </label>
                                 <div class="input-group mb-3">
@@ -254,11 +254,13 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="exampleInputEmail1">Tanggal Pembayaran</label>
+                                <label for="exampleInputEmail1">Tanggal Pembayaran <br>
+                                    <small>Tanggal Pembayaran Sebelumnya : <b>{{ $pendaftaran->tanggal_pembayaran
+                                            }}</b></small>
+                                </label>
                                 <input type="date"
                                     class="form-control @error('tanggal_pembayaran') is-invalid @enderror"
-                                    name="tanggal_pembayaran" value="{{ $pendaftaran->tanggal_pembayaran }}"
-                                    placeholder="Tanggal Pembayaran.." required>
+                                    name="tanggal_pembayaran" value="{{ $pendaftaran->tanggal_pembayaran }}">
                                 @error('tanggal_pembayaran')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror

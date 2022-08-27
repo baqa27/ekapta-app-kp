@@ -7,7 +7,7 @@
     <div class="container">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1 class="m-0"> Hai! {{ Auth::guard('mahasiswa')->user()->nama }}</h1>
+                {{-- <h1 class="m-0"> Hai! {{ Auth::guard('mahasiswa')->user()->nama }}</h1> --}}
             </div><!-- /.col -->
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
@@ -140,7 +140,9 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Semester</label>
-                                        <select class="form-control @error('semester') is-invalid @enderror"
+                                        <input type="text" class="form-control" value="{{ $mahasiswa->semester }}"
+                                            disabled>
+                                        {{-- <select class="form-control @error('semester') is-invalid @enderror"
                                             name="semester" required>
                                             <option value="">Pilih</option>
                                             @for ($i = 1; $i <= 14; $i++) <option value="{{ $i }}" @if($i==$mahasiswa->
@@ -151,7 +153,7 @@
                                         </select>
                                         @error('semester')
                                         <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
+                                        @enderror --}}
                                     </div>
                                 </div>
                                 <div class="col-md-6">

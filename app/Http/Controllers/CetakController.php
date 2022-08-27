@@ -1,0 +1,125 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Mahasiswa;
+use App\Models\Pendaftaran;
+use App\Models\Pengajuan;
+use App\Models\Prodi;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
+use PDF;
+
+class CetakController extends Controller
+{
+
+    public function cetakLembarPersetujuanMahasiswa()
+    {
+        $mahasiswa = Mahasiswa::findOrFail(Auth::guard('mahasiswa')->user()->id);
+        $pengajuan = Pengajuan::where('nim', $mahasiswa->nim)->where('status', 'diterima')->first();
+        $prodi = Prodi::where('namaprodi', $mahasiswa->prodi)->first();
+        $dosenUtama = $mahasiswa->dosens()->where('status', 'utama')->first();
+        $dosenPendamping = $mahasiswa->dosens()->where('status', 'pendamping')->first();
+
+        $path = base_path('kop-surat.jpg');
+        $type = pathinfo($path, PATHINFO_EXTENSION);
+        $data = file_get_contents($path);
+        $kop_surat = 'data:image/' . $type . ';base64,' . base64_encode($data);
+
+        $data = [
+            'title' => 'Lembar Persetujuan Pembimbing',
+            'kop_surat' => $kop_surat,
+            'mahasiswa' => $mahasiswa,
+            'pengajuan' => $pengajuan,
+            'dosen_utama' => $dosenUtama,
+            'dosen_pendamping' => $dosenPendamping,
+            'prodi' => $prodi,
+        ];
+
+        $pdf = PDF::setOptions(['isHTML5ParserEnabled' => true, 'isRemoteEnabled' => true]);
+        $pdf->loadView('pages.cetak.lembarPersetujuanPembimbing', $data);
+        $pdf->setPaper('A4', 'portrait');
+        return $pdf->stream('Lembar-Persetujuan-Pembimbing.pdf');
+    }
+
+    public function cetakLembarPernyataanKeaslian()
+    {
+        $mahasiswa = Mahasiswa::findOrFail(Auth::guard('mahasiswa')->user()->id);
+        $data = [
+            'title' => 'Lembar Persetujuan Pembimbing',
+            'mahasiswa' => $mahasiswa,
+        ];
+        $pdf = PDF::setOptions(['isHTML5ParserEnabled' => true, 'isRemoteEnabled' => true]);
+        $pdf->loadView('pages.cetak.lembarPernyataanKeaslian', $data);
+        $pdf->setPaper('A4', 'portrait');
+        return $pdf->stream('Lembar-Pernyataan-Keaslian.pdf');
+    }
+
+    public function cetakSuratTugasBimbingan($pendaftaran)
+    {
+        $pendaftaran = Pendaftaran::findOrFail($pendaftaran);
+        $mahasiswa = Mahasiswa::where('nim', $pendaftaran->nim)->first();
+        $prodi = Prodi::where('namaprodi', $mahasiswa->prodi)->first();
+        $dosenUtama = $mahasiswa->dosens()->where('status', 'utama')->first();
+        $dosenPendamping = $mahasiswa->dosens()->where('status', 'pendamping')->first();
+
+        $path = base_path('kop-surat.jpg');
+        $type = pathinfo($path, PATHINFO_EXTENSION);
+        $data = file_get_contents($path);
+        $kop_surat = 'data:image/' . $type . ';base64,' . base64_encode($data);
+
+        setlocale(LC_TIME, 'id');
+        $dateLocale = Carbon::parse(now())->formatLocalized('%d %B %Y');
+
+        $data = [
+            'title' => 'Surat Tugas Bimbingan',
+            'kop_surat' => $kop_surat,
+            'mahasiswa' => $mahasiswa,
+            'pendaftaran' => $pendaftaran,
+            'dosen_utama' => $dosenUtama,
+            'dosen_pendamping' => $dosenPendamping,
+            'prodi' => $prodi,
+            'date' => now(),
+            'dateLocale' => $dateLocale,
+        ];
+
+        $pdf = PDF::setOptions(['isHTML5ParserEnabled' => true, 'isRemoteEnabled' => true]);
+        $pdf->loadView('pages.cetak.suratTugasBimbingan', $data);
+        $pdf->setPaper('A4', 'portrait');
+        return $pdf->stream('Surat-Tugas-Bimbingan.pdf');
+    }
+
+    public function cetakSuratTugasBimbinganMahasiswa()
+    {
+        $mahasiswa = Mahasiswa::where('nim', Auth::guard('mahasiswa')->user()->nim)->first();
+        $pendaftaran = Pendaftaran::where('nim', $mahasiswa->nim)->first();
+        $prodi = Prodi::where('namaprodi', $mahasiswa->prodi)->first();
+        $dosenUtama = $mahasiswa->dosens()->where('status', 'utama')->first();
+        $dosenPendamping = $mahasiswa->dosens()->where('status', 'pendamping')->first();
+
+        $path = base_path('kop-surat.jpg');
+        $type = pathinfo($path, PATHINFO_EXTENSION);
+        $data = file_get_contents($path);
+        $kop_surat = 'data:image/' . $type . ';base64,' . base64_encode($data);
+
+        setlocale(LC_TIME, 'id');
+        $dateLocale = Carbon::parse(now())->formatLocalized('%d %B %Y');
+
+        $data = [
+            'title' => 'Surat Tugas Bimbingan',
+            'kop_surat' => $kop_surat,
+            'mahasiswa' => $mahasiswa,
+            'pendaftaran' => $pendaftaran,
+            'dosen_utama' => $dosenUtama,
+            'dosen_pendamping' => $dosenPendamping,
+            'prodi' => $prodi,
+            'date' => now(),
+            'dateLocale' => $dateLocale,
+        ];
+
+        $pdf = PDF::setOptions(['isHTML5ParserEnabled' => true, 'isRemoteEnabled' => true]);
+        $pdf->loadView('pages.cetak.suratTugasBimbingan', $data);
+        $pdf->setPaper('A4', 'portrait');
+        return $pdf->stream('Surat-Tugas-Bimbingan.pdf');
+    }
+}

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{{ $title }}</title>
+    <style>
+        * {
+            margin: 0;
+        }
+
+        .margin-left {
+            margin-left: 80px;
+        }
+
+        p {
+            font-size: 12pt;
+            text-align: justify
+        }
+
+        .margin-right {
+            margin-right: 40px;
+        }
+
+        .margin-top {
+            position: relative;
+            top: 10px;
+        }
+
+        .titik-dua {
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+
+        .top {
+            position: relative;
+            top: -24px;
+        }
+
+        .text-keterangan {
+            position: relative;
+            left: 495px;
+        }
+    </style>
+</head>
+<body>
+    <table>
+        <tr>
+            <td>
+                <img src="{{ $kop_surat }}" alt="Kop Surat" height="151">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <center>
+                    <h3>SURAT TUGAS PEMBIMBINGAN TUGAS AKHIR/SKRIPSI <br>
+                        No. 12345/FASTIKOM-UNSIQ/VIII/{{ $date->format('Y') }}
+                    </h3>
+                    <br>
+                </center>
+            </td>
+        </tr>
+    </table>
+    <table>
+        <tr>
+            <td colspan="3">
+                <p class="margin-left"><b><i>Assalamu'alaikum Wr. Wb.</i></b> </p>
+                <br>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3">
+                <p class="margin-left margin-right">Dekan Fakultas Teknik dan Ilmu Komputer (FASTIKOM) Universitas Sains
+                    Al-Qur'an
+                    (UNSIQ) Jawa Tengah di Wonosobo, memberikan tugas kepada:</p>
+                <br>
+            </td>
+        </tr>
+        <tr>
+            <td width="180">
+                <p class="margin-left">1. Nama</p>
+            </td>
+            <td width="20">
+                <p class="titik-dua">:</p>
+            </td>
+            <td>
+                <p class="margin-top">{{ $dosen_utama->nama.', '.$dosen_utama->gelar }} <br>
+                    (Selaku Pembimbing 1)
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p class="margin-left">2. Nama </p>
+            </td>
+            <td>
+                <p class="titik-dua">:</p>
+            </td>
+            <td>
+                <p class="margin-top">{{ $dosen_pendamping->nama.', '.$dosen_pendamping->gelar }} <br>
+                    (Selaku Pembimbing 2)
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3">
+                <br>
+                <p class="margin-left">Untuk memberikan bimbingan Tugas Akhir (TA) / Skripsi kepada mahasiswa tersebut
+                    dibawah ini:</p>
+                <br>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p class="margin-left">Nama</p>
+            </td>
+            <td>
+                <p class="titik-dua">:</p>
+            </td>
+            <td>
+                <p>{{ $mahasiswa->nama }}</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p class="margin-left">NIM</p>
+            </td>
+            <td>
+                <p class="titik-dua">:</p>
+            </td>
+            <td>
+                <p>{{ $mahasiswa->nim }}</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p class="margin-left">Program Studi</p>
+            </td>
+            <td>
+                <p class="titik-dua">:</p>
+            </td>
+            <td>
+                <p>{{ $mahasiswa->prodi }}</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p class="margin-left">Tanggal Pembayaran</p>
+            </td>
+            <td>
+                <p class="titik-dua">:</p>
+            </td>
+            <td>
+                <p>{{ $pendaftaran->tanggal_pembayaran }}</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p class="margin-left">Judul Tugas Akhir</p>
+            </td>
+            <td>
+                <p class="titik-dua">:</p>
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td>
+                <p class="margin-right top"><b>{{ $pendaftaran->judul }}</b></p>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3">
+                <p class="margin-left margin-right">Selama melakukan pembimbingan, harus dilaksanakan dengan
+                    sungguh-sungguh dan
+                    tidak menyimpang dari kaidah keilmuannya. Pembimbingan TA / Skripsi makasimal dilakukan selama 6
+                    bulan (1 Semester). Jika sampai batas waktu yang telah ditentukan mahasiswa tersebut belum
+                    menyelesaikan TA / Skripsi, maka TA / Skripsi tersebut dianggap gugur dan mahasiswa harus mengambil
+                    judul TA / Skripsi yang berbeda dari judul sebelumnya.</p>
+                <br>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3">
+                <p class="margin-left"><b><i>Wassalamu'alakum Wr. Wb.</i></b></p>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3">
+                <p class="text-keterangan">Wonosobo,
+                    {{ $dateLocale }}</p>
+            </td>
+        </tr>
+    </table>
+
+    <table>
+        <tr>
+            <td height="60" width="290"></td>
+            <td width="290">
+                <center>
+                    <span>
+                        Dekan <br><br><br><br><br><br>
+                        <b><u>Muafani, S.T., M.T.</u>
+                        </b>
+                        <br>
+                        <b>NPU. 191 1204 084</b>
+                    </span>
+                </center>
+            </td>
+        </tr>
+    </table>
+
+</body>
+</html>
