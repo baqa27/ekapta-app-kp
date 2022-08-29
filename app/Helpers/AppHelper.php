@@ -44,6 +44,14 @@ class AppHelper
         }
     }
 
+    public function getBimbinganIsAcc($mahasiswa_id)
+    {
+        $bimbingan = Bimbingan::where('mahasiswa_id',$mahasiswa_id)->where('status','diterima')->get();
+        if ($bimbingan) {
+            return $bimbingan;
+        }
+    }
+
     public function cekBagianIsAcc($id)
     {
         $bimbingan = Bimbingan::where('id', $id)->where('status', 'diterima')->first();

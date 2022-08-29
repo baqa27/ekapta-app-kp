@@ -63,6 +63,7 @@ class BimbinganController extends Controller
 
     public function create()
     {
+        return back();
         $mahasiswa = Mahasiswa::findOrFail(Auth::guard('mahasiswa')->user()->id);
         $prodi = Prodi::where('namaprodi', $mahasiswa->prodi)->first();
         return view('pages.mahasiswa.bimbingan.create', [
@@ -74,6 +75,7 @@ class BimbinganController extends Controller
 
     public function store(Request $request)
     {
+        return back();
         $cekBimbingan = Bimbingan::where('mahasiswa_id', Auth::guard('mahasiswa')->user()->id)
             ->whereIn('status', ['review', 'revisi'])
             ->get(); // cek apakah masih ada bimbingan dengan status review atau revisi 
@@ -187,7 +189,7 @@ class BimbinganController extends Controller
                         return false;
                     }
                     return true;
-                }), 'mimes:pdf']
+                }), 'mimes:pdf,docx']
             ]);
             if ($request->file('lampiran')) {
                 AppHelper::instance()->deleteLampiran($bimbingan->lampiran);
@@ -226,7 +228,6 @@ class BimbinganController extends Controller
 
         $revisi = new RevisiBimbingan;
         $request->validate([
-            'catatan' => 'required',
             'lampiran' => [Rule::requiredIf(function () {
                 if (empty($this->request->lampiran)) {
                     return false;
@@ -251,6 +252,7 @@ class BimbinganController extends Controller
         if ($bimbingan->status == 'diterima' || $bimbingan->status == 'revisi') {
             return redirect('bimbingan-dosen')->with('warning', 'Bimbingan tidak bisa direvisi');
         }
+
         $revisi = new RevisiBimbingan;
         $request->validate([
             'catatan' => 'required',
@@ -259,8 +261,9 @@ class BimbinganController extends Controller
                     return false;
                 }
                 return true;
-            }), 'mimes:pdf']
+            }), 'mimes:pdf,docx']
         ]);
+    
         $revisi->catatan = $request->catatan;
         $revisi->lampiran = AppHelper::instance()->uploadLampiran($request->lampiran, 'lampiran-revisi');
         $revisi->dosen_id = Auth::guard('dosen')->user()->id;
