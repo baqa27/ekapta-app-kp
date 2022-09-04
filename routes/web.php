@@ -4,6 +4,7 @@ use App\Http\Controllers\BagianController;
 use App\Http\Controllers\BimbinganController;
 use App\Http\Controllers\CetakController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DosenController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MahasiswaController;
@@ -16,19 +17,16 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::get('/login', [HomeController::class, 'login'])->name('login');
+// Route::get('/login', [HomeController::class, 'login'])->name('login');
+Route::get('/login', [LoginController::class, 'loginMahasiswa'])->name('login');
 
 // Login User
 Route::get('/login/mahasiswa', [LoginController::class, 'loginMahasiswa'])->name('login.mahasiswa')->middleware('isMahasiswaLogin');
 Route::post('/login/mahasiswa', [LoginController::class, 'cekMahasiswa'])->name('cek.mahasiswa')->middleware('isMahasiswaLogin');
-// Route::get('/login/mahasiswa', [LoginController::class, 'loginMahasiswa'])->name('login.mahasiswa');
-// Route::post('/login/mahasiswa', [LoginController::class, 'cekMahasiswa'])->name('cek.mahasiswa');
 Route::get('/login/prodi', [LoginController::class, 'loginProdi'])->name('login.prodi')->middleware('isProdiLogin');
 Route::post('/login/prodi', [LoginController::class, 'cekProdi'])->name('cek.prodi')->middleware('isProdiLogin');
 Route::get('/login/dosen', [LoginController::class, 'loginDosen'])->name('login.dosen')->middleware('isDosenLogin');
 Route::post('/login/dosen', [LoginController::class, 'cekDosen'])->name('cek.dosen')->middleware('isDosenLogin');
-// Route::get('/login/dosen', [LoginController::class, 'loginDosen'])->name('login.dosen');
-// Route::post('/login/dosen', [LoginController::class, 'cekDosen'])->name('cek.dosen');
 Route::get('/login/admin', [LoginController::class, 'loginAdmin'])->name('login.admin')->middleware('isAdminLogin');
 Route::post('/login/admin', [LoginController::class, 'cekAdmin'])->name('cek.admin')->middleware('isAdminLogin');
 
@@ -99,10 +97,17 @@ Route::get('/bimbingan/review/{id}', [BimbinganController::class, 'bimbinganRevi
 // Prodi
 Route::get('/prodis', [ProdiController::class, 'index'])->name('prodis')->middleware('isAdmin');
 Route::get('/prodi/{id}', [ProdiController::class, 'detail'])->middleware('isAdmin');
+Route::post('/prodi/import', [ProdiController::class, 'import'])->name('prodi.import')->middleware('isAdmin');
 
 // Mahasiswa
 Route::get('profile', [MahasiswaController::class, 'profile'])->name('profile');
+Route::get('mahasiswas', [MahasiswaController::class, 'index'])->name('mahasiswas');
 Route::post('profile/update', [MahasiswaController::class, 'update'])->name('profile.update');
+Route::post('mahasiswa/import', [MahasiswaController::class, 'import'])->name('mahasiswa.import');
+
+//Dosen
+Route::get('/dosens', [DosenController::class, 'index'])->name('dosens')->middleware('isAdmin');
+Route::post('/dosen/import', [DosenController::class, 'import'])->name('dosen.import')->middleware('isAdmin');
 
 // Cetak Dokumen
 Route::get('/cetak/lembar-persetujuan-pembimbing-mahasiswa', [CetakController::class, 'cetakLembarPersetujuanMahasiswa'])->name('cetak.lembar.persetujuan.mahasiswa');

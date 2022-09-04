@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -36,6 +37,7 @@
     <link rel="stylesheet"
         href="{{ asset('ekapta') }}/adminLTE/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
 </head>
+
 <body class="hold-transition sidebar-mini layout-fixed">
     <div class="wrapper">
 
@@ -107,7 +109,7 @@
 
     <script>
         const confirmDelete = () => {
-        event.preventDefault();
+            event.preventDefault();
             var form = event.target.form;
             Swal.fire({
                 title: 'Yakin ingin dihapus ?',
@@ -124,7 +126,7 @@
         }
 
         const confirmAcc = () => {
-        event.preventDefault();
+            event.preventDefault();
             var form = event.target.form;
             Swal.fire({
                 title: 'Yakin ingin diacc ?',
@@ -141,7 +143,7 @@
         }
 
         const confirmCancel = () => {
-        event.preventDefault();
+            event.preventDefault();
             var form = event.target.form;
             Swal.fire({
                 title: 'Yakin ingin dibatalkan ?',
@@ -160,87 +162,99 @@
 
     {{-- Alert success --}}
     @if (session('success'))
-    <script>
-        $(document).Toasts('create', {
-            class : 'bg-success mt-5 mr-3',
-            title: 'Success',
-            autohide: true,
-            delay: 3000,
-            body: '{{session('success')}}'
-        })
-    </script>
+        <script>
+            $(document).Toasts('create', {
+                class: 'bg-success mt-5 mr-3',
+                title: 'Success',
+                autohide: true,
+                delay: 3000,
+                body: '{{ session('success') }}'
+            })
+        </script>
     @endif
 
     {{-- Alert warning --}}
     @if (session('warning'))
-    <script>
-        $(document).Toasts('create', {
-            class : 'bg-warning mt-5 mr-3',
-            title: 'Warning',
-            autohide: true,
-            delay: 3000,
-            body: '{{session('warning')}}'
-        })
-    </script>
+        <script>
+            $(document).Toasts('create', {
+                class: 'bg-warning mt-5 mr-3',
+                title: 'Warning',
+                autohide: true,
+                delay: 3000,
+                body: '{{ session('warning') }}'
+            })
+        </script>
     @endif
 
     {{-- Alert Error --}}
     @if (session('error'))
-    <script>
-        $(document).Toasts('create', {
-            class : 'bg-danger mt-5 mr-3',
-            title: 'Error',
-            autohide: true,
-            delay: 3000,
-            body: '{{session('error')}}'
-        })
-    </script>
+        <script>
+            $(document).Toasts('create', {
+                class: 'bg-danger mt-5 mr-3',
+                title: 'Error',
+                autohide: true,
+                delay: 3000,
+                body: '{{ session('error') }}'
+            })
+        </script>
     @endif
 
     @error('lampiran')
-    <script>
-        $(document).Toasts('create', {
-            class : 'bg-danger mt-5 mr-3',
-            title: 'Error',
-            autohide: true,
-            delay: 3000,
-            body: '{{$message}}'
-        })
-    </script>
+        <script>
+            $(document).Toasts('create', {
+                class: 'bg-danger mt-5 mr-3',
+                title: 'Error',
+                autohide: true,
+                delay: 3000,
+                body: '{{ $message }}'
+            })
+        </script>
     @enderror
 
     @error('lampiran_acc')
-    <script>
-        $(document).Toasts('create', {
-            class : 'bg-danger mt-5 mr-3',
-            title: 'Error',
-            autohide: true,
-            delay: 3000,
-            body: '{{$message}}'
-        })
-    </script>
+        <script>
+            $(document).Toasts('create', {
+                class: 'bg-danger mt-5 mr-3',
+                title: 'Error',
+                autohide: true,
+                delay: 3000,
+                body: '{{ $message }}'
+            })
+        </script>
     @enderror
 
     <script>
         // Summernote
-        $(function () {
+        $(function() {
             $('#summernote').summernote()
         })
         // Custom file input
-        $(function () {
+        $(function() {
             bsCustomFileInput.init();
         });
         // DataTable
-        $(function () {
+        $(function() {
             $("#example1").DataTable({
-                "responsive": true, "lengthChange": false, "autoWidth": false,
+                "responsive": true,
+                "lengthChange": false,
+                "autoWidth": false,
             }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
 
         });
-        $(function () {
+        $(function() {
             $("#example2").DataTable({
-                "responsive": true, "lengthChange": false, "autoWidth": false,
+                "responsive": true,
+                "lengthChange": false,
+                "autoWidth": false,
             }).buttons().container().appendTo('#example2_wrapper .col-md-6:eq(0)');
+
+        });
+        $(function() {
+            $("#example3").DataTable({
+                "responsive": true,
+                "lengthChange": false,
+                "autoWidth": false,
+            }).buttons().container().appendTo('#example3_wrapper .col-md-6:eq(0)');
 
         });
         // Calendar
@@ -250,4 +264,5 @@
         })
     </script>
 </body>
+
 </html>

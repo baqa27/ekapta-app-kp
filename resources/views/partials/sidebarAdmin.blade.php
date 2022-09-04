@@ -19,7 +19,7 @@
 
                 <div class="dropdown-divider"></div>
                 <a href="#" class="dropdown-item">
-                    {{ Auth::guard('admin')->user()->nama }} {{ '('.Auth::guard('admin')->user()->kode.')' }}
+                    {{ Auth::guard('admin')->user()->nama }} {{ '(' . Auth::guard('admin')->user()->kode . ')' }}
                 </a>
                 <div class="dropdown-divider"></div>
                 <a href="{{ route('logout.admin') }}" class="dropdown-item dropdown-footer bg-danger">Logout <i
@@ -59,11 +59,12 @@
 
         <!-- Sidebar Menu -->
         <nav class="mt-2">
-            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
+                data-accordion="false">
 
                 <li class="nav-item">
                     <a href="{{ route('dashboard.admin') }}"
-                        class="nav-link {{ $active=='dashboard' ? 'active' : '' }}">
+                        class="nav-link {{ $active == 'dashboard' ? 'active' : '' }}">
                         <i class="nav-icon fas fa-tachometer-alt"></i>
                         <p>
                             Dashboard
@@ -73,7 +74,7 @@
 
                 <li class="nav-item">
                     <a href="{{ route('pengajuan.admin') }}"
-                        class="nav-link {{ $active=='pengajuan' ? 'active' : '' }}">
+                        class="nav-link {{ $active == 'pengajuan' ? 'active' : '' }}">
                         <i class="nav-icon fas fa-th"></i>
                         <p>
                             Pengajuan TA
@@ -82,7 +83,8 @@
                 </li>
 
                 <li class="nav-item">
-                    <a href="{{ route('pendaftarans') }}" class="nav-link {{ $active=='pendaftaran' ? 'active' : '' }}">
+                    <a href="{{ route('pendaftarans') }}"
+                        class="nav-link {{ $active == 'pendaftaran' ? 'active' : '' }}">
                         <i class="nav-icon fas fa-check"></i>
                         <p>
                             Validasi Pendaftaran TA
@@ -90,7 +92,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link {{ $active=='seminar' ? 'active' : '' }}">
+                    <a href="#" class="nav-link {{ $active == 'seminar' ? 'active' : '' }}">
                         <i class="nav-icon fas fa-th"></i>
                         <p>
                             Seminar Proposal TA
@@ -98,7 +100,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link {{ $active=='ujian' ? 'active' : '' }}">
+                    <a href="#" class="nav-link {{ $active == 'ujian' ? 'active' : '' }}">
                         <i class="nav-icon fas fa-th"></i>
                         <p>
                             Ujian Pendadaran TA
@@ -106,8 +108,10 @@
                     </a>
                 </li>
 
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
+                <li
+                    class="nav-item {{ $active == 'prodi' || $active == 'mahasiswa' || $active == 'dosen' ? 'menu-open' : '' }}">
+                    <a href="#"
+                        class="nav-link {{ $active == 'prodi' || $active == 'mahasiswa' || $active == 'dosen' ? 'active' : '' }}">
                         <i class="nav-icon far fa-folder"></i>
                         <p>
                             Master Data
@@ -116,9 +120,35 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="{{ route('prodis') }}" class="nav-link {{ $active=='prodi' ? 'active' : '' }}">
+                            <a href="{{ route('prodis') }}" class="nav-link {{ $active == 'prodi' ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Prodi</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('mahasiswas') }}"
+                                class="nav-link {{ $active == 'mahasiswa' ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Mahasiswa</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('dosens') }}" class="nav-link {{ $active == 'dosen' ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Dosen</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('prodis') }}"
+                                class="nav-link {{ $active == 'fakultas' ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Fakultas</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('prodis') }}" class="nav-link {{ $active == 'dekan' ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Dekan</p>
                             </a>
                         </li>
                     </ul>

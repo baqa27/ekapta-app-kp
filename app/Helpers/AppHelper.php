@@ -36,6 +36,14 @@ class AppHelper
         }
     }
 
+    public function getProdi($kode)
+    {
+        $prodi = Prodi::where('kode', $kode)->first();
+        if ($prodi) {
+            return $prodi;
+        }
+    }
+
     public function getPendaftaran($nim)
     {
         $pendaftaran = Pendaftaran::where('nim', $nim)->first();
@@ -46,7 +54,7 @@ class AppHelper
 
     public function getBimbinganIsAcc($mahasiswa_id)
     {
-        $bimbingan = Bimbingan::where('mahasiswa_id',$mahasiswa_id)->where('status','diterima')->get();
+        $bimbingan = Bimbingan::where('mahasiswa_id', $mahasiswa_id)->where('status', 'diterima')->get();
         if ($bimbingan) {
             return $bimbingan;
         }

@@ -33,39 +33,29 @@
 
                             <button type="button" class="btn btn-primary mr-2" data-toggle="modal"
                                 data-target="#modal-import">
-                                <i class="bi bi-upload mr-2"></i> Import Data Prodi
+                                <i class="bi bi-upload mr-2"></i> Import Data Dosen
                             </button>
 
                             <table id="example1" class="table table-bordered">
                                 <thead>
                                     <tr>
                                         <th>No</th>
-                                        <th>Nama Prodi</th>
-                                        <th>Jenjang</th>
-                                        <th>Bagian Bimbingan</th>
-                                        <th>Aksi</th>
+                                        <th>NIDN</th>
+                                        <th>Nama Dosen</th>
+                                        <th>Prodi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @php
                                         $no = 1;
                                     @endphp
-                                    @foreach ($prodis as $prodi)
+                                    @foreach ($dosens as $dosen)
                                         <tr>
                                             <td>{{ $no++ }}</td>
-                                            <td>{{ $prodi->namaprodi }}</td>
-                                            <td>{{ $prodi->jenjang }}</td>
+                                            <td>{{ $dosen->nidn }}</td>
+                                            <td>{{ $dosen->nama . ', ' . $dosen->gelar }}</td>
                                             <td>
-                                                <div class="d-flex justify-content-center">
-                                                    <span
-                                                        class="badge {{ count($prodi->bagians) == 0 ? 'bg-danger' : 'bg-success' }}">{{ count($prodi->bagians) }}</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <a href="{{ url('/prodi/' . $prodi->id) }}"
-                                                    class="btn btn-primary btn-sm shadow">
-                                                    <i class="fas fa-plus mr-1"></i> Manage Bagian Bimbingan
-                                                </a>
+                                                {{ \App\Helpers\AppHelper::instance()->getProdi($dosen->kodeprodi) != null ? \App\Helpers\AppHelper::instance()->getProdi($dosen->kodeprodi)->namaprodi : '' }}
                                             </td>
                                         </tr>
                                     @endforeach
@@ -74,10 +64,9 @@
                                 <tfoot>
                                     <tr>
                                         <th>No</th>
-                                        <th>Nama Prodi</th>
-                                        <th>Jenjang</th>
-                                        <th>Bagian Bimbingan</th>
-                                        <th>Aksi</th>
+                                        <th>NIDN</th>
+                                        <th>Nama Dosen</th>
+                                        <th>Prodi</th>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -92,10 +81,10 @@
     <div class="modal fade" id="modal-import">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form action="{{ route('prodi.import') }}" method="post" enctype="multipart/form-data">
+                <form action="{{ route('dosen.import') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <div class="modal-header">
-                        <h4 class="modal-title">Import Data Prodi</h4>
+                        <h4 class="modal-title">Import Data Dosen</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>

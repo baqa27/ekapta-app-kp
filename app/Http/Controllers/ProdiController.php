@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\ProdisImport;
 use App\Models\Prodi;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ProdiController extends Controller
 {
@@ -28,5 +30,15 @@ class ProdiController extends Controller
             'sidebar' => 'partials.sidebarAdmin',
             'prodi' => $prodi,
         ]);
+    }
+
+    public function import(Request $request)
+    {
+        try {
+            Excel::import(new ProdisImport, $request->file('file'));
+            return back()->with('success', 'Data Prodi behasil di Import');
+        } catch (\Throwable $e) {
+            return back()->with('warning', 'Data prodi gagal diimport');
+        }
     }
 }

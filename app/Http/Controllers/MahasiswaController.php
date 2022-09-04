@@ -2,12 +2,26 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\MahasiswasImport;
 use App\Models\Mahasiswa;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
 
 class MahasiswaController extends Controller
 {
+
+    public function index()
+    {
+        $mahasiswas = Mahasiswa::all();
+        return view('pages.admin.mahasiswa.mahasiswa', [
+            'title' => 'Master Data Mahasiswa',
+            'active' => 'mahasiswa',
+            'sidebar' => 'partials.sidebarAdmin',
+            'mahasiswas' => $mahasiswas,
+        ]);
+    }
 
     public function profile()
     {
@@ -25,10 +39,19 @@ class MahasiswaController extends Controller
         $validatedData = $request->validate([
             'email' => ['required', 'email:dns'],
             'hp' => 'required',
-            // 'semester' => 'required',
             'alamat' => 'required',
         ]);
         $mahasiswa->update($validatedData);
         return back()->with('success', 'Profil berhasil diupdate');
+    }
+
+    public function import(Request $request)
+    {
+        try {
+            Excel::import(new MahasiswasImport, $request->file('file'));
+            return back()->with('success', 'Data Mahasiswa berhasil di Import');
+        } catch (Exception $e) {
+            return back()->with('warning', 'Data Mahasiswa gagal di Import');
+        }
     }
 }
