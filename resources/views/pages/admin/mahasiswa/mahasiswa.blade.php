@@ -92,7 +92,7 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label for="" class="form-label">Pilih File <br>
-                                <small>Format file <b>.CSV</b></small></label>
+                                <small>Format file <b>.csv / .xlsx </b></small></label>
                             <div class="input-group mb-3">
                                 <div class="custom-file">
                                     <input type="file" class="custom-file-input @error('file')is-invalid @enderror"
@@ -101,7 +101,7 @@
                                         file</label>
                                 </div>
                                 <div class="input-group-append">
-                                    <span class="input-group-text">CSV</span>
+                                    <span class="input-group-text">Dokumen</span>
                                 </div>
                             </div>
                             @error('file')

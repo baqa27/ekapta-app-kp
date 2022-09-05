@@ -62,7 +62,7 @@
                                     <b>{{ \App\Helpers\AppHelper::instance()->getDosen($prodi->kodekaprodi) != null
                                         ? \App\Helpers\AppHelper::instance()->getDosen($prodi->kodekaprodi)->nama .
                                             ',
-                                                                        ' .
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ' .
                                             \App\Helpers\AppHelper::instance()->getDosen($prodi->kodekaprodi)->gelar
                                         : '' }}</b>
                                 </div>
@@ -79,6 +79,11 @@
                             <button type="button" class="btn btn-primary mr-2" data-toggle="modal"
                                 data-target="#modal-create">
                                 <i class="fas fa-plus mr-2"></i> Buat Bagian Bimbingan
+                            </button>
+
+                            <button type="button" class="btn btn-info mr-2" data-toggle="modal"
+                                data-target="#modal-import">
+                                <i class="fas fa-upload mr-2"></i> Import Bagian Bimbingan
                             </button>
 
                             <ul class="list-group mt-3">
@@ -156,6 +161,51 @@
                     </div>
                     <div class="modal-footer justify-content-between">
                         <button type="submit" class="btn btn-success">Simpan</button>
+                    </div>
+                </form>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+    <!-- Modal Import -->
+    <div class="modal fade" id="modal-import">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form action="{{ route('bagian.import') }}" method="post" enctype="multipart/form-data">
+                    @csrf
+
+                    <input type="hidden" name="prodi" value="{{ $prodi->id }}">
+
+                    <div class="modal-header">
+                        <h4 class="modal-title">Import Bagian Bimbingan</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="" class="form-label">Pilih File Import<br>
+                                <small>Format file : <b>.csv / .xlsx </b></small></label>
+                            <div class="input-group mb-3">
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input @error('file')is-invalid @enderror"
+                                        name="file">
+                                    <label class="custom-file-label" for="exampleInputFile">Choose
+                                        file</label>
+                                </div>
+                                <div class="input-group-append">
+                                    <span class="input-group-text">Dokumen</span>
+                                </div>
+                            </div>
+                            @error('file')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="modal-footer justify-content-between">
+                        <button type="submit" class="btn btn-success">Import</button>
                     </div>
                 </form>
             </div>

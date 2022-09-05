@@ -300,7 +300,7 @@ class PengajuanController extends Controller
                 $pengajuan->revisis()->save($revisi);
             }
 
-            return back('pengajuan-prodi')->with('success', 'Pengajuan berhasil direvisi');
+            return redirect('pengajuan-prodi')->with('success', 'Pengajuan berhasil direvisi');
         }
     }
 

@@ -57,6 +57,8 @@ class PendaftaranController extends Controller
         $cekPendaftaranAcc = Pendaftaran::where('nim', Auth::guard('mahasiswa')->user()->nim)->first();
         if ($cekPendaftaranAcc) {
             return redirect('pendaftaran-mahasiswa')->with('warning', 'Anda sudah melakukan pendaftaran tugas akhir');
+        } else if (count(Auth::guard('mahasiswa')->user()->dosens) == 0) {
+            return back()->with('warning', 'Silahkan tunggu ploting dosen pembimbing oleh Prodi');
         }
         $mahasiswa = Mahasiswa::where('nim', Auth::guard('mahasiswa')->user()->nim)->first();
         $dosenUtama = $mahasiswa->dosens()->where('status', 'utama')->first();

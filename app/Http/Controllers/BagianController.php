@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\BagiansImport;
 use App\Models\Bagian;
 use App\Models\Prodi;
+use Exception;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class BagianController extends Controller
 {
@@ -45,5 +48,15 @@ class BagianController extends Controller
         }
         $bagian->delete();
         return back()->with('success', 'Bagian berhasil dihapus');
+    }
+
+    public function import(Request $request)
+    {
+        try {
+            Excel::import(new BagiansImport($request->prodi), $request->file('file'));
+            return back()->with('success', 'Bagian berhasil diimport');
+        } catch (Exception $e) {
+            return back()->with('warning', 'Bagian gagal diimport');
+        }
     }
 }

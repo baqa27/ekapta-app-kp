@@ -28,7 +28,7 @@
                     <div class="card card-primary card-outline">
                         <div class="ribbon-wrapper ribbon-lg">
                             <div
-                                class="ribbon 
+                                class="ribbon
                             @if ($pengajuan->status == 'review') bg-secondary
                             @elseif ($pengajuan->status == 'revisi')
                             bg-warning
@@ -137,13 +137,13 @@
                                     {{ count($pengajuan->revisis) }}
                                 </span>
                             </h3>
-                            @if ($pengajuan->status =='revisi')
-                            <div class="float-right">
-                                <button type="button" class="btn btn-primary mr-2" data-toggle="modal"
-                                    data-target="#modal-revisi">
-                                    <i class="bi bi-plus-square mr-2"></i> Tambahkan Revisi
-                                </button>
-                            </div>
+                            @if ($pengajuan->status == 'revisi')
+                                <div class="float-right">
+                                    <button type="button" class="btn btn-primary mr-2" data-toggle="modal"
+                                        data-target="#modal-revisi">
+                                        <i class="bi bi-plus-square mr-2"></i> Tambahkan Revisi
+                                    </button>
+                                </div>
                             @endif
                         </div>
                         <div class="card-body">
@@ -151,7 +151,7 @@
                                 <div class="card bg-light">
                                     <div class="card-header"><i class="fas fa-calendar mr-2"></i>
                                         {{ $revisi->created_at->format('d M
-                                                                                                                                                        y H:m') }}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                y H:m') }}
                                         <div class="float-right" onclick="confirmDelete()">
                                             <form action="{{ route('pengajuan.revisi.delete') }}" method="post">
                                                 @csrf
@@ -235,7 +235,7 @@
     </div>
 
     <!-- Modal Revisi -->
-    @if ($pengajuan->status == 'revisi')
+    @if ($pengajuan->status == 'revisi' || $pengajuan->status == 'review')
         <div class="modal fade" id="modal-revisi">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -355,25 +355,30 @@
                             <div class="modal-body">
                                 <div class="form-group">
                                     <label for="" class="form-label">Dosen Pembimbing Utama</label>
-                                    <select class="form-control" name="dosen_utama" required>
-                                        <option value="">Pilih</option>
-                                        @foreach ($dosens as $dosen)
-                                            <option value="{{ $dosen->id }}"
-                                                @if ($dosen_utama) {{ $dosen_utama->id == $dosen->id ? 'selected' : '' }} @endif>
-                                                {{ $dosen->nama . '.' . $dosen->gelar }}</option>
-                                        @endforeach
-                                    </select>
+                                    <div class="col-md-12">
+                                        <select class="select-1" name="dosen_utama" style="width: 100%;" required>
+                                            <option value="">Pilih</option>
+                                            @foreach ($dosens as $dosen)
+                                                <option value="{{ $dosen->id }}"
+                                                    @if ($dosen_utama) {{ $dosen_utama->id == $dosen->id ? 'selected' : '' }} @endif>
+                                                    {{ $dosen->nama . ', ' . $dosen->gelar }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                 </div>
+
                                 <div class="form-group">
                                     <label for="" class="form-label">Dosen Pembimbing Pendamping</label>
-                                    <select class="form-control" name="dosen_pendamping" required>
-                                        <option value="">Pilih</option>
-                                        @foreach ($dosens as $dosen)
-                                            <option value="{{ $dosen->id }}"
-                                                @if ($dosen_pendamping) {{ $dosen_pendamping->id == $dosen->id ? 'selected' : '' }} @endif>
-                                                {{ $dosen->nama . '.' . $dosen->gelar }}</option>
-                                        @endforeach
-                                    </select>
+                                    <div class="col-md-12">
+                                        <select class="select-2" name="dosen_pendamping" style="width: 100%" required>
+                                            <option value="">Pilih</option>
+                                            @foreach ($dosens as $dosen)
+                                                <option value="{{ $dosen->id }}"
+                                                    @if ($dosen_pendamping) {{ $dosen_pendamping->id == $dosen->id ? 'selected' : '' }} @endif>
+                                                    {{ $dosen->nama . ', ' . $dosen->gelar }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                             <div class="modal-footer justify-content-between">

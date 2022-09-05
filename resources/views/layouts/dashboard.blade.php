@@ -36,6 +36,7 @@
     <!-- SweetAlert2 -->
     <link rel="stylesheet"
         href="{{ asset('ekapta') }}/adminLTE/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
+
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -106,59 +107,11 @@
     <script src="{{ asset('ekapta') }}/adminLTE/plugins/toastr/toastr.min.js"></script>
     <!-- SweetAlert2 -->
     <script src="{{ asset('ekapta') }}/adminLTE/plugins/sweetalert2/sweetalert2.min.js"></script>
-
-    <script>
-        const confirmDelete = () => {
-            event.preventDefault();
-            var form = event.target.form;
-            Swal.fire({
-                title: 'Yakin ingin dihapus ?',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    form.submit();
-                }
-            })
-        }
-
-        const confirmAcc = () => {
-            event.preventDefault();
-            var form = event.target.form;
-            Swal.fire({
-                title: 'Yakin ingin diacc ?',
-                icon: 'success',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    form.submit();
-                }
-            })
-        }
-
-        const confirmCancel = () => {
-            event.preventDefault();
-            var form = event.target.form;
-            Swal.fire({
-                title: 'Yakin ingin dibatalkan ?',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    form.submit();
-                }
-            })
-        }
-    </script>
+    {{-- My JS --}}
+    <script src="{{ asset('ekapta/assets/js/dashboard.js') }}"></script>
+    {{-- Select2 --}}
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     {{-- Alert success --}}
     @if (session('success'))
@@ -223,46 +176,17 @@
         </script>
     @enderror
 
-    <script>
-        // Summernote
-        $(function() {
-            $('#summernote').summernote()
-        })
-        // Custom file input
-        $(function() {
-            bsCustomFileInput.init();
-        });
-        // DataTable
-        $(function() {
-            $("#example1").DataTable({
-                "responsive": true,
-                "lengthChange": false,
-                "autoWidth": false,
-            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+    @if ($active == 'pengajuan')
+        <script>
+            $(document).ready(function() {
+                $('.select-1').select2();
+            })
 
-        });
-        $(function() {
-            $("#example2").DataTable({
-                "responsive": true,
-                "lengthChange": false,
-                "autoWidth": false,
-            }).buttons().container().appendTo('#example2_wrapper .col-md-6:eq(0)');
-
-        });
-        $(function() {
-            $("#example3").DataTable({
-                "responsive": true,
-                "lengthChange": false,
-                "autoWidth": false,
-            }).buttons().container().appendTo('#example3_wrapper .col-md-6:eq(0)');
-
-        });
-        // Calendar
-        $('#calendar').datetimepicker({
-            format: 'L',
-            inline: true
-        })
-    </script>
+            $(document).ready(function() {
+                $('.select-2').select2();
+            })
+        </script>
+    @endif
 </body>
 
 </html>
