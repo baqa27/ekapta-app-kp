@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Helpers\AppHelper;
 use App\Models\Dosen;
 use App\Models\Pendaftaran;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
@@ -39,6 +40,8 @@ class BimbinganController extends Controller
             'active' => 'bimbingan',
             'sidebar' => 'partials.sidebarDosen',
             'bimbingans' => $dosen->bimbingans()->where('status', 'review')->orderBy('tanggal_bimbingan', 'desc')->get(),
+            'bimbingans_diterima' => $dosen->bimbingans()->where('status', 'diterima')->orderBy('tanggal_bimbingan', 'desc')->get(),
+            'bimbingans_revisi' => $dosen->bimbingans()->where('status', 'revisi')->orderBy('tanggal_bimbingan', 'desc')->get(),
         ]);
     }
 
@@ -58,6 +61,7 @@ class BimbinganController extends Controller
             'bimbingans_pendamping' => $mahasiswa->bimbingans()->where('pembimbing', 'pendamping')->get(),
             'dosen_utama' => $dosenUtama,
             'dosen_pendamping' => $dosenPendamping,
+            'date_expired' => Carbon::parse($cekPendaftaranAcc->tanggal_acc)->addMonthsNoOverflow(12),
         ]);
     }
 
@@ -78,12 +82,12 @@ class BimbinganController extends Controller
         return back();
         $cekBimbingan = Bimbingan::where('mahasiswa_id', Auth::guard('mahasiswa')->user()->id)
             ->whereIn('status', ['review', 'revisi'])
-            ->get(); // cek apakah masih ada bimbingan dengan status review atau revisi 
+            ->get(); // cek apakah masih ada bimbingan dengan status review atau revisi
 
         $bimbinganIfExists = Bimbingan::where(['mahasiswa_id' => Auth::guard('mahasiswa')->user()->id, 'bagian_id' => $request->bagian_id, 'status' => 'diterima'])
-            ->get(); // cek ketika bagian bimbingan yang sudah diterima sebelumnya di inputkan lagi 
+            ->get(); // cek ketika bagian bimbingan yang sudah diterima sebelumnya di inputkan lagi
 
-        Bagian::findOrFail($request->bagian_id); //cek bagain bimbingan apakah ada 
+        Bagian::findOrFail($request->bagian_id); //cek bagain bimbingan apakah ada
 
         $mahasiswa = Mahasiswa::findOrFail(Auth::guard('mahasiswa')->user()->id);
         $dosenUtama = $mahasiswa->dosens()->where('status', 'utama')->first();
@@ -152,9 +156,9 @@ class BimbinganController extends Controller
     public function bimbinganReview($id)
     {
         $bimbingan = Bimbingan::findOrFail($id);
-        if ($bimbingan->status == 'revisi' || $bimbingan->status == 'diterima') {
-            return back()->with('warning', 'Bimbingan tidak ditemukan');
-        }
+        // if ($bimbingan->status == 'revisi' || $bimbingan->status == 'diterima') {
+        //     return back()->with('warning', 'Bimbingan tidak ditemukan');
+        // }
 
         $mahasiswa = Mahasiswa::find($bimbingan->mahasiswa->id);
         $prodi = Prodi::where('namaprodi', $mahasiswa->prodi)->first();
@@ -225,24 +229,10 @@ class BimbinganController extends Controller
         if ($bimbingan->status == 'diterima') {
             return redirect('bimbingan-dosen')->with('warning', 'Bimbingan sudah di Acc');
         }
-
-        $revisi = new RevisiBimbingan;
-        $request->validate([
-            'lampiran' => [Rule::requiredIf(function () {
-                if (empty($this->request->lampiran)) {
-                    return false;
-                }
-                return true;
-            }), 'mimes:pdf']
-        ]);
-        $revisi->catatan = $request->catatan;
-        $revisi->lampiran = AppHelper::instance()->uploadLampiran($request->lampiran, 'lampiran-revisi');
-        $revisi->dosen_id = Auth::guard('dosen')->user()->id;
         $bimbingan->update([
             'status' => 'diterima',
             'tanggal_acc' => now(),
         ]);
-        $bimbingan->revisis()->save($revisi);
         return redirect('bimbingan-dosen')->with('success', 'Bimbingan berhasil di Acc');
     }
 
@@ -263,7 +253,7 @@ class BimbinganController extends Controller
                 return true;
             }), 'mimes:pdf,docx']
         ]);
-    
+
         $revisi->catatan = $request->catatan;
         $revisi->lampiran = AppHelper::instance()->uploadLampiran($request->lampiran, 'lampiran-revisi');
         $revisi->dosen_id = Auth::guard('dosen')->user()->id;
@@ -280,5 +270,24 @@ class BimbinganController extends Controller
         AppHelper::instance()->deleteLampiran($revisi->lampiran);
         $revisi->delete();
         return back()->with('success', 'Revisi berhasil dihapus');
+    }
+
+    public function cancelAcc(Request $request)
+    {
+        $bimbingan = Bimbingan::findOrFail($request->id);
+        $bimbingan->update([
+            'status' => 'review',
+            'tanggal_acc' => null,
+        ]);
+        return back()->with('success', 'Acc bimbingan berhasil dibatalkan');
+    }
+
+    public function cancelRevisi(Request $request)
+    {
+        $bimbingan = Bimbingan::findOrFail($request->id);
+        $bimbingan->update([
+            'status' => 'review',
+        ]);
+        return back()->with('success', 'Revisi bimbingan berhasil dibatalkan');
     }
 }

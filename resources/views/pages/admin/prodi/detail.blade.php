@@ -62,7 +62,7 @@
                                     <b>{{ \App\Helpers\AppHelper::instance()->getDosen($prodi->kodekaprodi) != null
                                         ? \App\Helpers\AppHelper::instance()->getDosen($prodi->kodekaprodi)->nama .
                                             ',
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ' .
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    ' .
                                             \App\Helpers\AppHelper::instance()->getDosen($prodi->kodekaprodi)->gelar
                                         : '' }}</b>
                                 </div>
@@ -100,11 +100,23 @@
 
                                         <div class="float-right">
                                             <div class="d-flex">
-                                                @if (count($bagian->bimbingans) != 0)
-                                                    <div class="badge badge-info mr-2">
+                                                @if (count($bagian->bimbingans) == 0)
+                                                    {{-- <div class="badge badge-info mr-2">
                                                         <span style="position: relative;top:5px;">
                                                             Mahasiswa : <b>{{ count($bagian->bimbingans) }}</b>
                                                         </span>
+                                                    </div> --}}
+                                                    <div onclick="confirmActive()">
+                                                        <form action="{{ route('bagian.active') }}" method="post">
+                                                            @csrf
+                                                            <input type="hidden" name="id"
+                                                                value="{{ $bagian->id }}">
+                                                            <button class="btn btn-success btn-sm float-right mr-2"
+                                                                type="submit">
+                                                                <i class="fas fa-check-circle"></i>
+                                                                Aktifkan
+                                                            </button>
+                                                        </form>
                                                     </div>
                                                 @endif
                                                 <button type="button" class="btn btn-primary btn-sm mr-2"
@@ -112,13 +124,16 @@
                                                     <i class="bi bi-pencil-square"></i>
                                                 </button>
                                                 @if (count($bagian->bimbingans) == 0)
-                                                    <form action="{{ route('bagian.delete') }}" method="post">
-                                                        @csrf
-                                                        <input type="hidden" name="id" value="{{ $bagian->id }}">
-                                                        <button class="btn btn-danger btn-sm float-right" type="submit"
-                                                            onclick="confirmDelete()">
-                                                            <i class="fas fa-trash" onclick="confirmDelete()"></i></button>
-                                                    </form>
+                                                    <div onclick="confirmDelete()">
+                                                        <form action="{{ route('bagian.delete') }}" method="post">
+                                                            @csrf
+                                                            <input type="hidden" name="id"
+                                                                value="{{ $bagian->id }}">
+                                                            <button class="btn btn-danger btn-sm float-right"
+                                                                type="submit">
+                                                                <i class="fas fa-trash"></i></button>
+                                                        </form>
+                                                    </div>
                                                 @endif
                                             </div>
                                         </div>

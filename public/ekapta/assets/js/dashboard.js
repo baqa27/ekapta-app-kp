@@ -32,6 +32,23 @@ const confirmAcc = () => {
     })
 }
 
+const confirmActive = () => {
+    event.preventDefault();
+    var form = event.target.form;
+    Swal.fire({
+        title: 'Yakin ingin diaktifkan ?',
+        icon: 'success',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            form.submit();
+        }
+    })
+}
+
 const confirmCancel = () => {
     event.preventDefault();
     var form = event.target.form;

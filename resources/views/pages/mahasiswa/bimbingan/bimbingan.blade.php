@@ -23,9 +23,14 @@
     <div class="content">
         <div class="container">
 
-            {{-- <a href="{{ route('bimbingan.create') }}" class="btn btn-primary mb-4"><i class="fas fa-plus mr-2"></i>
-            Buat
-            Bimbingan TA</a> --}}
+            <div class="alert alert-success alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                Tanggal Berakhir Bimbingan : <b>{{ \Carbon\Carbon::parse($date_expired)->formatLocalized('%d %B %Y') }}</b>
+            </div>
+
+            <div class="d-flex justify-content-center mb-3 bg-primary rounded p-2 countdown"
+                data-expire="{{ \Carbon\Carbon::parse($date_expired)->format('Y/m/d h:i:s') }}">
+            </div>
 
             <div class="row">
                 <div class="col-md-12">
@@ -71,14 +76,13 @@
                                                     <td>{{ $no++ }}</td>
                                                     <td>{{ $bimbingan->bagian->bagian }}</td>
                                                     <td>
-                                                        {{-- {{ $bimbingan->tanggal_bimbingan->format('d M y H:m') }} --}}
                                                         @if ($bimbingan->tanggal_bimbingan)
-                                                            {{ date('d M y H:m', strtotime($bimbingan->tanggal_bimbingan)) }}
+                                                            {{ date('d M Y H:m', strtotime($bimbingan->tanggal_bimbingan)) }}
                                                         @endif
                                                     </td>
                                                     <td>
                                                         @if ($bimbingan->tanggal_acc)
-                                                            {{ date('d M y H:m', strtotime($bimbingan->tanggal_acc)) }}
+                                                            {{ date('d M Y H:m', strtotime($bimbingan->tanggal_acc)) }}
                                                         @endif
                                                     </td>
                                                     <td>
@@ -175,14 +179,13 @@
                                                     <td>{{ $no++ }}</td>
                                                     <td>{{ $bimbingan->bagian->bagian }}</td>
                                                     <td>
-                                                        {{-- {{ $bimbingan->created_at->format('d M y H:m') }} --}}
                                                         @if ($bimbingan->tanggal_bimbingan)
-                                                            {{ date('d M y H:m', strtotime($bimbingan->tanggal_bimbingan)) }}
+                                                            {{ date('d M Y H:m', strtotime($bimbingan->tanggal_bimbingan)) }}
                                                         @endif
                                                     </td>
                                                     <td>
                                                         @if ($bimbingan->tanggal_acc)
-                                                            {{ date('d M y H:m', strtotime($bimbingan->tanggal_acc)) }}
+                                                            {{ date('d M Y H:m', strtotime($bimbingan->tanggal_acc)) }}
                                                         @endif
                                                     </td>
                                                     <td>
@@ -220,7 +223,6 @@
                                                                     class="btn btn-primary btn-sm shadow" type="submit"><i
                                                                         class="fas fa-upload mr-1"></i>Submit</a>
                                                             @endif
-                                                            
                                                         @endif
 
                                                         @if (count(\App\Helpers\AppHelper::instance()->getBimbinganIsAcc($bimbingan->mahasiswa->id)) != 0)

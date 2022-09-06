@@ -5,6 +5,7 @@ namespace App\Helpers;
 use App\Models\Bimbingan;
 use App\Models\Dosen;
 use App\Models\Mahasiswa;
+use App\Models\MahasiswaDetail;
 use App\Models\Pendaftaran;
 use App\Models\Pengajuan;
 use App\Models\Prodi;
@@ -17,6 +18,14 @@ class AppHelper
         $mahasiswa = Mahasiswa::where('nim', $nim)->first();
         if ($mahasiswa) {
             return $mahasiswa;
+        }
+    }
+
+    public function getMahasiswaDetail($nim)
+    {
+        $mahasiswaDetail = MahasiswaDetail::where('nim', $nim)->first();
+        if ($mahasiswaDetail) {
+            return $mahasiswaDetail;
         }
     }
 

@@ -4,6 +4,7 @@ This is a starter template page. Use this page to start your new project from
 scratch. This page gets rid of all links and provides the needed markup only.
 -->
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -35,6 +36,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <link rel="stylesheet"
         href="{{ asset('ekapta') }}/adminLTE/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
 </head>
+
 <body class="hold-transition layout-top-nav">
 
     <div class="wrapper">
@@ -95,98 +97,54 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <script src="{{ asset('ekapta') }}/adminLTE/plugins/summernote/summernote-bs4.min.js"></script>
     <!-- bs-custom-file-input -->
     <script src="{{ asset('ekapta') }}/adminLTE/plugins/bs-custom-file-input/bs-custom-file-input.min.js"></script>
-    {{--
-    <!-- daterangepicker -->
-    <script src="{{ asset('ekapta') }}/adminLTE/plugins/moment/moment.min.js"></script>
-    <script src="{{ asset('ekapta') }}/adminLTE/plugins/daterangepicker/daterangepicker.js"></script>
-    <!-- Tempusdominus Bootstrap 4 -->
-    <script src="{{ asset('ekapta') }}/adminLTE/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js">
-    </script> --}}
     <!-- Toastr -->
     <script src="{{ asset('ekapta') }}/adminLTE/plugins/toastr/toastr.min.js"></script>
     <!-- SweetAlert2 -->
     <script src="{{ asset('ekapta') }}/adminLTE/plugins/sweetalert2/sweetalert2.min.js"></script>
-
-    <script>
-        const confirmDelete = () => {
-        event.preventDefault();
-            var form = event.target.form;
-            Swal.fire({
-                title: 'Yakin ingin dihapus ?',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    form.submit();
-                }
-            })
-        }
-    </script>
+    {{-- Countdown JS --}}
+    <script src="{{ asset('ekapta/assets/js/jquery.countdown.min.js') }}"></script>
+    {{-- My Js --}}
+    <script src="{{ asset('ekapta/assets/js/dashboard-mahasiswa.js') }}"></script>
 
     {{-- Alert success --}}
     @if (session('success'))
-    <script>
-        $(document).Toasts('create', {
-            class : 'bg-success mt-5 mr-3',
-            title: 'Success',
-            autohide: true,
-            delay: 3000,
-            body: '{{session('success')}}'
-        })
-    </script>
+        <script>
+            $(document).Toasts('create', {
+                class: 'bg-success mt-5 mr-3',
+                title: 'Success',
+                autohide: true,
+                delay: 3000,
+                body: '{{ session('success') }}'
+            })
+        </script>
     @endif
 
     {{-- Alert warning --}}
     @if (session('warning'))
-    <script>
-        $(document).Toasts('create', {
-            class : 'bg-warning mt-5 mr-3',
-            title: 'Warning',
-            autohide: true,
-            delay: 3000,
-            body: '{{session('warning')}}'
-        })
-    </script>
+        <script>
+            $(document).Toasts('create', {
+                class: 'bg-warning mt-5 mr-3',
+                title: 'Warning',
+                autohide: true,
+                delay: 3000,
+                body: '{{ session('warning') }}'
+            })
+        </script>
     @endif
 
     {{-- Alert Error --}}
     @if (session('error'))
-    <script>
-        $(document).Toasts('create', {
-            class : 'bg-danger mt-5 mr-3',
-            title: 'Error',
-            autohide: true,
-            delay: 3000,
-            body: '{{session('error')}}'
-        })
-    </script>
+        <script>
+            $(document).Toasts('create', {
+                class: 'bg-danger mt-5 mr-3',
+                title: 'Error',
+                autohide: true,
+                delay: 3000,
+                body: '{{ session('error') }}'
+            })
+        </script>
     @endif
 
-    <script>
-        // Summernote
-        $(function () {
-            $('#summernote').summernote()
-        })
-        // Custom file input
-        $(function () {
-            bsCustomFileInput.init();
-        });
-        // DataTable
-        $(function () {
-            $("#example1").DataTable({
-                "responsive": true, "lengthChange": false, "autoWidth": false,
-            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-
-        });
-        $(function () {
-            $("#example2").DataTable({
-                "responsive": true, "lengthChange": false, "autoWidth": false,
-            }).buttons().container().appendTo('#example2_wrapper .col-md-6:eq(0)');
-
-        });
-    </script>
 </body>
+
 </html>

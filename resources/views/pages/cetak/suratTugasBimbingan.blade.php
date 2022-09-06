@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -42,8 +43,19 @@
             position: relative;
             left: 495px;
         }
+
+        #qr-code {
+            margin-top: -40px;
+            margin-left: 670px;
+        }
+
+        .text-expired {
+            margin-left: 80px;
+            color: rgb(255, 89, 191);
+        }
     </style>
 </head>
+
 <body>
     <table>
         <tr>
@@ -55,13 +67,40 @@
             <td>
                 <center>
                     <h3>SURAT TUGAS PEMBIMBINGAN TUGAS AKHIR/SKRIPSI <br>
-                        No. 12345/FASTIKOM-UNSIQ/VIII/{{ $date->format('Y') }}
+                        No. {{ $pendaftaran->id }}/FASTIKOM-UNSIQ/
+                        @if ($date->format('m') == '01')
+                            I
+                        @elseif ($date->format('m') == '02')
+                            II
+                        @elseif ($date->format('m') == '03')
+                            III
+                        @elseif ($date->format('m') == '04')
+                            IV
+                        @elseif ($date->format('m') == '05')
+                            V
+                        @elseif ($date->format('m') == '06')
+                            VI
+                        @elseif ($date->format('m') == '07')
+                            VII
+                        @elseif ($date->format('m') == '08')
+                            VIII
+                        @elseif ($date->format('m') == '09')
+                            IX
+                        @elseif ($date->format('m') == '10')
+                            X
+                        @elseif ($date->format('m') == '11')
+                            XI
+                        @elseif ($date->format('m') == '12')
+                            XII
+                        @endif
+                        /{{ $date->format('Y') }}
                     </h3>
                     <br>
                 </center>
             </td>
         </tr>
     </table>
+    <img src="{{ $qr_code }}" alt="QR Code" height="80" id="qr-code">
     <table>
         <tr>
             <td colspan="3">
@@ -85,7 +124,7 @@
                 <p class="titik-dua">:</p>
             </td>
             <td>
-                <p class="margin-top">{{ $dosen_utama->nama.', '.$dosen_utama->gelar }} <br>
+                <p class="margin-top">{{ $dosen_utama->nama . ', ' . $dosen_utama->gelar }} <br>
                     (Selaku Pembimbing 1)
                 </p>
             </td>
@@ -98,7 +137,7 @@
                 <p class="titik-dua">:</p>
             </td>
             <td>
-                <p class="margin-top">{{ $dosen_pendamping->nama.', '.$dosen_pendamping->gelar }} <br>
+                <p class="margin-top">{{ $dosen_pendamping->nama . ', ' . $dosen_pendamping->gelar }} <br>
                     (Selaku Pembimbing 2)
                 </p>
             </td>
@@ -175,8 +214,8 @@
             <td colspan="3">
                 <p class="margin-left margin-right">Selama melakukan pembimbingan, harus dilaksanakan dengan
                     sungguh-sungguh dan
-                    tidak menyimpang dari kaidah keilmuannya. Pembimbingan TA / Skripsi makasimal dilakukan selama 6
-                    bulan (1 Semester). Jika sampai batas waktu yang telah ditentukan mahasiswa tersebut belum
+                    tidak menyimpang dari kaidah keilmuannya. Pembimbingan TA / Skripsi makasimal dilakukan selama 12
+                    bulan (2 Semester). Jika sampai batas waktu yang telah ditentukan mahasiswa tersebut belum
                     menyelesaikan TA / Skripsi, maka TA / Skripsi tersebut dianggap gugur dan mahasiswa harus mengambil
                     judul TA / Skripsi yang berbeda dari judul sebelumnya.</p>
                 <br>
@@ -211,6 +250,10 @@
             </td>
         </tr>
     </table>
+    <p class="text-expired">
+        <b><i>NB. BATAS MAKSIMAL SAMPAI PADA : {{ $date_expired }}</i></b>
+    </p>
 
 </body>
+
 </html>

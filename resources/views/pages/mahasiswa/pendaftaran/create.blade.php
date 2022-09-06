@@ -86,7 +86,8 @@
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Semester</label>
                                     <input type="text" class="form-control"
-                                        value="{{ Auth::guard('mahasiswa')->user()->semester }}" disabled>
+                                        value="{{ \App\Helpers\AppHelper::instance()->getMahasiswaDetail(Auth::guard('mahasiswa')->user()->nim) != null ? \App\Helpers\AppHelper::instance()->getMahasiswaDetail(Auth::guard('mahasiswa')->user()->nim)->semester : '' }}"
+                                        disabled>
                                 </div>
 
                                 <div class="form-group">

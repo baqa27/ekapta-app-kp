@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\MahasiswaDetailsImport;
 use App\Imports\MahasiswasImport;
 use App\Models\Mahasiswa;
 use Exception;
@@ -52,6 +53,16 @@ class MahasiswaController extends Controller
             return back()->with('success', 'Data Mahasiswa berhasil di Import');
         } catch (Exception $e) {
             return back()->with('warning', 'Data Mahasiswa gagal di Import');
+        }
+    }
+
+    public function importDetail(Request $request)
+    {
+        try {
+            Excel::import(new MahasiswaDetailsImport, $request->file('file'));
+            return back()->with('success', 'Data semester dan status mahasiswa berhasil di import');
+        } catch (Exception $e) {
+            return back()->with('warning', 'Data semester dan status mahasiswa gagal di import');
         }
     }
 }

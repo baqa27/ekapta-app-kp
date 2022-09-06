@@ -79,11 +79,11 @@
                             <p><b>Deskripsi</b></p>
                             {!! nl2br($pengajuan->deskripsi) !!}
                             <div class="mt-3 text-secondary"><i class="fas fa-calendar mr-2"></i>
-                                {{ $pengajuan->created_at->format('d M y H:m') }}
+                                {{ $pengajuan->created_at->format('d M Y H:m') }}
                             </div>
                             @if ($pengajuan->tanggal_acc)
                                 <div class="text-success"><i class="fas fa-calendar-check mr-2"></i>
-                                    {{ date('d M y H:m', strtotime($pengajuan->tanggal_acc)) }}
+                                    {{ date('d M Y H:m', strtotime($pengajuan->tanggal_acc)) }}
                                 </div>
                             @endif
                             <hr>
@@ -150,8 +150,7 @@
                             @foreach ($revisis as $revisi)
                                 <div class="card bg-light">
                                     <div class="card-header"><i class="fas fa-calendar mr-2"></i>
-                                        {{ $revisi->created_at->format('d M
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                y H:m') }}
+                                        {{ $revisi->created_at->format('d M Y H:m') }}
                                         <div class="float-right" onclick="confirmDelete()">
                                             <form action="{{ route('pengajuan.revisi.delete') }}" method="post">
                                                 @csrf
@@ -168,7 +167,7 @@
                                         Lampiran :
                                         @if ($revisi->lampiran)
                                             <a href="{{ asset($revisi->lampiran) }}" class="ml-3" target="_blank"><i
-                                                    class="fas fa-paperclip"></i> Lampiran.pdf</a>
+                                                    class="fas fa-paperclip"></i> Lampiran</a>
                                         @endif
                                     </div>
                                 </div>

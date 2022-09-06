@@ -28,7 +28,7 @@
                     <div class="card card-primary card-outline">
                         <div class="ribbon-wrapper ribbon-lg">
                             <div
-                                class="ribbon 
+                                class="ribbon
                             @if ($bimbingan->status == 'review') bg-secondary
                             @elseif ($bimbingan->status == 'revisi')
                             bg-warning
@@ -77,19 +77,18 @@
                             {!! nl2br($bimbingan->keterangan) !!}
 
                             <div class="mt-4 text-secondary"><i class="fas fa-calendar mr-2"></i>
-                                {{-- {{ $bimbingan->created_at->format('d M y H:m') }} --}}
-                                {{ date('d M y H:m', strtotime($bimbingan->tanggal_bimbingan)) }}
+                                {{ date('d M Y H:m', strtotime($bimbingan->tanggal_bimbingan)) }}
                             </div>
 
                             @if ($bimbingan->tanggal_acc)
                                 <div class="text-success"><i class="fas fa-calendar-check mr-2"></i>
-                                    {{ date('d M y H:m', strtotime($bimbingan->tanggal_acc)) }}
+                                    {{ date('d M Y H:m', strtotime($bimbingan->tanggal_acc)) }}
                                 </div>
                             @endif
                             <hr>
 
                             <p class="mt-3"><b>Lampiran : </b> <a href="{{ asset($bimbingan->lampiran) }}" class="ml-3"
-                                    target="_blank"><i class="fas fa-paperclip"></i> Lampiran.pdf</a></p>
+                                    target="_blank"><i class="fas fa-paperclip"></i> Lampiran</a></p>
 
                             <hr>
                             <div class="bordered mt-2">
@@ -108,7 +107,8 @@
                                     @if ($dosenPembimbing->pivot->status == 'utama')
                                         @foreach ($mahasiswa->bimbingans()->where('pembimbing', 'utama')->get() as $bimbinganMahasiswa)
                                             @if (\App\Helpers\AppHelper::instance()->cekBagianIsAcc($bimbinganMahasiswa->id))
-                                                <a href="{{ asset($bimbinganMahasiswa->lampiran) }}" class="badge badge-success mr-1" target="_blank">
+                                                <a href="{{ asset($bimbinganMahasiswa->lampiran) }}"
+                                                    class="badge badge-success mr-1" target="_blank">
                                                     <i class="fas fa-check-circle mr-1"></i>
                                                     {{ $bimbinganMahasiswa->bagian->bagian }}
                                                 </a>
@@ -124,7 +124,8 @@
                                     @elseif ($dosenPembimbing->pivot->status == 'pendamping')
                                         @foreach ($mahasiswa->bimbingans()->where('pembimbing', 'pendamping')->get() as $bimbinganMahasiswa)
                                             @if (\App\Helpers\AppHelper::instance()->cekBagianIsAcc($bimbinganMahasiswa->id))
-                                                <a href="{{ asset($bimbinganMahasiswa->lampiran) }}" class="badge badge-success mr-1" target="_blank">
+                                                <a href="{{ asset($bimbinganMahasiswa->lampiran) }}"
+                                                    class="badge badge-success mr-1" target="_blank">
                                                     <i class="fas fa-check-circle mr-1"></i>
                                                     {{ $bimbinganMahasiswa->bagian->bagian }}
                                                 </a>
@@ -150,24 +151,26 @@
                             </div>
 
                         </div>
-                        <div class="card-footer">
-                            <div class="d-flex">
-                                <button type="button" class="btn btn-primary mr-2" data-toggle="modal"
-                                    data-target="#modal-revisi">
-                                    <i class="bi bi-pencil-square mr-2"></i> Revisi bimbingan
-                                </button>
+                        @if ($bimbingan->status == 'review')
+                            <div class="card-footer">
+                                <div class="d-flex">
+                                    <button type="button" class="btn btn-primary mr-2" data-toggle="modal"
+                                        data-target="#modal-revisi">
+                                        <i class="bi bi-pencil-square mr-2"></i> Revisi bimbingan
+                                    </button>
 
-                                <div onclick="confirmAcc()">
-                                    <form action="{{ route('bimbingan.acc') }}" method="post">
-                                        @csrf
-                                        <input type="hidden" name="id" value="{{ $bimbingan->id }}">
-                                        <button type="submit" class="btn btn-success mr-2">
-                                            <i class="fas fa-check mr-2"></i> Acc bimbingan
-                                        </button>
-                                    </form>
+                                    <div onclick="confirmAcc()">
+                                        <form action="{{ route('bimbingan.acc') }}" method="post">
+                                            @csrf
+                                            <input type="hidden" name="id" value="{{ $bimbingan->id }}">
+                                            <button type="submit" class="btn btn-success mr-2">
+                                                <i class="fas fa-check mr-2"></i> Acc bimbingan
+                                            </button>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        @endif
                     </div>
 
                     {{-- Revisi --}}
@@ -194,7 +197,7 @@
                                             <div class="d-flex">
                                                 <span class="mr-3">
                                                     <i class="fas fa-calendar mr-2"></i>
-                                                    {{ $revisi->created_at->format('d M y H:m') }}
+                                                    {{ $revisi->created_at->format('d M Y H:m') }}
                                                 </span>
                                                 @if ($revisi->dosen->id == Auth::guard('dosen')->user()->id)
                                                     <div onclick="confirmDelete()">

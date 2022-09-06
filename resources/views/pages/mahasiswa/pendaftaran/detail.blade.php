@@ -1,310 +1,307 @@
 @extends('layouts.dashboardMahasiswa')
 
 @section('content')
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">{{ $title }}</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="#">Pendaftaran TA</a></li>
+                        <li class="breadcrumb-item active">{{ $title }}</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
 
-<!-- Content Header (Page header) -->
-<div class="content-header">
-    <div class="container">
-        <div class="row mb-2">
-            <div class="col-sm-6">
-                <h1 class="m-0">{{ $title }}</h1>
-            </div><!-- /.col -->
-            <div class="col-sm-6">
-                <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item"><a href="#">Pendaftaran TA</a></li>
-                    <li class="breadcrumb-item active">{{ $title }}</li>
-                </ol>
-            </div><!-- /.col -->
-        </div><!-- /.row -->
-    </div><!-- /.container-fluid -->
-</div>
-<!-- /.content-header -->
-
-<!-- Main content -->
-<div class="content">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="card card-primary card-outline">
-                    <div class="ribbon-wrapper ribbon-lg">
-                        <div class="ribbon 
-                            @if ($pendaftaran->status == 'review')
-                            bg-secondary
+    <!-- Main content -->
+    <div class="content">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-primary card-outline">
+                        <div class="ribbon-wrapper ribbon-lg">
+                            <div
+                                class="ribbon
+                            @if ($pendaftaran->status == 'review') bg-secondary
                             @elseif ($pendaftaran->status == 'revisi')
                             bg-warning
                             @elseif ($pendaftaran->status == 'diterima')
-                            bg-success
-                            @endif
+                            bg-success @endif
                             ">
-                            {{ $pendaftaran->status }}
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-4">
-                                NIM
-                            </div>
-                            <div class="col-md-8">
-                                <span class="mr-3">:</span>
-                                <b>{{$pendaftaran->nim}}</b>
+                                {{ $pendaftaran->status }}
                             </div>
                         </div>
-                        <hr>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    NIM
+                                </div>
+                                <div class="col-md-8">
+                                    <span class="mr-3">:</span>
+                                    <b>{{ $pendaftaran->nim }}</b>
+                                </div>
+                            </div>
+                            <hr>
 
-                        <div class="row">
-                            <div class="col-md-4">
-                                Nama Lengkap
+                            <div class="row">
+                                <div class="col-md-4">
+                                    Nama Lengkap
+                                </div>
+                                <div class="col-md-8">
+                                    <span class="mr-3">:</span>
+                                    <b>{{ Auth::guard('mahasiswa')->user()->nama }}</b>
+                                </div>
                             </div>
-                            <div class="col-md-8">
-                                <span class="mr-3">:</span>
-                                <b>{{ Auth::guard('mahasiswa')->user()->nama }}</b>
+                            <hr>
+
+                            <div class="row">
+                                <div class="col-md-4">
+                                    Prodi
+                                </div>
+                                <div class="col-md-8">
+                                    <span class="mr-3">:</span>
+                                    <b>{{ Auth::guard('mahasiswa')->user()->prodi }}</b>
+                                </div>
                             </div>
+                            <hr>
+
+                            <div class="row">
+                                <div class="col-md-4">
+                                    Pembimbing Utama (1) Tugas Akhir
+                                </div>
+                                <div class="col-md-8">
+                                    <span class="mr-3">:</span>
+                                    <b>{{ $dosen_utama->nama . ', ' . $dosen_utama->gelar }}</b>
+                                </div>
+                            </div>
+                            <hr>
+
+                            <div class="row">
+                                <div class="col-md-4">
+                                    Pembimbing Pendamping (1) Tugas Akhir
+                                </div>
+                                <div class="col-md-8">
+                                    <span class="mr-3">:</span>
+                                    <b>{{ $dosen_pendamping->nama . ', ' . $dosen_pendamping->gelar }}</b>
+                                </div>
+                            </div>
+                            <hr>
+
+                            <div class="row">
+                                <div class="col-md-4">
+                                    Judul Tugas Akhir
+                                </div>
+                                <div class="col-md-8">
+                                    <span class="mr-3">:</span>
+                                    <b>{{ $pendaftaran->judul }}</b>
+                                </div>
+                            </div>
+                            <hr>
+
+                            <div class="row">
+                                <div class="col-md-4">
+                                    Email
+                                </div>
+                                <div class="col-md-8">
+                                    <span class="mr-3">:</span>
+                                    <b>{{ Auth::guard('mahasiswa')->user()->email }}</b>
+                                </div>
+                            </div>
+                            <hr>
+
+                            <div class="row">
+                                <div class="col-md-4">
+                                    No. HP
+                                </div>
+                                <div class="col-md-8">
+                                    <span class="mr-3">:</span>
+                                    <b>{{ Auth::guard('mahasiswa')->user()->hp }}</b>
+                                </div>
+                            </div>
+                            <hr>
+
+                            <div class="row">
+                                <div class="col-md-4">
+                                    Semester
+                                </div>
+                                <div class="col-md-8">
+                                    <span class="mr-3">:</span>
+                                    <b>{{ \App\Helpers\AppHelper::instance()->getMahasiswaDetail(Auth::guard('mahasiswa')->user()->nim) != null ? \App\Helpers\AppHelper::instance()->getMahasiswaDetail(Auth::guard('mahasiswa')->user()->nim)->semester : '' }}</b>
+                                </div>
+                            </div>
+                            <hr>
+
+                            <div class="row">
+                                <div class="col-md-4">
+                                    Dokumen Acc. Kaprodi
+                                </div>
+                                <div class="col-md-8">
+                                    <span class="mr-3">:</span>
+                                    <a href="{{ asset($pendaftaran->lampiran_1) }}" target="_blank"><i
+                                            class="fas fa-paperclip"></i> Lampiran</a>
+                                </div>
+                            </div>
+                            <hr>
+
+                            <div class="row">
+                                <div class="col-md-4">
+                                    Bukti Lembar Pernyataan Keaslian Hasil Tugas Akhir
+                                </div>
+                                <div class="col-md-8">
+                                    <span class="mr-3">:</span>
+                                    <a href="{{ asset($pendaftaran->lampiran_2) }}" target="_blank"><i
+                                            class="fas fa-paperclip"></i> Lampiran</a>
+                                </div>
+                            </div>
+                            <hr>
+
+                            <div class="row">
+                                <div class="col-md-4">
+                                    Bukti Transkrip Nilai
+                                </div>
+                                <div class="col-md-8">
+                                    <span class="mr-3">:</span>
+                                    <a href="{{ asset($pendaftaran->lampiran_3) }}" target="_blank"><i
+                                            class="fas fa-paperclip"></i> Lampiran</a>
+                                </div>
+                            </div>
+                            <hr>
+
+                            <div class="row">
+                                <div class="col-md-4">
+                                    Bukti Pengumpulan KP
+                                </div>
+                                <div class="col-md-8">
+                                    <span class="mr-3">:</span>
+                                    <a href="{{ asset($pendaftaran->lampiran_4) }}" target="_blank"><i
+                                            class="fas fa-paperclip"></i> Lampiran</a>
+                                </div>
+                            </div>
+                            <hr>
+
+                            <div class="row">
+                                <div class="col-md-4">
+                                    Bukti Pembayaran Tugas Akhir
+                                </div>
+                                <div class="col-md-8">
+                                    <span class="mr-3">:</span>
+                                    <a href="{{ asset($pendaftaran->lampiran_5) }}" target="_blank"><i
+                                            class="fas fa-paperclip"></i> Lampiran</a>
+                                </div>
+                            </div>
+                            <hr>
+
+                            <div class="row">
+                                <div class="col-md-4">
+                                    Nomor Pembayaran
+                                </div>
+                                <div class="col-md-8">
+                                    <span class="mr-3">:</span>
+                                    <b>{{ $pendaftaran->nomor_pembayaran }}</b>
+                                </div>
+                            </div>
+                            <hr>
+
+                            <div class="row">
+                                <div class="col-md-4">
+                                    Tanggal Pembayaran
+                                </div>
+                                <div class="col-md-8">
+                                    <span class="mr-3">:</span>
+                                    <b>{{ $pendaftaran->tanggal_pembayaran }}</b>
+                                </div>
+                            </div>
+                            <hr>
+
+                            <div class="row">
+                                <div class="col-md-4">
+                                    Biaya
+                                </div>
+                                <div class="col-md-8">
+                                    <span class="mr-3">:</span>
+                                    <span class="text-success fs-5">Rp, {{ $pendaftaran->biaya }},-</span>
+                                </div>
+                            </div>
+                            <hr>
+
+                            <div class="row">
+                                <div class="col-md-4">
+                                    Tanggal Pendaftaran
+                                </div>
+                                <div class="col-md-8">
+                                    <span class="mr-3">:</span>
+                                    <b>{{ $pendaftaran->created_at->format('d M Y H:m') }}</b>
+                                </div>
+                            </div>
+                            <hr>
+
+                            <div class="row">
+                                <div class="col-md-4">
+                                    Tanggal Acc
+                                </div>
+                                <div class="col-md-8">
+                                    <span class="mr-3">:</span>
+                                    @if ($pendaftaran->tanggal_acc)
+                                        <b
+                                            class="text-success">{{ date('d M Y H:m', strtotime($pendaftaran->tanggal_acc)) }}</b>
+                                    @endif
+                                </div>
+
+                            </div>
+
                         </div>
-                        <hr>
-
-                        <div class="row">
-                            <div class="col-md-4">
-                                Prodi
-                            </div>
-                            <div class="col-md-8">
-                                <span class="mr-3">:</span>
-                                <b>{{ Auth::guard('mahasiswa')->user()->prodi }}</b>
-                            </div>
-                        </div>
-                        <hr>
-
-                        <div class="row">
-                            <div class="col-md-4">
-                                Pembimbing Utama (1) Tugas Akhir
-                            </div>
-                            <div class="col-md-8">
-                                <span class="mr-3">:</span>
-                                <b>{{$dosen_utama->nama.', '. $dosen_utama->gelar}}</b>
-                            </div>
-                        </div>
-                        <hr>
-
-                        <div class="row">
-                            <div class="col-md-4">
-                                Pembimbing Pendamping (1) Tugas Akhir
-                            </div>
-                            <div class="col-md-8">
-                                <span class="mr-3">:</span>
-                                <b>{{$dosen_pendamping->nama.', '. $dosen_pendamping->gelar }}</b>
-                            </div>
-                        </div>
-                        <hr>
-
-                        <div class="row">
-                            <div class="col-md-4">
-                                Judul Tugas Akhir
-                            </div>
-                            <div class="col-md-8">
-                                <span class="mr-3">:</span>
-                                <b>{{$pendaftaran->judul}}</b>
-                            </div>
-                        </div>
-                        <hr>
-
-                        <div class="row">
-                            <div class="col-md-4">
-                                Email
-                            </div>
-                            <div class="col-md-8">
-                                <span class="mr-3">:</span>
-                                <b>{{ Auth::guard('mahasiswa')->user()->email }}</b>
-                            </div>
-                        </div>
-                        <hr>
-
-                        <div class="row">
-                            <div class="col-md-4">
-                                No. HP
-                            </div>
-                            <div class="col-md-8">
-                                <span class="mr-3">:</span>
-                                <b>{{ Auth::guard('mahasiswa')->user()->hp }}</b>
-                            </div>
-                        </div>
-                        <hr>
-
-                        <div class="row">
-                            <div class="col-md-4">
-                                Semester
-                            </div>
-                            <div class="col-md-8">
-                                <span class="mr-3">:</span>
-                                <b>{{ Auth::guard('mahasiswa')->user()->semester }}</b>
-                            </div>
-                        </div>
-                        <hr>
-
-                        <div class="row">
-                            <div class="col-md-4">
-                                Dokumen Acc. Kaprodi
-                            </div>
-                            <div class="col-md-8">
-                                <span class="mr-3">:</span>
-                                <a href="{{ asset($pendaftaran->lampiran_1) }}" target="_blank"><i
-                                        class="fas fa-paperclip"></i> Lampiran</a>
-                            </div>
-                        </div>
-                        <hr>
-
-                        <div class="row">
-                            <div class="col-md-4">
-                                Bukti Lembar Pernyataan Keaslian Hasil Tugas Akhir
-                            </div>
-                            <div class="col-md-8">
-                                <span class="mr-3">:</span>
-                                <a href="{{ asset($pendaftaran->lampiran_2) }}" target="_blank"><i
-                                        class="fas fa-paperclip"></i> Lampiran</a>
-                            </div>
-                        </div>
-                        <hr>
-
-                        <div class="row">
-                            <div class="col-md-4">
-                                Bukti Transkrip Nilai
-                            </div>
-                            <div class="col-md-8">
-                                <span class="mr-3">:</span>
-                                <a href="{{ asset($pendaftaran->lampiran_3) }}" target="_blank"><i
-                                        class="fas fa-paperclip"></i> Lampiran</a>
-                            </div>
-                        </div>
-                        <hr>
-
-                        <div class="row">
-                            <div class="col-md-4">
-                                Bukti Pengumpulan KP
-                            </div>
-                            <div class="col-md-8">
-                                <span class="mr-3">:</span>
-                                <a href="{{ asset($pendaftaran->lampiran_4) }}" target="_blank"><i
-                                        class="fas fa-paperclip"></i> Lampiran</a>
-                            </div>
-                        </div>
-                        <hr>
-
-                        <div class="row">
-                            <div class="col-md-4">
-                                Bukti Pembayaran Tugas Akhir
-                            </div>
-                            <div class="col-md-8">
-                                <span class="mr-3">:</span>
-                                <a href="{{ asset($pendaftaran->lampiran_5) }}" target="_blank"><i
-                                        class="fas fa-paperclip"></i> Lampiran</a>
-                            </div>
-                        </div>
-                        <hr>
-
-                        <div class="row">
-                            <div class="col-md-4">
-                                Nomor Pembayaran
-                            </div>
-                            <div class="col-md-8">
-                                <span class="mr-3">:</span>
-                                <b>{{$pendaftaran->nomor_pembayaran}}</b>
-                            </div>
-                        </div>
-                        <hr>
-
-                        <div class="row">
-                            <div class="col-md-4">
-                                Tanggal Pembayaran
-                            </div>
-                            <div class="col-md-8">
-                                <span class="mr-3">:</span>
-                                <b>{{$pendaftaran->tanggal_pembayaran}}</b>
-                            </div>
-                        </div>
-                        <hr>
-
-                        <div class="row">
-                            <div class="col-md-4">
-                                Biaya
-                            </div>
-                            <div class="col-md-8">
-                                <span class="mr-3">:</span>
-                                <span class="text-success fs-5">Rp, {{$pendaftaran->biaya}},-</span>
-                            </div>
-                        </div>
-                        <hr>
-
-                        <div class="row">
-                            <div class="col-md-4">
-                                Tanggal Pendaftaran
-                            </div>
-                            <div class="col-md-8">
-                                <span class="mr-3">:</span>
-                                <b>{{$pendaftaran->created_at->format('d M y H:m')
-                                    }}</b>
-                            </div>
-                        </div>
-                        <hr>
-
-                        <div class="row">
-                            <div class="col-md-4">
-                                Tanggal Acc
-                            </div>
-                            <div class="col-md-8">
-                                <span class="mr-3">:</span>
-                                @if ($pendaftaran->tanggal_acc)
-                                <b class="text-success">{{ date('d M y H:m',strtotime($pendaftaran->tanggal_acc)) }}</b>
-                                @endif
-                            </div>
-
-                        </div>
-
-                    </div>
-                    @if ($pendaftaran->status == 'diterima')
-                    <div class="card-footer">
-                        <a href="{{  route('cetak.surat.tugas.bimbingan') }}" class="btn btn-success btn-sm"
-                            target="_blank"><i class="fas fa-download mr-1"></i>
-                            Surat Tugas Bimbingan TA</a>
-                    </div>
-                    @endif
-                </div>
-
-                <div class="card card-primary card-outline mt-2">
-                    <div class="card-header">
-                        <h3 class="card-title"><strong>Revisi</strong>
-                            <span class="badge bg-danger rounded-pill">
-                                {{ count($pendaftaran->revisis) }}
-                            </span>
-                        </h3>
-                    </div>
-                    <div class="card-body">
-
-                        @foreach ($revisis as $revisi)
-                        <div class="card bg-light">
-                            <div class="card-header"><i class="fas fa-calendar mr-2"></i> {{
-                                $revisi->created_at->format('y M
-                                d H:m') }}</div>
-                            <div class="card-body">
-                                {!! nl2br($revisi->catatan) !!}
-                            </div>
+                        @if ($pendaftaran->status == 'diterima')
                             <div class="card-footer">
-                                Lampiran :
-                                @if ($revisi->lampiran)
-                                <a href="{{ asset($revisi->lampiran) }}" class="ml-3" target="_blank"><i
-                                        class="fas fa-paperclip"></i> Lampiran</a>
-                                @endif
+                                <a href="{{ route('cetak.surat.tugas.bimbingan') }}" class="btn btn-success btn-sm"
+                                    target="_blank"><i class="fas fa-download mr-1"></i>
+                                    Surat Tugas Bimbingan TA</a>
                             </div>
-                        </div>
-                        @endforeach
+                        @endif
+                    </div>
 
+                    <div class="card card-primary card-outline mt-2">
+                        <div class="card-header">
+                            <h3 class="card-title"><strong>Revisi</strong>
+                                <span class="badge bg-danger rounded-pill">
+                                    {{ count($pendaftaran->revisis) }}
+                                </span>
+                            </h3>
+                        </div>
+                        <div class="card-body">
+
+                            @foreach ($revisis as $revisi)
+                                <div class="card bg-light">
+                                    <div class="card-header"><i class="fas fa-calendar mr-2"></i>
+                                        {{ $revisi->created_at->format('d M Y H:m') }}
+                                    </div>
+                                    <div class="card-body">
+                                        {!! nl2br($revisi->catatan) !!}
+                                    </div>
+                                    <div class="card-footer">
+                                        Lampiran :
+                                        @if ($revisi->lampiran)
+                                            <a href="{{ asset($revisi->lampiran) }}" class="ml-3" target="_blank"><i
+                                                    class="fas fa-paperclip"></i> Lampiran</a>
+                                        @endif
+                                    </div>
+                                </div>
+                            @endforeach
+
+                        </div>
+                        <div class="d-flex justify-content-center mb-3">
+                            {{ $revisis->links() }}
+                        </div>
                     </div>
-                    <div class="d-flex justify-content-center mb-3">
-                        {{ $revisis->links() }}
-                    </div>
+                    <!-- /.card -->
                 </div>
-                <!-- /.card -->
             </div>
         </div>
     </div>
-</div>
-<!-- /.content -->
-
+    <!-- /.content -->
 @endsection

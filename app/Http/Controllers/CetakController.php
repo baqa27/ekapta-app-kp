@@ -21,7 +21,7 @@ class CetakController extends Controller
         $dosenUtama = $mahasiswa->dosens()->where('status', 'utama')->first();
         $dosenPendamping = $mahasiswa->dosens()->where('status', 'pendamping')->first();
 
-        $path = base_path('kop-surat.jpg');
+        $path = base_path('public/ekapta/assets/img/kop-surat.jpg');
         $type = pathinfo($path, PATHINFO_EXTENSION);
         $data = file_get_contents($path);
         $kop_surat = 'data:image/' . $type . ';base64,' . base64_encode($data);
@@ -63,13 +63,17 @@ class CetakController extends Controller
         $dosenUtama = $mahasiswa->dosens()->where('status', 'utama')->first();
         $dosenPendamping = $mahasiswa->dosens()->where('status', 'pendamping')->first();
 
-        $path = base_path('kop-surat.jpg');
+        $path = base_path('public/ekapta/assets/img/kop-surat.jpg');
         $type = pathinfo($path, PATHINFO_EXTENSION);
         $data = file_get_contents($path);
         $kop_surat = 'data:image/' . $type . ';base64,' . base64_encode($data);
 
+        $qrcode = 'data:image/' . $type . ';base64,' . base64_encode(\QrCode::format('svg')->size(400)->errorCorrection('H')->generate(url('cetak/surat-tugas-bimbingan/' . $pendaftaran->id)));
+
         setlocale(LC_TIME, 'id');
         $dateLocale = Carbon::parse(now())->formatLocalized('%d %B %Y');
+
+        $dateExpired = Carbon::parse($pendaftaran->tanggal_acc)->addMonthsNoOverflow(12);
 
         $data = [
             'title' => 'Surat Tugas Bimbingan',
@@ -81,6 +85,8 @@ class CetakController extends Controller
             'prodi' => $prodi,
             'date' => now(),
             'dateLocale' => $dateLocale,
+            'qr_code' => $qrcode,
+            'date_expired' => Carbon::parse($dateExpired)->formatLocalized('%d %B %Y'),
         ];
 
         $pdf = PDF::setOptions(['isHTML5ParserEnabled' => true, 'isRemoteEnabled' => true]);
@@ -97,13 +103,17 @@ class CetakController extends Controller
         $dosenUtama = $mahasiswa->dosens()->where('status', 'utama')->first();
         $dosenPendamping = $mahasiswa->dosens()->where('status', 'pendamping')->first();
 
-        $path = base_path('kop-surat.jpg');
+        $path = base_path('public/ekapta/assets/img/kop-surat.jpg');
         $type = pathinfo($path, PATHINFO_EXTENSION);
         $data = file_get_contents($path);
         $kop_surat = 'data:image/' . $type . ';base64,' . base64_encode($data);
 
+        $qrcode = 'data:image/' . $type . ';base64,' . base64_encode(\QrCode::format('svg')->size(200)->errorCorrection('H')->generate(url('cetak/surat-tugas-bimbingan/' . $pendaftaran->id)));
+
         setlocale(LC_TIME, 'id');
         $dateLocale = Carbon::parse(now())->formatLocalized('%d %B %Y');
+
+        $dateExpired = Carbon::parse($pendaftaran->tanggal_acc)->addMonthsNoOverflow(12);
 
         $data = [
             'title' => 'Surat Tugas Bimbingan',
@@ -115,6 +125,8 @@ class CetakController extends Controller
             'prodi' => $prodi,
             'date' => now(),
             'dateLocale' => $dateLocale,
+            'qr_code' => $qrcode,
+            'date_expired' => Carbon::parse($dateExpired)->formatLocalized('%d %B %Y'),
         ];
 
         $pdf = PDF::setOptions(['isHTML5ParserEnabled' => true, 'isRemoteEnabled' => true]);

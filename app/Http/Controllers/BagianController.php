@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Imports\BagiansImport;
 use App\Models\Bagian;
+use App\Models\Bimbingan;
+use App\Models\Mahasiswa;
+use App\Models\Pendaftaran;
 use App\Models\Prodi;
 use Exception;
 use Illuminate\Http\Request;
@@ -58,5 +61,34 @@ class BagianController extends Controller
         } catch (Exception $e) {
             return back()->with('warning', 'Bagian gagal diimport');
         }
+    }
+
+    public function bagianActive(Request $request)
+    {
+        $pendaftaransAcc = Pendaftaran::where('status', 'diterima')->get();
+        foreach ($pendaftaransAcc as $pendaftaran) {
+            $mahasiswas = Mahasiswa::where('nim', $pendaftaran->nim)->get();
+            foreach ($mahasiswas as $mahasiswa) {
+                foreach ($mahasiswa->dosens as $dosen) {
+                    if ($dosen->pivot->status == 'utama') {
+                        $bimbingan = Bimbingan::create([
+                            'mahasiswa_id' => $mahasiswa->id,
+                            'bagian_id' => $request->id,
+                            'pembimbing' => 'utama',
+                        ]);
+                        $bimbingan->dosens()->attach([$dosen->id]);
+                    } else if ($dosen->pivot->status == 'pendamping') {
+                        $bimbingan = Bimbingan::create([
+                            'mahasiswa_id' => $mahasiswa->id,
+                            'bagian_id' => $request->id,
+                            'pembimbing' => 'pendamping',
+                        ]);
+                        $bimbingan->dosens()->attach([$dosen->id]);
+                    }
+                }
+            }
+        }
+
+        return back()->with('success', 'Bagian Bimbingan berhasil diaktifkan');
     }
 }
