@@ -53,6 +53,27 @@
             margin-left: 80px;
             color: rgb(255, 89, 191);
         }
+
+        .d-flex {
+            display: flex;
+        }
+
+        #stempel {
+            opacity: 40%;
+            position: relative;
+            top: 10px;
+            right: -20px;
+        }
+
+        #ttd {
+            position: relative;
+            left: -80px;
+        }
+
+        #detail-dekan {
+            position: relative;
+            top: -30px
+        }
     </style>
 </head>
 
@@ -240,11 +261,16 @@
             <td width="290">
                 <center>
                     <span>
-                        Dekan <br><br><br><br><br><br>
-                        <b><u>Muafani, S.T., M.T.</u>
-                        </b>
-                        <br>
-                        <b>NPU. 191 1204 084</b>
+                        Dekan <br>
+                        <div class="d-flex">
+                            <img src="{{ $stempel }}" alt="Stempel Dekan" height="140" id="stempel">
+                            <img src="{{ $ttd_dekan }}" alt="TTD Dekan" height="110" id="ttd">
+                        </div>
+                        <div id="detail-dekan">
+                            <b><u>{{ $dekan->namadekan . ', ' . $dekan->gelar }}</u>
+                            </b><br>
+                            <b>NPU. {{ $dekan->nidn }}</b>
+                        </div>
                     </span>
                 </center>
             </td>

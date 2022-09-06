@@ -98,6 +98,15 @@ class AppHelper
         }
     }
 
+    public function convertImage($base_path)
+    {
+        $path = base_path($base_path);
+        $type = pathinfo($path, PATHINFO_EXTENSION);
+        $data = file_get_contents($path);
+        $image = 'data:image/' . $type . ';base64,' . base64_encode($data);
+        return $image;
+    }
+
     public static function instance()
     {
         return new AppHelper();

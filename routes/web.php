@@ -4,7 +4,9 @@ use App\Http\Controllers\BagianController;
 use App\Http\Controllers\BimbinganController;
 use App\Http\Controllers\CetakController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DekanController;
 use App\Http\Controllers\DosenController;
+use App\Http\Controllers\FakultasController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MahasiswaController;
@@ -113,6 +115,22 @@ Route::post('mahasiswa/detail/import', [MahasiswaController::class, 'importDetai
 //Dosen
 Route::get('/dosens', [DosenController::class, 'index'])->name('dosens')->middleware('isAdmin');
 Route::post('/dosen/import', [DosenController::class, 'import'])->name('dosen.import')->middleware('isAdmin');
+
+//Fakultas
+Route::get('/fakultas', [FakultasController::class, 'index'])->name('fakultas')->middleware('isAdmin');
+Route::post('/fakultas/import', [FakultasController::class, 'import'])->name('fakultas.import')->middleware('isAdmin');
+Route::post('/fakultas/update', [FakultasController::class, 'update'])->name('fakultas.update')->middleware('isAdmin');
+Route::get('/fakultas/setting/{fakultas}', [FakultasController::class, 'setting'])->middleware('isAdmin');
+Route::post('/fakultas/add/prodi', [FakultasController::class, 'addProdi'])->name('fakultas.add.prodi')->middleware('isAdmin');
+Route::post('/fakultas/delete/prodi', [FakultasController::class, 'deleteProdi'])->name('fakultas.delete.prodi')->middleware('isAdmin');
+
+//Dekan
+Route::post('/dekan/store', [DekanController::class, 'store'])->name('dekan.store')->middleware('isAdmin');
+Route::post('/dekan/import', [DekanController::class, 'import'])->name('dekan.import')->middleware('isAdmin');
+Route::post('/dekan/update', [DekanController::class, 'update'])->name('dekan.update')->middleware('isAdmin');
+Route::post('/dekan/delete', [DekanController::class, 'delete'])->name('dekan.delete')->middleware('isAdmin');
+Route::post('/dekan/enabled', [DekanController::class, 'enabled'])->name('dekan.enabled')->middleware('isAdmin');
+Route::post('/dekan/disabled', [DekanController::class, 'disabled'])->name('dekan.disabled')->middleware('isAdmin');
 
 // Cetak Dokumen
 Route::get('/cetak/lembar-persetujuan-pembimbing-mahasiswa', [CetakController::class, 'cetakLembarPersetujuanMahasiswa'])->name('cetak.lembar.persetujuan.mahasiswa')->middleware('isMahasiswa');

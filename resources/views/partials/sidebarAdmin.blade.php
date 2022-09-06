@@ -109,9 +109,8 @@
                 </li>
 
                 <li
-                    class="nav-item {{ $active == 'prodi' || $active == 'mahasiswa' || $active == 'dosen' ? 'menu-open' : '' }}">
-                    <a href="#"
-                        class="nav-link {{ $active == 'prodi' || $active == 'mahasiswa' || $active == 'dosen' ? 'active' : '' }}">
+                    class="nav-item {{ $active == 'prodi' || $active == 'mahasiswa' || $active == 'dosen' || $active == 'fakultas' ? 'menu-open' : '' }}">
+                    <a href="#" class="nav-link">
                         <i class="nav-icon far fa-folder"></i>
                         <p>
                             Master Data
@@ -139,16 +138,10 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ route('prodis') }}"
+                            <a href="{{ route('fakultas') }}"
                                 class="nav-link {{ $active == 'fakultas' ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Fakultas</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ route('prodis') }}" class="nav-link {{ $active == 'dekan' ? 'active' : '' }}">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Dekan</p>
                             </a>
                         </li>
                     </ul>

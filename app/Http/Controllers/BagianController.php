@@ -66,6 +66,9 @@ class BagianController extends Controller
     public function bagianActive(Request $request)
     {
         $pendaftaransAcc = Pendaftaran::where('status', 'diterima')->get();
+        if (count($pendaftaransAcc) == 0) {
+            return back()->with('warning', 'Mahasiswa tidak ditemukan');
+        }
         foreach ($pendaftaransAcc as $pendaftaran) {
             $mahasiswas = Mahasiswa::where('nim', $pendaftaran->nim)->get();
             foreach ($mahasiswas as $mahasiswa) {

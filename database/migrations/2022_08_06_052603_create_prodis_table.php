@@ -21,6 +21,7 @@ class CreateProdisTable extends Migration
             $table->string('kodekaprodi');
             $table->string('password');
             $table->timestamps();
+            $table->integer('fakultas_id')->nullable()->unsigned()->index();
         });
     }
 

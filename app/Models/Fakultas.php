@@ -11,6 +11,16 @@ class Fakultas extends Model
 
     protected $fillable = [
         'namafakultas',
-        'keterangan',
+        'image',
     ];
+
+    public function prodis()
+    {
+        return $this->hasMany(Prodi::class);
+    }
+
+    public function dekans()
+    {
+        return $this->hasMany(Dekan::class);
+    }
 }

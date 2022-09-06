@@ -17,7 +17,6 @@ class FakultasImport implements ToModel, WithHeadingRow
     {
         return new Fakultas([
             'namafakultas' => $row['namafakultas'],
-            'keterangan' => $row['keterangan'],
         ]);
     }
 }

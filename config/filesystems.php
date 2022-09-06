@@ -82,6 +82,7 @@ return [
         public_path('lampiran-pendaftaran') => storage_path('app/public/lampiran-pendaftaran'),
         public_path('lampiran-bimbingan') => storage_path('app/public/lampiran-bimbingan'),
         public_path('lampiran-revisi') => storage_path('app/public/lampiran-revisi'),
+        public_path('lampiran-ttd') => storage_path('app/public/lampiran-ttd'),
     ],
 
 ];

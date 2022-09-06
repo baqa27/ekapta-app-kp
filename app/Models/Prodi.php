@@ -16,6 +16,7 @@ class Prodi extends Authenticatable
         'jenjang',
         'kodekaprodi',
         'password',
+        'fakultas_id',
     ];
 
     protected $hidden = [
@@ -25,5 +26,10 @@ class Prodi extends Authenticatable
     public function bagians()
     {
         return $this->hasMany(Bagian::class);
+    }
+
+    public function fakultas()
+    {
+        return $this->belongsTo(Fakultas::class);
     }
 }
