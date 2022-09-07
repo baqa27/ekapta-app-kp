@@ -76,7 +76,7 @@ class FakultasController extends Controller
                     return false;
                 }
                 return true;
-            }), 'mimes:png,jpg,jpeg', 'max:200']
+            }), 'mimes:png,jpg,jpeg', 'max:300']
         ]);
 
         if ($request->file('image')) {

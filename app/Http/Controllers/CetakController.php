@@ -61,7 +61,6 @@ class CetakController extends Controller
 
         $qrcode = 'data:image/' . ';base64,' . base64_encode(\QrCode::format('svg')->size(400)->errorCorrection('H')->generate(url('cetak/surat-tugas-bimbingan/' . $pendaftaran->id)));
 
-        setlocale(LC_TIME, 'id');
         $dateLocale = Carbon::parse(now())->formatLocalized('%d %B %Y');
 
         $dateExpired = Carbon::parse($pendaftaran->tanggal_acc)->addMonthsNoOverflow(12);
@@ -101,7 +100,6 @@ class CetakController extends Controller
 
         $qrcode = 'data:image/' . ';base64,' . base64_encode(\QrCode::format('svg')->size(200)->errorCorrection('H')->generate(url('cetak/surat-tugas-bimbingan/' . $pendaftaran->id)));
 
-        setlocale(LC_TIME, 'id');
         $dateLocale = Carbon::parse(now())->formatLocalized('%d %B %Y');
 
         $dateExpired = Carbon::parse($pendaftaran->tanggal_acc)->addMonthsNoOverflow(12);
@@ -121,8 +119,8 @@ class CetakController extends Controller
             'qr_code' => $qrcode,
             'date_expired' => Carbon::parse($dateExpired)->formatLocalized('%d %B %Y'),
             'dekan' => $dekan,
-            'stempel' => AppHelper::instance()->convertImage('storage/app/public/' . $prodi->fakultas->image),
-            'ttd_dekan' => AppHelper::instance()->convertImage('storage/app/public/' . $dekan->image),
+            'stempel' => $prodi->fakultas->image != null ? AppHelper::instance()->convertImage('storage/app/public/' . $prodi->fakultas->image) : '',
+            'ttd_dekan' => $dekan->image != null ? AppHelper::instance()->convertImage('storage/app/public/' . $dekan->image) : '',
         ];
 
         $pdf = PDF::setOptions(['isHTML5ParserEnabled' => true, 'isRemoteEnabled' => true]);

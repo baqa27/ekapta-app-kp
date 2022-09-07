@@ -61,13 +61,15 @@
         #stempel {
             opacity: 40%;
             position: relative;
-            top: 10px;
-            right: -20px;
+            top: 15px;
+            right: -40px;
+            max-width: 150px;
         }
 
         #ttd {
             position: relative;
             left: -80px;
+            max-width: 140px;
         }
 
         #detail-dekan {
@@ -257,7 +259,7 @@
 
     <table>
         <tr>
-            <td height="60" width="290"></td>
+            <td width="290"></td>
             <td width="290">
                 <center>
                     <span>
@@ -275,10 +277,14 @@
                 </center>
             </td>
         </tr>
+        <tr>
+            <td colspan="2">
+                <p class="text-expired">
+                    <b><i>NB. BATAS MAKSIMAL SAMPAI PADA : {{ $date_expired }}</i></b>
+                </p>
+            </td>
+        </tr>
     </table>
-    <p class="text-expired">
-        <b><i>NB. BATAS MAKSIMAL SAMPAI PADA : {{ $date_expired }}</i></b>
-    </p>
 
 </body>
 

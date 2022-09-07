@@ -198,21 +198,22 @@
                                                                             value="{{ $dekan->id }}">
                                                                         <button class="btn btn-success btn-sm"><i
                                                                                 class="bi bi-check-circle mr-1"></i>
-                                                                            Enable</button>
+                                                                            Enable
+                                                                        </button>
                                                                     </form>
                                                                 </div>
                                                             @elseif ($dekan->status == 'active')
-                                                                <div class="d-flex flex-wrap">
+                                                                <div class="d-flex">
                                                                     <button type="button"
-                                                                        class="btn btn-primary btn-sm mr-2 mb-1"
+                                                                        class="btn btn-primary btn-sm mr-1 mb-1"
                                                                         data-toggle="modal" data-target="#modal-edit">
-                                                                        <i class="fas fa-pen-square mr-2"></i> Edit
+                                                                        <i class="fas fa-pen-square"></i>
                                                                     </button>
 
                                                                     <button type="button"
-                                                                        class="btn btn-info btn-sm mr-2 mb-1"
+                                                                        class="btn btn-info btn-sm mr-1 mb-1"
                                                                         data-toggle="modal" data-target="#modal-detail">
-                                                                        <i class="fas fa-info-circle mr-2"></i> Detail
+                                                                        <i class="fas fa-info-circle"></i>
                                                                     </button>
 
                                                                     <div onclick="confirmAdd()">
@@ -222,8 +223,8 @@
                                                                             <input type="hidden" name="dekan"
                                                                                 value="{{ $dekan->id }}">
                                                                             <button class="btn btn-danger btn-sm"><i
-                                                                                    class="bi bi-x-circle mr-1"></i>
-                                                                                Disable</button>
+                                                                                    class="bi bi-x-circle"></i>
+                                                                            </button>
                                                                         </form>
                                                                     </div>
                                                                 </div>
