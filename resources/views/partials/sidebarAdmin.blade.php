@@ -120,30 +120,31 @@
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
                             <a href="{{ route('prodis') }}" class="nav-link {{ $active == 'prodi' ? 'active' : '' }}">
-                                <i class="far fa-circle nav-icon"></i>
+                                <i class="fas fa-building nav-icon"></i>
                                 <p>Prodi</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="{{ route('mahasiswas') }}"
                                 class="nav-link {{ $active == 'mahasiswa' ? 'active' : '' }}">
-                                <i class="far fa-circle nav-icon"></i>
+                                <i class="fas fa-users nav-icon"></i>
                                 <p>Mahasiswa</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="{{ route('dosens') }}" class="nav-link {{ $active == 'dosen' ? 'active' : '' }}">
-                                <i class="far fa-circle nav-icon"></i>
+                                <i class="fas fa-users nav-icon"></i>
                                 <p>Dosen</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="{{ route('fakultas') }}"
                                 class="nav-link {{ $active == 'fakultas' ? 'active' : '' }}">
-                                <i class="far fa-circle nav-icon"></i>
+                                <i class="fas fa-building nav-icon"></i>
                                 <p>Fakultas</p>
                             </a>
                         </li>
+
                     </ul>
                 </li>
             </ul>

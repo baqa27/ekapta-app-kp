@@ -8,19 +8,17 @@
             <div class="row mb-2">
                 <div class="col-sm-6">
                     <h1 class="m-0">{{ $title }}</h1>
-                </div><!-- /.col -->
+                </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="#">Pengajuan TA</a></li>
                         <li class="breadcrumb-item active">{{ $title }}</li>
                     </ol>
-                </div><!-- /.col -->
-            </div><!-- /.row -->
-        </div><!-- /.container-fluid -->
+                </div>
+            </div>
+        </div>
     </div>
-    <!-- /.content-header -->
 
-    <!-- Main content -->
     <div class="content">
         <div class="container">
             <div class="row">
@@ -88,7 +86,8 @@
                             @endif
                             <hr>
                             <p class="mt-3"><b>Lampiran : </b> <a href="{{ asset($pengajuan->lampiran) }}" class="ml-3"
-                                    target="_blank"><i class="fas fa-paperclip"></i> Lampiran.pdf</a></p>
+                                    target="_blank"><i class="fas fa-paperclip"></i>
+                                    {{ Str::substr($pengajuan->lampiran, 19) }}</a></p>
                         </div>
                         <div class="card-footer">
                             <div class="d-flex">
@@ -167,7 +166,8 @@
                                         Lampiran :
                                         @if ($revisi->lampiran)
                                             <a href="{{ asset($revisi->lampiran) }}" class="ml-3" target="_blank"><i
-                                                    class="fas fa-paperclip"></i> Lampiran</a>
+                                                    class="fas fa-paperclip"></i>
+                                                {{ Str::substr($revisi->lampiran, 16) }}</a>
                                         @endif
                                     </div>
                                 </div>

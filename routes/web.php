@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 // Route::get('/login', [HomeController::class, 'login'])->name('login');
-Route::get('/login', [LoginController::class, 'loginMahasiswa'])->name('login');
+Route::get('/login', [LoginController::class, 'loginMahasiswa'])->name('login')->middleware('isMahasiswaLogin');
 
 // Login User
 Route::get('/login/mahasiswa', [LoginController::class, 'loginMahasiswa'])->name('login.mahasiswa')->middleware('isMahasiswaLogin');
@@ -106,11 +106,11 @@ Route::get('/prodi/{id}', [ProdiController::class, 'detail'])->middleware('isAdm
 Route::post('/prodi/import', [ProdiController::class, 'import'])->name('prodi.import')->middleware('isAdmin');
 
 // Mahasiswa
-Route::get('profile', [MahasiswaController::class, 'profile'])->name('profile');
-Route::get('mahasiswas', [MahasiswaController::class, 'index'])->name('mahasiswas');
-Route::post('profile/update', [MahasiswaController::class, 'update'])->name('profile.update');
-Route::post('mahasiswa/import', [MahasiswaController::class, 'import'])->name('mahasiswa.import');
-Route::post('mahasiswa/detail/import', [MahasiswaController::class, 'importDetail'])->name('mahasiswa.detail.import');
+Route::get('profile', [MahasiswaController::class, 'profile'])->name('profile')->middleware('isAdmin');
+Route::get('mahasiswas', [MahasiswaController::class, 'index'])->name('mahasiswas')->middleware('isAdmin');
+Route::post('profile/update', [MahasiswaController::class, 'update'])->name('profile.update')->middleware('isAdmin');
+Route::post('mahasiswa/import', [MahasiswaController::class, 'import'])->name('mahasiswa.import')->middleware('isAdmin');
+Route::post('mahasiswa/detail/import', [MahasiswaController::class, 'importDetail'])->name('mahasiswa.detail.import')->middleware('isAdmin');
 
 //Dosen
 Route::get('/dosens', [DosenController::class, 'index'])->name('dosens')->middleware('isAdmin');

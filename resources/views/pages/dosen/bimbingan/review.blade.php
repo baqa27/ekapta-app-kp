@@ -88,7 +88,8 @@
                             <hr>
 
                             <p class="mt-3"><b>Lampiran : </b> <a href="{{ asset($bimbingan->lampiran) }}" class="ml-3"
-                                    target="_blank"><i class="fas fa-paperclip"></i> Lampiran</a></p>
+                                    target="_blank"><i class="fas fa-paperclip"></i>
+                                    {{ Str::substr($bimbingan->lampiran, 19) }}</a></p>
 
                             <hr>
                             <div class="bordered mt-2">
@@ -222,7 +223,8 @@
                                         Lampiran :
                                         @if ($revisi->lampiran)
                                             <a href="{{ asset($revisi->lampiran) }}" class="ml-3" target="_blank"><i
-                                                    class="fas fa-paperclip"></i> Lampiran.pdf</a>
+                                                    class="fas fa-paperclip"></i>
+                                                {{ Str::substr($revisi->lampiran, 16) }}</a>
                                         @endif
                                     </div>
                                 </div>

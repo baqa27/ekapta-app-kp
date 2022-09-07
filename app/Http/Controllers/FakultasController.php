@@ -40,7 +40,7 @@ class FakultasController extends Controller
         $prodis = Prodi::where('fakultas_id', null)->get();
         $dekanActive =   $fakultas->dekans()->where('status', 'active')->first();
         return view('pages.admin.fakultas.setting', [
-            'title' => 'Pengaturan Fakultas ' . $fakultas->namafakultas,
+            'title' => '' . $fakultas->namafakultas,
             'active' => 'fakultas',
             'sidebar' => 'partials.sidebarAdmin',
             'fakultas' => $fakultas,

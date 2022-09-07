@@ -72,10 +72,12 @@
                                     @enderror
                                 </div>
                                 <div>
-                                    <b>Lampiran sebelumnya : </b>
-                                    <a href="{{ asset($pengajuan->lampiran) }}" class="ml-3" target="_blank"><i
-                                            class="fas fa-paperclip mr-2"></i>
-                                        Lampiran</a>
+                                    <div class="bg-light p-2 rounded">
+                                        <b>Lampiran sebelumnya : </b>
+                                        <a href="{{ asset($pengajuan->lampiran) }}" class="ml-3 text-primary"
+                                            target="_blank"><i class="fas fa-paperclip mr-2"></i>
+                                            {{ Str::substr($pengajuan->lampiran, 19) }}</a>
+                                    </div>
                                 </div>
                                 <div class="form-group mt-4">
                                     <button type="submit" class="btn btn-success">Submit</button>

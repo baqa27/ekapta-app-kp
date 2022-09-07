@@ -145,7 +145,7 @@ class PendaftaranController extends Controller
             'dosen_pendamping' => $dosenPendamping,
             'pendaftaran' => $pendaftaran,
             'mahasiswa' => $mahasiswa,
-            'revisis' => $pendaftaran->revisis()->orderBy('created_at', 'desc')->paginate(3),
+            'revisis' => $pendaftaran->revisis()->orderBy('created_at', 'desc')->paginate(5),
         ]);
     }
 
@@ -165,7 +165,7 @@ class PendaftaranController extends Controller
             'dosen_utama' => $dosenUtama,
             'dosen_pendamping' => $dosenPendamping,
             'pendaftaran' => $pendaftaran,
-            'revisis' => $pendaftaran->revisis()->orderBy('created_at', 'desc')->paginate(3),
+            'revisis' => $pendaftaran->revisis()->orderBy('created_at', 'desc')->paginate(5),
         ]);
     }
 
@@ -328,7 +328,7 @@ class PendaftaranController extends Controller
                     return false;
                 }
                 return true;
-            }), 'mimes:pdf']
+            }), 'mimes:pdf,docx']
         ]);
         if ($request->file('lampiran')) {
             $revisi->lampiran = AppHelper::instance()->uploadLampiran($request->lampiran, 'lampiran-revisi');

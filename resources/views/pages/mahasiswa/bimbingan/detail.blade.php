@@ -61,7 +61,59 @@
                     </div>
 
                     {{-- Revisi --}}
-                    <div class="card card-primary card-outline mt-2">
+                    <div class="card card-outline card-secondary">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <b>Revisi</b>
+                                <span class="badge bg-danger rounded-pill">
+                                    {{ count($revisis) }}
+                                </span>
+                            </h3>
+
+                            <div class="card-tools">
+                                {{ $revisis->links() }}
+                            </div>
+                        </div>
+
+                        <div class="card-body">
+                            <div class="p-2">
+
+                                @foreach ($revisis as $revisi)
+                                    <div class="direct-chat-msg">
+                                        <div class="direct-chat-infos clearfix">
+                                            <span
+                                                class="direct-chat-name float-left">{{ $revisi->dosen->nama . ', ' . $revisi->dosen->gelar }}
+                                            </span>
+                                            <span class="direct-chat-timestamp float-right">
+                                                {{ $revisi->created_at->format('d M Y H:m a') }}
+                                            </span>
+                                        </div>
+                                        <img class="direct-chat-img"
+                                            src="{{ asset('ekapta/adminLTE/dist/img/default-profile.png') }}"
+                                            alt="message user image">
+                                        <div class="direct-chat-text p-2">
+                                            {!! nl2br($revisi->catatan) !!}
+                                            @if ($revisi->lampiran)
+                                                <div class="p-1 mt-3 bg-light rounded">
+                                                    <small>
+                                                        <span class="text-secondary ml-2"><b>Lampiran : </b></span>
+                                                        <a href="{{ asset($revisi->lampiran) }}" target="_blank">
+                                                            <i class="fas fa-paperclip ml-1"></i>
+                                                            {{ Str::substr($revisi->lampiran, 16) }}
+                                                        </a>
+                                                    </small>
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                @endforeach
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                    {{-- <div class="card card-primary card-outline mt-2">
                         <div class="card-header">
                             <h3 class="card-title"><strong>Revisi</strong>
                                 <span class="badge bg-danger rounded-pill">
@@ -99,11 +151,10 @@
                         <div class="d-flex justify-content-center mb-3">
                             {{ $revisis->links() }}
                         </div>
-                    </div>
-                    <!-- /.card -->
+                    </div> --}}
+
                 </div>
             </div>
         </div>
     </div>
-    <!-- /.content -->
 @endsection

@@ -32,8 +32,8 @@
                         <div class="card-body">
 
                             <div class="row">
-                                <div class="col-md-8">
-                                    <div class="row">
+                                <div class="col-md-9">
+                                    <div class="row mt-3">
                                         <div class="col-md-3">
                                             Nama Fakultas
                                         </div>
@@ -44,19 +44,19 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-3 border rounded p-2">
+                                <div class="border rounded p-2" style="min-width: 160px">
                                     <button type="button" class="btn btn-primary btn-sm mr-2 mb-1" data-toggle="modal"
                                         data-target="#modal-edit-fakultas">
-                                        <i class="fas fa-pen-square mr-2"></i> Edit
+                                        <i class="bi bi-pencil-square mr-2"></i> Edit
                                     </button>
                                     <img src="{{ asset($fakultas->image != null ? $fakultas->image : 'ekapta/assets/img/not-found.png') }}"
-                                        alt="TTD Dekan" height="50">
+                                        alt="Stempel Fakultas" height="50">
                                 </div>
                             </div>
                             <hr>
                             <div class="row">
-                                <div class="col-md-8">
-                                    <div class="row">
+                                <div class="col-md-9">
+                                    <div class="row mt-3">
                                         <div class="col-md-3">
                                             Dekan
                                         </div>
@@ -66,10 +66,10 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-3 border rounded p-2">
+                                <div class="border rounded p-2" style="min-width: 160px">
                                     <button type="button" class="btn btn-primary btn-sm mr-2 mb-1" data-toggle="modal"
                                         data-target="#modal-edit">
-                                        <i class="fas fa-pen-square mr-2"></i> Edit
+                                        <i class="bi bi-pencil-square mr-2"></i> Edit
                                     </button>
                                     <img src="{{ asset($dekanActive != null ? $dekanActive->image : 'ekapta/assets/img/not-found.png') }}"
                                         alt="TTD Dekan" height="50">
@@ -79,118 +79,125 @@
 
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="card card-primary card-outline mt-3">
-                            <div class="card-header">
-                                <h3 class="card-title">Program Studi</h3>
-                            </div>
-                            <div class="card-body">
-                                <div class="p-2 border rounded d-flex flex-wrap">
+            </div>
 
-                                    @foreach ($fakultas->prodis as $prodi)
-                                        <div class="p-1 border border-success rounded mr-2 mb-2">
-                                            <span class="mr-2"
-                                                style="position: relative;top:3px"><b>{{ $prodi->namaprodi }}</b></span>
-                                            <div class="float-right" onclick="confirmDelete()">
-                                                <form action="{{ route('fakultas.delete.prodi') }}" method="post">
-                                                    @csrf
-                                                    <input type="hidden" name="prodi" value="{{ $prodi->id }}">
-                                                    <button class="btn btn-danger btn-sm" type="submit"><i
-                                                            class="bi bi-x"></i></button>
-                                                </form>
-                                            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card card-primary card-outline mt-3">
+                        <div class="card-header">
+                            <h3 class="card-title">Program Studi</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="p-2 border rounded d-flex flex-wrap">
+
+                                @foreach ($fakultas->prodis as $prodi)
+                                    <div class="p-1 border border-success rounded mr-2 mb-2">
+                                        <span class="mr-2"
+                                            style="position: relative;top:3px"><b>{{ $prodi->namaprodi }}</b></span>
+                                        <div class="float-right" onclick="confirmDelete()">
+                                            <form action="{{ route('fakultas.delete.prodi') }}" method="post">
+                                                @csrf
+                                                <input type="hidden" name="prodi" value="{{ $prodi->id }}">
+                                                <button class="btn btn-danger btn-sm" type="submit"><i
+                                                        class="bi bi-x"></i></button>
+                                            </form>
                                         </div>
-                                    @endforeach
+                                    </div>
+                                @endforeach
 
-                                </div>
+                            </div>
 
-                                <div class="mt-4">
-                                    <table id="example1" class="table table-bordered">
-                                        <thead>
+                            <div class="mt-4">
+                                <table id="example1" class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>No</th>
+                                            <th>Nama Prodi</th>
+                                            <th>Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @php
+                                            $no = 1;
+                                        @endphp
+                                        @foreach ($prodis as $prodi)
                                             <tr>
-                                                <th>No</th>
-                                                <th>Nama Prodi</th>
-                                                <th>Aksi</th>
+                                                <td>{{ $no++ }}</td>
+                                                <td>{{ $prodi->namaprodi }}</td>
+                                                <td>
+                                                    <div class="d-flex justify-content-center" onclick="confirmAdd()">
+                                                        <form action="{{ route('fakultas.add.prodi') }}" method="post">
+                                                            @csrf
+                                                            <input type="hidden" name="fakultas"
+                                                                value="{{ $fakultas->id }}">
+                                                            <input type="hidden" name="prodi"
+                                                                value="{{ $prodi->id }}">
+                                                            <button class="btn btn-success btn-sm"><i
+                                                                    class="bi bi-plus-circle mr-1"></i>
+                                                                Tambahkan</button>
+                                                        </form>
+                                                    </div>
+                                                </td>
                                             </tr>
-                                        </thead>
-                                        <tbody>
-                                            @php
-                                                $no = 1;
-                                            @endphp
-                                            @foreach ($prodis as $prodi)
-                                                <tr>
-                                                    <td>{{ $no++ }}</td>
-                                                    <td>{{ $prodi->namaprodi }}</td>
-                                                    <td>
-                                                        <div class="d-flex justify-content-center" onclick="confirmAdd()">
-                                                            <form action="{{ route('fakultas.add.prodi') }}"
-                                                                method="post">
-                                                                @csrf
-                                                                <input type="hidden" name="fakultas"
-                                                                    value="{{ $fakultas->id }}">
-                                                                <input type="hidden" name="prodi"
-                                                                    value="{{ $prodi->id }}">
-                                                                <button class="btn btn-success btn-sm"><i
-                                                                        class="bi bi-plus-circle mr-1"></i>
-                                                                    Tambahkan</button>
-                                                            </form>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            @endforeach
+                                        @endforeach
 
-                                        </tbody>
-                                        <tfoot>
-                                            <tr>
-                                                <th>No</th>
-                                                <th>Nama Prodi</th>
-                                                <th>Aksi</th>
-                                            </tr>
-                                        </tfoot>
-                                    </table>
-                                </div>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th>No</th>
+                                            <th>Nama Prodi</th>
+                                            <th>Aksi</th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="card card-primary card-outline mt-3">
-                            <div class="card-header">
-                                <h3 class="card-title">Dekan Fakultas</h3>
-                            </div>
-                            <div class="card-body">
+                </div>
+                <div class="col-md-6">
+                    <div class="card card-primary card-outline mt-3">
+                        <div class="card-header">
+                            <h3 class="card-title">Dekan Fakultas</h3>
+                        </div>
+                        <div class="card-body">
 
-                                <button type="button" class="btn btn-info mr-2" data-toggle="modal"
-                                    data-target="#modal-import">
-                                    <i class="fas fa-upload mr-2"></i> Import Dekan Fakultas
-                                </button>
+                            <button type="button" class="btn btn-primary mr-2" data-toggle="modal"
+                                data-target="#modal-create">
+                                <i class="bi bi-plus-circle mr-2"></i> Tambahkan Dekan Fakultas
+                            </button>
 
-                                <div class="mt-3">
-                                    <table id="example2" class="table table-bordered">
-                                        <thead>
+                            <button type="button" class="btn btn-info mr-2" data-toggle="modal"
+                                data-target="#modal-import">
+                                <i class="fas fa-upload mr-2"></i> Import Dekan Fakultas
+                            </button>
+
+                            <div class="mt-3">
+                                <table id="example2" class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>No</th>
+                                            <th>Nama Dekan</th>
+                                            <th>Periode</th>
+                                            <th>Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @php
+                                            $no = 1;
+                                        @endphp
+                                        @foreach ($fakultas->dekans as $dekan)
                                             <tr>
-                                                <th>No</th>
-                                                <th>Nama Dekan</th>
-                                                <th>Periode</th>
-                                                <th>Aksi</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @php
-                                                $no = 1;
-                                            @endphp
-                                            @foreach ($fakultas->dekans as $dekan)
-                                                <tr>
-                                                    <td>{{ $no++ }}</td>
-                                                    <td>{{ $dekan->namadekan . ', ' . $dekan->gelar . ' (' . $dekan->nidn . ')' }}
-                                                    </td>
-                                                    <td>
-                                                        {{ \Carbon\Carbon::parse($dekan->dari)->formatLocalized('%d %B %Y') . ' - ' . \Carbon\Carbon::parse($dekan->sampai)->formatLocalized('%d %B %Y') }}
-                                                    </td>
-                                                    <td>
-                                                        <div class="d-flex justify-content-center">
-                                                            @if ($dekan->status == null)
-                                                                <div onclick="confirmAdd()">
+                                                <td>{{ $no++ }}</td>
+                                                <td>{{ $dekan->namadekan . ', ' . $dekan->gelar . ' (' . $dekan->nidn . ')' }}
+                                                </td>
+                                                <td>
+                                                    {{ \Carbon\Carbon::parse($dekan->dari)->formatLocalized('%d %B %Y') . ' - ' . \Carbon\Carbon::parse($dekan->sampai)->formatLocalized('%d %B %Y') }}
+                                                </td>
+                                                <td>
+                                                    <div class="d-flex justify-content-center">
+                                                        @if ($dekan->status == null)
+                                                            @if ($dekanActive == null)
+                                                                <div onclick="confirmActive()" class="mr-1">
                                                                     <form action="{{ route('dekan.enabled') }}"
                                                                         method="post">
                                                                         @csrf
@@ -202,49 +209,59 @@
                                                                         </button>
                                                                     </form>
                                                                 </div>
-                                                            @elseif ($dekan->status == 'active')
-                                                                <div class="d-flex">
-                                                                    <button type="button"
-                                                                        class="btn btn-primary btn-sm mr-1 mb-1"
-                                                                        data-toggle="modal" data-target="#modal-edit">
-                                                                        <i class="fas fa-pen-square"></i>
-                                                                    </button>
-
-                                                                    <button type="button"
-                                                                        class="btn btn-info btn-sm mr-1 mb-1"
-                                                                        data-toggle="modal" data-target="#modal-detail">
-                                                                        <i class="fas fa-info-circle"></i>
-                                                                    </button>
-
-                                                                    <div onclick="confirmAdd()">
-                                                                        <form action="{{ route('dekan.disabled') }}"
-                                                                            method="post">
-                                                                            @csrf
-                                                                            <input type="hidden" name="dekan"
-                                                                                value="{{ $dekan->id }}">
-                                                                            <button class="btn btn-danger btn-sm"><i
-                                                                                    class="bi bi-x-circle"></i>
-                                                                            </button>
-                                                                        </form>
-                                                                    </div>
-                                                                </div>
                                                             @endif
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            @endforeach
+                                                            <div onclick="confirmDelete()">
+                                                                <form action="{{ route('dekan.delete') }}"
+                                                                    method="post">
+                                                                    @csrf
+                                                                    <input type="hidden" name="dekan"
+                                                                        value="{{ $dekan->id }}">
+                                                                    <button class="btn btn-danger btn-sm"><i
+                                                                            class="bi bi-trash mr-1"></i>
+                                                                        Hapus
+                                                                    </button>
+                                                                </form>
+                                                            </div>
+                                                        @elseif ($dekan->status == 'active')
+                                                            <div class="d-flex">
+                                                                <button type="button" class="btn btn-primary btn-sm mr-1"
+                                                                    data-toggle="modal" data-target="#modal-edit">
+                                                                    <i class="bi bi-pencil-square"></i>
+                                                                </button>
 
-                                        </tbody>
-                                        <tfoot>
-                                            <tr>
-                                                <th>No</th>
-                                                <th>Nama Dekan</th>
-                                                <th>Periode</th>
-                                                <th>Aksi</th>
+                                                                <button type="button" class="btn btn-info btn-sm mr-1"
+                                                                    data-toggle="modal" data-target="#modal-detail">
+                                                                    <i class="fas fa-info-circle"></i>
+                                                                </button>
+
+                                                                <div onclick="confirmDisable()">
+                                                                    <form action="{{ route('dekan.disabled') }}"
+                                                                        method="post">
+                                                                        @csrf
+                                                                        <input type="hidden" name="dekan"
+                                                                            value="{{ $dekan->id }}">
+                                                                        <button class="btn btn-danger btn-sm"><i
+                                                                                class="bi bi-x-circle"></i>
+                                                                        </button>
+                                                                    </form>
+                                                                </div>
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                </td>
                                             </tr>
-                                        </tfoot>
-                                    </table>
-                                </div>
+                                        @endforeach
+
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th>No</th>
+                                            <th>Nama Dekan</th>
+                                            <th>Periode</th>
+                                            <th>Aksi</th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -255,13 +272,13 @@
     </section>
 
     <!-- Modal Create -->
-    {{-- <div class="modal fade" id="modal-create">
+    <div class="modal fade" id="modal-create">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form action="{{ route('dekan.store') }}" method="post">
+                <form action="{{ route('dekan.store') }}" method="post" enctype="multipart/form-data">
                     @csrf
 
-                    <input type="hidden" name="fakultas" value="{{ $fakultas->id }}">
+                    <input type="hidden" name="fakultas_id" value="{{ $fakultas->id }}">
 
                     <div class="modal-header">
                         <h4 class="modal-title">Tambah Dekan Fakultas</h4>
@@ -273,7 +290,7 @@
                         <div class="form-group">
                             <label for="" class="form-label">NIDN</label>
                             <input type="text" class="form-control @error('nidn') is-invalid @enderror" name="nidn"
-                                placeholder="NIDN dekan..." required>
+                                placeholder="NIDN dekan..." value="{{ old('nidn') }}" required>
                             @error('nidn')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -282,8 +299,18 @@
                         <div class="form-group">
                             <label for="" class="form-label">Nama Dekan</label>
                             <input type="text" class="form-control @error('namadekan') is-invalid @enderror"
-                                name="namadekan" placeholder="Nama dekan fakultas..." required>
+                                name="namadekan" placeholder="Nama dekan fakultas..." value="{{ old('namadekan') }}"
+                                required>
                             @error('namadekan')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="form-group">
+                            <label for="" class="form-label">Gelar</label>
+                            <input type="text" class="form-control @error('gelar') is-invalid @enderror"
+                                name="gelar" placeholder="Gelar..." value="{{ old('gelar') }}" required>
+                            @error('gelar')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
@@ -292,7 +319,7 @@
                             <div class="form-group col-md-6">
                                 <label for="" class="form-label">Periode Dari</label>
                                 <input type="date" class="form-control @error('dari') is-invalid @enderror"
-                                    name="dari" required>
+                                    name="dari" value="{{ old('dari') }}" required>
                                 @error('dari')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -300,7 +327,7 @@
                             <div class="form-group col-md-6">
                                 <label for="" class="form-label">Periode Sampai</label>
                                 <input type="date" class="form-control @error('sampai') is-invalid @enderror"
-                                    name="sampai" required>
+                                    name="sampai" value="{{ old('sampai') }}" required>
                                 @error('sampai')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -320,7 +347,7 @@
                                 </div>
                             </div>
                             @error('image')
-                                <div class="invalid-feedback">{{ $message }}</div>
+                                <div class="text-danger"><small>{{ $message }}</small></div>
                             @enderror
                         </div>
                     </div>
@@ -332,7 +359,7 @@
             <!-- /.modal-content -->
         </div>
         <!-- /.modal-dialog -->
-    </div> --}}
+    </div>
 
     <!-- Modal Import -->
     <div class="modal fade" id="modal-import">

@@ -1,25 +1,22 @@
 @extends('layouts.dashboardMahasiswa')
 
 @section('content')
-    <!-- Content Header (Page header) -->
     <div class="content-header">
         <div class="container">
             <div class="row mb-2">
                 <div class="col-sm-6">
                     <h1 class="m-0">{{ $title }}</h1>
-                </div><!-- /.col -->
+                </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="#">Pengajuan TA</a></li>
                         <li class="breadcrumb-item active">{{ $title }}</li>
                     </ol>
-                </div><!-- /.col -->
-            </div><!-- /.row -->
-        </div><!-- /.container-fluid -->
+                </div>
+            </div>
+        </div>
     </div>
-    <!-- /.content-header -->
 
-    <!-- Main content -->
     <div class="content">
         <div class="container">
             <div class="row">
@@ -57,46 +54,63 @@
                             <p class="mt-3"><b>Lampiran : </b> <a href="{{ asset($pengajuan->lampiran) }}" class="ml-3"
                                     target="_blank"><i class="fas fa-paperclip"></i> Lampiran</a></p>
                         </div>
-                        <!-- /.card-body -->
+
                     </div>
 
-                    <div class="card card-primary card-outline mt-2">
+                    {{-- Revisi --}}
+                    <div class="card card-outline card-secondary">
                         <div class="card-header">
-                            <h3 class="card-title"><strong>Revisi</strong>
+                            <h3 class="card-title">
+                                <b>Revisi</b>
                                 <span class="badge bg-danger rounded-pill">
-                                    {{ count($pengajuan->revisis) }}
+                                    {{ count($revisis) }}
                                 </span>
                             </h3>
+
+                            <div class="card-tools">
+                                {{ $revisis->links() }}
+                            </div>
                         </div>
+
                         <div class="card-body">
+                            <div class="p-2">
 
-                            @foreach ($revisis as $revisi)
-                                <div class="card bg-light">
-                                    <div class="card-header"><i class="fas fa-calendar mr-2"></i>
-                                        {{ $revisi->created_at->format('d M Y H:m') }}
+                                @foreach ($revisis as $revisi)
+                                    <div class="direct-chat-msg">
+                                        <div class="direct-chat-infos clearfix">
+                                            <span
+                                                class="direct-chat-name float-left">{{ \App\Helpers\AppHelper::instance()->getMahasiswa($pengajuan->nim)->prodi }}</span>
+                                            <span class="direct-chat-timestamp float-right">
+                                                {{ $revisi->created_at->format('d M Y H:m a') }}
+                                            </span>
+                                        </div>
+                                        <img class="direct-chat-img"
+                                            src="{{ asset('ekapta/adminLTE/dist/img/default-profile.png') }}"
+                                            alt="message user image">
+                                        <div class="direct-chat-text p-2">
+                                            {!! nl2br($revisi->catatan) !!}
+                                            @if ($revisi->lampiran)
+                                                <div class="p-1 mt-3 bg-light rounded">
+                                                    <small>
+                                                        <span class="text-secondary ml-2"><b>Lampiran : </b></span>
+                                                        <a href="{{ asset($revisi->lampiran) }}" target="_blank">
+                                                            <i class="fas fa-paperclip ml-1"></i>
+                                                            {{ Str::substr($revisi->lampiran, 16) }}
+                                                        </a>
+                                                    </small>
+                                                </div>
+                                            @endif
+                                        </div>
                                     </div>
-                                    <div class="card-body">
-                                        {!! nl2br($revisi->catatan) !!}
-                                    </div>
-                                    <div class="card-footer">
-                                        Lampiran :
-                                        @if ($revisi->lampiran)
-                                            <a href="{{ asset($revisi->lampiran) }}" class="ml-3" target="_blank"><i
-                                                    class="fas fa-paperclip"></i> Lampiran</a>
-                                        @endif
-                                    </div>
-                                </div>
-                            @endforeach
+                                @endforeach
 
+                            </div>
                         </div>
-                        <div class="d-flex justify-content-center mb-3">
-                            {{ $revisis->links() }}
-                        </div>
+
                     </div>
-                    <!-- /.card -->
+
                 </div>
             </div>
         </div>
     </div>
-    <!-- /.content -->
 @endsection

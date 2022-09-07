@@ -24,6 +24,18 @@ class DekanController extends Controller
 
     public function store(Request $request)
     {
+        $validatedData = $request->validate([
+            'fakultas_id' => 'required',
+            'nidn' => 'required',
+            'namadekan' => 'required',
+            'gelar' => 'required',
+            'dari' => 'required',
+            'sampai' => 'required',
+            'image' => 'required|mimes:png,jpg,jpeg|max:300'
+        ]);
+        $validatedData['image'] = AppHelper::instance()->uploadLampiran($request->image, 'lampiran-ttd');
+        Dekan::create($validatedData);
+        return back()->with('success', 'Dekan berhasil ditambahkan');
     }
 
     public function update(Request $request)

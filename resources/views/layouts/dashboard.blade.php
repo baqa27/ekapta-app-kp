@@ -18,8 +18,6 @@
     <!-- overlayScrollbars -->
     <link rel="stylesheet"
         href="{{ asset('ekapta') }}/adminLTE/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
-    <!-- Daterange picker -->
-    <link rel="stylesheet" href="{{ asset('ekapta') }}/adminLTE/plugins/daterangepicker/daterangepicker.css">
     <!-- summernote -->
     <link rel="stylesheet" href="{{ asset('ekapta') }}/adminLTE/plugins/summernote/summernote-bs4.min.css">
     <!-- DataTables -->
@@ -77,12 +75,6 @@
     </script>
     <!-- Bootstrap 4 -->
     <script src="{{ asset('ekapta') }}/adminLTE/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <!-- daterangepicker -->
-    <script src="{{ asset('ekapta') }}/adminLTE/plugins/moment/moment.min.js"></script>
-    <script src="{{ asset('ekapta') }}/adminLTE/plugins/daterangepicker/daterangepicker.js"></script>
-    <!-- Tempusdominus Bootstrap 4 -->
-    <script src="{{ asset('ekapta') }}/adminLTE/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js">
-    </script>
     <!-- Summernote -->
     <script src="{{ asset('ekapta') }}/adminLTE/plugins/summernote/summernote-bs4.min.js"></script>
     <!-- AdminLTE App -->

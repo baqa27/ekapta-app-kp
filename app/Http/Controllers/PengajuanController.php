@@ -77,7 +77,7 @@ class PengajuanController extends Controller
             'title' => 'Detail pengajuan',
             'active' => 'pengajuan',
             'pengajuan' => $pengajuan,
-            'revisis' => $pengajuan->revisis()->orderBy('created_at', 'desc')->paginate(3),
+            'revisis' => $pengajuan->revisis()->orderBy('created_at', 'desc')->paginate(5),
         ]);
     }
 
@@ -95,7 +95,7 @@ class PengajuanController extends Controller
             'pengajuan' => $pengajuan,
             'dosens' => $dosens,
             'sidebar' => 'partials.sidebarProdi',
-            'revisis' => $pengajuan->revisis()->orderBy('created_at', 'desc')->paginate(3),
+            'revisis' => $pengajuan->revisis()->orderBy('created_at', 'desc')->paginate(5),
             'dosen_utama' => $dosenUtama,
             'dosen_pendamping' => $dosenPendamping,
             'mahasiswa' => $mahasiswa,
@@ -111,7 +111,7 @@ class PengajuanController extends Controller
             'active' => 'pengajuan',
             'pengajuan' => $pengajuan,
             'sidebar' => 'partials.sidebarAdmin',
-            'revisis' => $pengajuan->revisis()->orderBy('created_at', 'desc')->paginate(3),
+            'revisis' => $pengajuan->revisis()->orderBy('created_at', 'desc')->paginate(5),
         ]);
     }
 
@@ -286,7 +286,7 @@ class PengajuanController extends Controller
                             return false;
                         }
                         return true;
-                    }), 'mimes:pdf']
+                    }), 'mimes:pdf,docx']
                 ]);
 
                 if ($request->file('lampiran')) {

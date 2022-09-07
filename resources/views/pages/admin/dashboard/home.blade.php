@@ -1,190 +1,328 @@
 @extends('layouts.dashboard')
 
 @section('content')
-
-<!-- Content Header (Page header) -->
-<div class="content-header">
-    <div class="container-fluid">
-        <div class="row mb-2">
-            <div class="col-sm-6">
-                <h1 class="m-0">{{ $title }}</h1>
-            </div><!-- /.col -->
-            <div class="col-sm-6">
-                <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item"><a href="#">{{ $title }}</a></li>
-                    <li class="breadcrumb-item active">Home</li>
-                </ol>
-            </div><!-- /.col -->
-        </div><!-- /.row -->
-    </div><!-- /.container-fluid -->
-</div>
-<!-- /.content-header -->
-
-<!-- Main content -->
-<section class="content">
-    <div class="container-fluid">
-        {{-- <div class="row mb-4">
-            <!-- Pengajuan TA -->
-            <div class="col-md-3">
-                <div class="card card-primary card-outline">
-                    <div class="card-header">Pengajuan TA</div>
-                    <div class="card-body">
-                        <a href="" class="text-dark">
-                            <div class="callout callout-info">
-                                <h6>Febi Arifin</h6>
-                                <small class="text-secondary">4 Agustus 2022</small>
-                            </div>
-                        </a>
-                        <a href="" class="text-dark">
-                            <div class="callout callout-info">
-                                <h6>Febi Arifin</h6>
-                                <small class="text-secondary">4 Agustus 2022</small>
-                            </div>
-                        </a>
-                        <a href="" class="text-dark">
-                            <div class="callout callout-info">
-                                <h6>Febi Arifin</h6>
-                                <small class="text-secondary">4 Agustus 2022</small>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="card-footer text-center">
-                        <a href="">Lihat semua</a>
-                    </div>
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">{{ $title }}</h1>
                 </div>
-            </div>
-            <!-- Pendaftaran TA -->
-            <div class="col-md-3">
-                <div class="card card-primary card-outline">
-                    <div class="card-header">Pendaftaran TA</div>
-                    <div class="card-body">
-                        <a href="" class="text-dark">
-                            <div class="callout callout-info">
-                                <h6>Febi Arifin</h6>
-                                <small class="text-secondary">4 Agustus 2022</small>
-                            </div>
-                        </a>
-                        <a href="" class="text-dark">
-                            <div class="callout callout-info">
-                                <h6>Febi Arifin</h6>
-                                <small class="text-secondary">4 Agustus 2022</small>
-                            </div>
-                        </a>
-                        <a href="" class="text-dark">
-                            <div class="callout callout-info">
-                                <h6>Febi Arifin</h6>
-                                <small class="text-secondary">4 Agustus 2022</small>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="card-footer text-center">
-                        <a href="">Lihat semua</a>
-                    </div>
-                </div>
-            </div>
-            <!-- Seminar Proposal -->
-            <div class="col-md-3">
-                <div class="card card-primary card-outline">
-                    <div class="card-header">Seminar Proposal</div>
-                    <div class="card-body">
-                        <a href="" class="text-dark">
-                            <div class="callout callout-info">
-                                <h6>Febi Arifin</h6>
-                                <small class="text-secondary">4 Agustus 2022</small>
-                            </div>
-                        </a>
-                        <a href="" class="text-dark">
-                            <div class="callout callout-info">
-                                <h6>Febi Arifin</h6>
-                                <small class="text-secondary">4 Agustus 2022</small>
-                            </div>
-                        </a>
-                        <a href="" class="text-dark">
-                            <div class="callout callout-info">
-                                <h6>Febi Arifin</h6>
-                                <small class="text-secondary">4 Agustus 2022</small>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="card-footer text-center">
-                        <a href="">Lihat semua</a>
-                    </div>
-                </div>
-            </div>
-            <!-- Ujian Pendadaran -->
-            <div class="col-md-3">
-                <div class="card card-primary card-outline">
-                    <div class="card-header">Ujian Pendadaran</div>
-                    <div class="card-body">
-                        <a href="" class="text-dark">
-                            <div class="callout callout-info">
-                                <h6>Febi Arifin</h6>
-                                <small class="text-secondary">4 Agustus 2022</small>
-                            </div>
-                        </a>
-                        <a href="" class="text-dark">
-                            <div class="callout callout-info">
-                                <h6>Febi Arifin</h6>
-                                <small class="text-secondary">4 Agustus 2022</small>
-                            </div>
-                        </a>
-                        <a href="" class="text-dark">
-                            <div class="callout callout-info">
-                                <h6>Febi Arifin</h6>
-                                <small class="text-secondary">4 Agustus 2022</small>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="card-footer text-center">
-                        <a href="">Lihat semua</a>
-                    </div>
-                </div>
-            </div>
-        </div> --}}
-
-        <div class="row">
-            <div class="col-md-12">
-                <div class="card bg-gradient-dark">
-                    <div class="card-header border-0">
-
-                        <h3 class="card-title">
-                            <i class="far fa-calendar-alt"></i>
-                            Calendar
-                        </h3>
-                        <!-- tools card -->
-                        <div class="card-tools">
-                            <!-- button with a dropdown -->
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-dark btn-sm dropdown-toggle" data-toggle="dropdown"
-                                    data-offset="-52">
-                                    <i class="fas fa-bars"></i>
-                                </button>
-                                <div class="dropdown-menu" role="menu">
-                                    <a href="#" class="dropdown-item">Add new event</a>
-                                    <a href="#" class="dropdown-item">Clear events</a>
-                                    <div class="dropdown-divider"></div>
-                                    <a href="#" class="dropdown-item">View calendar</a>
-                                </div>
-                            </div>
-                            <button type="button" class="btn btn-dark btn-sm" data-card-widget="collapse">
-                                <i class="fas fa-minus"></i>
-                            </button>
-                            <button type="button" class="btn btn-dark btn-sm" data-card-widget="remove">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-                        <!-- /. tools -->
-                    </div>
-                    <!-- /.card-header -->
-                    <div class="card-body pt-0">
-                        <!--The calendar -->
-                        <div id="calendar" style="width: 100%"></div>
-                    </div>
-                    <!-- /.card-body -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="#">{{ $title }}</a></li>
+                        <li class="breadcrumb-item active">Home</li>
+                    </ol>
                 </div>
             </div>
         </div>
-</section>
-<!-- /.content -->
+    </div>
 
+    <section class="content">
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-12 col-sm-6 col-md-3">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-users"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">Jumlah Mahasiswa</span>
+                            <span class="info-box-number">
+                                {{ count($mahasiswas) }} Mahasiswa
+                            </span>
+                            <small class="bg-light d-flex justify-content-center">
+                                <a href="{{ route('mahasiswas') }}" class="small-box-footer text-primary">More info
+                                    <i class="fas fa-arrow-circle-right"></i>
+                                </a>
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-6 col-md-3">
+                    <div class="info-box mb-3">
+                        <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-users"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">Jumlah Dosen</span>
+                            <span class="info-box-number">
+                                {{ count($dosens) }} Dosen
+                            </span>
+                            <small class="bg-light d-flex justify-content-center">
+                                <a href="{{ route('dosens') }}" class="small-box-footer text-primary">More info
+                                    <i class="fas fa-arrow-circle-right"></i>
+                                </a>
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="clearfix hidden-md-up"></div>
+
+                <div class="col-12 col-sm-6 col-md-3">
+                    <div class="info-box mb-3">
+                        <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-building"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">Jumlah Prodi</span>
+                            <span class="info-box-number">{{ count($prodis) }} Prodi</span>
+                            <small class="bg-light d-flex justify-content-center">
+                                <a href="{{ route('prodis') }}" class="small-box-footer text-primary">More info
+                                    <i class="fas fa-arrow-circle-right"></i>
+                                </a>
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-6 col-md-3">
+                    <div class="info-box mb-3">
+                        <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-building"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">Jumlah Fakultas</span>
+                            <span class="info-box-number">{{ count($fakultas) }} Fakultas</span>
+                            <small class="bg-light d-flex justify-content-center">
+                                <a href="{{ route('fakultas') }}" class="small-box-footer text-primary">More info
+                                    <i class="fas fa-arrow-circle-right"></i>
+                                </a>
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row">
+                <div class="col-12 col-sm-6 col-md-3">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-secondary elevation-1"><i class="fas fa-check"></i></span>
+
+                        <div class="info-box-content">
+                            <span class="info-box-text">Pengajuan TA</span>
+                            <span class="info-box-number">
+                                {{ count($pengajuans) }} Mahasiswa
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-6 col-md-3">
+                    <div class="info-box mb-3">
+                        <span class="info-box-icon bg-info elevation-1"><i class="fas fa-check"></i></span>
+
+                        <div class="info-box-content">
+                            <span class="info-box-text">Pendaftaran TA</span>
+                            <span class="info-box-number">
+                                {{ count($pendaftarans) }} Mahasiswa
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="clearfix hidden-md-up"></div>
+
+                <div class="col-12 col-sm-6 col-md-3">
+                    <div class="info-box mb-3">
+                        <span class="info-box-icon bg-primary elevation-1"><i class="fas fa-check"></i></span>
+
+                        <div class="info-box-content">
+                            <span class="info-box-text">Seminar Proposal</span>
+                            <span class="info-box-number">0 Mahasiswa</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-6 col-md-3">
+                    <div class="info-box mb-3">
+                        <span class="info-box-icon bg-success elevation-1"><i class="fas fa-check"></i></span>
+
+                        <div class="info-box-content">
+                            <span class="info-box-text">Ujian Pendadaran</span>
+                            <span class="info-box-number">0 Mahasiswa</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card" style="min-height: 16rem">
+                        <div class="card-header bg-secondary">
+                            Pengajuan TA Berdasarkan Status
+                        </div>
+                        <div class="card-body">
+
+                            <div class="progress-group">
+                                Pengajuan Diterima
+                                <span
+                                    class="float-right"><b>{{ count($pengajuans_diterima) }}</b>/{{ count($pengajuans) }}</span>
+                                <div class="progress progress-sm">
+                                    <div class="progress-bar bg-success"
+                                        style="width: {{ (count($pengajuans_diterima) / count($pengajuans)) * 100 }}%">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="progress-group">
+                                Pengajuan Review
+                                <span
+                                    class="float-right"><b>{{ count($pengajuans_review) }}</b>/{{ count($pengajuans) }}</span>
+                                <div class="progress progress-sm">
+                                    <div class="progress-bar bg-secondary"
+                                        style="width: {{ (count($pengajuans_review) / count($pengajuans)) * 100 }}%">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="progress-group">
+                                Pengajuan Revisi
+                                <span
+                                    class="float-right"><b>{{ count($pengajuans_revisi) }}</b>/{{ count($pengajuans) }}</span>
+                                <div class="progress progress-sm">
+                                    <div class="progress-bar bg-warning"
+                                        style="width: {{ (count($pengajuans_revisi) / count($pengajuans)) * 100 }}%">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="progress-group">
+                                Pengajuan Ditolak
+                                <span
+                                    class="float-right"><b>{{ count($pengajuans_ditolak) }}</b>/{{ count($pengajuans) }}</span>
+                                <div class="progress progress-sm">
+                                    <div class="progress-bar bg-success"
+                                        style="width: {{ (count($pengajuans_ditolak) / count($pengajuans)) * 100 }}%">
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card" style="min-height: 16rem">
+                        <div class="card-header bg-info">
+                            Pendaftaran TA Berdasarkan Status
+                        </div>
+                        <div class="card-body">
+
+                            <div class="progress-group">
+                                Pendaftaran Diterima
+                                <span
+                                    class="float-right"><b>{{ count($pendaftarans_diterima) }}</b>/{{ count($pendaftarans) }}</span>
+                                <div class="progress progress-sm">
+                                    <div class="progress-bar bg-success"
+                                        style="width: {{ (count($pendaftarans_diterima) / count($pendaftarans)) * 100 }}%">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="progress-group">
+                                Pendaftaran Review
+                                <span
+                                    class="float-right"><b>{{ count($pendaftarans_review) }}</b>/{{ count($pendaftarans) }}</span>
+                                <div class="progress progress-sm">
+                                    <div class="progress-bar bg-secondary"
+                                        style="width: {{ (count($pendaftarans_review) / count($pendaftarans)) * 100 }}%">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="progress-group">
+                                Pendaftaran Revisi
+                                <span
+                                    class="float-right"><b>{{ count($pendaftarans_revisi) }}</b>/{{ count($pendaftarans) }}</span>
+                                <div class="progress progress-sm">
+                                    <div class="progress-bar bg-warning"
+                                        style="width: {{ (count($pendaftarans_revisi) / count($pendaftarans)) * 100 }}%">
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card" style="min-height: 16rem">
+                        <div class="card-header bg-primary">
+                            Seminar Proposal Berdasarkan Status
+                        </div>
+                        <div class="card-body">
+
+                            <div class="progress-group">
+                                Seminar Proposal Diterima
+                                <span class="float-right"><b>0</b>/0</span>
+                                <div class="progress progress-sm">
+                                    <div class="progress-bar bg-success" style="width: 0%">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="progress-group">
+                                Seminar Proposal Review
+                                <span class="float-right"><b>0</b>/0</span>
+                                <div class="progress progress-sm">
+                                    <div class="progress-bar bg-secondary" style="width: 0%">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="progress-group">
+                                Seminar Proposal Revisi
+                                <span class="float-right"><b>0</b>/0</span>
+                                <div class="progress progress-sm">
+                                    <div class="progress-bar bg-warning" style="width: 0%">
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card" style="min-height: 16rem">
+                        <div class="card-header bg-success">
+                            Ujian Pendadaran Berdasarkan Status
+                        </div>
+                        <div class="card-body">
+
+                            <div class="progress-group">
+                                Ujian Pendadaran Diterima
+                                <span class="float-right"><b>0</b>/0</span>
+                                <div class="progress progress-sm">
+                                    <div class="progress-bar bg-success" style="width: 0%">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="progress-group">
+                                Ujian Pendadaran Review
+                                <span class="float-right"><b>0</b>/0</span>
+                                <div class="progress progress-sm">
+                                    <div class="progress-bar bg-secondary" style="width: 0%">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="progress-group">
+                                Ujian Pendadaran Revisi
+                                <span class="float-right"><b>0</b>/0</span>
+                                <div class="progress progress-sm">
+                                    <div class="progress-bar bg-warning" style="width: 0%">
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
 @endsection

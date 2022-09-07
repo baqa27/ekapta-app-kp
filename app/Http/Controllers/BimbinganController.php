@@ -82,17 +82,13 @@ class BimbinganController extends Controller
         return back();
         $cekBimbingan = Bimbingan::where('mahasiswa_id', Auth::guard('mahasiswa')->user()->id)
             ->whereIn('status', ['review', 'revisi'])
-            ->get(); // cek apakah masih ada bimbingan dengan status review atau revisi
-
+            ->get();
         $bimbinganIfExists = Bimbingan::where(['mahasiswa_id' => Auth::guard('mahasiswa')->user()->id, 'bagian_id' => $request->bagian_id, 'status' => 'diterima'])
-            ->get(); // cek ketika bagian bimbingan yang sudah diterima sebelumnya di inputkan lagi
-
-        Bagian::findOrFail($request->bagian_id); //cek bagain bimbingan apakah ada
-
+            ->get();
+        Bagian::findOrFail($request->bagian_id);
         $mahasiswa = Mahasiswa::findOrFail(Auth::guard('mahasiswa')->user()->id);
         $dosenUtama = $mahasiswa->dosens()->where('status', 'utama')->first();
         $dosenPendamping = $mahasiswa->dosens()->where('status', 'pendamping')->first();
-
         if ($cekBimbingan->isEmpty()) {
             if ($bimbinganIfExists->isEmpty()) {
                 $mahasiswa = Mahasiswa::findOrFail(Auth::guard('mahasiswa')->user()->id);
@@ -100,14 +96,14 @@ class BimbinganController extends Controller
                     'lampiran' => ['required', 'mimes:pdf'],
                     'bagian_id' => 'required',
                 ]);
-                // $bimbingan = new Bimbingan;
-                // $bimbingan->lampiran = AppHelper::instance()->uploadLampiran($request->lampiran, 'lampiran-bimbingan');
-                // $bimbingan->keterangan = $request->keterangan;
-                // $bimbingan->bagian_id = $request->bagian_id;
+                $bimbingan = new Bimbingan;
+                $bimbingan->lampiran = AppHelper::instance()->uploadLampiran($request->lampiran, 'lampiran-bimbingan');
+                $bimbingan->keterangan = $request->keterangan;
+                $bimbingan->bagian_id = $request->bagian_id;
 
-                // $mahasiswa->bimbingans()->save($bimbingan);
+                $mahasiswa->bimbingans()->save($bimbingan);
 
-                // $bimbingan->dosens()->attach([$dosenUtama->id, $dosenPendamping->id]);
+                $bimbingan->dosens()->attach([$dosenUtama->id, $dosenPendamping->id]);
 
                 return redirect('bimbingan-mahasiswa')->with('success', 'Bimbingan berhasil dibuat. Silahkan tunggu review dari dosen pembiming');
             } else {
@@ -149,17 +145,13 @@ class BimbinganController extends Controller
             'title' => 'Detail Bimbingan Tugas Akhir',
             'bimbingan' => $bimbingan,
             'active' => 'bimbingan',
-            'revisis' => $bimbingan->revisis()->orderBy('created_at', 'desc')->paginate(3),
+            'revisis' => $bimbingan->revisis()->orderBy('created_at', 'desc')->paginate(5),
         ]);
     }
 
     public function bimbinganReview($id)
     {
         $bimbingan = Bimbingan::findOrFail($id);
-        // if ($bimbingan->status == 'revisi' || $bimbingan->status == 'diterima') {
-        //     return back()->with('warning', 'Bimbingan tidak ditemukan');
-        // }
-
         $mahasiswa = Mahasiswa::find($bimbingan->mahasiswa->id);
         $prodi = Prodi::where('namaprodi', $mahasiswa->prodi)->first();
 
@@ -170,7 +162,7 @@ class BimbinganController extends Controller
             'bimbingan' => $bimbingan,
             'active' => 'bimbingan',
             'sidebar' => 'partials.sidebarDosen',
-            'revisis' => $bimbingan->revisis()->orderBy('created_at', 'desc')->paginate(3),
+            'revisis' => $bimbingan->revisis()->orderBy('created_at', 'desc')->paginate(5),
             'bagians' => $prodi->bagians,
             'bimbingans_acc' => $bimbingans_acc,
             'mahasiswa' => $mahasiswa,
