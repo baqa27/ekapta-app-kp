@@ -59,22 +59,27 @@
         }
 
         #stempel {
-            opacity: 40%;
+            opacity: 20%;
             position: relative;
-            top: 15px;
-            right: -40px;
-            max-width: 150px;
+            top: 10px;
+            right: -10px;
         }
 
         #ttd {
             position: relative;
             left: -80px;
             max-width: 140px;
+            top: -30px;
         }
 
         #detail-dekan {
             position: relative;
-            top: -30px
+            top: -70px
+        }
+
+        .text-expired {
+            position: relative;
+            top: -50px;
         }
     </style>
 </head>
@@ -265,7 +270,7 @@
                     <span>
                         Dekan <br>
                         <div class="d-flex">
-                            <img src="{{ $stempel }}" alt="Stempel Dekan" height="140" id="stempel">
+                            <img src="{{ $stempel }}" alt="Stempel Dekan" height="180" id="stempel">
                             <img src="{{ $ttd_dekan }}" alt="TTD Dekan" height="110" id="ttd">
                         </div>
                         <div id="detail-dekan">
