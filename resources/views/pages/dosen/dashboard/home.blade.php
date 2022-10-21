@@ -89,7 +89,9 @@
                                     class="float-right"><b>{{ count($bimbingans_diterima) }}</b>/{{ count($bimbingans) }}</span>
                                 <div class="progress progress-sm">
                                     <div class="progress-bar bg-success"
-                                        style="width: {{ (count($bimbingans_diterima) / count($bimbingans)) * 100 }}%">
+                                        @if (count($bimbingans_diterima) != 0) style="width: {{ (count($bimbingans_diterima) / count($bimbingans)) * 100 }}%"
+                                    @else
+                                     style="width: 0%" @endif>
                                     </div>
                                 </div>
                             </div>
@@ -100,7 +102,9 @@
                                     class="float-right"><b>{{ count($bimbingans_review) }}</b>/{{ count($bimbingans) }}</span>
                                 <div class="progress progress-sm">
                                     <div class="progress-bar bg-secondary"
-                                        style="width: {{ (count($bimbingans_review) / count($bimbingans)) * 100 }}%">
+                                        @if (count($bimbingans_review) != 0) style="width: {{ (count($bimbingans_review) / count($bimbingans)) * 100 }}%"
+                                    @else
+                                     style="width: 0%" @endif>
                                     </div>
                                 </div>
                             </div>
@@ -111,7 +115,9 @@
                                     class="float-right"><b>{{ count($bimbingans_revisi) }}</b>/{{ count($bimbingans) }}</span>
                                 <div class="progress progress-sm">
                                     <div class="progress-bar bg-warning"
-                                        style="width: {{ (count($bimbingans_revisi) / count($bimbingans)) * 100 }}%">
+                                        @if (count($bimbingans_revisi) != 0) style="width: {{ (count($bimbingans_revisi) / count($bimbingans)) * 100 }}%"
+                                    @else
+                                     style="width: 0%" @endif>
                                     </div>
                                 </div>
                             </div>
