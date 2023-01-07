@@ -11,7 +11,9 @@ class Bagian extends Model
 
     protected $fillable = [
         'prodi_id',
-        'bagian'
+        'bagian',
+        'is_seminar',
+        'is_pendadaran',
     ];
 
     public function prodi()

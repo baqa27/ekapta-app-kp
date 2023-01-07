@@ -33,13 +33,17 @@ class BagianController extends Controller
     public function update(Request $request)
     {
         $bagian = Bagian::findOrFail($request->id);
-        if (Bagian::where(['id' => $request->id, 'bagian' => $request->bagian])->first()) {
-            return back()->with('warning', 'Nama bagian yang sama sudah dibuat');
-        }
+
         $validatedData = $request->validate([
             'bagian' => 'required',
         ]);
-        $bagian->update($validatedData);
+
+        $bagian->update([
+            'bagian' => $validatedData['bagian'],
+            'is_seminar' => $request->is_seminar ? 1 : 0,
+            'is_pendadaran' => $request->is_pendadaran ? 1 : 0,
+        ]);
+
         return back()->with('success', 'Bagian berhasil diedit');
     }
 

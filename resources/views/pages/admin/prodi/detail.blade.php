@@ -61,8 +61,7 @@
                                     <span class="mr-3">:</span>
                                     <b>{{ \App\Helpers\AppHelper::instance()->getDosen($prodi->kodekaprodi) != null
                                         ? \App\Helpers\AppHelper::instance()->getDosen($prodi->kodekaprodi)->nama .
-                                            ',
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    ' .
+                                            ', ' .
                                             \App\Helpers\AppHelper::instance()->getDosen($prodi->kodekaprodi)->gelar
                                         : '' }}</b>
                                 </div>
@@ -98,14 +97,21 @@
                                             class="badge {{ count($bagian->bimbingans) != 0 ? 'badge-success' : 'badge-secondary' }} mr-2">{{ $no++ }}</span>
                                         <span style="position: relative;top:2px;">{{ $bagian->bagian }}</span>
 
+                                        @if ($bagian->is_seminar == 1)
+                                        <span class="badge bg-success ml-3" style="position: relative;top:2px;">
+                                            <i class="bi bi-check-circle mr-1"></i>
+                                            Sebagai Syarat Seminar</span>
+                                        @endif
+
+                                        @if ($bagian->is_pendadaran == 1)
+                                        <span class="badge bg-success ml-3" style="position: relative;top:2px;">
+                                            <i class="bi bi-check-circle mr-1"></i>
+                                            Sebagai Syarat Pendadaran</span>
+                                        @endif
+
                                         <div class="float-right">
                                             <div class="d-flex">
-                                                @if (count($bagian->bimbingans) == 0)
-                                                    {{-- <div class="badge badge-info mr-2">
-                                                        <span style="position: relative;top:5px;">
-                                                            Mahasiswa : <b>{{ count($bagian->bimbingans) }}</b>
-                                                        </span>
-                                                    </div> --}}
+                                                {{-- @if (count($bagian->bimbingans) == 0)
                                                     <div onclick="confirmActive()">
                                                         <form action="{{ route('bagian.active') }}" method="post">
                                                             @csrf
@@ -118,7 +124,7 @@
                                                             </button>
                                                         </form>
                                                     </div>
-                                                @endif
+                                                @endif --}}
                                                 <button type="button" class="btn btn-primary btn-sm mr-2"
                                                     data-toggle="modal" data-target="#modal-edit-{{ $bagian->id }}">
                                                     <i class="bi bi-pencil-square"></i>
@@ -253,6 +259,20 @@
                                 @error('bagian')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
+                            </div>
+
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" name="is_seminar" @if ($bagian->is_seminar == 1)
+                                    checked
+                                @endif>
+                                <label class="form-check-label" for="exampleCheck1" >Sebagai Syarat Seminar</label>
+                            </div>
+
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" name="is_pendadaran" @if ($bagian->is_pendadaran == 1)
+                                checked
+                            @endif>
+                                <label class="form-check-label" for="exampleCheck1">Sebagai Syarat Pendadaran</label>
                             </div>
                         </div>
                         <div class="modal-footer justify-content-between">

@@ -94,7 +94,7 @@
                     <a href="#" class="nav-link {{ $active=='seminar' ? 'active' : '' }}">
                         <i class="nav-icon fas fa-th"></i>
                         <p>
-                            Seminar Proposal TA
+                            Seminar TA
                         </p>
                     </a>
                 </li>

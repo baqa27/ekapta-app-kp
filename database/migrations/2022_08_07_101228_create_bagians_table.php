@@ -16,6 +16,8 @@ class CreateBagiansTable extends Migration
         Schema::create('bagians', function (Blueprint $table) {
             $table->id();
             $table->string('bagian');
+            $table->tinyInteger('is_seminar')->default(0);
+            $table->tinyInteger('is_pendadaran')->default(0);
             $table->timestamps();
             $table->foreignId('prodi_id')->constrained();
         });
