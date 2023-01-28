@@ -212,9 +212,11 @@
                                         data-original-title="2003">
                                         <div class="inner-circle"></div>
                                         <p class="h6 mt-3 mb-1">Pengajuan Judul TA</p>
+                                        @if (\App\Helpers\AppHelper::instance()->getPengajuan(Auth::guard('mahasiswa')->user()->nim))
                                         @if (\App\Helpers\AppHelper::instance()->getPengajuan(Auth::guard('mahasiswa')->user()->nim)->status ==
                                             'diterima')
                                             <div class="bg-soft-success text-success rounded mt-3">Selesai</div>
+                                            @endif
                                         @else
                                             <div class="bg-soft-warning text-warning rounded mt-3">Belum Selesai</div>
                                         @endif
@@ -227,9 +229,11 @@
                                         data-original-title="2004">
                                         <div class="inner-circle"></div>
                                         <p class="h6 mt-3 mb-1">Pendaftaran TA</p>
+                                        @if (\App\Helpers\AppHelper::instance()->getPengajuan(Auth::guard('mahasiswa')->user()->nim))
                                         @if (\App\Helpers\AppHelper::instance()->getPendaftaran(Auth::guard('mahasiswa')->user()->nim)->status ==
                                             'diterima')
                                             <div class="bg-soft-success text-success rounded mt-3">Selesai</div>
+                                            @endif
                                         @else
                                             <div class="bg-soft-warning text-warning rounded mt-3">Belum Selesai</div>
                                         @endif
