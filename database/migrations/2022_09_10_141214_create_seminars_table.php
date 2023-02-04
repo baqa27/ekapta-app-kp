@@ -15,7 +15,6 @@ class CreateSeminarsTable extends Migration
     {
         Schema::create('seminars', function (Blueprint $table) {
             $table->id();
-            $table->string('nim');
             $table->string('tanggal_pembuatan_ta');
             $table->string('tanggal_acc_pembimbing_utama');
             $table->string('tanggal_acc_pembimbing_pendamping');
@@ -24,10 +23,9 @@ class CreateSeminarsTable extends Migration
             $table->string('lampiran_3');
             $table->string('lampiran_4');
             $table->string('lampiran_5');
-            $table->string('link_video');
-            $table->integer('nilai')->default(0);
             $table->timestamps();
-            $table->integer('dosen_id')->nullable()->unsigned()->index();
+            $table->foreignId('pengajuan_id')->constrained();
+            $table->foreignId('mahasiswa_id')->constrained();
         });
     }
 

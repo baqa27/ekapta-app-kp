@@ -117,17 +117,17 @@
                                             data-target="#modal-edit">
                                             <i class="bi bi-pencil-square mr-2"></i> Ploting Dosen Pendamping
                                         </button>
-
-                                        <button type="button" class="btn btn-secondary mr-2" data-toggle="modal"
-                                            data-target="#modal-edit-judul">
-                                            <i class="bi bi-pencil-square mr-2"></i> Edit Judul Tugas Akhir
-                                        </button>
                                     @else
                                         <button type="button" class="btn btn-info mr-2" data-toggle="modal"
                                             data-target="#modal-show">
                                             <i class="bi bi-info-circle mr-2"></i> Dosen Pendamping
                                         </button>
                                     @endif
+
+                                    <button type="button" class="btn btn-secondary mr-2" data-toggle="modal"
+                                        data-target="#modal-edit-judul">
+                                        <i class="bi bi-pencil-square mr-2"></i> Edit Judul Tugas Akhir
+                                    </button>
                                 @endif
                             </div>
                         </div>
@@ -445,7 +445,8 @@
                             <div class="form-group">
                                 <label for="" class="form-label">Judul Tugas Akhir</label>
                                 <div class="input-group mb-3">
-                                    <input type="text" name="judul" class="form-control" placeholder="Judul tugas akhir" required>
+                                    <input type="text" name="judul" class="form-control"
+                                        value="{{ $pengajuan->judul }}" required>
                                 </div>
                                 @error('judul')
                                     <small class="text-danger"

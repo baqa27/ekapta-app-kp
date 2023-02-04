@@ -10,7 +10,8 @@ class Seminar extends Model
     use HasFactory;
 
     protected $fillable = [
-        'nim',
+        'pengajuan_id',
+        'mahasiswa_id',
         'tanggal_pembuatan_ta',
         'tanggal_acc_pembimbing_utama',
         'tanggal_acc_pembimbing_pendamping',
@@ -19,9 +20,6 @@ class Seminar extends Model
         'lampiran_3',
         'lampiran_4',
         'lampiran_5',
-        'link_video',
-        'nilai',
-        'dosen_id',
     ];
 
     public function revisis()
@@ -29,8 +27,13 @@ class Seminar extends Model
         return $this->hasMany(RevisiSeminar::class);
     }
 
-    public function dosen()
+    public function pengajuan()
     {
-        return $this->belongsTo(Dosen::class);
+        return $this->belongsTo(Pengajuan::class);
+    }
+
+    public function mahasiswa()
+    {
+        return $this->belongsTo(Mahasiswa::class);
     }
 }

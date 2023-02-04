@@ -25,7 +25,11 @@
 
             <div class="alert alert-success alert-dismissible">
                 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                Tanggal Berakhir Bimbingan : <b>{{ \Carbon\Carbon::parse($date_expired)->formatLocalized('%d %B %Y') }}</b>
+                Tanggal Berakhir Bimbingan : <b>{{ \Carbon\Carbon::parse($date_expired)->formatLocalized('%d %B %Y') }} </b>
+                @if ($is_seminar)
+                , Selamat anda sudah bisa melakukan
+                <b><a href="{{ route('seminar.create') }}">Pendaftaran Seminar TA</a></b>
+                @endif
             </div>
 
             <div class="d-flex justify-content-center mb-3 bg-primary rounded p-2 countdown"

@@ -62,11 +62,10 @@
                                                 <tr>
                                                     <td>{{ $no++ }}</td>
                                                     <td>
-                                                        {{ \App\Helpers\AppHelper::instance()->getMahasiswa($pendaftaran->nim)->nama }}
-                                                        {{ '(' . $pendaftaran->nim . ')' }}
+                                                        {{  $pendaftaran->mahasiswa->nama }} - {{ $pendaftaran->mahasiswa->nim }}
                                                     </td>
                                                     <td>
-                                                        {{ \App\Helpers\AppHelper::instance()->getMahasiswa($pendaftaran->nim)->prodi }}
+                                                        {{  $pendaftaran->mahasiswa->prodi }}
                                                     </td>
                                                     <td>{{ $pendaftaran->pengajuan->judul }}</td>
                                                     <td>
@@ -123,11 +122,11 @@
                                                 <tr>
                                                     <td>{{ $no++ }}</td>
                                                     <td>
-                                                        {{ \App\Helpers\AppHelper::instance()->getMahasiswa($pendaftaran->nim)->nama }}
-                                                        {{ '(' . $pendaftaran->nim . ')' }}
+                                                        {{  $pendaftaran->mahasiswa->nama }}
+                                                        {{  $pendaftaran->mahasiswa->nim }}
                                                     </td>
                                                     <td>
-                                                        {{ \App\Helpers\AppHelper::instance()->getMahasiswa($pendaftaran->nim)->prodi }}
+                                                        {{  $pendaftaran->mahasiswa->prodi }}
                                                     </td>
                                                     <td>{{ $pendaftaran->judul }}</td>
                                                     <td>
@@ -148,7 +147,7 @@
 
                                                             @php
                                                                 $cekBimbinganIsActive = \App\Helpers\AppHelper::instance()
-                                                                    ->getMahasiswa($pendaftaran->nim)
+                                                                    ->getMahasiswa($pendaftaran->mahasiswa->nim)
                                                                     ->bimbingans()
                                                                     ->whereIn('status', ['review', 'revisi', 'diterima'])
                                                                     ->get();
@@ -207,11 +206,11 @@
                                                 <tr>
                                                     <td>{{ $no++ }}</td>
                                                     <td>
-                                                        {{ \App\Helpers\AppHelper::instance()->getMahasiswa($pendaftaran->nim)->nama }}
-                                                        {{ '(' . $pendaftaran->nim . ')' }}
+                                                        {{  $pendaftaran->mahasiswa->nama }} -
+                                                        {{  $pendaftaran->mahasiswa->nim }}
                                                     </td>
                                                     <td>
-                                                        {{ \App\Helpers\AppHelper::instance()->getMahasiswa($pendaftaran->nim)->prodi }}
+                                                        {{  $pendaftaran->mahasiswa->prodi }}
                                                     </td>
                                                     <td>{{ $pendaftaran->judul }}</td>
                                                     <td>

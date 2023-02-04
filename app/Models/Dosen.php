@@ -10,6 +10,10 @@ class Dosen extends Authenticatable
 {
     use HasFactory;
 
+    public const UTAMA = 'utama';
+    public const PENDAMPING = 'pendamping';
+    public const PENGUJI = 'penguji';
+
     protected $fillable = [
         'nidn',
         'nik',

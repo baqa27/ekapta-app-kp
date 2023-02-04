@@ -35,7 +35,7 @@
                         class="nav-link {{ $active == 'bimbingan' ? 'active' : '' }}">Bimbingan</a>
                 </li>
                 <li class="nav-item">
-                    <a href="" class="nav-link {{ $active == 'seminar' ? 'active' : '' }}">Seminar
+                    <a href="{{ route('seminar.mahasiswa') }}" class="nav-link {{ $active == 'seminar' ? 'active' : '' }}">Seminar
                         Proposal</a>
                 </li>
                 <li class="nav-item">

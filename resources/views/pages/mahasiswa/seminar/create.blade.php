@@ -1,0 +1,150 @@
+@extends('layouts.dashboardMahasiswa')
+
+@section('content')
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Form Pendaftaran Seminar TA</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="#">Pendaftaran Seminar TA</a></li>
+                        <li class="breadcrumb-item active">Form Pendaftaran Seminar TA</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <div class="content">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-primary card-outline">
+                        <div class="card-header">
+                            <h3 class="card-title">Form Pendaftaran Seminar TA</h3>
+                        </div>
+                        <div class="card-body">
+                            <form action="" method="post" enctype="multipart/form-data">
+
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">NIM</label>
+                                    <input type="text" class="form-control" value="{{ $mahasiswa->nim }}" disabled>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">Nama Lengkap</label>
+                                    <input type="text" class="form-control" value="{{ $mahasiswa->nama }}" disabled>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">Prodi</label>
+                                    <input type="text" class="form-control" value="{{ $mahasiswa->prodi }}" disabled>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">Judul Tugas Akhir</label>
+                                    <input type="text" class="form-control" value="{{ $pengajuan_acc->judul }}" disabled>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">Tanggal Pembuatan Tugas Akhir</label>
+                                    <input type="text" class="form-control" value="{{ \Carbon\Carbon::parse($pengajuan_acc->created_at)->formatLocalized('%d %B %Y') }}" disabled>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="exampleInputFile">Bukti Lunas Pembayaran SPP Sampai Semester
+                                        Terakhir & Bukti Lunas Pembayaran SPP Variabel Khusus Kelas B / Ekstensi
+                                        (Pegawai) <br> <small>Dijadikan 1 file PDF / JPEG</small> </label>
+                                    <div class="input-group mb-3">
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input" required>
+                                            <label class="custom-file-label" for="exampleInputFile">Choose
+                                                file</label>
+                                        </div>
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">Dokumen</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">Bukti Lunas Pembayaran Tugas Akhir (TA)
+                                        <br>
+                                        <small>Jika Tugas Akhir Kadaluarsa disertakan pula slip pembayaran
+                                            Perpanjang Tugas Akhir (TA)</small>
+                                    </label>
+                                    <div class="input-group mb-3">
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input" required>
+                                            <label class="custom-file-label" for="exampleInputFile">Choose
+                                                file</label>
+                                        </div>
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">Dokumen</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="exampleInputFile">Berkas File Tugas Akhir Lengkap (Dari Halaman
+                                        Judul sampai Daftar Pustaka dan Lampiran)</label>
+                                    <div class="input-group mb-3">
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input" required>
+                                            <label class="custom-file-label" for="exampleInputFile">Choose
+                                                file</label>
+                                        </div>
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">Dokumen</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="exampleInputFile">Scan Lembar Bimbingan TA Yang Telah di Acc.
+                                        Oleh Dosen Pembimbing 1 dan 2</label>
+                                    <div class="input-group mb-3">
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input" required>
+                                            <label class="custom-file-label" for="exampleInputFile">Choose
+                                                file</label>
+                                        </div>
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">Dokumen</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="exampleInputFile">Scan Surat Tugas Pembimbing TA</label>
+                                    <div class="input-group mb-3">
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input" required>
+                                            <label class="custom-file-label" for="exampleInputFile">Choose
+                                                file</label>
+                                        </div>
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">Dokumen</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group mt-4">
+                                    <button type="submit" class="btn btn-success">Submit</button>
+                                </div>
+                            </form>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /.content -->
+@endsection

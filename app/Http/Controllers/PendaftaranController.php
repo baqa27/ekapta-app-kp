@@ -7,6 +7,7 @@ use App\Models\RevisiPendaftaran;
 use Illuminate\Http\Request;
 use App\Helpers\AppHelper;
 use App\Models\Bimbingan;
+use App\Models\Dosen;
 use App\Models\Mahasiswa;
 use App\Models\Pengajuan;
 use App\Models\Prodi;
@@ -18,9 +19,9 @@ class PendaftaranController extends Controller
 {
     public function index()
     {
-        $pendaftarans = Pendaftaran::where('status', 'review')->orderBy('created_at', 'desc')->get();
-        $pendaftarans_acc = Pendaftaran::where('status', 'diterima')->orderBy('created_at', 'desc')->get();
-        $pendaftarans_revisi = Pendaftaran::where('status', 'revisi')->orderBy('created_at', 'desc')->get();
+        $pendaftarans = Pendaftaran::where('status', Pendaftaran::REVIEW)->orderBy('created_at', 'desc')->get();
+        $pendaftarans_acc = Pendaftaran::where('status', Pendaftaran::DITERIMA)->orderBy('created_at', 'desc')->get();
+        $pendaftarans_revisi = Pendaftaran::where('status', Pendaftaran::REVISI)->orderBy('created_at', 'desc')->get();
         return view('pages.admin.pendaftaran.pendaftaran', [
             'title' => 'Pendaftaran Tugas Akhir',
             'active' => 'pendaftaran',
@@ -36,16 +37,16 @@ class PendaftaranController extends Controller
         $mahasiswa = Mahasiswa::where('nim', Auth::guard('mahasiswa')->user()->nim)->first();
         $pengajuan = $mahasiswa->pengajuans()->where('status', Pengajuan::DITERIMA)->first();
 
-        $dosenUtama = $mahasiswa->dosens()->where('status', 'utama')->first();
-        $dosenPendamping = $mahasiswa->dosens()->where('status', 'pendamping')->first();
+        $dosenUtama = $mahasiswa->dosens()->where('status', Dosen::UTAMA)->first();
+        $dosenPendamping = $mahasiswa->dosens()->where('status', Dosen::PENDAMPING)->first();
 
-        $pendaftarans = Pendaftaran::where('pengajuan_id', $pengajuan->id)->with(['revisis'])->get();
+        $pendaftarans = Pendaftaran::where('mahasiswa_id', $mahasiswa->id)->with(['revisis'])->get();
 
         if (!$pengajuan) {
             return back()->with('warning', 'Silahkan melakukan Pengajuan Tugas Akhir terlebih dahulu');
         }
 
-        $pendaftaranIsAcc = Pendaftaran::where('pengajuan_id', $pengajuan->id)->with(['revisis'])->where('status', 'diterima')->get();
+        $pendaftaranIsAcc = Pendaftaran::where('pengajuan_id', $pengajuan->id)->with(['revisis'])->where('status', Pendaftaran::DITERIMA)->get();
 
         return view('pages.mahasiswa.pendaftaran.pendaftaran', [
             'title' => 'Pendaftaran Tugas Akhir',
@@ -62,7 +63,7 @@ class PendaftaranController extends Controller
         $mahasiswa = Mahasiswa::where('nim', Auth::guard('mahasiswa')->user()->nim)->first();
         $pengajuan = $mahasiswa->pengajuans()->where('status', Pengajuan::DITERIMA)->first();
 
-        $pendaftaranIsAcc = Pendaftaran::where('pengajuan_id', $pengajuan->id)->where('status', 'diterima')->first();
+        $pendaftaranIsAcc = Pendaftaran::where('pengajuan_id', $pengajuan->id)->where('status', Pendaftaran::DITERIMA)->first();
 
         if ($pendaftaranIsAcc) {
             return redirect('pendaftaran-mahasiswa')->with('warning', 'Anda sudah melakukan pendaftaran tugas akhir');
@@ -70,8 +71,8 @@ class PendaftaranController extends Controller
             return back()->with('warning', 'Silahkan tunggu ploting dosen pembimbing oleh Prodi');
         }
 
-        $dosenUtama = $mahasiswa->dosens()->where('status', 'utama')->first();
-        $dosenPendamping = $mahasiswa->dosens()->where('status', 'pendamping')->first();
+        $dosenUtama = $mahasiswa->dosens()->where('status', Dosen::UTAMA)->first();
+        $dosenPendamping = $mahasiswa->dosens()->where('status', Dosen::PENDAMPING)->first();
 
         return view('pages.mahasiswa.pendaftaran.create', [
             'title' => 'Form Pendaftaran Tugas Akhir',
@@ -109,7 +110,7 @@ class PendaftaranController extends Controller
             $validatedData['lampiran_4'] = AppHelper::instance()->uploadLampiran($request->file('lampiran_4'), 'lampiran-pendaftaran');
             $validatedData['lampiran_5'] = AppHelper::instance()->uploadLampiran($request->file('lampiran_5'), 'lampiran-pendaftaran');
 
-            $validatedData['nim'] = Auth::guard('mahasiswa')->user()->nim;
+            $validatedData['mahasiswa_id'] = Auth::guard('mahasiswa')->user()->id;
             $validatedData['pengajuan_id'] = $pengajuan->id;
 
             setlocale(LC_TIME, 'id');
@@ -124,12 +125,12 @@ class PendaftaranController extends Controller
     public function edit($id)
     {
         $pendaftaran = Pendaftaran::findOrFail($id);
-        if ($pendaftaran->status == 'review' ||  $pendaftaran->status == 'diterima') {
+        if ($pendaftaran->status == Pendaftaran::REVIEW ||  $pendaftaran->status == Pendaftaran::DITERIMA) {
             return back()->with('warning', 'Pendaftaran tidak bisa diedit');
         }
-        $mahasiswa = Mahasiswa::where('nim', $pendaftaran->nim)->first();
-        $dosenUtama = $mahasiswa->dosens()->where('status', 'utama')->first();
-        $dosenPendamping = $mahasiswa->dosens()->where('status', 'pendamping')->first();
+        $mahasiswa = Mahasiswa::where('id', $pendaftaran->mahasiswa_id)->first();
+        $dosenUtama = $mahasiswa->dosens()->where('status', Dosen::UTAMA)->first();
+        $dosenPendamping = $mahasiswa->dosens()->where('status', Dosen::PENDAMPING)->first();
 
         return view('pages.mahasiswa.pendaftaran.edit', [
             'title' => 'Form Edit Pendaftaran Tugas Akhir',
@@ -144,9 +145,9 @@ class PendaftaranController extends Controller
     public function pendaftaranReview($id)
     {
         $pendaftaran = Pendaftaran::findOrFail($id);
-        $mahasiswa = Mahasiswa::where('nim', $pendaftaran->nim)->first();
-        $dosenUtama = $mahasiswa->dosens()->where('status', 'utama')->first();
-        $dosenPendamping = $mahasiswa->dosens()->where('status', 'pendamping')->first();
+        $mahasiswa = Mahasiswa::where('id', $pendaftaran->mahasiswa_id)->first();
+        $dosenUtama = $mahasiswa->dosens()->where('status', Dosen::UTAMA)->first();
+        $dosenPendamping = $mahasiswa->dosens()->where('status', Dosen::PENDAMPING)->first();
 
         return view('pages.admin.pendaftaran.review', [
             'title' => 'Review Pendaftaran Tugas Akhir',
@@ -162,10 +163,10 @@ class PendaftaranController extends Controller
 
     public function pendaftaranDetail($id)
     {
-        $pendaftaran = Pendaftaran::where('nim', Auth::guard('mahasiswa')->user()->nim)->first();
-        $mahasiswa = Mahasiswa::where('nim', Auth::guard('mahasiswa')->user()->nim)->first();
-        $dosenUtama = $mahasiswa->dosens()->where('status', 'utama')->first();
-        $dosenPendamping = $mahasiswa->dosens()->where('status', 'pendamping')->first();
+        $pendaftaran = Pendaftaran::where('mahasiswa_id', Auth::guard('mahasiswa')->user()->id)->first();
+        $mahasiswa = Mahasiswa::where('id', Auth::guard('mahasiswa')->user()->nim)->first();
+        $dosenUtama = $mahasiswa->dosens()->where('status', Dosen::UTAMA)->first();
+        $dosenPendamping = $mahasiswa->dosens()->where('status', Dosen::PENDAMPING)->first();
         if (!$pendaftaran) {
             return back()->with('warning', 'Pendaftaran tidak ditemukan');
         }
@@ -239,9 +240,9 @@ class PendaftaranController extends Controller
             $validatedData['lampiran_5'] = AppHelper::instance()->uploadLampiran($request->lampiran_5, 'lampiran-pendaftaran');
         }
 
-        $validatedData['nim'] = Auth::guard('mahasiswa')->user()->nim;
+        $validatedData['mahasiswa_id'] = Auth::guard('mahasiswa')->user()->id;
         $validatedData['judul'] = $pendaftaran->judul;
-        $validatedData['status'] = 'review';
+        $validatedData['status'] = Pendaftaran::REVIEW;
 
         if ($request->tanggal_pembayaran) {
             setlocale(LC_TIME, 'id');
@@ -256,7 +257,7 @@ class PendaftaranController extends Controller
     public function delete(Request $request)
     {
         $pendaftaran = Pendaftaran::findOrFail($request->id);
-        if ($pendaftaran->status == 'diterima') {
+        if ($pendaftaran->status == Pendaftaran::DITERIMA) {
             return back()->with('error', 'Pendaftaran gagal dihapus');
         } else {
             AppHelper::instance()->deleteLampiran($pendaftaran->lampiran_2);
@@ -272,19 +273,19 @@ class PendaftaranController extends Controller
     {
         $pendaftaran = Pendaftaran::findOrFail($request->id);
 
-        $mahasiswa = Mahasiswa::where('nim', $pendaftaran->nim)->first();
-        $dosenUtama = $mahasiswa->dosens()->where('status', 'utama')->first();
-        $dosenPendamping = $mahasiswa->dosens()->where('status', 'pendamping')->first();
+        $mahasiswa = Mahasiswa::where('id', $pendaftaran->mahasiswa_id)->first();
+        $dosenUtama = $mahasiswa->dosens()->where('status', Dosen::UTAMA)->first();
+        $dosenPendamping = $mahasiswa->dosens()->where('status', Dosen::PENDAMPING)->first();
 
         $prodi = Prodi::where('namaprodi', $mahasiswa->prodi)->first();
 
         if (count($prodi->bagians) == 0) {
             return back()->with('warning', 'Bagian bimbingan untuk prodi' . $mahasiswa->prodi . ' masih kosong');
-        } elseif ($pendaftaran->status == 'diterima') {
+        } elseif ($pendaftaran->status == Pendaftaran::DITERIMA) {
             return back()->with('warning', 'Pendaftaran sudah diacc');
         } else {
             $pendaftaran->update([
-                'status' => 'diterima',
+                'status' => Pendaftaran::DITERIMA,
                 'tanggal_acc' => now(),
             ]);
 
@@ -293,7 +294,7 @@ class PendaftaranController extends Controller
                 $bimbingan = Bimbingan::create([
                     'mahasiswa_id' => $mahasiswa->id,
                     'bagian_id' => $bagian->id,
-                    'pembimbing' => 'utama',
+                    'pembimbing' => Dosen::UTAMA,
                 ]);
                 $bimbingan->dosens()->attach([$dosenUtama->id]);
             }
@@ -303,7 +304,7 @@ class PendaftaranController extends Controller
                 $bimbingan = Bimbingan::create([
                     'mahasiswa_id' => $mahasiswa->id,
                     'bagian_id' => $bagian->id,
-                    'pembimbing' => 'pendamping',
+                    'pembimbing' => Dosen::PENDAMPING,
                 ]);
                 $bimbingan->dosens()->attach([$dosenPendamping->id]);
             }
@@ -315,12 +316,12 @@ class PendaftaranController extends Controller
     public function cancelAcc(Request $request)
     {
         $pendaftaran = Pendaftaran::findOrFail($request->id);
-        $mahasiswa = Mahasiswa::where('nim', $pendaftaran->nim)->first();
-        if ($pendaftaran->status != 'diterima') {
+        $mahasiswa = Mahasiswa::where('id', $pendaftaran->mahasiswa_id)->first();
+        if ($pendaftaran->status != Pendaftaran::DITERIMA) {
             return back()->with('error', 'Pendaftaran tidak ditemukan');
         } else {
             $pendaftaran->update([
-                'status' => 'review',
+                'status' => Pendaftaran::REVIEW,
                 'tanggal_acc' => null,
             ]);
             $mahasiswa->bimbingans->each->delete();
@@ -344,13 +345,13 @@ class PendaftaranController extends Controller
         if ($request->file('lampiran')) {
             $revisi->lampiran = AppHelper::instance()->uploadLampiran($request->lampiran, 'lampiran-revisi');
         }
-        if ($pendaftaran->status == 'review') {
+        if ($pendaftaran->status == Pendaftaran::REVIEW) {
             $pendaftaran->update([
-                'status' => 'revisi',
+                'status' => Pendaftaran::REVISI,
             ]);
             $pendaftaran->revisis()->save($revisi);
             return redirect('pendaftarans')->with('success', 'Pendaftaran berhasil direvisi');
-        } elseif ($pendaftaran->status == 'revisi') {
+        } elseif ($pendaftaran->status == Pendaftaran::REVISI) {
             $pendaftaran->revisis()->save($revisi);
             return back()->with('success', 'Revisi berhasil ditambahkan');
         }

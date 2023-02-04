@@ -101,15 +101,18 @@ Route::get('/bimbingan/detail/{id}', [BimbinganController::class, 'bimbinganDeta
 Route::get('/bimbingan/review/{id}', [BimbinganController::class, 'bimbinganReview'])->middleware('isDosen');
 Route::post('/bimbingan/cancel/acc', [BimbinganController::class, 'cancelAcc'])->name('bimbingan.cancel.acc')->middleware('isDosen');
 Route::post('/bimbingan/cancel/revisi', [BimbinganController::class, 'cancelRevisi'])->name('bimbingan.cancel.revisi')->middleware('isDosen');
+Route::get('/bimbingan/review-prodi/{id}', [BimbinganController::class, 'reviewProdi'])->name('bimbingan.review.prodi')->middleware('isProdi');
 
 // Seminar
-Route::get('seminars', [SeminarController::class, 'index'])->name('seminars');
-Route::get('seminar/create', [SeminarController::class, 'create'])->name('seminar.create');
-Route::get('seminar/edit/{seminar}', [SeminarController::class, 'edit']);
-Route::post('seminar/store', [SeminarController::class, 'store'])->name('seminar.store');
-Route::post('seminar/update', [SeminarController::class, 'update'])->name('seminar.update');
-Route::post('seminar/delete', [SeminarController::class, 'delete'])->name('seminar.delete');
-Route::post('seminar/acc', [SeminarController::class, 'accSeminar'])->name('seminar.seminar');
+Route::group(['middleware' => 'isMahasiswa'], function(){
+    Route::get('seminar-mahasiswa', [SeminarController::class, 'index'])->name('seminar.mahasiswa');
+    Route::get('seminar/create', [SeminarController::class, 'create'])->name('seminar.create');
+    Route::get('seminar/edit/{seminar}', [SeminarController::class, 'edit']);
+    Route::post('seminar/store', [SeminarController::class, 'store'])->name('seminar.store');
+    Route::post('seminar/update', [SeminarController::class, 'update'])->name('seminar.update');
+    Route::post('seminar/delete', [SeminarController::class, 'delete'])->name('seminar.delete');
+});
+Route::post('seminar/acc', [SeminarController::class, 'accSeminar'])->name('seminar.acc');
 Route::post('seminar/revisi', [SeminarController::class, 'revisiSeminar'])->name('seminar.revisi');
 
 // Prodi

@@ -9,6 +9,10 @@ class Bimbingan extends Model
 {
     use HasFactory;
 
+    public const DITERIMA = 'diterima';
+    public const REVIEW = 'review';
+    public const REVISI = 'revisi';
+
     protected $fillable = [
         'keterangan',
         'lampiran',

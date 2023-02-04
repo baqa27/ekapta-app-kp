@@ -9,9 +9,13 @@ class Pendaftaran extends Model
 {
     use HasFactory;
 
+    public const DITERIMA = 'diterima';
+    public const REVIEW = 'review';
+    public const REVISI = 'revisi';
+
     protected $fillable = [
-        'nim',
         'pengajuan_id',
+        'mahasiswa_id',
         'email',
         'hp',
         'semester',
@@ -36,5 +40,10 @@ class Pendaftaran extends Model
     public function pengajuan()
     {
         return $this->belongsTo(Pengajuan::class);
+    }
+
+    public function mahasiswa()
+    {
+        return $this->belongsTo(Mahasiswa::class);
     }
 }

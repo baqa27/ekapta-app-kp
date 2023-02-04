@@ -15,7 +15,6 @@ class CreatePendaftaransTable extends Migration
     {
         Schema::create('pendaftarans', function (Blueprint $table) {
             $table->id();
-            $table->string('nim')->unique();
             $table->string('nomor_pembayaran');
             $table->string('tanggal_pembayaran');
             $table->string('biaya');
@@ -29,6 +28,7 @@ class CreatePendaftaransTable extends Migration
             $table->string('status')->default('review');
             $table->timestamps();
             $table->foreignId('pengajuan_id')->constrained();
+            $table->foreignId('mahasiswa_id')->constrained();
         });
     }
 

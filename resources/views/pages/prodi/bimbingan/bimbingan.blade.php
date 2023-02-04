@@ -60,9 +60,13 @@
                                                 <td>
                                                     {{ $mahasiswa->prodi }}
                                                 </td>
-                                                <td>{{ \App\Helpers\AppHelper::instance()->getPendaftaran($mahasiswa->nim)->judul }}
+                                                <td>{{ $mahasiswa->pengajuans()->where('status', 'diterima')->first()->judul }}
                                                 </td>
                                                 <td>
+                                                    <a href="{{ route('bimbingan.review.prodi',$mahasiswa->pengajuans()->where('status', 'diterima')->first()->id ) }}" class="btn btn-primary btn-sm"><i class="bi bi-info-circle"></i> Detail Bimbingan</a>
+                                                </td>
+
+                                                {{-- <td>
                                                     @php
                                                         $dosen_utama = $mahasiswa
                                                             ->dosens()
@@ -77,7 +81,7 @@
                                                         <small>Dosen Pembimbing utama
                                                             <b>{{ $dosen_utama->nama .
                                                                 ',
-                                                                                                                ' .
+                                                                                                                                                                                                                                        ' .
                                                                 $dosen_utama->gelar }}</b>
                                                         </small>
                                                         <br>
@@ -101,17 +105,20 @@
                                                         <small>Dosen Pembimbing Pendamping
                                                             <b>{{ $dosen_pendamping->nama .
                                                                 ',
-                                                                                                                ' .
+                                                                                                                                                                                                                                        ' .
                                                                 $dosen_pendamping->gelar }}</b>
                                                         </small>
                                                         <br>
                                                         @foreach ($mahasiswa->bimbingans as $bimbingan)
                                                             @if ($bimbingan->pembimbing == 'pendamping')
                                                                 @if (\App\Helpers\AppHelper::instance()->cekBagianIsAcc($bimbingan->id))
-                                                                    <span class="badge badge-success">
-                                                                        <i class="fas fa-check-circle mr-1"></i>
-                                                                        {{ $bimbingan->bagian->bagian }}
-                                                                    </span>
+                                                                    <a
+                                                                        href="{{ route('bimbingan.review.prodi', $bimbingan->id) }}">
+                                                                        <span class="badge badge-success">
+                                                                            <i class="fas fa-check-circle mr-1"></i>
+                                                                            {{ $bimbingan->bagian->bagian }}
+                                                                        </span>
+                                                                    </a>
                                                                 @else
                                                                     <span class="badge badge-secondary">
                                                                         <i class="fas fa-circle mr-1"></i>
@@ -121,7 +128,7 @@
                                                             @endif
                                                         @endforeach
                                                     </div>
-                                                </td>
+                                                </td> --}}
                                             </tr>
                                         @endif
                                     @endforeach

@@ -18,10 +18,18 @@ class DashboardController extends Controller
     public function dashboardMahasiswa()
     {
         $prodi = Prodi::where('namaprodi', Auth::guard('mahasiswa')->user()->prodi)->first();
+
+        $mahasiswa = Auth::guard('mahasiswa')->user();
+        $pengajuan_acc = $mahasiswa->pengajuans()->where('status', Pengajuan::DITERIMA)->first();
+        $pendaftaran_acc = $pengajuan_acc->pendaftaran()->where('status', Pendaftaran::DITERIMA)->first();
+
         return view('pages.mahasiswa.dashboard.home', [
             'title' => 'Dashboard',
             'active' => 'dashboard',
             'bagians' => $prodi->bagians,
+            'mahasiswa' => $mahasiswa,
+            'pengajuan_acc' => $pengajuan_acc,
+            'pendaftaran_acc' => $pendaftaran_acc,
         ]);
     }
 

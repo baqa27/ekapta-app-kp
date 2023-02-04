@@ -55,13 +55,13 @@
                                 <tr>
                                     <td><b class="mr-3">Prodi</b></td>
                                     <td>:</td>
-                                    <td>{{ \App\Helpers\AppHelper::instance()->getMahasiswa($bimbingan->mahasiswa->nim)->prodi }}
+                                    <td>{{ $bimbingan->mahasiswa->prodi }}
                                     </td>
                                 </tr>
                                 <tr>
                                     <td><b class="mr-3">Judul</b></td>
                                     <td>:</td>
-                                    <td>{{ \App\Helpers\AppHelper::instance()->getPendaftaran($bimbingan->mahasiswa->nim)->judul }}
+                                    <td>{{ $pengajuan->judul }}
                                     </td>
                                 </tr>
                                 <tr>

@@ -113,46 +113,6 @@
 
                     </div>
 
-                    {{-- <div class="card card-primary card-outline mt-2">
-                        <div class="card-header">
-                            <h3 class="card-title"><strong>Revisi</strong>
-                                <span class="badge bg-danger rounded-pill">
-                                    {{ count($bimbingan->revisis) }}
-                                </span>
-                            </h3>
-                        </div>
-                        <div class="card-body">
-
-                            @foreach ($revisis as $revisi)
-                                <div class="card bg-light">
-                                    <div class="card-header">
-                                        <span class="mr-5">Direview oleh
-                                            <b>{{ $revisi->dosen->nama . ', ' . $revisi->dosen->gelar }}</b>
-                                        </span>
-                                        <div class="float-right">
-                                            <i class="fas fa-calendar mr-2"></i>
-                                            {{ $revisi->created_at->format('d M Y H:m') }}
-                                        </div>
-                                    </div>
-                                    <div class="card-body">
-                                        {!! nl2br($revisi->catatan) !!}
-                                    </div>
-                                    <div class="card-footer">
-                                        Lampiran :
-                                        @if ($revisi->lampiran)
-                                            <a href="{{ asset($revisi->lampiran) }}" class="ml-3" target="_blank"><i
-                                                    class="fas fa-paperclip"></i> Lampiran</a>
-                                        @endif
-                                    </div>
-                                </div>
-                            @endforeach
-
-                        </div>
-                        <div class="d-flex justify-content-center mb-3">
-                            {{ $revisis->links() }}
-                        </div>
-                    </div> --}}
-
                 </div>
             </div>
         </div>
