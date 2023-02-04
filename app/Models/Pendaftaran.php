@@ -11,7 +11,7 @@ class Pendaftaran extends Model
 
     protected $fillable = [
         'nim',
-        'judul',
+        'pengajuan_id',
         'email',
         'hp',
         'semester',
@@ -31,5 +31,10 @@ class Pendaftaran extends Model
     public function revisis()
     {
         return $this->hasMany(RevisiPendaftaran::class);
+    }
+
+    public function pengajuan()
+    {
+        return $this->belongsTo(Pengajuan::class);
     }
 }

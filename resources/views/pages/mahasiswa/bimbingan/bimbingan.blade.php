@@ -122,7 +122,7 @@
                                                             @endif
                                                         @endif
 
-                                                        @if (count(\App\Helpers\AppHelper::instance()->getBimbinganIsAcc($bimbingan->mahasiswa->id)) != 0)
+                                                        @if (count(\App\Helpers\AppHelper::instance()->getBimbinganIsAcc($bimbingan->mahasiswa->id)) > 1)
                                                             @if (\App\Helpers\AppHelper::instance()->cekBagianIsAcc($bimbingan->mahasiswa->nim) == false)
                                                                 @if ($bimbingan->status == null)
                                                                     <a href="{{ url('/bimbingan/edit/' . $bimbingan->id) }}"
@@ -211,7 +211,7 @@
 
                                                             <a href="{{ url('/bimbingan/edit/' . $bimbingan->id) }}"
                                                                 class="btn btn-primary btn-sm shadow" type="submit"><i
-                                                                    class="fas fa-pen mr-1"></i>Edit</a>
+                                                                    class="fas fa-upload mr-1"></i>Submit</a>
                                                         @elseif ($bimbingan->status == 'diterima')
                                                             <a href="{{ url('/bimbingan/detail/' . $bimbingan->id) }}"
                                                                 class="btn btn-info btn-sm shadow">
@@ -225,7 +225,7 @@
                                                             @endif
                                                         @endif
 
-                                                        @if (count(\App\Helpers\AppHelper::instance()->getBimbinganIsAcc($bimbingan->mahasiswa->id)) != 0)
+                                                        @if (count(\App\Helpers\AppHelper::instance()->getBimbinganIsAcc($bimbingan->mahasiswa->id)) > 1)
                                                             @if (\App\Helpers\AppHelper::instance()->cekBagianIsAcc($bimbingan->mahasiswa->nim) == false)
                                                                 @if ($bimbingan->status == null)
                                                                     <a href="{{ url('/bimbingan/edit/' . $bimbingan->id) }}"

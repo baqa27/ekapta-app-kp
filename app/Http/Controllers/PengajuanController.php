@@ -16,10 +16,10 @@ class PengajuanController extends Controller
 
     public function pengajuanProdi()
     {
-        $pengajuans = Pengajuan::where('status', 'review')->where('prodi', Auth::guard('prodi')->user()->namaprodi)->orderBy('created_at', 'desc')->get();
-        $pengajuans_acc = Pengajuan::where('status', 'diterima')->where('prodi', Auth::guard('prodi')->user()->namaprodi)->orderBy('created_at', 'desc')->get();
-        $pengajuans_revisi = Pengajuan::where('status', 'revisi')->where('prodi', Auth::guard('prodi')->user()->namaprodi)->orderBy('created_at', 'desc')->get();
-        $pengajuans_ditolak = Pengajuan::where('status', 'ditolak')->where('prodi', Auth::guard('prodi')->user()->namaprodi)->orderBy('created_at', 'desc')->get();
+        $pengajuans = Pengajuan::where('status', Pengajuan::REVIEW)->where('prodi', Auth::guard('prodi')->user()->namaprodi)->orderBy('created_at', 'desc')->get();
+        $pengajuans_acc = Pengajuan::where('status', Pengajuan::DITERIMA)->where('prodi', Auth::guard('prodi')->user()->namaprodi)->orderBy('created_at', 'desc')->get();
+        $pengajuans_revisi = Pengajuan::where('status', Pengajuan::REVISI)->where('prodi', Auth::guard('prodi')->user()->namaprodi)->orderBy('created_at', 'desc')->get();
+        $pengajuans_ditolak = Pengajuan::where('status', Pengajuan::DITOLAK)->where('prodi', Auth::guard('prodi')->user()->namaprodi)->orderBy('created_at', 'desc')->get();
         return view('pages.prodi.pengajuan.pengajuan', [
             'title' => 'Pengajuan Tugas Akhir',
             'active' => 'pengajuan',
@@ -34,13 +34,13 @@ class PengajuanController extends Controller
 
     public function pengajuanMahasiswa()
     {
-        $pengajuans = Pengajuan::where('nim', Auth::guard('mahasiswa')->user()->nim)->orderBy('created_at', 'desc')->get();
-        $pengajuanIsAcc = Pengajuan::where('nim', Auth::guard('mahasiswa')->user()->nim)->where('status', 'diterima')->get();
+        $pengajuans = Pengajuan::where('mahasiswa_id', Auth::guard('mahasiswa')->user()->id)->get();
+        $pengajuans_acc = Pengajuan::where('mahasiswa_id', Auth::guard('mahasiswa')->user()->id)->where('status', Pengajuan::DITERIMA)->get();
         return view('pages.mahasiswa.pengajuan.pengajuan', [
             'title' => 'Pengajuan Tugas Akhir',
             'active' => 'pengajuan',
             'pengajuans' => $pengajuans,
-            'pengajuanIsAcc' => $pengajuanIsAcc,
+            'pengajuans_acc' => $pengajuans_acc,
         ]);
     }
 
@@ -57,7 +57,7 @@ class PengajuanController extends Controller
 
     public function create()
     {
-        $pengajuan = Pengajuan::where('nim', Auth::guard('mahasiswa')->user()->nim)->where('status', 'diterima')->first();
+        $pengajuan = Pengajuan::where('mahasiswa_id', Auth::guard('mahasiswa')->user()->id)->where('status', Pengajuan::DITERIMA)->first();
         if ($pengajuan) {
             return back()->with('warning', 'Pengajuan anda sudah diterima');
         }
@@ -84,7 +84,7 @@ class PengajuanController extends Controller
     public function pengajuanReview($id)
     {
         $pengajuan = Pengajuan::findOrFail($id);
-        $mahasiswa = Mahasiswa::where('nim', $pengajuan->nim)->first();
+        $mahasiswa = $pengajuan->mahasiswa;
         $dosenUtama = $mahasiswa->dosens()->where('status', 'utama')->first();
         $dosenPendamping = $mahasiswa->dosens()->where('status', 'pendamping')->first();
         $dosens = Dosen::where('kodeprodi', Auth::guard('prodi')->user()->kode)->get();
@@ -117,7 +117,7 @@ class PengajuanController extends Controller
 
     public function store(Request $request)
     {
-        $cekPengajuan = Pengajuan::where('nim', Auth::guard('mahasiswa')->user()->nim)->whereIn('status', ['review', 'revisi', 'diterima'])->get();
+        $cekPengajuan = Pengajuan::where('mahasiswa_id', Auth::guard('mahasiswa')->user()->id)->whereIn('status', [Pengajuan::REVIEW, Pengajuan::REVISI, Pengajuan::DITERIMA])->get();
         if ($cekPengajuan->isEmpty()) {
             $validatedData = $request->validate([
                 'judul' => ['required', 'min:5'],
@@ -127,7 +127,7 @@ class PengajuanController extends Controller
             if ($request->file('lampiran')) {
                 $validatedData['lampiran'] = AppHelper::instance()->uploadLampiran($request->lampiran, 'lampiran-pengajuan');
             }
-            $validatedData['nim'] = Auth::guard('mahasiswa')->user()->nim;
+            $validatedData['mahasiswa_id'] = Auth::guard('mahasiswa')->user()->id;
             $validatedData['prodi'] = Auth::guard('mahasiswa')->user()->prodi;
             Pengajuan::create($validatedData);
             return redirect('pengajuan-mahasiswa')->with('success', 'Berhasil melakukan pengajuan tugas akhir');
@@ -139,7 +139,7 @@ class PengajuanController extends Controller
     public function edit($id)
     {
         $pengajuan = Pengajuan::findOrFail($id);
-        if ($pengajuan->status == 'review' || $pengajuan->status == 'diterima') {
+        if ($pengajuan->status == Pengajuan::REVIEW || $pengajuan->status == Pengajuan::DITERIMA) {
             return back()->with('warning', 'Pengajuan tidak bisa diedit');
         }
         return view('pages.mahasiswa.pengajuan.edit', [
@@ -169,7 +169,7 @@ class PengajuanController extends Controller
         }
 
         $validatedData['nim'] = Auth::guard('mahasiswa')->user()->nim;
-        $validatedData['status'] = 'review';
+        $validatedData['status'] = Pengajuan::REVIEW;
 
         $pengajuan->update($validatedData);
         return redirect('pengajuan-mahasiswa')->with('success', 'Berhasil melakukan pengajuan tugas akhir');
@@ -193,12 +193,12 @@ class PengajuanController extends Controller
     public function accPengajuan(Request $request)
     {
         $pengajuan = Pengajuan::findOrFail($request->id);
-        if ($pengajuan->status == 'ditolak') {
+        if ($pengajuan->status == Pengajuan::DITOLAK) {
             return back()->with('error', 'Pengajuan tidak bisa diedit');
         } else {
-            if ($pengajuan->status == 'review') {
+            if ($pengajuan->status == Pengajuan::REVIEW) {
                 $pengajuan->update([
-                    'status' => 'diterima',
+                    'status' => Pengajuan::DITERIMA,
                     'tanggal_acc' => now(),
                 ]);
                 return back()->with('success', 'Pengajuan berhasil diacc');
@@ -209,11 +209,11 @@ class PengajuanController extends Controller
     public function cancelAcc(Request $request)
     {
         $pengajuan = Pengajuan::findOrFail($request->id);
-        if ($pengajuan->status != 'diterima') {
+        if ($pengajuan->status != Pengajuan::DITERIMA) {
             return back()->with('warning', 'Pengajuan tidak ditemukan');
         }
         $pengajuan->update([
-            'status' => 'review',
+            'status' => Pengajuan::REVIEW,
             'tanggal_acc' => null,
         ]);
         return back()->with('success', 'Acc pengajuan berhasil dibatalkan');
@@ -222,7 +222,7 @@ class PengajuanController extends Controller
     public function tolakPengajuan(Request $request)
     {
         $pengajuan = Pengajuan::findOrFail($request->id);
-        if ($pengajuan->status == 'diterima' || $pengajuan->status == 'ditolak') {
+        if ($pengajuan->status == Pengajuan::DITERIMA || $pengajuan->status == Pengajuan::DITOLAK) {
             return back()->with('warning', 'pengajuan sudah tidak bisa ditolak');
         } else {
             $revisi = new RevisiPengajuan;
@@ -246,7 +246,7 @@ class PengajuanController extends Controller
             }
 
             $pengajuan->update([
-                'status' => 'ditolak',
+                'status' => Pengajuan::DITOLAK,
             ]);
 
             return redirect('pengajuan-prodi')->with('success', 'Pengajuan berhasil ditolak');
@@ -255,16 +255,16 @@ class PengajuanController extends Controller
 
     public function cancelTolak(Request $request)
     {
-        $cekPengajuan = Pengajuan::where('nim', $request->nim)->where('status', 'review')->first();
+        $cekPengajuan = Pengajuan::where('mahasiswa_id', $request->mahasiswa_id)->whereIn('status', [Pengajuan::DITERIMA, Pengajuan::REVIEW, Pengajuan::REVISI])->first();
         $pengajuan = Pengajuan::findOrFail($request->id);
         if ($cekPengajuan) {
-            return back()->with('warning', 'Pengajuan tidak bisa dibatalkan, karena sudah ada pengajuan yang sedang direview');
+            return back()->with('warning', 'Pengajuan tidak bisa dibatalkan, karena sudah ada pengajuan dengan status Diterima/Direview/Direvisi');
         } else {
-            if ($pengajuan->status != 'ditolak') {
+            if ($pengajuan->status != Pengajuan::DITOLAK) {
                 return back()->with('warning', 'Pengajuan tidak ditemukan');
             }
             $pengajuan->update([
-                'status' => 'review',
+                'status' => Pengajuan::REVIEW,
             ]);
             return back()->with('success', 'Tolak pengajuan berhasil dibatalkan');
         }
@@ -273,7 +273,7 @@ class PengajuanController extends Controller
     public function revisiPengajuan(Request $request)
     {
         $pengajuan = Pengajuan::findOrFail($request->id);
-        if ($pengajuan->status == 'diterima' || $pengajuan->status == 'ditolak') {
+        if ($pengajuan->status == Pengajuan::DITERIMA || $pengajuan->status == Pengajuan::DITOLAK) {
             return back()->with('warning', 'Pengajuan sudah tidak bisa direvisi');
         } else {
             if ($request->catatan) {
@@ -294,7 +294,7 @@ class PengajuanController extends Controller
                 }
 
                 $pengajuan->update([
-                    'status' => 'revisi',
+                    'status' => Pengajuan::REVISI,
                 ]);
 
                 $pengajuan->revisis()->save($revisi);
@@ -310,5 +310,15 @@ class PengajuanController extends Controller
         AppHelper::instance()->deleteLampiran($revisi->lampiran);
         $revisi->delete();
         return back()->with('success', 'Revisi berhasil dihapus');;
+    }
+
+    public function editJudulPengajuan(Request $request, $id){
+        $pengajuan = Pengajuan::findOrFail($id);
+
+        $pengajuan->update([
+            'judul' => $request->judul,
+        ]);
+
+        return back()->with('success','Judul tugas akhir berhasil di update.');
     }
 }

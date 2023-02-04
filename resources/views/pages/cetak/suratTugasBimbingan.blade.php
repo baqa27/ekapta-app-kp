@@ -235,7 +235,7 @@
             <td></td>
             <td></td>
             <td>
-                <p class="margin-right top"><b>{{ $pendaftaran->judul }}</b></p>
+                <p class="margin-right top"><b>{{ $pendaftaran->pengajuan->judul }}</b></p>
             </td>
         </tr>
         <tr>

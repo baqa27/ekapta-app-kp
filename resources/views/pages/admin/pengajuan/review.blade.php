@@ -44,17 +44,17 @@
                                 <tr>
                                     <td><b class="mr-3">Nim</b></td>
                                     <td>:</td>
-                                    <td>{{ $pengajuan->nim }}</td>
+                                    <td>{{ $pengajuan->mahasiswa->nim }}</td>
                                 </tr>
                                 <tr>
                                     <td><b class="mr-3">Nama</b></td>
                                     <td>:</td>
-                                    <td>{{ \App\Helpers\AppHelper::instance()->getMahasiswa($pengajuan->nim)->nama }}</td>
+                                    <td>{{ $pengajuan->mahasiswa->nama }}</td>
                                 </tr>
                                 <tr>
                                     <td><b class="mr-3">Prodi</b></td>
                                     <td>:</td>
-                                    <td>{{ \App\Helpers\AppHelper::instance()->getMahasiswa($pengajuan->nim)->prodi }}</td>
+                                    <td>{{ $pengajuan->mahasiswa->prodi }}</td>
                                 </tr>
                                 <tr>
                                     <td><b class="mr-3">Judul</b></td>

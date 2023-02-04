@@ -17,7 +17,7 @@ class CetakController extends Controller
     public function cetakLembarPersetujuanMahasiswa()
     {
         $mahasiswa = Mahasiswa::findOrFail(Auth::guard('mahasiswa')->user()->id);
-        $pengajuan = Pengajuan::where('nim', $mahasiswa->nim)->where('status', 'diterima')->first();
+        $pengajuan = Pengajuan::where('mahasiswa_id', $mahasiswa->id)->where('status', 'diterima')->first();
         $prodi = Prodi::where('namaprodi', $mahasiswa->prodi)->first();
         $dosenUtama = $mahasiswa->dosens()->where('status', 'utama')->first();
         $dosenPendamping = $mahasiswa->dosens()->where('status', 'pendamping')->first();
@@ -54,7 +54,7 @@ class CetakController extends Controller
     public function cetakSuratTugasBimbingan($pendaftaran)
     {
         $pendaftaran = Pendaftaran::findOrFail($pendaftaran);
-        $mahasiswa = Mahasiswa::where('nim', $pendaftaran->nim)->first();
+        $mahasiswa = $pendaftaran->pengajuan->mahasiswa;
         $prodi = Prodi::where('namaprodi', $mahasiswa->prodi)->first();
         $dosenUtama = $mahasiswa->dosens()->where('status', 'utama')->first();
         $dosenPendamping = $mahasiswa->dosens()->where('status', 'pendamping')->first();
@@ -93,7 +93,8 @@ class CetakController extends Controller
     public function cetakSuratTugasBimbinganMahasiswa()
     {
         $mahasiswa = Mahasiswa::where('nim', Auth::guard('mahasiswa')->user()->nim)->first();
-        $pendaftaran = Pendaftaran::where('nim', $mahasiswa->nim)->first();
+        $pengajuan = $mahasiswa->pengajuans()->where('status', Pengajuan::DITERIMA)->first();
+        $pendaftaran = Pendaftaran::where('pengajuan_id', $pengajuan->id)->first();
         $prodi = Prodi::where('namaprodi', $mahasiswa->prodi)->first();
         $dosenUtama = $mahasiswa->dosens()->where('status', 'utama')->first();
         $dosenPendamping = $mahasiswa->dosens()->where('status', 'pendamping')->first();

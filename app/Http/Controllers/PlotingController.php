@@ -13,8 +13,8 @@ class PlotingController extends Controller
     /*
     STATUS DOSEN
         utama = Dosen pembimbing utama
-        pembimbing = Dosen pembimbing pendamping 
-        penguji = Dosen penguji 
+        pembimbing = Dosen pembimbing pendamping
+        penguji = Dosen penguji
     */
 
     public function plotingPembimbing(Request $request)

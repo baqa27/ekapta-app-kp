@@ -68,7 +68,7 @@
                                                     <td>
                                                         {{ \App\Helpers\AppHelper::instance()->getMahasiswa($pendaftaran->nim)->prodi }}
                                                     </td>
-                                                    <td>{{ $pendaftaran->judul }}</td>
+                                                    <td>{{ $pendaftaran->pengajuan->judul }}</td>
                                                     <td>
                                                         @if ($pendaftaran->status == 'review')
                                                             <span class="badge bg-secondary">Review</span>

@@ -9,8 +9,13 @@ class Pengajuan extends Model
 {
     use HasFactory;
 
+    public const DITERIMA = 'diterima';
+    public const REVISI = 'revisi';
+    public const DITOLAK = 'ditolak';
+    public const REVIEW = 'review';
+
     protected $fillable = [
-        'nim',
+        'mahasiswa_id',
         'prodi',
         'judul',
         'deskripsi',
@@ -22,5 +27,13 @@ class Pengajuan extends Model
     public function revisis()
     {
         return $this->hasMany(RevisiPengajuan::class);
+    }
+
+    public function pendaftaran(){
+        return $this->hasOne(Pendaftaran::class);
+    }
+
+    public function mahasiswa(){
+        return $this->belongsTo(Mahasiswa::class);
     }
 }

@@ -99,7 +99,7 @@
                                 </div>
                                 <div class="col-md-7">
                                     <span class="mr-3">:</span>
-                                    <b>{{ $pendaftaran->judul }}</b>
+                                    <b>{{ $pendaftaran->pengajuan->judul }}</b>
                                 </div>
                             </div>
                             <hr>

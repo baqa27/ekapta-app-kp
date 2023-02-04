@@ -34,14 +34,19 @@ class PendaftaranController extends Controller
     public function pendaftaranMahasiswa()
     {
         $mahasiswa = Mahasiswa::where('nim', Auth::guard('mahasiswa')->user()->nim)->first();
+        $pengajuan = $mahasiswa->pengajuans()->where('status', Pengajuan::DITERIMA)->first();
+
         $dosenUtama = $mahasiswa->dosens()->where('status', 'utama')->first();
         $dosenPendamping = $mahasiswa->dosens()->where('status', 'pendamping')->first();
-        $pendaftarans = Pendaftaran::where('nim', Auth::guard('mahasiswa')->user()->nim)->with(['revisis'])->get();
-        $pengajuanIsAcc = Pengajuan::where('nim', Auth::guard('mahasiswa')->user()->nim)->where('status', 'diterima')->first();
-        if (!$pengajuanIsAcc) {
+
+        $pendaftarans = Pendaftaran::where('pengajuan_id', $pengajuan->id)->with(['revisis'])->get();
+
+        if (!$pengajuan) {
             return back()->with('warning', 'Silahkan melakukan Pengajuan Tugas Akhir terlebih dahulu');
         }
-        $pendaftaranIsAcc = Pendaftaran::where('nim', Auth::guard('mahasiswa')->user()->nim)->with(['revisis'])->where('status', 'diterima')->get();
+
+        $pendaftaranIsAcc = Pendaftaran::where('pengajuan_id', $pengajuan->id)->with(['revisis'])->where('status', 'diterima')->get();
+
         return view('pages.mahasiswa.pendaftaran.pendaftaran', [
             'title' => 'Pendaftaran Tugas Akhir',
             'active' => 'pendaftaran',
@@ -54,16 +59,19 @@ class PendaftaranController extends Controller
 
     public function create()
     {
-        $cekPendaftaranAcc = Pendaftaran::where('nim', Auth::guard('mahasiswa')->user()->nim)->first();
-        if ($cekPendaftaranAcc) {
+        $mahasiswa = Mahasiswa::where('nim', Auth::guard('mahasiswa')->user()->nim)->first();
+        $pengajuan = $mahasiswa->pengajuans()->where('status', Pengajuan::DITERIMA)->first();
+
+        $pendaftaranIsAcc = Pendaftaran::where('pengajuan_id', $pengajuan->id)->where('status', 'diterima')->first();
+
+        if ($pendaftaranIsAcc) {
             return redirect('pendaftaran-mahasiswa')->with('warning', 'Anda sudah melakukan pendaftaran tugas akhir');
         } else if (count(Auth::guard('mahasiswa')->user()->dosens) == 0) {
             return back()->with('warning', 'Silahkan tunggu ploting dosen pembimbing oleh Prodi');
         }
-        $mahasiswa = Mahasiswa::where('nim', Auth::guard('mahasiswa')->user()->nim)->first();
+
         $dosenUtama = $mahasiswa->dosens()->where('status', 'utama')->first();
         $dosenPendamping = $mahasiswa->dosens()->where('status', 'pendamping')->first();
-        $pengajuan = Pengajuan::where('nim', Auth::guard('mahasiswa')->user()->nim)->where('status', 'diterima')->first();
 
         return view('pages.mahasiswa.pendaftaran.create', [
             'title' => 'Form Pendaftaran Tugas Akhir',
@@ -76,8 +84,11 @@ class PendaftaranController extends Controller
 
     public function store(Request $request)
     {
-        $pengajuan = Pengajuan::where('nim', Auth::guard('mahasiswa')->user()->nim)->where('status', 'diterima')->first();
-        $cekPendaftaran = Pendaftaran::where('nim', Auth::guard('mahasiswa')->user()->nim)->first();
+        $mahasiswa = Mahasiswa::where('nim', Auth::guard('mahasiswa')->user()->nim)->first();
+        $pengajuan = $mahasiswa->pengajuans()->where('status', Pengajuan::DITERIMA)->first();
+
+        $cekPendaftaran = Pendaftaran::where('pengajuan_id', $pengajuan->id)->first();
+
         if ($cekPendaftaran) {
             return redirect('pendaftaran-mahasiswa')->with('warning', 'Anda sudah melakukan pendaftaran');
         } else {
@@ -99,7 +110,7 @@ class PendaftaranController extends Controller
             $validatedData['lampiran_5'] = AppHelper::instance()->uploadLampiran($request->file('lampiran_5'), 'lampiran-pendaftaran');
 
             $validatedData['nim'] = Auth::guard('mahasiswa')->user()->nim;
-            $validatedData['judul'] = $pengajuan->judul;
+            $validatedData['pengajuan_id'] = $pengajuan->id;
 
             setlocale(LC_TIME, 'id');
             $tanggal_pembayaran = Carbon::parse($request->tanggal_pembayaran)->formatLocalized('%d %B %Y');

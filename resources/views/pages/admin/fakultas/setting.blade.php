@@ -32,7 +32,7 @@
                         <div class="card-body">
 
                             <div class="row">
-                                <div class="col-md-9">
+                                <div class="col-md-8">
                                     <div class="row mt-3">
                                         <div class="col-md-3">
                                             Nama Fakultas
@@ -47,7 +47,7 @@
                                 <div class="border rounded p-2" style="min-width: 160px">
                                     <button type="button" class="btn btn-primary btn-sm mr-2 mb-1" data-toggle="modal"
                                         data-target="#modal-edit-fakultas">
-                                        <i class="bi bi-pencil-square mr-2"></i> Edit
+                                        <i class="bi bi-pencil-square mr-2"></i> Edit Stempel Fakultas
                                     </button>
                                     <img src="{{ asset($fakultas->image != null ? $fakultas->image : 'ekapta/assets/img/not-found.png') }}"
                                         alt="Stempel Fakultas" height="50">
@@ -55,7 +55,7 @@
                             </div>
                             <hr>
                             <div class="row">
-                                <div class="col-md-9">
+                                <div class="col-md-8">
                                     <div class="row mt-3">
                                         <div class="col-md-3">
                                             Dekan
@@ -69,7 +69,7 @@
                                 <div class="border rounded p-2" style="min-width: 160px">
                                     <button type="button" class="btn btn-primary btn-sm mr-2 mb-1" data-toggle="modal"
                                         data-target="#modal-edit">
-                                        <i class="bi bi-pencil-square mr-2"></i> Edit
+                                        <i class="bi bi-pencil-square mr-2"></i> Edit TTD Dekan
                                     </button>
                                     <img src="{{ asset($dekanActive != null ? $dekanActive->image : 'ekapta/assets/img/not-found.png') }}"
                                         alt="TTD Dekan" height="50">

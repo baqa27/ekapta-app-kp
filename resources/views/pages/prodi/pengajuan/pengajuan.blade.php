@@ -63,11 +63,10 @@
                                                 <tr>
                                                     <td>{{ $no++ }}</td>
                                                     <td>
-                                                        {{ \App\Helpers\AppHelper::instance()->getMahasiswa($pengajuan->nim)->nama }}
-                                                        {{ '(' . $pengajuan->nim . ')' }}
+                                                        {{ $pengajuan->mahasiswa->nama }} - {{ $pengajuan->mahasiswa->nim }}
                                                     </td>
                                                     <td>
-                                                        {{ \App\Helpers\AppHelper::instance()->getMahasiswa($pengajuan->nim)->prodi }}
+                                                        {{ $pengajuan->mahasiswa->prodi }}
                                                     </td>
                                                     <td>{{ $pengajuan->judul }}</td>
                                                     <td>
@@ -125,11 +124,10 @@
                                                 <tr>
                                                     <td>{{ $no++ }}</td>
                                                     <td>
-                                                        {{ \App\Helpers\AppHelper::instance()->getMahasiswa($pengajuan->nim)->nama }}
-                                                        {{ '(' . $pengajuan->nim . ')' }}
+                                                        {{ $pengajuan->mahasiswa->nama }} - {{ $pengajuan->mahasiswa->nim }}
                                                     </td>
                                                     <td>
-                                                        {{ \App\Helpers\AppHelper::instance()->getMahasiswa($pengajuan->nim)->prodi }}
+                                                        {{ $pengajuan->mahasiswa->prodi }}
                                                     </td>
                                                     <td>{{ $pengajuan->judul }}</td>
                                                     <td>
@@ -149,8 +147,8 @@
                                                                 class="btn btn-info btn-sm shadow mr-2">
                                                                 <i class="fas fa-info-circle mr-1"></i> Detail
                                                             </a>
-                                                            @if (\App\Helpers\AppHelper::instance()->getPendaftaran($pengajuan->nim) == null)
-                                                                @if (count(\App\Helpers\AppHelper::instance()->getMahasiswa($pengajuan->nim)->dosens) == 0)
+                                                            @if ($pengajuan->pendaftaran == null)
+                                                                @if (count($pengajuan->mahasiswa->dosens) == 0)
                                                                     <div onclick="confirmCancel()">
                                                                         <form action="{{ route('pengajuan.cancel.acc') }}"
                                                                             method="post">
@@ -207,11 +205,10 @@
                                                 <tr>
                                                     <td>{{ $no++ }}</td>
                                                     <td>
-                                                        {{ \App\Helpers\AppHelper::instance()->getMahasiswa($pengajuan->nim)->nama }}
-                                                        {{ '(' . $pengajuan->nim . ')' }}
+                                                        {{ $pengajuan->mahasiswa->nama }} - {{ $pengajuan->mahasiswa->nim }}
                                                     </td>
                                                     <td>
-                                                        {{ \App\Helpers\AppHelper::instance()->getMahasiswa($pengajuan->nim)->prodi }}
+                                                        {{ $pengajuan->mahasiswa->prodi }}
                                                     </td>
                                                     <td>{{ $pengajuan->judul }}</td>
                                                     <td>
@@ -270,11 +267,10 @@
                                                 <tr>
                                                     <td>{{ $no++ }}</td>
                                                     <td>
-                                                        {{ \App\Helpers\AppHelper::instance()->getMahasiswa($pengajuan->nim)->nama }}
-                                                        {{ '(' . $pengajuan->nim . ')' }}
+                                                        {{ $pengajuan->mahasiswa->nama }} - {{ $pengajuan->mahasiswa->nim }}
                                                     </td>
                                                     <td>
-                                                        {{ \App\Helpers\AppHelper::instance()->getMahasiswa($pengajuan->nim)->prodi }}
+                                                        {{ $pengajuan->mahasiswa->prodi }}
                                                     </td>
                                                     <td>{{ $pengajuan->judul }}</td>
                                                     <td>
@@ -294,15 +290,15 @@
                                                                 class="btn btn-info btn-sm shadow mr-2">
                                                                 <i class="fas fa-info-circle mr-1"></i> Detail
                                                             </a>
-                                                            @if (\App\Helpers\AppHelper::instance()->getPengajuan($pengajuan->nim)->status != 'diterima')
+                                                            @if ($pengajuan->status != 'diterima')
                                                                 <div onclick="confirmCancel()">
                                                                     <form action="{{ route('pengajuan.cancel.tolak') }}"
                                                                         method="post">
                                                                         @csrf
                                                                         <input type="hidden" name="id"
                                                                             value="{{ $pengajuan->id }}">
-                                                                        <input type="hidden" name="nim"
-                                                                            value="{{ $pengajuan->nim }}">
+                                                                        <input type="hidden" name="mahasiswa_id"
+                                                                            value="{{ $pengajuan->mahasiswa->id }}">
                                                                         <button class="btn btn-danger btn-sm mr-2 shadow"
                                                                             type="submit">
                                                                             <i class="bi bi-x-circle mr-1"></i> Batalkan

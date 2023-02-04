@@ -43,17 +43,17 @@
                                 <tr>
                                     <td><b class="mr-3">Nim</b></td>
                                     <td>:</td>
-                                    <td>{{ $pengajuan->nim }}</td>
+                                    <td>{{ $pengajuan->mahasiswa->nim }}</td>
                                 </tr>
                                 <tr>
                                     <td><b class="mr-3">Nama</b></td>
                                     <td>:</td>
-                                    <td>{{ \App\Helpers\AppHelper::instance()->getMahasiswa($pengajuan->nim)->nama }}</td>
+                                    <td>{{ $pengajuan->mahasiswa->nama }}</td>
                                 </tr>
                                 <tr>
                                     <td><b class="mr-3">Prodi</b></td>
                                     <td>:</td>
-                                    <td>{{ \App\Helpers\AppHelper::instance()->getMahasiswa($pengajuan->nim)->prodi }}</td>
+                                    <td>{{ $pengajuan->mahasiswa->prodi }}</td>
                                 </tr>
                                 <tr>
                                     <td><b class="mr-3">Judul</b></td>
@@ -116,6 +116,11 @@
                                         <button type="button" class="btn btn-primary mr-2" data-toggle="modal"
                                             data-target="#modal-edit">
                                             <i class="bi bi-pencil-square mr-2"></i> Ploting Dosen Pendamping
+                                        </button>
+
+                                        <button type="button" class="btn btn-secondary mr-2" data-toggle="modal"
+                                            data-target="#modal-edit-judul">
+                                            <i class="bi bi-pencil-square mr-2"></i> Edit Judul Tugas Akhir
                                         </button>
                                     @else
                                         <button type="button" class="btn btn-info mr-2" data-toggle="modal"
@@ -344,7 +349,7 @@
                         <form action="{{ route('ploting.pembimbing') }}" method="post">
                             @csrf
                             <input type="hidden" name="id" value="{{ $pengajuan->id }}">
-                            <input type="hidden" name="nim" value="{{ $pengajuan->nim }}">
+                            <input type="hidden" name="nim" value="{{ $pengajuan->mahasiswa->nim }}">
                             <div class="modal-header">
                                 <h4 class="modal-title">Edit Dosen Pembimbing</h4>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -422,6 +427,41 @@
                 <!-- /.modal-dialog -->
             </div>
         @endif
+
+        <div class="modal fade" id="modal-edit-judul">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form action="{{ route('pengajuan.edit.judul', $pengajuan->id) }}" method="post">
+                        @method('PUT')
+                        @csrf
+
+                        <div class="modal-header">
+                            <h4 class="modal-title">Edit Judul Tugas Akhir</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="" class="form-label">Judul Tugas Akhir</label>
+                                <div class="input-group mb-3">
+                                    <input type="text" name="judul" class="form-control" placeholder="Judul tugas akhir" required>
+                                </div>
+                                @error('judul')
+                                    <small class="text-danger"
+                                        style="position:relative;top:-15px;left:5px">{{ $message }}</small>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="modal-footer justify-content-between">
+                            <button type="submit" class="btn btn-success">Simpan</button>
+                        </div>
+                    </form>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
     @endif
 
 @endsection

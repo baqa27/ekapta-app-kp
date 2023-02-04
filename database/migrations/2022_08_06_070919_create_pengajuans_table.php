@@ -15,7 +15,6 @@ class CreatePengajuansTable extends Migration
     {
         Schema::create('pengajuans', function (Blueprint $table) {
             $table->id();
-            $table->string('nim');
             $table->string('prodi');
             $table->string('judul');
             $table->text('deskripsi');
@@ -23,6 +22,7 @@ class CreatePengajuansTable extends Migration
             $table->timestamp('tanggal_acc')->nullable();
             $table->string('status')->default('review');
             $table->timestamps();
+            $table->foreignId('mahasiswa_id')->constrained();
         });
     }
 

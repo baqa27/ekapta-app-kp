@@ -27,8 +27,6 @@ class Mahasiswa extends Authenticatable
         'kelas',
         'email',
         'hp',
-        'semester',
-        'status',
         'alamat',
         'password',
     ];
@@ -48,5 +46,9 @@ class Mahasiswa extends Authenticatable
     public function bagians()
     {
         return $this->belongsToMany(Bagian::class, 'bimbingans');
+    }
+
+    public function pengajuans(){
+        return $this->hasMany(Pengajuan::class);
     }
 }

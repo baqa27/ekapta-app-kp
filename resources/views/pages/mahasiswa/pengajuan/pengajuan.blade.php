@@ -23,7 +23,7 @@
     <div class="content">
         <div class="container">
 
-            @if (count($pengajuanIsAcc) == 0)
+            @if (count($pengajuans_acc) == 0)
                 <a href="{{ route('pengajuan.create') }}" class="btn btn-primary mb-4"><i class="fas fa-plus mr-2"></i> Buat
                     Pengajuan TA</a>
             @else
@@ -64,15 +64,11 @@
                                                     href="{{ url('/pengajuan/detail/' . $pengajuan->id) }}">{{ $pengajuan->judul }}</a>
                                             </td>
                                             <td>
-                                                {{-- {{ $pengajuan->created_at->isoFormat('dddd, D MMMM Y') }} --}}
                                                 {{ $pengajuan->created_at->format('d M Y H:m') }}
                                             </td>
                                             <td>
                                                 @if ($pengajuan->tanggal_acc != null)
                                                     {{ date('d M y H:m', strtotime($pengajuan->tanggal_acc)) }}
-                                                    {{-- {{\Carbon\Carbon::parse($pengajuan->tanggal_acc)->formatLocalized('%A, %d
-                                        %B
-                                        %Y')}} --}}
                                                 @endif
                                             </td>
                                             <td>

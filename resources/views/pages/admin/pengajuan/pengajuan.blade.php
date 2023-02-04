@@ -50,11 +50,10 @@
                                 <tr>
                                     <td>{{ $no++ }}</td>
                                     <td>
-                                        {{ \App\Helpers\AppHelper::instance()->getMahasiswa($pengajuan->nim)->nama }}
-                                        {{ '('.$pengajuan->nim.')' }}
+                                        {{ $pengajuan->mahasiswa->nama }} - {{ $pengajuan->mahasiswa->nim }}
                                     </td>
                                     <td>
-                                        {{ \App\Helpers\AppHelper::instance()->getMahasiswa($pengajuan->nim)->prodi }}
+                                        {{ $pengajuan->mahasiswa->prodi }}
                                     </td>
                                     <td>{{ $pengajuan->judul }}</td>
                                     <td>

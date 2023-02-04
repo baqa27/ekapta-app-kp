@@ -68,17 +68,6 @@
                             </tr>
                         </table>
 
-                        {{-- Dosen Pembimbing (1) : <strong>
-                            @if ($dosen_utama)
-                            {{ $dosen_utama->nama.', '.$dosen_utama->gelar }}
-                            @endif
-                        </strong> <br>
-                        Dosen Pembimbing (2) : <strong>
-                            @if ($dosen_pendamping)
-                            {{ $dosen_pendamping->nama.', '.$dosen_pendamping->gelar }}
-                            @endif
-                        </strong> --}}
-
                         <table id="example1" class="table table-bordered table-striped">
                             <thead>
                                 <tr>
@@ -99,7 +88,7 @@
                                     <td>{{ $no++ }}</td>
                                     <td>
                                         <a href="{{ url('pendaftaran/detail/'.$pendaftaran->id) }}">{{
-                                            $pendaftaran->judul }}</a>
+                                            $pendaftaran->pengajuan->judul }}</a>
                                     </td>
                                     <td>{{ $pendaftaran->created_at->format('y M d H:m') }}</td>
                                     <td>
