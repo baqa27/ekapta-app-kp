@@ -23,18 +23,26 @@
     <div class="content">
         <div class="container">
 
-            <div class="alert alert-success alert-dismissible">
-                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                Tanggal Berakhir Bimbingan : <b>{{ \Carbon\Carbon::parse($date_expired)->formatLocalized('%d %B %Y') }} </b>
-                @if ($is_seminar)
-                , Selamat anda sudah bisa melakukan
-                <b><a href="{{ route('seminar.create') }}">Pendaftaran Seminar TA</a></b>
-                @endif
-            </div>
+            @if ($is_expired)
+                <div class="mb-3 bg-danger rounded p-2">
+                    Masa bimbingan anda sudah habis, silahkan lakukan <a href="{{ route('pendaftaran.disable', $pendaftaran_acc->id) }}"><u><b>Perpanjangan
+                                TA!</b></u></a>
+                </div>
+            @else
+                <div class="alert alert-success alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    Tanggal Berakhir Bimbingan : <b>{{ \Carbon\Carbon::parse($date_expired)->formatLocalized('%d %B %Y') }}
+                    </b>
+                    @if ($is_seminar)
+                        , Selamat anda sudah bisa melakukan
+                        <b><a href="{{ route('seminar.create') }}">Pendaftaran Seminar TA</a></b>
+                    @endif
+                </div>
 
-            <div class="d-flex justify-content-center mb-3 bg-primary rounded p-2 countdown"
-                data-expire="{{ \Carbon\Carbon::parse($date_expired)->format('Y/m/d h:i:s') }}">
-            </div>
+                <div class="d-flex justify-content-center mb-3 bg-primary rounded p-2 countdown"
+                    data-expire="{{ \Carbon\Carbon::parse($date_expired)->format('Y/m/d h:i:s') }}">
+                </div>
+            @endif
 
             <div class="row">
                 <div class="col-md-12">
@@ -99,40 +107,43 @@
                                                         @endif
                                                     </td>
                                                     <td>
-                                                        @if ($bimbingan->status == 'review')
-                                                            <a href="{{ url('/bimbingan/detail/' . $bimbingan->id) }}"
-                                                                class="btn btn-info btn-sm shadow">
-                                                                <i class="fas fa-info-circle mr-1"></i> Detail
-                                                            </a>
-                                                        @elseif ($bimbingan->status == 'revisi')
-                                                            <a href="{{ url('/bimbingan/detail/' . $bimbingan->id) }}"
-                                                                class="btn btn-info btn-sm shadow">
-                                                                <i class="fas fa-info-circle mr-1"></i> Detail
-                                                            </a>
+                                                        @if (!$is_expired)
+                                                            @if ($bimbingan->status == 'review')
+                                                                <a href="{{ url('/bimbingan/detail/' . $bimbingan->id) }}"
+                                                                    class="btn btn-info btn-sm shadow">
+                                                                    <i class="fas fa-info-circle mr-1"></i> Detail
+                                                                </a>
+                                                            @elseif ($bimbingan->status == 'revisi')
+                                                                <a href="{{ url('/bimbingan/detail/' . $bimbingan->id) }}"
+                                                                    class="btn btn-info btn-sm shadow">
+                                                                    <i class="fas fa-info-circle mr-1"></i> Detail
+                                                                </a>
 
-                                                            <a href="{{ url('/bimbingan/edit/' . $bimbingan->id) }}"
-                                                                class="btn btn-primary btn-sm shadow" type="submit"><i
-                                                                    class="fas fa-upload mr-1"></i>Submit</a>
-                                                        @elseif ($bimbingan->status == 'diterima')
-                                                            <a href="{{ url('/bimbingan/detail/' . $bimbingan->id) }}"
-                                                                class="btn btn-info btn-sm shadow">
-                                                                <i class="fas fa-info-circle mr-1"></i> Detail
-                                                            </a>
-                                                        @elseif($bimbingan->bagian->bagian == 'BAB I')
-                                                            @if ($bimbingan->status == null)
                                                                 <a href="{{ url('/bimbingan/edit/' . $bimbingan->id) }}"
                                                                     class="btn btn-primary btn-sm shadow" type="submit"><i
                                                                         class="fas fa-upload mr-1"></i>Submit</a>
-                                                            @endif
-                                                        @endif
-
-                                                        @if (count(\App\Helpers\AppHelper::instance()->getBimbinganIsAcc($bimbingan->mahasiswa->id)) > 1)
-                                                            @if (\App\Helpers\AppHelper::instance()->cekBagianIsAcc($bimbingan->mahasiswa->nim) == false)
+                                                            @elseif ($bimbingan->status == 'diterima')
+                                                                <a href="{{ url('/bimbingan/detail/' . $bimbingan->id) }}"
+                                                                    class="btn btn-info btn-sm shadow">
+                                                                    <i class="fas fa-info-circle mr-1"></i> Detail
+                                                                </a>
+                                                            @elseif($bimbingan->bagian->bagian == 'BAB I')
                                                                 @if ($bimbingan->status == null)
                                                                     <a href="{{ url('/bimbingan/edit/' . $bimbingan->id) }}"
                                                                         class="btn btn-primary btn-sm shadow"
                                                                         type="submit"><i
                                                                             class="fas fa-upload mr-1"></i>Submit</a>
+                                                                @endif
+                                                            @endif
+
+                                                            @if (count(\App\Helpers\AppHelper::instance()->getBimbinganIsAcc($bimbingan->mahasiswa->id)) > 1)
+                                                                @if (\App\Helpers\AppHelper::instance()->cekBagianIsAcc($bimbingan->mahasiswa->nim) == false)
+                                                                    @if ($bimbingan->status == null)
+                                                                        <a href="{{ url('/bimbingan/edit/' . $bimbingan->id) }}"
+                                                                            class="btn btn-primary btn-sm shadow"
+                                                                            type="submit"><i
+                                                                                class="fas fa-upload mr-1"></i>Submit</a>
+                                                                    @endif
                                                                 @endif
                                                             @endif
                                                         @endif
@@ -202,40 +213,43 @@
                                                         @endif
                                                     </td>
                                                     <td>
-                                                        @if ($bimbingan->status == 'review')
-                                                            <a href="{{ url('/bimbingan/detail/' . $bimbingan->id) }}"
-                                                                class="btn btn-info btn-sm shadow mr-2">
-                                                                <i class="fas fa-info-circle mr-1"></i> Detail
-                                                            </a>
-                                                        @elseif ($bimbingan->status == 'revisi')
-                                                            <a href="{{ url('/bimbingan/detail/' . $bimbingan->id) }}"
-                                                                class="btn btn-info btn-sm shadow">
-                                                                <i class="fas fa-info-circle mr-1"></i> Detail
-                                                            </a>
+                                                        @if (!$is_expired)
+                                                            @if ($bimbingan->status == 'review')
+                                                                <a href="{{ url('/bimbingan/detail/' . $bimbingan->id) }}"
+                                                                    class="btn btn-info btn-sm shadow mr-2">
+                                                                    <i class="fas fa-info-circle mr-1"></i> Detail
+                                                                </a>
+                                                            @elseif ($bimbingan->status == 'revisi')
+                                                                <a href="{{ url('/bimbingan/detail/' . $bimbingan->id) }}"
+                                                                    class="btn btn-info btn-sm shadow">
+                                                                    <i class="fas fa-info-circle mr-1"></i> Detail
+                                                                </a>
 
-                                                            <a href="{{ url('/bimbingan/edit/' . $bimbingan->id) }}"
-                                                                class="btn btn-primary btn-sm shadow" type="submit"><i
-                                                                    class="fas fa-upload mr-1"></i>Submit</a>
-                                                        @elseif ($bimbingan->status == 'diterima')
-                                                            <a href="{{ url('/bimbingan/detail/' . $bimbingan->id) }}"
-                                                                class="btn btn-info btn-sm shadow">
-                                                                <i class="fas fa-info-circle mr-1"></i> Detail
-                                                            </a>
-                                                        @elseif($bimbingan->bagian->bagian == 'BAB I')
-                                                            @if ($bimbingan->status == null)
                                                                 <a href="{{ url('/bimbingan/edit/' . $bimbingan->id) }}"
                                                                     class="btn btn-primary btn-sm shadow" type="submit"><i
                                                                         class="fas fa-upload mr-1"></i>Submit</a>
-                                                            @endif
-                                                        @endif
-
-                                                        @if (count(\App\Helpers\AppHelper::instance()->getBimbinganIsAcc($bimbingan->mahasiswa->id)) > 1)
-                                                            @if (\App\Helpers\AppHelper::instance()->cekBagianIsAcc($bimbingan->mahasiswa->nim) == false)
+                                                            @elseif ($bimbingan->status == 'diterima')
+                                                                <a href="{{ url('/bimbingan/detail/' . $bimbingan->id) }}"
+                                                                    class="btn btn-info btn-sm shadow">
+                                                                    <i class="fas fa-info-circle mr-1"></i> Detail
+                                                                </a>
+                                                            @elseif($bimbingan->bagian->bagian == 'BAB I')
                                                                 @if ($bimbingan->status == null)
                                                                     <a href="{{ url('/bimbingan/edit/' . $bimbingan->id) }}"
                                                                         class="btn btn-primary btn-sm shadow"
                                                                         type="submit"><i
                                                                             class="fas fa-upload mr-1"></i>Submit</a>
+                                                                @endif
+                                                            @endif
+
+                                                            @if (count(\App\Helpers\AppHelper::instance()->getBimbinganIsAcc($bimbingan->mahasiswa->id)) > 1)
+                                                                @if (\App\Helpers\AppHelper::instance()->cekBagianIsAcc($bimbingan->mahasiswa->nim) == false)
+                                                                    @if ($bimbingan->status == null)
+                                                                        <a href="{{ url('/bimbingan/edit/' . $bimbingan->id) }}"
+                                                                            class="btn btn-primary btn-sm shadow"
+                                                                            type="submit"><i
+                                                                                class="fas fa-upload mr-1"></i>Submit</a>
+                                                                    @endif
                                                                 @endif
                                                             @endif
                                                         @endif

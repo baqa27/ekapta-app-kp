@@ -12,6 +12,7 @@ class Pendaftaran extends Model
     public const DITERIMA = 'diterima';
     public const REVIEW = 'review';
     public const REVISI = 'revisi';
+    public const DISABLED = 'disabled';
 
     protected $fillable = [
         'pengajuan_id',

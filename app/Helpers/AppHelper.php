@@ -9,6 +9,7 @@ use App\Models\MahasiswaDetail;
 use App\Models\Pendaftaran;
 use App\Models\Pengajuan;
 use App\Models\Prodi;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 
 class AppHelper
@@ -105,6 +106,18 @@ class AppHelper
         $data = file_get_contents($path);
         $image = 'data:image/' . $type . ';base64,' . base64_encode($data);
         return $image;
+    }
+
+    public function is_expired_in_one_year($date)
+    {
+        $status = null;
+
+        $date_expired = Carbon::parse($date)->addMonthsNoOverflow(12);
+        if(now()->lt($date_expired)){
+            $status = true;
+        }
+
+        return $status;
     }
 
     public static function instance()

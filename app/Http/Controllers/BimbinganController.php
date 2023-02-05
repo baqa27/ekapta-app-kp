@@ -52,9 +52,9 @@ class BimbinganController extends Controller
         $dosenUtama = $mahasiswa->dosens()->where('status', 'utama')->first();
         $dosenPendamping = $mahasiswa->dosens()->where('status', 'pendamping')->first();
 
-        $cekPendaftaranAcc = Pendaftaran::where('mahasiswa_id', Auth::guard('mahasiswa')->user()->id)->where('status', 'diterima')->first();
+        $pendaftaran_acc = Pendaftaran::orderBy('created_at','desc')->where('mahasiswa_id', Auth::guard('mahasiswa')->user()->id)->where('status', 'diterima')->first();
 
-        if (!$cekPendaftaranAcc) {
+        if (!$pendaftaran_acc) {
             return back()->with('warning', 'Silahkan melakukan Pendaftaran Tugas Akhir terlebih dahulu');
         }
 
@@ -74,8 +74,10 @@ class BimbinganController extends Controller
             'bimbingans_pendamping' => $mahasiswa->bimbingans()->where('pembimbing', 'pendamping')->get(),
             'dosen_utama' => $dosenUtama,
             'dosen_pendamping' => $dosenPendamping,
-            'date_expired' => Carbon::parse($cekPendaftaranAcc->tanggal_acc)->addMonthsNoOverflow(12),
-            'is_seminar' => $is_seminar
+            'date_expired' => Carbon::parse($pendaftaran_acc->tanggal_acc)->addMonthsNoOverflow(12),
+            'is_seminar' => $is_seminar,
+            'is_expired' => AppHelper::instance()->is_expired_in_one_year($pendaftaran_acc->tanggal_acc),
+            'pendaftaran_acc' => $pendaftaran_acc,
         ]);
     }
 
@@ -132,12 +134,21 @@ class BimbinganController extends Controller
     {
         $mahasiswa = Mahasiswa::findOrFail(Auth::guard('mahasiswa')->user()->id);
         $prodi = Prodi::where('namaprodi', $mahasiswa->prodi)->first();
+
+        $pendaftaran = Pendaftaran::orderBy('created_at','desc')->where('mahasiswa_id', $mahasiswa->id)->where('status', 'diterima')->first();
+
+        if(AppHelper::instance()->is_expired_in_one_year($pendaftaran->tanggal_acc)){
+            return redirect('bimbingan-mahasiswa')->with('warning','Masa aktif bimbingan anda sudah berakhir, silahkan lakukan pendaftaran ulang');
+        }
+
         $bimbingan = Bimbingan::findOrFail($id);
-        if ($bimbingan->status == 'review' || $bimbingan->status == 'ditolak' || $bimbingan->status == 'diterima') {
+
+        if ($bimbingan->status == 'review' || $bimbingan->status == 'ditolak' ||    $bimbingan->status == 'diterima') {
             return back()->with('warning', 'Bimbingan tidak dapat diedit');
         } elseif (count($mahasiswa->bimbingans()->where('status', 'review')->get()) >= 2) {
             return back()->with('warning', 'Tunggu sampai bimbingan di Acc oleh dosen');
         }
+
         return view('pages.mahasiswa.bimbingan.edit', [
             'title' => 'Form Edit Bimbingan Tugas Akhir',
             'bimbingan' => $bimbingan,
@@ -189,6 +200,13 @@ class BimbinganController extends Controller
     {
         $bimbingan = Bimbingan::findOrFail($request->id);
         $cekBimbingan = Bimbingan::where('mahasiswa_id', Auth::guard('mahasiswa')->user()->id)->where('status', 'review')->get();
+
+        $pendaftaran = Pendaftaran::orderBy('created_at','desc')->where('mahasiswa_id', Auth::guard('mahasiswa')->user()->id)->where('status', 'diterima')->first();
+
+        if(AppHelper::instance()->is_expired_in_one_year($pendaftaran->tanggal_acc)){
+            return redirect('bimbingan-mahasiswa')->with('warning','Masa aktif bimbingan anda sudah berakhir, silahkan lakukan pendaftaran ulang');
+        }
+
         if (count($cekBimbingan) >= 2) {
             return redirect('bimbingan-mahasiswa')->with('warning', 'Harap menunggu Acc bimbingan dari dosen Pembimbing');
         } else {

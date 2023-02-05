@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\AppHelper;
 use App\Models\Bimbingan;
 use App\Models\Mahasiswa;
+use App\Models\Pendaftaran;
 use App\Models\Pengajuan;
 use App\Models\Prodi;
 use App\Models\Seminar;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -14,11 +17,16 @@ class SeminarController extends Controller
 {
     public function index()
     {
-        $prodi = Prodi::where('namaprodi', Auth::guard('mahasiswa')->user()->prodi)->first();
+        $mahasiswa = Mahasiswa::findOrFail(Auth::guard('mahasiswa')->user()->id);
+        $prodi = Prodi::where('namaprodi', $mahasiswa->prodi)->first();
         $bagians_is_seminar = $prodi->bagians()->where('is_seminar', 1)->get();
 
-        $mahasiswa = Mahasiswa::findOrFail(Auth::guard('mahasiswa')->user()->id);
         $bimbingans_is_acc = $mahasiswa->bimbingans()->where('status', Bimbingan::DITERIMA)->get();
+        $pendaftaran_acc = Pendaftaran::orderBy('created_at','desc')->where('mahasiswa_id', $mahasiswa->id)->where('status', 'diterima')->first();
+
+        if(!$pendaftaran_acc){
+            return back();
+        }
 
         $dosen_utama = $mahasiswa->dosens()->where('status', 'utama')->first();
         $dosen_pendamping = $mahasiswa->dosens()->where('status', 'pendamping')->first();
@@ -49,6 +57,12 @@ class SeminarController extends Controller
         $dosen_utama = $mahasiswa->dosens()->where('status', 'utama')->first();
         $dosen_pendamping = $mahasiswa->dosens()->where('status', 'pendamping')->first();
 
+        $pendaftaran_acc = Pendaftaran::orderBy('created_at','desc')->where('mahasiswa_id', $mahasiswa->id)->where('status', 'diterima')->first();
+
+        if(!$pendaftaran_acc){
+            return back();
+        }
+
         $data = [
             'title' => 'Form Pendaftaran Seminar TA',
             'active' => 'seminar',
@@ -63,20 +77,36 @@ class SeminarController extends Controller
 
     public function store(Request $request)
     {
+        $pengajuan = Pengajuan::where('mahasiswa_id', Auth::guard('mahasiswa')->user()->id)->where('status', Pengajuan::DITERIMA)->first();
+
+        $pendaftaran_acc = Pendaftaran::orderBy('created_at','desc')->where('mahasiswa_id', $pengajuan->mahasiswa->id)->where('status', 'diterima')->first();
+
+        if(AppHelper::instance()->is_expired_in_one_year($pendaftaran_acc->tanggal_acc)){
+            return back();
+        }else if($pengajuan->seminar){
+            return redirect('seminar-mahasiswa')->with('warning', 'Sudah mendaftar seminar proposal');
+        }
+
         $validatedData = $request->validate([
-            'tanggal_pembuatan_ta' => 'required',
-            'tanggal_acc_pembimbing_utama'  => 'required',
-            'tanggal_acc_pembimbing_pendamping'  => 'required',
-            'lampiran_1'  => ['required', 'mimes:jpg,png,jpeg'],
-            'lampiran_2' => ['required', 'mimes:jpg,png,jpeg'],
-            'lampiran_3' => ['required', 'mimes:jpg,png,jpeg'],
-            'lampiran_4' => ['required', 'mimes:jpg,png,jpeg'],
-            'lampiran_5' => ['required', 'mimes:jpg,png,jpeg'],
-            'link_video' => 'required',
+            'lampiran_1'  => ['required', 'mimes:jpg,png,jpeg,pdf'],
+            'lampiran_2' => ['required', 'mimes:jpg,png,jpeg,pdf'],
+            'lampiran_3' => ['required', 'mimes:jpg,png,jpeg,pdf'],
+            'lampiran_4' => ['required', 'mimes:jpg,png,jpeg,pdf'],
+            'lampiran_5' => ['required', 'mimes:jpg,png,jpeg,pdf'],
         ]);
-        $validatedData['nim'] = Auth::guard('mahasiswa')->user()->nim;
+
+        $validatedData['lampiran_1'] = AppHelper::instance()->uploadLampiran($request->file('lampiran_1'), 'lampiran-pendaftaran');
+        $validatedData['lampiran_2'] = AppHelper::instance()->uploadLampiran($request->file('lampiran_2'), 'lampiran-pendaftaran');
+        $validatedData['lampiran_3'] = AppHelper::instance()->uploadLampiran($request->file('lampiran_3'), 'lampiran-pendaftaran');
+        $validatedData['lampiran_4'] = AppHelper::instance()->uploadLampiran($request->file('lampiran_4'), 'lampiran-pendaftaran');
+        $validatedData['lampiran_5'] = AppHelper::instance()->uploadLampiran($request->file('lampiran_5'), 'lampiran-pendaftaran');
+
+        $validatedData['mahasiswa_id'] = Auth::guard('mahasiswa')->user()->id;
+        $validatedData['pengajuan_id'] = $pengajuan->id;
+
         Seminar::create($validatedData);
-        return $validatedData;
+
+        return redirect('seminar-mahasiswa')->with('success', 'Pendaftaran Seminar TA berhasil, selihkan tunggu validasi dari admin.');
     }
 
     public function edit($seminar)

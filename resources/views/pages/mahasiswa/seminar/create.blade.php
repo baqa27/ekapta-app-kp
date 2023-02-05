@@ -29,7 +29,8 @@
                             <h3 class="card-title">Form Pendaftaran Seminar TA</h3>
                         </div>
                         <div class="card-body">
-                            <form action="" method="post" enctype="multipart/form-data">
+                            <form action="{{ route('seminar.store') }}" method="post" enctype="multipart/form-data">
+                                @csrf
 
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">NIM</label>
@@ -53,7 +54,9 @@
 
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Tanggal Pembuatan Tugas Akhir</label>
-                                    <input type="text" class="form-control" value="{{ \Carbon\Carbon::parse($pengajuan_acc->created_at)->formatLocalized('%d %B %Y') }}" disabled>
+                                    <input type="text" class="form-control"
+                                        value="{{ \Carbon\Carbon::parse($pengajuan_acc->created_at)->formatLocalized('%d %B %Y') }}"
+                                        disabled>
                                 </div>
 
                                 <div class="form-group">
@@ -62,7 +65,8 @@
                                         (Pegawai) <br> <small>Dijadikan 1 file PDF / JPEG</small> </label>
                                     <div class="input-group mb-3">
                                         <div class="custom-file">
-                                            <input type="file" class="custom-file-input" required>
+                                            <input type="file" class="custom-file-input" name="lampiran_1"
+                                                @error('lampiran_1') is-invalid @enderror required>
                                             <label class="custom-file-label" for="exampleInputFile">Choose
                                                 file</label>
                                         </div>
@@ -70,6 +74,10 @@
                                             <span class="input-group-text">Dokumen</span>
                                         </div>
                                     </div>
+                                    @error('lampiran_1')
+                                        <small class="text-danger"
+                                            style="position:relative;top:-15px;left:5px">{{ $message }}</small>
+                                    @enderror
                                 </div>
 
                                 <div class="form-group">
@@ -80,7 +88,8 @@
                                     </label>
                                     <div class="input-group mb-3">
                                         <div class="custom-file">
-                                            <input type="file" class="custom-file-input" required>
+                                            <input type="file" class="custom-file-input" name="lampiran_2"
+                                                @error('lampiran_2') is-invalid @enderror required>
                                             <label class="custom-file-label" for="exampleInputFile">Choose
                                                 file</label>
                                         </div>
@@ -88,6 +97,10 @@
                                             <span class="input-group-text">Dokumen</span>
                                         </div>
                                     </div>
+                                    @error('lampiran_2')
+                                        <small class="text-danger"
+                                            style="position:relative;top:-15px;left:5px">{{ $message }}</small>
+                                    @enderror
                                 </div>
 
                                 <div class="form-group">
@@ -95,7 +108,8 @@
                                         Judul sampai Daftar Pustaka dan Lampiran)</label>
                                     <div class="input-group mb-3">
                                         <div class="custom-file">
-                                            <input type="file" class="custom-file-input" required>
+                                            <input type="file" class="custom-file-input" name="lampiran_3"
+                                                @error('lampiran_3') is-invalid @enderror required>
                                             <label class="custom-file-label" for="exampleInputFile">Choose
                                                 file</label>
                                         </div>
@@ -103,6 +117,10 @@
                                             <span class="input-group-text">Dokumen</span>
                                         </div>
                                     </div>
+                                    @error('lampiran_3')
+                                        <small class="text-danger"
+                                            style="position:relative;top:-15px;left:5px">{{ $message }}</small>
+                                    @enderror
                                 </div>
 
                                 <div class="form-group">
@@ -110,7 +128,8 @@
                                         Oleh Dosen Pembimbing 1 dan 2</label>
                                     <div class="input-group mb-3">
                                         <div class="custom-file">
-                                            <input type="file" class="custom-file-input" required>
+                                            <input type="file" class="custom-file-input" name="lampiran_4"
+                                                @error('lampiran_4') is-invalid @enderror required>
                                             <label class="custom-file-label" for="exampleInputFile">Choose
                                                 file</label>
                                         </div>
@@ -118,13 +137,18 @@
                                             <span class="input-group-text">Dokumen</span>
                                         </div>
                                     </div>
+                                    @error('lampiran_4')
+                                        <small class="text-danger"
+                                            style="position:relative;top:-15px;left:5px">{{ $message }}</small>
+                                    @enderror
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="exampleInputFile">Scan Surat Tugas Pembimbing TA</label>
+                                    <label for="exampleInputFile">Scan Lembar Persetujuan</label>
                                     <div class="input-group mb-3">
                                         <div class="custom-file">
-                                            <input type="file" class="custom-file-input" required>
+                                            <input type="file" class="custom-file-input" name="lampiran_5"
+                                                @error('lampiran_5') is-invalid @enderror required>
                                             <label class="custom-file-label" for="exampleInputFile">Choose
                                                 file</label>
                                         </div>
@@ -132,6 +156,10 @@
                                             <span class="input-group-text">Dokumen</span>
                                         </div>
                                     </div>
+                                    @error('lampiran_5')
+                                        <small class="text-danger"
+                                            style="position:relative;top:-15px;left:5px">{{ $message }}</small>
+                                    @enderror
                                 </div>
 
                                 <div class="form-group mt-4">

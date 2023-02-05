@@ -15,14 +15,12 @@ class CreateSeminarsTable extends Migration
     {
         Schema::create('seminars', function (Blueprint $table) {
             $table->id();
-            $table->string('tanggal_pembuatan_ta');
-            $table->string('tanggal_acc_pembimbing_utama');
-            $table->string('tanggal_acc_pembimbing_pendamping');
             $table->string('lampiran_1');
             $table->string('lampiran_2');
             $table->string('lampiran_3');
             $table->string('lampiran_4');
             $table->string('lampiran_5');
+            $table->boolean('is_valid')->default(0);
             $table->timestamps();
             $table->foreignId('pengajuan_id')->constrained();
             $table->foreignId('mahasiswa_id')->constrained();

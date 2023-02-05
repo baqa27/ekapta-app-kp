@@ -88,9 +88,9 @@ class PendaftaranController extends Controller
         $mahasiswa = Mahasiswa::where('nim', Auth::guard('mahasiswa')->user()->nim)->first();
         $pengajuan = $mahasiswa->pengajuans()->where('status', Pengajuan::DITERIMA)->first();
 
-        $cekPendaftaran = Pendaftaran::where('pengajuan_id', $pengajuan->id)->first();
+        $pendaftaran_acc = Pendaftaran::where('pengajuan_id', $pengajuan->id)->where('status', Pendaftaran::DITERIMA)->first();
 
-        if ($cekPendaftaran) {
+        if ($pendaftaran_acc) {
             return redirect('pendaftaran-mahasiswa')->with('warning', 'Anda sudah melakukan pendaftaran');
         } else {
             $validatedData = $request->validate([
@@ -167,6 +167,7 @@ class PendaftaranController extends Controller
         $mahasiswa = Mahasiswa::where('id', Auth::guard('mahasiswa')->user()->nim)->first();
         $dosenUtama = $mahasiswa->dosens()->where('status', Dosen::UTAMA)->first();
         $dosenPendamping = $mahasiswa->dosens()->where('status', Dosen::PENDAMPING)->first();
+
         if (!$pendaftaran) {
             return back()->with('warning', 'Pendaftaran tidak ditemukan');
         }
@@ -277,6 +278,8 @@ class PendaftaranController extends Controller
         $dosenUtama = $mahasiswa->dosens()->where('status', Dosen::UTAMA)->first();
         $dosenPendamping = $mahasiswa->dosens()->where('status', Dosen::PENDAMPING)->first();
 
+        $pendaftaran_disabled = Pendaftaran::where('mahasiswa_id', $mahasiswa->id)->where('status', Pendaftaran::DISABLED)->first();
+
         $prodi = Prodi::where('namaprodi', $mahasiswa->prodi)->first();
 
         if (count($prodi->bagians) == 0) {
@@ -289,24 +292,26 @@ class PendaftaranController extends Controller
                 'tanggal_acc' => now(),
             ]);
 
-            // Otomatis create bimbingan dengan pembimbing dosen utam
-            foreach ($prodi->bagians as $bagian) {
-                $bimbingan = Bimbingan::create([
-                    'mahasiswa_id' => $mahasiswa->id,
-                    'bagian_id' => $bagian->id,
-                    'pembimbing' => Dosen::UTAMA,
-                ]);
-                $bimbingan->dosens()->attach([$dosenUtama->id]);
-            }
+            if (!$pendaftaran_disabled) {
+                // Otomatis create bimbingan dengan pembimbing dosen utam
+                foreach ($prodi->bagians as $bagian) {
+                    $bimbingan = Bimbingan::create([
+                        'mahasiswa_id' => $mahasiswa->id,
+                        'bagian_id' => $bagian->id,
+                        'pembimbing' => Dosen::UTAMA,
+                    ]);
+                    $bimbingan->dosens()->attach([$dosenUtama->id]);
+                }
 
-            // Otomatis create bimbingan dengan pembimbing dosen pendamping
-            foreach ($prodi->bagians as $bagian) {
-                $bimbingan = Bimbingan::create([
-                    'mahasiswa_id' => $mahasiswa->id,
-                    'bagian_id' => $bagian->id,
-                    'pembimbing' => Dosen::PENDAMPING,
-                ]);
-                $bimbingan->dosens()->attach([$dosenPendamping->id]);
+                // Otomatis create bimbingan dengan pembimbing dosen pendamping
+                foreach ($prodi->bagians as $bagian) {
+                    $bimbingan = Bimbingan::create([
+                        'mahasiswa_id' => $mahasiswa->id,
+                        'bagian_id' => $bagian->id,
+                        'pembimbing' => Dosen::PENDAMPING,
+                    ]);
+                    $bimbingan->dosens()->attach([$dosenPendamping->id]);
+                }
             }
 
             return back()->with('success', 'Pendaftaran berhasil diacc');
@@ -363,5 +368,15 @@ class PendaftaranController extends Controller
         AppHelper::instance()->deleteLampiran($revisi->lampiran);
         $revisi->delete();
         return back()->with('success', 'Revisi berhasil dihapus');
+    }
+
+    public function disablePendaftaran($id)
+    {
+        $pendaftaran = Pendaftaran::findOrFail($id);
+        $pendaftaran->update([
+            'status' => Pendaftaran::DISABLED,
+        ]);
+
+        return redirect('pendaftaran/create');
     }
 }

@@ -23,7 +23,7 @@
     <div class="content">
         <div class="container">
 
-            <a href="form-seminar.html" class="btn btn-primary mb-4"><i class="fas fa-plus mr-2"></i>
+            <a href="{{ route('seminar.create') }}" class="btn btn-primary mb-4"><i class="fas fa-plus mr-2"></i>
                 Pendaftaran Seminar Proposal</a>
 
             <div class="row">
