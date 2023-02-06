@@ -9,11 +9,9 @@ class Seminar extends Model
 {
     use HasFactory;
 
-    public const DITERIMA = 'diterima';
-    public const REVISI = 'revisi';
-    public const REVIEW = 'review';
-    public const VALID = 1;
-    public const NOT_VALID = 0;
+    public const REVIEW = 0;
+    public const DITERIMA = 1;
+    public const REVISI = 2;
 
     protected $fillable = [
         'pengajuan_id',
@@ -24,6 +22,7 @@ class Seminar extends Model
         'lampiran_4',
         'lampiran_5',
         'is_valid',
+        'tanggal_acc',
     ];
 
     public function revisis()

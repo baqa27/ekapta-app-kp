@@ -8,14 +8,15 @@ use App\Models\Mahasiswa;
 use App\Models\Pendaftaran;
 use App\Models\Pengajuan;
 use App\Models\Prodi;
+use App\Models\RevisiSeminar;
 use App\Models\Seminar;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class SeminarController extends Controller
 {
-    public function index()
+    public function seminarMahasiswa()
     {
         $mahasiswa = Mahasiswa::findOrFail(Auth::guard('mahasiswa')->user()->id);
         $prodi = Prodi::where('namaprodi', $mahasiswa->prodi)->first();
@@ -25,29 +26,44 @@ class SeminarController extends Controller
         $pendaftaran_acc = Pendaftaran::orderBy('created_at','desc')->where('mahasiswa_id', $mahasiswa->id)->where('status', 'diterima')->first();
 
         if(!$pendaftaran_acc){
-            return back();
+            return redirect('pendaftaran-mahasiswa');
         }
 
         $dosen_utama = $mahasiswa->dosens()->where('status', 'utama')->first();
         $dosen_pendamping = $mahasiswa->dosens()->where('status', 'pendamping')->first();
-        $dosen_penguji = $mahasiswa->dosens()->where('status', 'penguji')->first();
 
         if(count($bimbingans_is_acc) - count($bagians_is_seminar) != count($bagians_is_seminar)){
             return back()->with('warning', 'Selesaikan bimbingan anda sampai dengan BAB '.count($bagians_is_seminar));
         }
 
-        $seminars = $mahasiswa->seminars;
+        $seminar = $mahasiswa->seminar;
 
         $data = [
             'title' => 'Seminar TA',
             'active' => 'seminar',
             'dosen_utama' => $dosen_utama,
             'dosen_pendamping' => $dosen_pendamping,
-            'dosen_penguji' => $dosen_penguji,
-            'seminars' => $seminars,
+            'seminar' => $seminar,
         ];
 
         return view('pages.mahasiswa.seminar.seminar', $data);
+    }
+
+    public function seminarAdmin(){
+        $seminars_review = Seminar::orderBy('created_at', 'desc')->where('is_valid', Seminar::REVIEW)->get();
+        $seminars_revisi = Seminar::orderBy('created_at', 'desc')->where('is_valid', Seminar::REVISI)->get();
+        $seminars_acc = Seminar::orderBy('created_at', 'desc')->where('is_valid', Seminar::DITERIMA)->get();
+
+        $data = [
+            'title' => 'Validasi Seminar TA',
+            'active' => 'seminar',
+            'sidebar' => 'partials.sidebarAdmin',
+            'seminars_review' => $seminars_review,
+            'seminars_revisi' => $seminars_revisi,
+            'seminars_acc' => $seminars_acc,
+        ];
+
+        return view('pages.admin.seminar.seminar', $data);
     }
 
     public function create()
@@ -60,7 +76,9 @@ class SeminarController extends Controller
         $pendaftaran_acc = Pendaftaran::orderBy('created_at','desc')->where('mahasiswa_id', $mahasiswa->id)->where('status', 'diterima')->first();
 
         if(!$pendaftaran_acc){
-            return back();
+            return redirect('pendaftaran-mahasiswa');
+        }else if($pengajuan_acc->seminar){
+            return redirect('seminar-mahasiswa')->with('warning', 'Sudah mendaftar seminar proposal');
         }
 
         $data = [
@@ -82,7 +100,7 @@ class SeminarController extends Controller
         $pendaftaran_acc = Pendaftaran::orderBy('created_at','desc')->where('mahasiswa_id', $pengajuan->mahasiswa->id)->where('status', 'diterima')->first();
 
         if(AppHelper::instance()->is_expired_in_one_year($pendaftaran_acc->tanggal_acc)){
-            return back();
+            return redirect('pedaftaran-mahasiswa');
         }else if($pengajuan->seminar){
             return redirect('seminar-mahasiswa')->with('warning', 'Sudah mendaftar seminar proposal');
         }
@@ -103,6 +121,7 @@ class SeminarController extends Controller
 
         $validatedData['mahasiswa_id'] = Auth::guard('mahasiswa')->user()->id;
         $validatedData['pengajuan_id'] = $pengajuan->id;
+        $validatedData['status'] = Seminar::REVIEW;
 
         Seminar::create($validatedData);
 
@@ -146,4 +165,54 @@ class SeminarController extends Controller
         $seminar->update([]);
         return $seminar;
     }
+
+    public function seminarReviewAdmin($id)
+    {
+        $seminar = Seminar::findOrFail($id);
+
+        $mahasiswa = Mahasiswa::findOrFail(Auth::guard('mahasiswa')->user()->id);
+        $dosen_utama = $mahasiswa->dosens()->where('status', 'utama')->first();
+        $dosen_pendamping = $mahasiswa->dosens()->where('status', 'pendamping')->first();
+
+        $data = [
+            'title' => 'Reiew Pendaftaran Seminar TA',
+            'active' => 'seminar',
+            'sidebar' => 'partials.sidebarAdmin',
+            'seminar' => $seminar,
+            'dosen_utama' => $dosen_utama,
+            'dosen_pendamping' => $dosen_pendamping,
+            'revisis' => $seminar->revisis()->orderBy('created_at', 'desc')->paginate(5),
+        ];
+
+        return view('pages.admin.seminar.review', $data);
+    }
+
+    public function revisiSeminar(Request $request)
+    {
+        $seminar = Seminar::findOrFail($request->id);
+        $revisi = new RevisiSeminar();
+        $revisi->catatan = $request->catatan;
+        $request->validate([
+            'lampiran' => [Rule::requiredIf(function () {
+                if (empty($this->request->lampiran)) {
+                    return false;
+                }
+                return true;
+            }), 'mimes:pdf,docx']
+        ]);
+        if ($request->file('lampiran')) {
+            $revisi->lampiran = AppHelper::instance()->uploadLampiran($request->lampiran, 'lampiran-revisi');
+        }
+        if ($seminar->is_valid == Seminar::REVIEW) {
+            $seminar->update([
+                'is_valid' => Seminar::REVISI,
+            ]);
+            $seminar->revisis()->save($revisi);
+            return redirect('seminar-admin')->with('success', 'Seminar TA berhasil direvisi');
+        } elseif ($seminar->is_valid == Seminar::REVISI) {
+            $seminar->revisis()->save($revisi);
+            return back()->with('success', 'Revisi berhasil ditambahkan');
+        }
+    }
+
 }

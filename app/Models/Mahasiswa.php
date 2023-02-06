@@ -57,7 +57,7 @@ class Mahasiswa extends Authenticatable
     }
 
 
-    public function seminars(){
-        return $this->hasMany(Seminar::class);
+    public function seminar(){
+        return $this->hasOne(Seminar::class);
     }
 }

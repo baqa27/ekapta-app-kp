@@ -83,7 +83,7 @@
                 </li>
 
                 <li class="nav-item">
-                    <a href="{{ route('pendaftarans') }}"
+                    <a href="{{ route('pendaftaran.admin') }}"
                         class="nav-link {{ $active == 'pendaftaran' ? 'active' : '' }}">
                         <i class="nav-icon fas fa-check"></i>
                         <p>
@@ -92,10 +92,10 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link {{ $active == 'seminar' ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-th"></i>
+                    <a href="{{ route('seminar.admin') }}" class="nav-link {{ $active == 'seminar' ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-check"></i>
                         <p>
-                            Seminar TA
+                            Validasi Seminar TA
                         </p>
                     </a>
                 </li>

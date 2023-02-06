@@ -68,7 +68,7 @@
                                         @endif
                                     </strong>
 
-                                    <table id="example1" class="table table-bordered">
+                                    <table id="example1" class="table table-bordered table-striped">
                                         <thead>
                                             <tr>
                                                 <th>No</th>
@@ -174,7 +174,7 @@
                                         @endif
                                     </strong>
 
-                                    <table id="example2" class="table table-bordered">
+                                    <table id="example2" class="table table-bordered table-striped">
                                         <thead>
                                             <tr>
                                                 <th>No</th>
@@ -283,4 +283,5 @@
         </div>
     </div>
     <!-- /.content -->
+
 @endsection

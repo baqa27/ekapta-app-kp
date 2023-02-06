@@ -64,7 +64,7 @@ Route::post('/ploting/pembimbing', [PlotingController::class, 'plotingPembimbing
 Route::post('/ploting/penguji', [PlotingController::class, 'plotingPenguji'])->name('ploting.penguji')->middleware('isProdi');
 
 // Pendaftaran TA
-Route::get('/pendaftarans', [PendaftaranController::class, 'index'])->name('pendaftarans')->middleware('isAdmin');
+Route::get('/pendaftaran-admin', [PendaftaranController::class, 'pendaftaranAdmin'])->name('pendaftaran.admin')->middleware('isAdmin');
 Route::get('/pendaftaran-mahasiswa', [PendaftaranController::class, 'pendaftaranMahasiswa'])->name('pendaftaran.mahasiswa')->middleware('isMahasiswa');
 Route::get('/pendaftaran/create', [PendaftaranController::class, 'create'])->name('pendaftaran.create')->middleware('isMahasiswa');
 Route::get('/pendaftaran/detail/{id}', [PendaftaranController::class, 'pendaftaranDetail'])->middleware('isMahasiswa');
@@ -106,15 +106,20 @@ Route::get('/bimbingan/review-prodi/{id}', [BimbinganController::class, 'reviewP
 
 // Seminar
 Route::group(['middleware' => 'isMahasiswa'], function(){
-    Route::get('seminar-mahasiswa', [SeminarController::class, 'index'])->name('seminar.mahasiswa');
+    Route::get('seminar-mahasiswa', [SeminarController::class, 'seminarMahasiswa'])->name('seminar.mahasiswa');
     Route::get('seminar/create', [SeminarController::class, 'create'])->name('seminar.create');
     Route::get('seminar/edit/{seminar}', [SeminarController::class, 'edit']);
     Route::post('seminar/store', [SeminarController::class, 'store'])->name('seminar.store');
     Route::post('seminar/update', [SeminarController::class, 'update'])->name('seminar.update');
     Route::post('seminar/delete', [SeminarController::class, 'delete'])->name('seminar.delete');
 });
-Route::post('seminar/acc', [SeminarController::class, 'accSeminar'])->name('seminar.acc');
-Route::post('seminar/revisi', [SeminarController::class, 'revisiSeminar'])->name('seminar.revisi');
+
+Route::group(['middleware' => 'isAdmin'], function(){
+    Route::get('seminar-admin', [SeminarController::class,'seminarAdmin'])->name('seminar.admin');
+    Route::get('seminar/review/{id}', [SeminarController::class,'seminarReviewAdmin'])->name('seminar.review.admin');
+    Route::post('seminar/acc', [SeminarController::class, 'accSeminar'])->name('seminar.acc');
+    Route::post('seminar/revisi', [SeminarController::class, 'revisiSeminar'])->name('seminar.revisi');
+});
 
 // Prodi
 Route::get('/prodis', [ProdiController::class, 'index'])->name('prodis')->middleware('isAdmin');

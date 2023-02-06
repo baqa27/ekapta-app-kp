@@ -105,6 +105,8 @@
 
                                         @elseif ($pendaftaran->status =='review')
                                         <span class="badge bg-secondary">Review</span>
+                                        @else
+                                        <span class="badge bg-danger">Tidak Aktif</span>
                                         @endif
                                     </td>
                                     <td>

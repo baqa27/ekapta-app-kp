@@ -19,7 +19,6 @@ class CreateRevisiSeminarsTable extends Migration
             $table->string('lampiran')->nullable();
             $table->timestamps();
             $table->foreignId('seminar_id')->constrained();
-            $table->foreignId('dosen_id')->constrained();
         });
     }
 

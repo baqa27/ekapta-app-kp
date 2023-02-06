@@ -17,7 +17,7 @@ use Illuminate\Validation\Rule;
 
 class PendaftaranController extends Controller
 {
-    public function index()
+    public function pendaftaranAdmin()
     {
         $pendaftarans = Pendaftaran::where('status', Pendaftaran::REVIEW)->orderBy('created_at', 'desc')->get();
         $pendaftarans_acc = Pendaftaran::where('status', Pendaftaran::DITERIMA)->orderBy('created_at', 'desc')->get();
@@ -40,7 +40,7 @@ class PendaftaranController extends Controller
         $dosenUtama = $mahasiswa->dosens()->where('status', Dosen::UTAMA)->first();
         $dosenPendamping = $mahasiswa->dosens()->where('status', Dosen::PENDAMPING)->first();
 
-        $pendaftarans = Pendaftaran::where('mahasiswa_id', $mahasiswa->id)->with(['revisis'])->get();
+        $pendaftarans = Pendaftaran::orderBy('created_at','desc')->where('mahasiswa_id', $mahasiswa->id)->with(['revisis'])->get();
 
         if (!$pengajuan) {
             return back()->with('warning', 'Silahkan melakukan Pengajuan Tugas Akhir terlebih dahulu');
@@ -355,7 +355,7 @@ class PendaftaranController extends Controller
                 'status' => Pendaftaran::REVISI,
             ]);
             $pendaftaran->revisis()->save($revisi);
-            return redirect('pendaftarans')->with('success', 'Pendaftaran berhasil direvisi');
+            return redirect('pendaftaran-admin')->with('success', 'Pendaftaran berhasil direvisi');
         } elseif ($pendaftaran->status == Pendaftaran::REVISI) {
             $pendaftaran->revisis()->save($revisi);
             return back()->with('success', 'Revisi berhasil ditambahkan');

@@ -34,7 +34,7 @@ class PengajuanController extends Controller
 
     public function pengajuanMahasiswa()
     {
-        $pengajuans = Pengajuan::where('mahasiswa_id', Auth::guard('mahasiswa')->user()->id)->get();
+        $pengajuans = Pengajuan::orderBy('created_at','desc')->where('mahasiswa_id', Auth::guard('mahasiswa')->user()->id)->get();
         $pengajuans_acc = Pengajuan::where('mahasiswa_id', Auth::guard('mahasiswa')->user()->id)->where('status', Pengajuan::DITERIMA)->get();
         return view('pages.mahasiswa.pengajuan.pengajuan', [
             'title' => 'Pengajuan Tugas Akhir',

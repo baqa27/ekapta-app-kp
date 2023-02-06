@@ -22,9 +22,14 @@
     <!-- Main content -->
     <div class="content">
         <div class="container">
-
-            <a href="{{ route('seminar.create') }}" class="btn btn-primary mb-4"><i class="fas fa-plus mr-2"></i>
-                Pendaftaran Seminar Proposal</a>
+            @if (!$seminar)
+                <a href="{{ route('seminar.create') }}" class="btn btn-primary mb-4"><i class="fas fa-plus mr-2"></i>
+                    Pendaftaran Seminar Proposal</a>
+            @else
+                <div class="mb-3 bg-primary rounded p-2">
+                    Anda sudah melakukan pendaftaran Seminar TA, silahkan tunggu validasi dari Admin.
+                </div>
+            @endif
 
             <div class="row">
                 <div class="col-md-12">
@@ -38,17 +43,21 @@
                                 <tr>
                                     <td>Dosen Pembimbing (1)</td>
                                     <td>&nbsp:&nbsp</td>
-                                    <td><strong>{{ $dosen_utama ? $dosen_utama->nama.' ,'. $dosen_utama->gelar : '' }}</strong></td>
+                                    <td><strong>{{ $dosen_utama ? $dosen_utama->nama . ' ,' . $dosen_utama->gelar : '' }}</strong>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td>Dosen Pembimbing (2)</td>
                                     <td>&nbsp:&nbsp</td>
-                                    <td><strong>{{ $dosen_pendamping ? $dosen_pendamping->nama.' ,'. $dosen_pendamping->gelar : '' }}</strong></td>
+                                    <td><strong>{{ $dosen_pendamping ? $dosen_pendamping->nama . ' ,' . $dosen_pendamping->gelar : '' }}</strong>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td>Dosen Penguji</td>
                                     <td>&nbsp:&nbsp</td>
-                                    <td><strong>{{ $dosen_penguji ? $dosen_penguji->nama.' ,'. $dosen_penguji->gelar : '' }}</strong></td>
+                                    <td>
+                                        <strong></strong>
+                                    </td>
                                 </tr>
                             </table>
 
@@ -63,37 +72,47 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>
-                                            <a href="">Lihat rekap pendaftaran</a>
-                                        </td>
-                                        <td>
-                                            <a href="">Lihat Nilai</a>
-                                        </td>
-                                        <td>
-                                            <span class="badge bg-success">Diterima</span>
-                                            <span class="badge bg-warning">Revisi</span>
-                                            <span class="badge bg-secondary">Review</span>
-                                        </td>
-                                        <td>
-                                            <a href="" class="btn btn-success btn-sm"><i
-                                                    class="fas fa-download mr-1"></i>
-                                                Berita Acara Ujian Proposal</a>
-                                            <a href="" class="btn btn-primary btn-sm"><i class="fas fa-pen mr-1"></i>
-                                                Edit</a>
-                                            <a href="" class="btn btn-danger btn-sm"><i
-                                                    class="fas fa-trash mr-1"></i>Hapus</a>
-                                        </td>
-                                    </tr>
-                                    <!-- Data kosong -->
-                                    <!-- <tr>
-                                                <td colspan="6">
-                                                    <div class="text-center">
-                                                        Belum ada pengajuan TA
-                                                    </div>
-                                                </td>
-                                            </tr> -->
+
+                                    @if ($seminar)
+                                        <tr>
+                                            <td>1</td>
+                                            <td>
+                                                <a href="">{{ $seminar->pengajuan->judul }}</a>
+                                            </td>
+                                            <td>
+                                                @if ($seminar->is_valid == 1)
+                                                    <a href="" class="btn btn-primary btn-sm"><i
+                                                            class="bi bi-star"></i> Lihat Nilai</a>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if ($seminar->is_valid == 0)
+                                                    <span class="badge bg-secondary">Review</span>
+                                                @elseif ($seminar->is_valid == 1)
+                                                    <span class="badge bg-success">Diterima</span>
+                                                @elseif ($seminar->is_valid == 2)
+                                                    <span class="badge bg-warning">Revisi</span>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if ($seminar->is_valid == 0)
+                                                    <a href="" class="btn btn-primary btn-sm">
+                                                        <i class="bi bi-info-circle mr-1"></i> Detail
+                                                    </a>
+                                                @elseif ($seminar->is_valid == 1)
+                                                    <a href="" class="btn btn-success btn-sm">
+                                                        <i class="bi bi-star mr-1"></i> Lihat Review
+                                                    </a>
+                                                @elseif ($seminar->is_valid == 2)
+                                                    <a href="" class="btn btn-primary btn-sm">
+                                                        <i class="bi bi-upload mr-1"></i> Submit
+                                                    </a>
+                                                @endif
+
+                                            </td>
+                                        </tr>
+                                    @endif
+
                                 </tbody>
                                 <tfoot>
                                     <tr>

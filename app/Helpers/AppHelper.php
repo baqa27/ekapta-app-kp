@@ -81,10 +81,6 @@ class AppHelper
     public function uploadLampiran($lampiran, $path)
     {
         if ($lampiran) {
-            // $lampiranName = uniqid() . '.' . $lampiran->extension();
-            // $lampiran->move(public_path('/' . $path), $lampiranName);
-            // $lampiranPath = '/' . $path . '/' . $lampiranName;
-            // return $lampiranPath;
             $lampiranPath = $lampiran->store($path, 'public');
             return $lampiranPath;
         }
@@ -113,7 +109,7 @@ class AppHelper
         $status = null;
 
         $date_expired = Carbon::parse($date)->addMonthsNoOverflow(12);
-        if(now()->lt($date_expired)){
+        if(now()->gt($date_expired)){
             $status = true;
         }
 

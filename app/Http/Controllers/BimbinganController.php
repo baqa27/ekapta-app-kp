@@ -55,7 +55,7 @@ class BimbinganController extends Controller
         $pendaftaran_acc = Pendaftaran::orderBy('created_at','desc')->where('mahasiswa_id', Auth::guard('mahasiswa')->user()->id)->where('status', 'diterima')->first();
 
         if (!$pendaftaran_acc) {
-            return back()->with('warning', 'Silahkan melakukan Pendaftaran Tugas Akhir terlebih dahulu');
+            return redirect('pendaftaran-mahasiswa')->with('warning', 'Silahkan melakukan Pendaftaran Tugas Akhir terlebih dahulu');
         }
 
         $prodi = Prodi::where('namaprodi', Auth::guard('mahasiswa')->user()->prodi)->first();
@@ -144,7 +144,7 @@ class BimbinganController extends Controller
         $bimbingan = Bimbingan::findOrFail($id);
 
         if ($bimbingan->status == 'review' || $bimbingan->status == 'ditolak' ||    $bimbingan->status == 'diterima') {
-            return back()->with('warning', 'Bimbingan tidak dapat diedit');
+            return back()->with('warning', 'Bimbingan tidak dapat disubmit');
         } elseif (count($mahasiswa->bimbingans()->where('status', 'review')->get()) >= 2) {
             return back()->with('warning', 'Tunggu sampai bimbingan di Acc oleh dosen');
         }
