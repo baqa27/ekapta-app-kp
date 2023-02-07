@@ -70,10 +70,12 @@
                                 <div>
                                     @if ($bimbingan->lampiran)
                                         <div class="bg-light p-2 rounded">
-                                            <b>Lampiran sebelumnya : </b>
-                                            <a href="{{ asset($bimbingan->lampiran) }}" class="ml-3 text-primary"
-                                                target="_blank"><i class="fas fa-paperclip mr-2"></i>
-                                                {{ Str::substr($bimbingan->lampiran, 19) }}</a>
+                                            <small>
+                                                <b>Lampiran sebelumnya : </b>
+                                                <a href="{{ asset($bimbingan->lampiran) }}" class="ml-3 text-primary"
+                                                    target="_blank"><i class="fas fa-paperclip mr-2"></i>
+                                                    {{ Str::substr($bimbingan->lampiran, 19) }}</a>
+                                            </small>
                                         </div>
                                     @endif
                                 </div>

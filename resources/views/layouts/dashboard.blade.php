@@ -168,7 +168,7 @@
         </script>
     @enderror
 
-    @if ($active == 'pengajuan')
+    @if ($active == 'pengajuan' || $active == 'seminar')
         <script>
             $(document).ready(function() {
                 $('.select-1').select2();
@@ -176,6 +176,10 @@
 
             $(document).ready(function() {
                 $('.select-2').select2();
+            })
+
+            $(document).ready(function() {
+                $('.select-3').select2();
             })
         </script>
     @endif

@@ -132,6 +132,17 @@
                                                                 <i class="fas fa-info-circle mr-1"></i> Detail
                                                             </a>
 
+                                                            @if(count($seminar->reviews) != 5)
+                                                                <div onclick="return confirmCancel()">
+                                                                    <form action="{{ route('seminar.cancel.acc') }}" method="post">
+                                                                        @csrf
+                                                                        <input type="hidden" name="id" value="{{ $seminar->id }}"/>
+                                                                        <button type="submit" class="btn btn-danger btn-sm"><i class="bi bi-x-circle mr-1"></i> Batalkan Acc
+                                                                        </button>
+                                                                    </form>
+                                                                </div>
+                                                            @endif
+
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -214,7 +225,6 @@
                 </div>
                 <!-- /.col -->
             </div>
-
     </section>
     <!-- /.content -->
 @endsection

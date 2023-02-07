@@ -39,4 +39,9 @@ class Seminar extends Model
     {
         return $this->belongsTo(Mahasiswa::class);
     }
+
+    public function reviews()
+    {
+        return $this->hasMany(ReviewSeminar::class);
+    }
 }

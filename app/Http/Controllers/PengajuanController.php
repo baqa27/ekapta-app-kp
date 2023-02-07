@@ -70,7 +70,7 @@ class PengajuanController extends Controller
     public function pengajuanDetail($id)
     {
         $pengajuan = Pengajuan::findOrFail($id);
-        if ($pengajuan->nim != Auth::guard('mahasiswa')->user()->nim) {
+        if ($pengajuan->mahasiswa->nim != Auth::guard('mahasiswa')->user()->nim) {
             return back()->with('warning', 'Pengajuan tidak ditemukan');
         }
         return view('pages.mahasiswa.pengajuan.detail', [

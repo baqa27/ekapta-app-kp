@@ -37,7 +37,7 @@
                             </div>
                         </div>
                         <div class="card-header">
-                            <h3 class="card-title"><strong>Judul </strong>{{ $pengajuan->judul }}</h3>
+                            <h3 class="card-title"><strong>Judul Tugas Akhir : </strong>{{ $pengajuan->judul }}</h3>
                         </div>
                         <div class="card-body">
                             <p><b>Deskripsi</b></p>
@@ -79,7 +79,7 @@
                                     <div class="direct-chat-msg">
                                         <div class="direct-chat-infos clearfix">
                                             <span
-                                                class="direct-chat-name float-left">{{ \App\Helpers\AppHelper::instance()->getMahasiswa($pengajuan->nim)->prodi }}</span>
+                                                class="direct-chat-name float-left">{{ \App\Helpers\AppHelper::instance()->getMahasiswa($pengajuan->mahasiswa->nim)->prodi }}</span>
                                             <span class="direct-chat-timestamp float-right">
                                                 {{ $revisi->created_at->format('d M Y H:m a') }}
                                             </span>

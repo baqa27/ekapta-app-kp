@@ -163,8 +163,9 @@ class PendaftaranController extends Controller
 
     public function pendaftaranDetail($id)
     {
-        $pendaftaran = Pendaftaran::where('mahasiswa_id', Auth::guard('mahasiswa')->user()->id)->first();
-        $mahasiswa = Mahasiswa::where('id', Auth::guard('mahasiswa')->user()->nim)->first();
+        $pendaftaran = Pendaftaran::findOrFail($id);
+        $mahasiswa = $pendaftaran->mahasiswa;
+
         $dosenUtama = $mahasiswa->dosens()->where('status', Dosen::UTAMA)->first();
         $dosenPendamping = $mahasiswa->dosens()->where('status', Dosen::PENDAMPING)->first();
 

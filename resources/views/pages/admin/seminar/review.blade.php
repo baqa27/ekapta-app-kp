@@ -106,11 +106,9 @@
 
                             <div class="row">
                                 <div class="col-md-5">
-                                    Bukti Lunas Pembayaran SPP Sampai Semester
-                                        Terakhir
+                                    Bukti Lunas Pembayaran SPP Sampai Semester Terakhir
                                 </div>
                                 <div class="col-md-7">
-                                    <span class="mr-3">:</span>
                                     <a href="{{ asset($seminar->lampiran_1) }}" target="_blank"><i
                                             class="fas fa-paperclip"></i>
                                         {{ Str::substr($seminar->lampiran_1, 21) }}</a>
@@ -123,7 +121,6 @@
                                     Bukti Lunas Pembayaran Tugas Akhir (TA)
                                 </div>
                                 <div class="col-md-7">
-                                    <span class="mr-3">:</span>
                                     <a href="{{ asset($seminar->lampiran_2) }}" target="_blank"><i
                                             class="fas fa-paperclip"></i>
                                         {{ Str::substr($seminar->lampiran_2, 21) }}</a>
@@ -136,7 +133,6 @@
                                     Berkas File Tugas Akhir Lengkap
                                 </div>
                                 <div class="col-md-7">
-                                    <span class="mr-3">:</span>
                                     <a href="{{ asset($seminar->lampiran_3) }}" target="_blank"><i
                                             class="fas fa-paperclip"></i>
                                         {{ Str::substr($seminar->lampiran_3, 21) }}</a>
@@ -149,7 +145,6 @@
                                     Scan Lembar Bimbingan TA Yang Telah di Acc
                                 </div>
                                 <div class="col-md-7">
-                                    <span class="mr-3">:</span>
                                     <a href="{{ asset($seminar->lampiran_4) }}" target="_blank"><i
                                             class="fas fa-paperclip"></i>
                                         {{ Str::substr($seminar->lampiran_4, 21) }}</a>
@@ -162,7 +157,6 @@
                                     Scan Lembar Persetujuan
                                 </div>
                                 <div class="col-md-7">
-                                    <span class="mr-3">:</span>
                                     <a href="{{ asset($seminar->lampiran_5) }}" target="_blank"><i
                                             class="fas fa-paperclip"></i>
                                         {{ Str::substr($seminar->lampiran_5, 21) }}</a>
@@ -175,7 +169,6 @@
                                     Tanggal Pendaftaran
                                 </div>
                                 <div class="col-md-7">
-                                    <span class="mr-3">:</span>
                                     <b>{{ $seminar->created_at->format('d M Y H:m') }}</b>
                                 </div>
                             </div>
@@ -187,7 +180,6 @@
                                     Tanggal Acc
                                 </div>
                                 <div class="col-md-7">
-                                    <span class="mr-3">:</span>
                                     @if ($seminar->tanggal_acc)
                                     <b>{{ date('d M Y H:m', strtotime($seminar->tanggal_acc)) }}</b>
                                     @endif
@@ -214,6 +206,15 @@
                                             </button>
                                         </form>
                                     </div>
+                                </div>
+                            </div>
+                        @elseif ($seminar->is_valid == 1)
+                            <div class="card-footer">
+                                <div class="d-flex">
+                                    <button type="button" class="btn btn-primary mr-2" data-toggle="modal"
+                                            data-target="#modal-ploting-penguji">
+                                        <i class="bi bi-pencil-square mr-2"></i> @if(count($dosens_penguji) == 0) Ploting @endif Dosen Penguji
+                                    </button>
                                 </div>
                             </div>
                         @endif
@@ -244,18 +245,20 @@
                                     <div class="card-header">
                                         <i class="fas fa-calendar mr-2"></i>
                                         {{ $revisi->created_at->format('d M Y H:m') }}
-                                        {{-- <div class="float-right" onclick="confirmDelete()">
+                                        <div class="float-right" onclick="confirmDelete()">
                                             <form action="{{ route('seminar.revisi.delete') }}" method="post">
                                                 @csrf
                                                 <input type="hidden" name="id" value="{{ $revisi->id }}">
                                                 <button class="btn btn-danger btn-sm float-right" type="submit">
                                                     <i class="fas fa-trash"></i></button>
                                             </form>
-                                        </div> --}}
+                                        </div>
                                     </div>
                                     <div class="card-body">
                                         {!! nl2br($revisi->catatan) !!}
                                     </div>
+
+                                    @if ($revisi->lampiran)
                                     <div class="card-footer">
                                         Lampiran :
                                         @if ($revisi->lampiran)
@@ -264,6 +267,7 @@
                                                 {{ Str::substr($revisi->lampiran, 16) }}</a>
                                         @endif
                                     </div>
+                                    @endif
                                 </div>
                             @endforeach
 
@@ -321,6 +325,81 @@
                         </div>
                         <div class="modal-footer justify-content-between">
                             <button type="submit" class="btn btn-success">Simpan</button>
+                        </div>
+                    </form>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+    @else
+        <div class="modal fade" id="modal-ploting-penguji">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                        <div class="modal-header">
+                            <h4 class="modal-title">@if(count($dosens_penguji) == 0) Ploting @endif Dosen Penguji</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            @if(count($dosens_penguji) != 0)
+                                <b>Dosen Penguji</b>
+                                <div class="p-2 border rounded">
+                                    @php $no = 1; @endphp
+                                    @foreach($dosens_penguji as $dosen)
+                                        <span>Dosen Penguji{{ $no++  }}. <b>{{$dosen->dosen->nama}}, {{$dosen->dosen->gelar}}</b></span><br>
+                                    @endforeach
+                                </div>
+                            @endif
+
+                            @if($reviews_check)
+                                <form action="{{ route('ploting.penguji') }}" method="post">
+                                    @csrf
+
+                                    <input type="hidden" value="{{ $seminar->id }}" name="seminar_id"/>
+                                    <div class="form-group mt-2">
+                                    <label for="" class="form-label">Dosen Peguji 1</label>
+                                    <div class="col-md-12">
+                                        <select class="select-1" name="dosen_penguji[]" style="width: 100%;" required>
+                                            <option value="">Pilih</option>
+                                            @foreach ($dosens as $dosen)
+                                                <option value="{{ $dosen->id }}">
+                                                    {{ $dosen->nama . ', ' . $dosen->gelar }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+
+                                    <div class="form-group">
+                                    <label for="" class="form-label">Dosen Penguji 2</label>
+                                    <div class="col-md-12">
+                                        <select class="select-2" name="dosen_penguji[]" style="width: 100%" required>
+                                            <option value="">Pilih</option>
+                                            @foreach ($dosens as $dosen)
+                                                <option value="{{ $dosen->id }}">
+                                                    {{ $dosen->nama . ', ' . $dosen->gelar }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+
+                                    <div class="form-group">
+                                    <label for="" class="form-label">Dosen Penguji 3</label>
+                                    <div class="col-md-12">
+                                        <select class="select-3" name="dosen_penguji[]" style="width: 100%" required>
+                                            <option value="">Pilih</option>
+                                            @foreach ($dosens as $dosen)
+                                                <option value="{{ $dosen->id }}">
+                                                    {{ $dosen->nama . ', ' . $dosen->gelar }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                    <br>
+                                    <button type="submit" class="btn btn-success">Simpan</button>
+                                @endif
                         </div>
                     </form>
                 </div>

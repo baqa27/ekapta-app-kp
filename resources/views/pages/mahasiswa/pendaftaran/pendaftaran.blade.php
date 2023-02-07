@@ -72,7 +72,7 @@
                             <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>Pendaftaran</th>
+                                    <th>Judul TA</th>
                                     <th>Tanggal Pendaftaran</th>
                                     <th>Tanggal Acc</th>
                                     <th>Status</th>

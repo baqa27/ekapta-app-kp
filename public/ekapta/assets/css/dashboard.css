@@ -71,3 +71,10 @@
 .bg-soft-warning {
     background-color: rgba(249,213,112,.3)!important;
 }
+.reviews-box{
+    overflow-y: scroll;
+    max-height: 350px;
+    background-color: #eeeeee;
+    scrollbar-color: #6969dd #e0e0e0;
+    scrollbar-width: thin;
+}

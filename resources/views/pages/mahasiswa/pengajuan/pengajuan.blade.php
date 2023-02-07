@@ -46,7 +46,7 @@
                                 <thead>
                                     <tr>
                                         <th>No</th>
-                                        <th>Judul</th>
+                                        <th>Judul TA</th>
                                         <th>Tanggal Pengajuan</th>
                                         <th>Tanggal ACC</th>
                                         <th>Status</th>

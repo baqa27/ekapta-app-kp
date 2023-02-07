@@ -43,7 +43,6 @@
                                     NIM
                                 </div>
                                 <div class="col-md-7">
-                                    <span class="mr-3">:</span>
                                     <b>{{ $pendaftaran->mahasiswa->nim }}</b>
                                 </div>
                             </div>
@@ -54,7 +53,6 @@
                                     Nama Lengkap
                                 </div>
                                 <div class="col-md-7">
-                                    <span class="mr-3">:</span>
                                     <b>{{  $pendaftaran->mahasiswa->nama }}</b>
                                 </div>
                             </div>
@@ -65,7 +63,6 @@
                                     Prodi
                                 </div>
                                 <div class="col-md-7">
-                                    <span class="mr-3">:</span>
                                     <b>{{  $pendaftaran->mahasiswa->prodi }}</b>
                                 </div>
                             </div>
@@ -76,7 +73,6 @@
                                     Pembimbing Utama (1) Tugas Akhir
                                 </div>
                                 <div class="col-md-7">
-                                    <span class="mr-3">:</span>
                                     <b>{{ $dosen_utama->nama . ', ' . $dosen_utama->gelar }}</b>
                                 </div>
                             </div>
@@ -87,7 +83,6 @@
                                     Pembimbing Pendamping (1) Tugas Akhir
                                 </div>
                                 <div class="col-md-7">
-                                    <span class="mr-3">:</span>
                                     <b>{{ $dosen_pendamping->nama . ', ' . $dosen_pendamping->gelar }}</b>
                                 </div>
                             </div>
@@ -98,7 +93,6 @@
                                     Judul Tugas Akhir
                                 </div>
                                 <div class="col-md-7">
-                                    <span class="mr-3">:</span>
                                     <b>{{ $pendaftaran->pengajuan->judul }}</b>
                                 </div>
                             </div>
@@ -109,7 +103,6 @@
                                     Email
                                 </div>
                                 <div class="col-md-7">
-                                    <span class="mr-3">:</span>
                                     <b>{{ \App\Helpers\AppHelper::instance()->getMahasiswa($pendaftaran->mahasiswa->nim)->email }}</b>
                                 </div>
                             </div>
@@ -120,7 +113,6 @@
                                     No. HP
                                 </div>
                                 <div class="col-md-7">
-                                    <span class="mr-3">:</span>
                                     <b>{{ \App\Helpers\AppHelper::instance()->getMahasiswa($pendaftaran->mahasiswa->nim)->hp }}</b>
                                 </div>
                             </div>
@@ -131,7 +123,6 @@
                                     Semester
                                 </div>
                                 <div class="col-md-7">
-                                    <span class="mr-3">:</span>
                                     <b>{{ \App\Helpers\AppHelper::instance()->getMahasiswaDetail($pendaftaran->nim) != null ? \App\Helpers\AppHelper::instance()->getMahasiswaDetail($pendaftaran->nim)->semester : '' }}</b>
                                 </div>
                             </div>
@@ -142,7 +133,6 @@
                                     Dokumen Acc. Kaprodi
                                 </div>
                                 <div class="col-md-7">
-                                    <span class="mr-3">:</span>
                                     <a href="{{ asset($pendaftaran->lampiran_1) }}" target="_blank"><i
                                             class="fas fa-paperclip"></i>
                                         {{ Str::substr($pendaftaran->lampiran_1, 21) }}</a>
@@ -155,7 +145,6 @@
                                     Bukti Lembar Pernyataan Keaslian Hasil Tugas Akhir
                                 </div>
                                 <div class="col-md-7">
-                                    <span class="mr-3">:</span>
                                     <a href="{{ asset($pendaftaran->lampiran_2) }}" target="_blank"><i
                                             class="fas fa-paperclip"></i>
                                         {{ Str::substr($pendaftaran->lampiran_2, 21) }}</a>
@@ -168,7 +157,6 @@
                                     Bukti Transkrip Nilai
                                 </div>
                                 <div class="col-md-7">
-                                    <span class="mr-3">:</span>
                                     <a href="{{ asset($pendaftaran->lampiran_3) }}" target="_blank"><i
                                             class="fas fa-paperclip"></i>
                                         {{ Str::substr($pendaftaran->lampiran_3, 21) }}</a>
@@ -181,7 +169,6 @@
                                     Bukti Pengumpulan KP
                                 </div>
                                 <div class="col-md-7">
-                                    <span class="mr-3">:</span>
                                     <a href="{{ asset($pendaftaran->lampiran_4) }}" target="_blank"><i
                                             class="fas fa-paperclip"></i>
                                         {{ Str::substr($pendaftaran->lampiran_4, 21) }}</a>
@@ -194,7 +181,6 @@
                                     Bukti Pembayaran Tugas Akhir
                                 </div>
                                 <div class="col-md-7">
-                                    <span class="mr-3">:</span>
                                     <a href="{{ asset($pendaftaran->lampiran_5) }}" target="_blank"><i
                                             class="fas fa-paperclip"></i>
                                         {{ Str::substr($pendaftaran->lampiran_5, 21) }}</a>
@@ -207,7 +193,6 @@
                                     Nomor Pembayaran
                                 </div>
                                 <div class="col-md-7">
-                                    <span class="mr-3">:</span>
                                     <b>{{ $pendaftaran->nomor_pembayaran }}</b>
                                 </div>
                             </div>
@@ -218,7 +203,6 @@
                                     Tanggal Pembayaran
                                 </div>
                                 <div class="col-md-7">
-                                    <span class="mr-3">:</span>
                                     <b>{{ $pendaftaran->tanggal_pembayaran }}</b>
                                 </div>
                             </div>
@@ -229,7 +213,6 @@
                                     Biaya
                                 </div>
                                 <div class="col-md-7">
-                                    <span class="mr-3">:</span>
                                     <span class="text-success fs-5">Rp, {{ $pendaftaran->biaya }},-</span>
                                 </div>
                             </div>
@@ -240,7 +223,6 @@
                                     Tanggal Pendaftaran
                                 </div>
                                 <div class="col-md-7">
-                                    <span class="mr-3">:</span>
                                     <b>{{ $pendaftaran->created_at->format('d M Y H:m') }}</b>
                                 </div>
                             </div>
@@ -251,7 +233,6 @@
                                     Tanggal Acc
                                 </div>
                                 <div class="col-md-7">
-                                    <span class="mr-3">:</span>
                                     @if ($pendaftaran->tanggal_acc)
                                         <b>{{ date('d M Y H:m', strtotime($pendaftaran->tanggal_acc)) }}</b>
                                     @endif
@@ -265,7 +246,7 @@
                                         Surat Tugas Bimbingan
                                     </div>
                                     <div class="col-md-7">
-                                        <span class="mr-3">:</span>
+
                                         <a href="{{ url('cetak/surat-tugas-bimbingan/' . $pendaftaran->id) }}"
                                             target="_blank"><i class="fas fa-download"></i> Surat tugas bimbingan TA</a>
                                     </div>
@@ -332,6 +313,8 @@
                                     <div class="card-body">
                                         {!! nl2br($revisi->catatan) !!}
                                     </div>
+
+                                    @if ($revisi->lampiran)
                                     <div class="card-footer">
                                         Lampiran :
                                         @if ($revisi->lampiran)
@@ -340,6 +323,7 @@
                                                 {{ Str::substr($revisi->lampiran, 16) }}</a>
                                         @endif
                                     </div>
+                                    @endif
                                 </div>
                             @endforeach
 

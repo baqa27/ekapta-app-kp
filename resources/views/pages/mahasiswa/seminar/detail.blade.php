@@ -10,7 +10,7 @@
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="#">Pendaftaran TA</a></li>
+                        <li class="breadcrumb-item"><a href="#">Pendaftaran Seminar TA</a></li>
                         <li class="breadcrumb-item active">{{ $title }}</li>
                     </ol>
                 </div><!-- /.col -->
@@ -28,192 +28,166 @@
                         <div class="ribbon-wrapper ribbon-lg">
                             <div
                                 class="ribbon
-                            @if ($pendaftaran->status == 'review') bg-secondary
-                            @elseif ($pendaftaran->status == 'revisi')
+                            @if ($seminar->is_valid == 0) bg-secondary
+                            @elseif ($seminar->is_valid == 2)
                             bg-warning
-                            @elseif ($pendaftaran->status == 'diterima')
+                            @elseif ($seminar->is_valid == 1)
                             bg-success @endif
                             ">
-                                {{ $pendaftaran->status }}
+                                @if ($seminar->is_valid == 0)
+                                review
+                                @elseif ($seminar->is_valid == 1)
+                                diterima
+                                @elseif ($seminar->is_valid == 2)
+                                revisi
+                                @endif
                             </div>
                         </div>
                         <div class="card-body">
                             <div class="row">
-                                <div class="col-md-4">
+                                <div class="col-md-5">
                                     NIM
                                 </div>
-                                <div class="col-md-8">
-                                    <b>{{ $pendaftaran->nim }}</b>
+                                <div class="col-md-7">
+                                    <b>{{ $seminar->mahasiswa->nim }}</b>
                                 </div>
                             </div>
                             <hr>
 
                             <div class="row">
-                                <div class="col-md-4">
+                                <div class="col-md-5">
                                     Nama Lengkap
                                 </div>
-                                <div class="col-md-8">
-                                    <b>{{ Auth::guard('mahasiswa')->user()->nama }}</b>
+                                <div class="col-md-7">
+                                    <b>{{  $seminar->mahasiswa->nama }}</b>
                                 </div>
                             </div>
                             <hr>
 
                             <div class="row">
-                                <div class="col-md-4">
+                                <div class="col-md-5">
                                     Prodi
                                 </div>
-                                <div class="col-md-8">
-                                    <b>{{ Auth::guard('mahasiswa')->user()->prodi }}</b>
+                                <div class="col-md-7">
+                                    <b>{{  $seminar->mahasiswa->prodi }}</b>
                                 </div>
                             </div>
                             <hr>
 
                             <div class="row">
-                                <div class="col-md-4">
+                                <div class="col-md-5">
                                     Pembimbing Utama (1) Tugas Akhir
                                 </div>
-                                <div class="col-md-8">
+                                <div class="col-md-7">
                                     <b>{{ $dosen_utama->nama . ', ' . $dosen_utama->gelar }}</b>
                                 </div>
                             </div>
                             <hr>
 
                             <div class="row">
-                                <div class="col-md-4">
+                                <div class="col-md-5">
                                     Pembimbing Pendamping (1) Tugas Akhir
                                 </div>
-                                <div class="col-md-8">
+                                <div class="col-md-7">
                                     <b>{{ $dosen_pendamping->nama . ', ' . $dosen_pendamping->gelar }}</b>
                                 </div>
                             </div>
                             <hr>
 
                             <div class="row">
-                                <div class="col-md-4">
+                                <div class="col-md-5">
                                     Judul Tugas Akhir
                                 </div>
-                                <div class="col-md-8">
-                                    <b>{{ $pendaftaran->pengajuan->judul }}</b>
+                                <div class="col-md-7">
+                                    <b>{{ $seminar->pengajuan->judul }}</b>
                                 </div>
                             </div>
                             <hr>
 
                             <div class="row">
-                                <div class="col-md-4">
-                                    Dokumen Acc. Kaprodi
+                                <div class="col-md-5">
+                                    Bukti Lunas Pembayaran SPP Sampai Semester Terakhir
                                 </div>
-                                <div class="col-md-8">
-                                    <a href="{{ asset($pendaftaran->lampiran_1) }}" target="_blank"><i
-                                            class="fas fa-paperclip"></i> Lampiran</a>
-                                </div>
-                            </div>
-                            <hr>
-
-                            <div class="row">
-                                <div class="col-md-4">
-                                    Bukti Lembar Pernyataan Keaslian Hasil Tugas Akhir
-                                </div>
-                                <div class="col-md-8">
-                                    <a href="{{ asset($pendaftaran->lampiran_2) }}" target="_blank"><i
-                                            class="fas fa-paperclip"></i> Lampiran</a>
+                                <div class="col-md-7">
+                                    <a href="{{ asset($seminar->lampiran_1) }}" target="_blank"><i
+                                            class="fas fa-paperclip"></i>
+                                        {{ Str::substr($seminar->lampiran_1, 21) }}</a>
                                 </div>
                             </div>
                             <hr>
 
                             <div class="row">
-                                <div class="col-md-4">
-                                    Bukti Transkrip Nilai
+                                <div class="col-md-5">
+                                    Bukti Lunas Pembayaran Tugas Akhir (TA)
                                 </div>
-                                <div class="col-md-8">
-                                    <a href="{{ asset($pendaftaran->lampiran_3) }}" target="_blank"><i
-                                            class="fas fa-paperclip"></i> Lampiran</a>
-                                </div>
-                            </div>
-                            <hr>
-
-                            <div class="row">
-                                <div class="col-md-4">
-                                    Bukti Pengumpulan KP
-                                </div>
-                                <div class="col-md-8">
-                                    <a href="{{ asset($pendaftaran->lampiran_4) }}" target="_blank"><i
-                                            class="fas fa-paperclip"></i> Lampiran</a>
+                                <div class="col-md-7">
+                                    <a href="{{ asset($seminar->lampiran_2) }}" target="_blank"><i
+                                            class="fas fa-paperclip"></i>
+                                        {{ Str::substr($seminar->lampiran_2, 21) }}</a>
                                 </div>
                             </div>
                             <hr>
 
                             <div class="row">
-                                <div class="col-md-4">
-                                    Bukti Pembayaran Tugas Akhir
+                                <div class="col-md-5">
+                                    Berkas File Tugas Akhir Lengkap
                                 </div>
-                                <div class="col-md-8">
-                                    <a href="{{ asset($pendaftaran->lampiran_5) }}" target="_blank"><i
-                                            class="fas fa-paperclip"></i> Lampiran</a>
-                                </div>
-                            </div>
-                            <hr>
-
-                            <div class="row">
-                                <div class="col-md-4">
-                                    Nomor Pembayaran
-                                </div>
-                                <div class="col-md-8">
-                                    <b>{{ $pendaftaran->nomor_pembayaran }}</b>
+                                <div class="col-md-7">
+                                    <a href="{{ asset($seminar->lampiran_3) }}" target="_blank"><i
+                                            class="fas fa-paperclip"></i>
+                                        {{ Str::substr($seminar->lampiran_3, 21) }}</a>
                                 </div>
                             </div>
                             <hr>
 
                             <div class="row">
-                                <div class="col-md-4">
-                                    Tanggal Pembayaran
+                                <div class="col-md-5">
+                                    Scan Lembar Bimbingan TA Yang Telah di Acc
                                 </div>
-                                <div class="col-md-8">
-                                    <b>{{ $pendaftaran->tanggal_pembayaran }}</b>
-                                </div>
-                            </div>
-                            <hr>
-
-                            <div class="row">
-                                <div class="col-md-4">
-                                    Biaya
-                                </div>
-                                <div class="col-md-8">
-                                    <span class="text-success fs-5">Rp, {{ $pendaftaran->biaya }},-</span>
+                                <div class="col-md-7">
+                                    <a href="{{ asset($seminar->lampiran_4) }}" target="_blank"><i
+                                            class="fas fa-paperclip"></i>
+                                        {{ Str::substr($seminar->lampiran_4, 21) }}</a>
                                 </div>
                             </div>
                             <hr>
 
                             <div class="row">
-                                <div class="col-md-4">
+                                <div class="col-md-5">
+                                    Scan Lembar Persetujuan
+                                </div>
+                                <div class="col-md-7">
+                                    <a href="{{ asset($seminar->lampiran_5) }}" target="_blank"><i
+                                            class="fas fa-paperclip"></i>
+                                        {{ Str::substr($seminar->lampiran_5, 21) }}</a>
+                                </div>
+                            </div>
+                            <hr>
+
+                            <div class="row">
+                                <div class="col-md-5">
                                     Tanggal Pendaftaran
                                 </div>
-                                <div class="col-md-8">
-                                    <b>{{ $pendaftaran->created_at->format('d M Y H:m') }}</b>
+                                <div class="col-md-7">
+                                    <b>{{ $seminar->created_at->format('d M Y H:m') }}</b>
                                 </div>
                             </div>
-                            <hr>
 
+                            @if ($seminar->tanggal_acc)
+                            <hr>
                             <div class="row">
-                                <div class="col-md-4">
+                                <div class="col-md-5">
                                     Tanggal Acc
                                 </div>
-                                <div class="col-md-8">
-                                    @if ($pendaftaran->tanggal_acc)
-                                        <b
-                                            class="text-success">{{ date('d M Y H:m', strtotime($pendaftaran->tanggal_acc)) }}</b>
+                                <div class="col-md-7">
+                                    @if ($seminar->tanggal_acc)
+                                    <b>{{ date('d M Y H:m', strtotime($seminar->tanggal_acc)) }}</b>
                                     @endif
                                 </div>
-
                             </div>
+                            @endif
 
                         </div>
-                        @if ($pendaftaran->status == 'diterima')
-                            <div class="card-footer">
-                                <a href="{{ route('cetak.surat.tugas.bimbingan') }}" class="btn btn-success btn-sm"
-                                    target="_blank"><i class="fas fa-download mr-1"></i>
-                                    Surat Tugas Bimbingan TA</a>
-                            </div>
-                        @endif
                     </div>
 
                     {{-- Revisi --}}

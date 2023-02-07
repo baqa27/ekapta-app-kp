@@ -44,45 +44,41 @@
                             <table>
                                 <tr>
                                     <td><b class="mr-3">Nim</b></td>
-                                    <td>:</td>
                                     <td>{{ $bimbingan->mahasiswa->nim }}</td>
                                 </tr>
                                 <tr>
                                     <td><b class="mr-3">Nama</b></td>
-                                    <td>:</td>
                                     <td>{{ $bimbingan->mahasiswa->nama }}</td>
                                 </tr>
                                 <tr>
                                     <td><b class="mr-3">Prodi</b></td>
-                                    <td>:</td>
                                     <td>{{ $bimbingan->mahasiswa->prodi }}
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td><b class="mr-3">Judul</b></td>
-                                    <td>:</td>
+                                    <td><b class="mr-3">Judul TA</b></td>
                                     <td>{{ $pengajuan->judul }}
                                     </td>
                                 </tr>
                                 <tr>
                                     <td><b class="mr-3">Bagian</b></td>
-                                    <td>:</td>
                                     <td>{{ $bimbingan->bagian->bagian }}</td>
                                 </tr>
-
                             </table>
                             <hr>
 
-                            <p><b>Keterangan</b></p>
-                            {!! nl2br($bimbingan->keterangan) !!}
+                            <b>Keterangan</b> <br>
+                            <div class="p-2 rounded" style="background-color: #dbdbdb">
+                                {!! nl2br($bimbingan->keterangan) !!}
+                            </div>
 
                             <div class="mt-4 text-secondary"><i class="fas fa-calendar mr-2"></i>
-                                {{ date('d M Y H:m', strtotime($bimbingan->tanggal_bimbingan)) }}
+                                Tanggal Submit <b>{{ date('d M Y H:m', strtotime($bimbingan->tanggal_bimbingan)) }}</b>
                             </div>
 
                             @if ($bimbingan->tanggal_acc)
                                 <div class="text-success"><i class="fas fa-calendar-check mr-2"></i>
-                                    {{ date('d M Y H:m', strtotime($bimbingan->tanggal_acc)) }}
+                                    Tanggal Acc <b>{{ date('d M Y H:m', strtotime($bimbingan->tanggal_acc)) }}</b>
                                 </div>
                             @endif
                             <hr>
@@ -98,10 +94,7 @@
                                 <div class="d-flex mt-2 border p-2 rounded">
 
                                     @php
-                                        $dosenPembimbing = $mahasiswa
-                                            ->dosens()
-                                            ->where('dosen_id', Auth::guard('dosen')->user()->id)
-                                            ->first();
+                                        $dosenPembimbing = $bimbingan->mahasiswa->dosens()->where('dosen_id', Auth::guard('dosen')->user()->id)->first();
                                     @endphp
 
                                     {{-- Bimbingan Dosen Utama --}}
@@ -139,15 +132,6 @@
                                         @endforeach
                                     @endif
 
-                                </div>
-                                <div class="mt-2">
-                                    ket :
-                                    <span class="badge badge-success mr-1"> <i class="fas fa-check-circle mr-1"></i>
-                                        Bagian Sudah Di Acc
-                                    </span>
-                                    <span class="badge badge-secondary mr-1"> <i class="fas fa-circle mr-1"></i>
-                                        Bagian Belum Di Acc
-                                    </span>
                                 </div>
                             </div>
 
@@ -219,14 +203,18 @@
                                     <div class="card-body">
                                         {!! nl2br($revisi->catatan) !!}
                                     </div>
+                                    @if ($revisi->lampiran)
                                     <div class="card-footer">
-                                        Lampiran :
-                                        @if ($revisi->lampiran)
-                                            <a href="{{ asset($revisi->lampiran) }}" class="ml-3" target="_blank"><i
-                                                    class="fas fa-paperclip"></i>
-                                                {{ Str::substr($revisi->lampiran, 16) }}</a>
-                                        @endif
+                                        <small>
+                                            Lampiran :
+                                            @if ($revisi->lampiran)
+                                                <a href="{{ asset($revisi->lampiran) }}" class="ml-3" target="_blank"><i
+                                                        class="fas fa-paperclip"></i>
+                                                    {{ Str::substr($revisi->lampiran, 16) }}</a>
+                                            @endif
+                                        </small>
                                     </div>
+                                    @endif
                                 </div>
                             @endforeach
 

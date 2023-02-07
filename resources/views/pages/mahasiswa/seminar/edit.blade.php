@@ -10,7 +10,7 @@
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="#">Pendaftaran TA</a></li>
+                        <li class="breadcrumb-item"><a href="#">Seminar TA</a></li>
                         <li class="breadcrumb-item active">{{ $title }}</li>
                     </ol>
                 </div><!-- /.col -->
@@ -29,48 +29,38 @@
                             <h3 class="card-title">{{ $title }}</h3>
                         </div>
                         <div class="card-body">
-                            <form action="{{ route('pendaftaran.update') }}" method="post" enctype="multipart/form-data">
+                            <form action="{{ route('seminar.update', $seminar->id) }}" method="post"
+                                enctype="multipart/form-data">
+                                @method('PUT')
                                 @csrf
-
-                                <input type="hidden" name="id" value="{{ $pendaftaran->id }}">
 
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">NIM</label>
-                                    <input type="text" class="form-control" value="{{ $mahasiswa->nim }}" disabled>
+                                    <input type="text" class="form-control" value="{{ $seminar->mahasiswa->nim }}"
+                                        disabled>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Nama Lengkap</label>
-                                    <input type="text" class="form-control" value="{{ $mahasiswa->nama }}" disabled>
+                                    <input type="text" class="form-control" value="{{ $seminar->mahasiswa->nama }}"
+                                        disabled>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Prodi</label>
-                                    <input type="text" class="form-control" value="{{ $mahasiswa->prodi }}" disabled>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="exampleInputEmail1">Pembimbing Utama (1) Tugas Akhir</label>
-                                    <input type="text" class="form-control" value="{{ $dosen_utama->nama }}" disabled>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="exampleInputEmail1">Pembimbing Pendamping (2) Tugas Akhir</label>
-                                    <input type="text" class="form-control" value="{{ $dosen_pendamping->nama }}"
+                                    <input type="text" class="form-control" value="{{ $seminar->mahasiswa->prodi }}"
                                         disabled>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Judul Tugas Akhir</label>
-                                    <input type="text" class="form-control" value="{{ $pendaftaran->judul }}" disabled>
+                                    <input type="text" class="form-control" value="{{ $seminar->pengajuan->judul }}"
+                                        disabled>
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="exampleInputFile">Dokumen Acc. Kaprodi <br>
-                                        <small>Download disini : <a
-                                                href="{{ route('cetak.lembar.persetujuan.mahasiswa') }}"
-                                                target="_blank">Download</a></small>
-                                    </label>
+                                    <label for="exampleInputFile">Bukti Lunas Pembayaran SPP Sampai Semester
+                                        Terakhir</label>
                                     <div class="input-group mb-3">
                                         <div class="custom-file">
                                             <input type="file"
@@ -90,18 +80,15 @@
                                     <div class="rounded bg-light">
                                         <small>
                                             <span class="ml-3">Lampiran sebelumnya : </span>
-                                            <a href="{{ asset($pendaftaran->lampiran_1) }}" class="text-primary"
+                                            <a href="{{ asset($seminar->lampiran_1) }}" class="text-primary"
                                                 target="_blank"><i class="fas fa-paperclip ml-2"></i>
-                                                {{ Str::substr($pendaftaran->lampiran_1, 21) }}</a>
+                                                {{ Str::substr($seminar->lampiran_1, 21) }}</a>
                                         </small>
                                     </div>
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="exampleInputEmail1">Bukti Lembar Pernyataan Keaslian Hasil TugasAkhir <br>
-                                        <small>Download disini : <a href="{{ route('cetak.lembar.pernyataan.keaslian') }}"
-                                                target="_blank">Download</a></small>
-                                    </label>
+                                    <label for="exampleInputEmail1">Bukti Lunas Pembayaran Tugas Akhir (TA)</label>
                                     <div class="input-group mb-3">
                                         <div class="custom-file">
                                             <input type="file"
@@ -121,18 +108,15 @@
                                     <div class="rounded bg-light">
                                         <small>
                                             <span class="ml-3">Lampiran sebelumnya : </span>
-                                            <a href="{{ asset($pendaftaran->lampiran_2) }}" class="text-primary"
+                                            <a href="{{ asset($seminar->lampiran_2) }}" class="text-primary"
                                                 target="_blank"><i class="fas fa-paperclip ml-2"></i>
-                                                {{ Str::substr($pendaftaran->lampiran_2, 21) }}</a>
+                                                {{ Str::substr($seminar->lampiran_2, 21) }}</a>
                                         </small>
                                     </div>
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="exampleInputFile">Bukti Transkrip Nilai <br>
-                                        <small>Jika SKS lulus lebih dari 120 maka pengajuan Surat Tugas
-                                            Pembimbing akan diproses namun jika belum memenuhi 120 sks lulus
-                                            maka pengajuan akan dibatalkan.</small> </label>
+                                    <label for="exampleInputFile">Berkas File Tugas Akhir Lengkap</label>
                                     <div class="input-group mb-3">
                                         <div class="custom-file">
                                             <input type="file"
@@ -152,16 +136,15 @@
                                     <div class="rounded bg-light">
                                         <small>
                                             <span class="ml-3">Lampiran sebelumnya : </span>
-                                            <a href="{{ asset($pendaftaran->lampiran_3) }}" class="text-primary"
+                                            <a href="{{ asset($seminar->lampiran_3) }}" class="text-primary"
                                                 target="_blank"><i class="fas fa-paperclip ml-2"></i>
-                                                {{ Str::substr($pendaftaran->lampiran_3, 21) }}</a>
+                                                {{ Str::substr($seminar->lampiran_3, 21) }}</a>
                                         </small>
                                     </div>
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="exampleInputFile">Bukti Pengumpulan KP <br>
-                                        <small>bukti diminta di perpus FASTIKOM</small></label>
+                                    <label for="exampleInputFile"> Scan Lembar Bimbingan TA Yang Telah di Acc</label>
                                     <div class="input-group mb-3">
                                         <div class="custom-file">
                                             <input type="file"
@@ -181,17 +164,15 @@
                                     <div class="rounded bg-light">
                                         <small>
                                             <span class="ml-3">Lampiran sebelumnya : </span>
-                                            <a href="{{ asset($pendaftaran->lampiran_4) }}" class="text-primary"
+                                            <a href="{{ asset($seminar->lampiran_4) }}" class="text-primary"
                                                 target="_blank"><i class="fas fa-paperclip ml-2"></i>
-                                                {{ Str::substr($pendaftaran->lampiran_4, 21) }}</a>
+                                                {{ Str::substr($seminar->lampiran_4, 21) }}</a>
                                         </small>
                                     </div>
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="exampleInputFile">Bukti Pembayaran Tugas Akhir <br>
-                                        <small>Pembayaran Tugas Akhir (TA) ke Juru bayar FASTIKOM. ( Mas
-                                            Harri)</small> </label>
+                                    <label for="exampleInputFile">Scan Lembar Persetujuan</label>
                                     <div class="input-group mb-3">
                                         <div class="custom-file">
                                             <input type="file"
@@ -211,93 +192,11 @@
                                     <div class="rounded bg-light">
                                         <small>
                                             <span class="ml-3">Lampiran sebelumnya : </span>
-                                            <a href="{{ asset($pendaftaran->lampiran_5) }}" class="text-primary"
+                                            <a href="{{ asset($seminar->lampiran_5) }}" class="text-primary"
                                                 target="_blank"><i class="fas fa-paperclip ml-2"></i>
-                                                {{ Str::substr($pendaftaran->lampiran_5, 21) }}</a>
+                                                {{ Str::substr($seminar->lampiran_5, 21) }}</a>
                                         </small>
                                     </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="exampleInputEmail1">Nomor Pembayaran <br> <small>(PBXXXX) yang
-                                            tertera pada Bukti Bayar FASTIKOM (BUKAN NOMOR TRANSFER DARI
-                                            BANK)</small></label>
-                                    <input type="text"
-                                        class="form-control @error('nomor_pembayaran') is-invalid @enderror"
-                                        placeholder="Masukkan Nomor Pembayaran.."
-                                        value="{{ $pendaftaran->nomor_pembayaran }}" name="nomor_pembayaran" required>
-                                    @error('nomor_pembayaran')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="exampleInputEmail1">Tanggal Pembayaran <br>
-                                        <small>Tanggal Pembayaran Sebelumnya :
-                                            <b>{{ $pendaftaran->tanggal_pembayaran }}</b></small>
-                                    </label>
-                                    <input type="date"
-                                        class="form-control @error('tanggal_pembayaran') is-invalid @enderror"
-                                        name="tanggal_pembayaran" value="{{ $pendaftaran->tanggal_pembayaran }}">
-                                    @error('tanggal_pembayaran')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="exampleInputEmail1">BIAYA TUGAS AKHIR (TA) / SKRIPSI
-                                    </label>
-                                    <div class="form-check mb-2">
-                                        <input class="form-check-input @error('biaya') is-invalid @enderror"
-                                            type="radio" name="biaya" value="750000"
-                                            @if ($pendaftaran->biaya == 750000) checked @endif>
-                                        <label class="form-check-label" style="top: -1px; position:relative;">Program
-                                            Sarjana Kelas A
-                                            (Reguler) : Rp. 750.000,-</label>
-                                    </div>
-                                    <div class="form-check mb-2">
-                                        <input class="form-check-input @error('biaya') is-invalid @enderror"
-                                            type="radio" name="biaya" value="375000"
-                                            @if ($pendaftaran->biaya == 375000) checked @endif>
-                                        <label class="form-check-label" style="top: -1px; position:relative;">Perpanjang
-                                            Program Sarjana
-                                            Kelas A (Reguler) : Rp. 375.000,-</label>
-                                    </div>
-                                    <div class="form-check mb-2">
-                                        <input class="form-check-input @error('biaya') is-invalid @enderror"
-                                            type="radio" name="biaya" value="850000"
-                                            @if ($pendaftaran->biaya == 850000) checked @endif>
-                                        <label class="form-check-label" style="top: -1px; position:relative;">Program
-                                            Sarjana Kelas B
-                                            (Ekstensi) : Rp. 850.000,-</label>
-                                    </div>
-                                    <div class="form-check mb-2">
-                                        <input class="form-check-input @error('biaya') is-invalid @enderror"
-                                            type="radio" name="biaya" value="425000"
-                                            @if ($pendaftaran->biaya == 425000) checked @endif>
-                                        <label class="form-check-label" style="top: -1px; position:relative;">Perpanjang
-                                            Program Sarjana
-                                            Kelas B (Ekstensi) : Rp. 425.000,-</label>
-                                    </div>
-                                    <div class="form-check mb-2">
-                                        <input class="form-check-input @error('biaya') is-invalid @enderror"
-                                            type="radio" name="biaya" value="650000"
-                                            @if ($pendaftaran->biaya == 650000) checked @endif>
-                                        <label class="form-check-label" style="top: -1px; position:relative;">Program
-                                            Diploma Kelas A
-                                            (Reguler) : Rp. 650.000,-</label>
-                                    </div>
-                                    <div class="form-check mb-2">
-                                        <input class="form-check-input @error('biaya') is-invalid @enderror"
-                                            type="radio" name="biaya" value="325000"
-                                            @if ($pendaftaran->biaya == 325000) checked @endif>
-                                        <label class="form-check-label" style="top: -1px; position:relative;">Perpanjang
-                                            Program Diploma
-                                            Kelas A (Reguler) : Rp. 325.000,-</label>
-                                    </div>
-                                    @error('biaya')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
                                 </div>
 
                                 <div class="form-group mt-4">

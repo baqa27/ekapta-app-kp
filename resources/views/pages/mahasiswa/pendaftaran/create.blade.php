@@ -70,27 +70,6 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="exampleInputEmail1">Email</label>
-                                    <input type="email" class="form-control"
-                                        value="{{ Auth::guard('mahasiswa')->user()->email }}" disabled>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="exampleInputEmail1">No. HP <br> <small>Yang Terdaftar di
-                                            WhatsApp
-                                            dan Telegram</small> </label>
-                                    <input type="text" class="form-control"
-                                        value="{{ Auth::guard('mahasiswa')->user()->hp }}" disabled>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="exampleInputEmail1">Semester</label>
-                                    <input type="text" class="form-control"
-                                        value="{{ \App\Helpers\AppHelper::instance()->getMahasiswaDetail(Auth::guard('mahasiswa')->user()->nim) != null ? \App\Helpers\AppHelper::instance()->getMahasiswaDetail(Auth::guard('mahasiswa')->user()->nim)->semester : '' }}"
-                                        disabled>
-                                </div>
-
-                                <div class="form-group">
                                     <label for="exampleInputFile">Dokumen Acc. Kaprodi <br>
                                         <small>Download disini : <a
                                                 href="{{ route('cetak.lembar.persetujuan.mahasiswa') }}"

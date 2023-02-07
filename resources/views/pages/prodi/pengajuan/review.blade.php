@@ -42,22 +42,18 @@
                             <table>
                                 <tr>
                                     <td><b class="mr-3">Nim</b></td>
-                                    <td>:</td>
                                     <td>{{ $pengajuan->mahasiswa->nim }}</td>
                                 </tr>
                                 <tr>
                                     <td><b class="mr-3">Nama</b></td>
-                                    <td>:</td>
                                     <td>{{ $pengajuan->mahasiswa->nama }}</td>
                                 </tr>
                                 <tr>
                                     <td><b class="mr-3">Prodi</b></td>
-                                    <td>:</td>
                                     <td>{{ $pengajuan->mahasiswa->prodi }}</td>
                                 </tr>
                                 <tr>
-                                    <td><b class="mr-3">Judul</b></td>
-                                    <td>:</td>
+                                    <td><b class="mr-3">Judul TA</b></td>
                                     <td>
                                         @if ($pengajuan->status == 'diterima')
                                             {{ $pengajuan->judul }}
@@ -167,14 +163,18 @@
                                     <div class="card-body">
                                         {!! nl2br($revisi->catatan) !!}
                                     </div>
+                                    @if ($revisi->lampiran)
                                     <div class="card-footer">
-                                        Lampiran :
-                                        @if ($revisi->lampiran)
-                                            <a href="{{ asset($revisi->lampiran) }}" class="ml-3" target="_blank"><i
-                                                    class="fas fa-paperclip"></i>
-                                                {{ Str::substr($revisi->lampiran, 16) }}</a>
-                                        @endif
+                                        <small>
+                                            Lampiran :
+                                            @if ($revisi->lampiran)
+                                                <a href="{{ asset($revisi->lampiran) }}" class="ml-3"
+                                                    target="_blank"><i class="fas fa-paperclip"></i>
+                                                    {{ Str::substr($revisi->lampiran, 16) }}</a>
+                                            @endif
+                                        </small>
                                     </div>
+                                    @endif
                                 </div>
                             @endforeach
 
