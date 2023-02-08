@@ -19,9 +19,14 @@ class ReviewSeminar extends Model
         'seminar_id',
         'dosen_id',
         'status',
-        'nilai',
+        'nilai_1',
+        'nilai_2',
+        'nilai_3',
+        'nilai_4',
         'tanggal_acc',
         'dosen_status',
+        'lampiran',
+        'keterangan',
     ];
 
     public function revisis(){

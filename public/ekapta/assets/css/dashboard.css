@@ -73,7 +73,7 @@
 }
 .reviews-box{
     overflow-y: scroll;
-    max-height: 350px;
+    max-height: 450px;
     background-color: #eeeeee;
     scrollbar-color: #6969dd #e0e0e0;
     scrollbar-width: thin;

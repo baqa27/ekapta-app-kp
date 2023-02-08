@@ -31,9 +31,20 @@
                         Anda sudah melakukan pendaftaran Seminar TA, silahkan tunggu validasi dari Admin.
                     </div>
                 @elseif($seminar->is_valid == 1)
-                    <div class="mb-3 bg-success rounded p-2">
-                        Selamat Seminar TA anda sudah di Acc, silahkan tunggu review dan penilain dari dosen pembimbing dan penguji.
-                    </div>
+                    @foreach($seminar->reviews()->where('dosen_status', 'penguji')->get() as $review)
+                        @if(!$review->lampiran)
+                            <div class="mb-3 bg-success rounded p-2">
+                                Pendaftaran Seminar TA sudah di ACC oleh Admin, silahkan submit <a
+                                    href="{{ route('seminar.reviews', $seminar->id)  }}"><u><b>Laporan Proposal</b></u></a>
+                            </div>
+                            @break
+                        @else
+                            <div class="mb-3 bg-success rounded p-2">
+                                Silahkan tunggu review dan penilain dari dosen pembimbing dan penguji.
+                            </div>
+                            @break
+                        @endif
+                    @endforeach
                 @elseif($seminar->is_valid == 2)
                     <div class="mb-3 bg-warning rounded p-2">
                         Silahkan revisi pendaftaran Seminar TA anda sesuai instruksi dari admin, kemudian submit ulang!
@@ -80,7 +91,6 @@
                                     <tr>
                                         <th>No</th>
                                         <th>Pendaftaran</th>
-                                        <th>Nilai</th>
                                         <th>Status</th>
                                         <th>Aksi</th>
                                     </tr>
@@ -91,21 +101,15 @@
                                         <tr>
                                             <td>1</td>
                                             <td>
-                                                <a href="">{{ $seminar->pengajuan->judul }}</a>
-                                            </td>
-                                            <td>
-                                                @if ($seminar->is_valid == 1)
-                                                    <a href="" class="btn btn-primary btn-sm"><i
-                                                            class="bi bi-star"></i> Lihat Nilai</a>
-                                                @endif
+                                                <a href="{{ route('seminar.detail', $seminar->id) }}">{{ $seminar->pengajuan->judul }}</a>
                                             </td>
                                             <td>
                                                 @if ($seminar->is_valid == 0)
-                                                    <span class="badge bg-secondary">Review</span>
+                                                    <span class="badge bg-secondary">REVIEW</span>
                                                 @elseif ($seminar->is_valid == 1)
-                                                    <span class="badge bg-success">Diterima</span>
+                                                    <span class="badge bg-success">VALID</span>
                                                 @elseif ($seminar->is_valid == 2)
-                                                    <span class="badge bg-warning">Revisi</span>
+                                                    <span class="badge bg-warning">TIDAK VALID</span>
                                                 @endif
                                             </td>
                                             <td>
@@ -114,9 +118,29 @@
                                                         <i class="bi bi-info-circle mr-1"></i> Detail
                                                     </a>
                                                 @elseif ($seminar->is_valid == 1)
-                                                    <a href="{{ route('seminar.reviews', $seminar->id)  }}" class="btn btn-success btn-sm">
-                                                        <i class="bi bi-star mr-1"></i> Lihat Review
-                                                    </a>
+                                                    @foreach($seminar->reviews()->where('dosen_status', 'penguji')->get() as $review)
+                                                        @if(!$review->lampiran)
+                                                            <a href="{{ route('seminar.reviews', $seminar->id)  }}" class="btn btn-primary btn-sm">
+                                                                <i class="bi bi-upload mr-1"></i> Submit Laporan Proposal
+                                                            </a>
+                                                            @break
+                                                        @else
+                                                            <a href="{{ route('seminar.reviews', $seminar->id)  }}" class="btn btn-info btn-sm">
+                                                                <i class="bi bi-star mr-1"></i> Lihat Review
+                                                            </a>
+                                                            @break
+                                                        @endif
+                                                    @endforeach
+
+                                                    @if(count($reviews_acc) == 3)
+                                                        <a href="{{ route('seminar.edit.proposal', $seminar->id) }}" class="btn btn-primary btn-sm">
+                                                            <i class="bi bi-upload"></i>  Submit Laporan Proposal
+                                                        </a>
+                                                        <a href="{{ route('cetak.berita.acara.ujian.proposal', $seminar->id) }}" class="btn btn-success btn-sm" target="_blank">
+                                                            <i class="bi bi-download"></i>  Berita Acara Ujian Proposal
+                                                        </a>
+                                                    @endif
+
                                                 @elseif ($seminar->is_valid == 2)
                                                     <a href="{{ route('seminar.edit', $seminar->id) }}" class="btn btn-primary btn-sm">
                                                         <i class="bi bi-upload mr-1"></i> Submit
@@ -132,7 +156,6 @@
                                     <tr>
                                         <th>No</th>
                                         <th>Pendaftaran</th>
-                                        <th>Nilai</th>
                                         <th>Status</th>
                                         <th>Aksi</th>
                                     </tr>

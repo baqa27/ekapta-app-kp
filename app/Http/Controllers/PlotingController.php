@@ -63,7 +63,6 @@ class PlotingController extends Controller
            ReviewSeminar::create([
                'seminar_id' => $seminar->id,
                'dosen_id' => $request->dosen_penguji[$i],
-               'status' => ReviewSeminar::REVIEW,
                'dosen_status' => ReviewSeminar::DOSEN_PENGUJI,
            ]);
         }

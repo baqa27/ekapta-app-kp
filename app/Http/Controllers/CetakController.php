@@ -7,6 +7,7 @@ use App\Models\Mahasiswa;
 use App\Models\Pendaftaran;
 use App\Models\Pengajuan;
 use App\Models\Prodi;
+use App\Models\Seminar;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use PDF;
@@ -128,5 +129,27 @@ class CetakController extends Controller
         $pdf->loadView('pages.cetak.suratTugasBimbingan', $data);
         $pdf->setPaper('A4', 'portrait');
         return $pdf->stream('Surat-Tugas-Bimbingan.pdf');
+    }
+
+    public function cetakBeritaAcaraUjianProposal($seminar)
+    {
+        $seminar = Seminar::findOrFail($seminar);
+
+        $prodi = Prodi::where('namaprodi', $seminar->mahasiswa->prodi)->first();
+
+        $dekan = $prodi->fakultas->dekans()->where('status', 'active')->first();
+
+        $data = [
+            'title' => 'Berita Acara Ujian Proposal',
+            'kop_surat' => AppHelper::instance()->convertImage('public/ekapta/assets/img/kop-surat.jpg'),
+            'seminar' => $seminar,
+            'ttd_dekan' => AppHelper::instance()->convertImage('storage/app/public/' . $dekan->image)
+        ];
+
+        $pdf = PDF::setOptions(['isHTML5ParserEnabled' => true, 'isRemoteEnabled' => true]);
+        $pdf->loadView('pages.cetak.berita-acara-ujian-proposal', $data);
+        $pdf->setPaper('A4', 'portrait');
+
+        return $pdf->stream('Berita-Acara-Ujian-Proposal.pdf');
     }
 }

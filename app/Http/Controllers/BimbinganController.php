@@ -63,7 +63,7 @@ class BimbinganController extends Controller
         $bimbingans_is_acc = $mahasiswa->bimbingans()->where('status', Bimbingan::DITERIMA)->get();
 
         $is_seminar = null;
-        if (count($bimbingans_is_acc) - count($bagians_is_seminar) == count($bagians_is_seminar)) {
+        if (count($bimbingans_is_acc) - count($bagians_is_seminar) >= count($bagians_is_seminar)) {
             $is_seminar = true;
         }
 

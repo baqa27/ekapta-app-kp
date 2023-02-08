@@ -15,6 +15,7 @@ use App\Http\Controllers\PengajuanController;
 use App\Http\Controllers\PlotingController;
 use App\Http\Controllers\ProdiController;
 use App\Http\Controllers\SeminarController;
+use App\Http\Controllers\ReviewSeminarController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -104,7 +105,7 @@ Route::post('/bimbingan/cancel/acc', [BimbinganController::class, 'cancelAcc'])-
 Route::post('/bimbingan/cancel/revisi', [BimbinganController::class, 'cancelRevisi'])->name('bimbingan.cancel.revisi')->middleware('isDosen');
 Route::get('/bimbingan/review-prodi/{id}', [BimbinganController::class, 'reviewProdi'])->name('bimbingan.review.prodi')->middleware('isProdi');
 
-// Seminar
+// Seminar Route
 Route::group(['middleware' => 'isMahasiswa'], function(){
     Route::get('seminar-mahasiswa', [SeminarController::class, 'seminarMahasiswa'])->name('seminar.mahasiswa');
     Route::get('seminar/create', [SeminarController::class, 'create'])->name('seminar.create');
@@ -113,7 +114,11 @@ Route::group(['middleware' => 'isMahasiswa'], function(){
     Route::get('seminar/reviews/{id}', [SeminarController::class, 'seminarReviews'])->name('seminar.reviews');
     Route::post('seminar/store', [SeminarController::class, 'store'])->name('seminar.store');
     Route::put('seminar/update/{id}', [SeminarController::class, 'update'])->name('seminar.update');
+    Route::get('seminar/edit/proposal/{id}', [SeminarController::class, 'editProposal'])->name('seminar.edit.proposal');
+    Route::put('seminar/update/proposal/{id}', [SeminarController::class, 'updateProposal'])->name('seminar.update.proposal');
     Route::post('seminar/delete', [SeminarController::class, 'delete'])->name('seminar.delete');
+    Route::get('review/seminar/edit/{id}', [ReviewSeminarController::class, 'edit'])->name('review.seminar.edit');
+    Route::post('review/seminar/update', [ReviewSeminarController::class, 'update'])->name('review.seminar.update');
 });
 
 Route::group(['middleware' => 'isAdmin'], function(){
@@ -122,7 +127,17 @@ Route::group(['middleware' => 'isAdmin'], function(){
     Route::post('seminar/acc', [SeminarController::class, 'accSeminar'])->name('seminar.acc');
     Route::post('seminar/revisi', [SeminarController::class, 'revisiSeminar'])->name('seminar.revisi');
     Route::post('seminar/cancel-acc', [SeminarController::class, 'cancelAcc'])->name('seminar.cancel.acc');
-    Route::post('/seminar/revisi/delete', [SeminarController::class, 'deleteRevisi'])->name('seminar.revisi.delete')->middleware('isAdmin');
+    Route::post('/seminar/revisi/delete', [SeminarController::class, 'deleteRevisi'])->name('seminar.revisi.delete');
+});
+
+Route::group(['middleware' => 'isDosen'], function(){
+    Route::get('seminar-dosen', [SeminarController::class,'seminarDosen'])->name('seminar.dosen');
+    Route::get('review/seminar/{id}', [ReviewSeminarController::class, 'reviewDosen'])->name('review.seminar.dosen');
+    Route::post('review/seminar/revisi/store', [ReviewSeminarController::class, 'revisiStore'])->name('review.seminar.revisi.store');
+    Route::post('review/seminar/revisi/delete', [ReviewSeminarController::class, 'revisiDelete'])->name('review.seminar.revisi.delete');
+    Route::post('review/seminar/acc', [ReviewSeminarController::class, 'reviewAcc'])->name('review.seminar.acc');
+    Route::post('review/seminar/nilai', [ReviewSeminarController::class, 'reviewNilai'])->name('review.seminar.nilai');
+    Route::post('review/seminar/cancel/acc', [ReviewSeminarController::class, 'reviewCancelAcc'])->name('review.seminar.cancel.acc');
 });
 
 // Prodi
@@ -162,6 +177,7 @@ Route::get('/cetak/lembar-persetujuan-pembimbing-mahasiswa', [CetakController::c
 Route::get('/cetak/lembar-pernyataan-keaslian', [CetakController::class, 'cetakLembarPernyataanKeaslian'])->name('cetak.lembar.pernyataan.keaslian')->middleware('isMahasiswa');
 Route::get('/cetak/surat-tugas-bimbingan', [CetakController::class, 'cetakSuratTugasBimbinganMahasiswa'])->name('cetak.surat.tugas.bimbingan')->middleware('isMahasiswa');
 Route::get('/cetak/surat-tugas-bimbingan/{pendaftaran}', [CetakController::class, 'cetakSuratTugasBimbingan']);
+Route::get('/cetak/berita-acara-ujian-proposal/{seminar}', [CetakController::class, 'cetakBeritaAcaraUjianProposal'])->name('cetak.berita.acara.ujian.proposal')->middleware('isMahasiswa');
 
 // Logout
 Route::get('/logout/mahasiswa', function (Request $request) {

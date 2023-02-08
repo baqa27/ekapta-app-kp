@@ -85,7 +85,7 @@
 
                             <p class="mt-3"><b>Lampiran : </b> <a href="{{ asset($bimbingan->lampiran) }}" class="ml-3"
                                     target="_blank"><i class="fas fa-paperclip"></i>
-                                    {{ Str::substr($bimbingan->lampiran, 19) }}</a></p>
+                                    {{ Str::substr($bimbingan->lampiran, 40) }}</a></p>
 
                             <hr>
                             <div class="bordered mt-2">
@@ -171,12 +171,7 @@
                             @foreach ($revisis as $revisi)
                                 <div class="card bg-light">
                                     <div class="card-header">
-                                        <span class="mr-5">Direview oleh
-                                            @if ($revisi->dosen->id == Auth::guard('dosen')->user()->id)
-                                                <b>Anda</b>
-                                            @else
-                                                <b>{{ $revisi->dosen->nama . ', ' . $revisi->dosen->gelar }}</b>
-                                            @endif
+                                        <span class="mr-5">Direview oleh <b>Anda</b>
                                         </span>
                                         <div class="float-right">
                                             <div class="d-flex">

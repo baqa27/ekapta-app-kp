@@ -83,10 +83,10 @@
                 </li>
 
                 <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="nav-icon fas fa-th"></i>
+                    <a href="{{ route('seminar.dosen') }}" class="nav-link {{ $active=='seminar' ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-star"></i>
                         <p>
-                            Seminar Proposal TA
+                            Review Seminar TA
                         </p>
                     </a>
                 </li>

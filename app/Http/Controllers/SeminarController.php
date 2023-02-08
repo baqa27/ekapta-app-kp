@@ -39,6 +39,9 @@ class SeminarController extends Controller
         }
 
         $seminar = $mahasiswa->seminar;
+        if(!$seminar){
+            return redirect('seminar/create');
+        }
 
         $data = [
             'title' => 'Seminar TA',
@@ -47,6 +50,7 @@ class SeminarController extends Controller
             'dosen_pendamping' => $dosen_pendamping,
             'seminar' => $seminar,
             'dosens_penguji' => $seminar->reviews()->where('dosen_status', ReviewSeminar::DOSEN_PENGUJI)->get(),
+            'reviews_acc' => $seminar->reviews()->where('dosen_status', ReviewSeminar::DOSEN_PENGUJI)->where('status', ReviewSeminar::DITERIMA)->get(),
         ];
 
         return view('pages.mahasiswa.seminar.seminar', $data);
@@ -68,6 +72,22 @@ class SeminarController extends Controller
         ];
 
         return view('pages.admin.seminar.seminar', $data);
+    }
+
+    public function seminarDosen()
+    {
+        $dosen = Dosen::findOrFail(Auth::guard('dosen')->user()->id);
+
+        $data = [
+            'title' => 'Review Seminar TA',
+            'active' => 'seminar',
+            'sidebar' => 'partials.sidebarDosen',
+            'seminars_review' => $dosen->seminars()->where('status', ReviewSeminar::REVIEW)->get(),
+            'seminars_acc' => $dosen->seminars()->where('status', ReviewSeminar::DITERIMA)->get(),
+            'seminars_revisi' => $dosen->seminars()->where('status', ReviewSeminar::REVISI)->get(),
+        ];
+
+        return view('pages.dosen.seminar.seminar', $data);
     }
 
     public function create()
@@ -328,7 +348,7 @@ class SeminarController extends Controller
 
     public function seminarReviews($id)
     {
-        $seminar = Seminar::with(['reviews'])->first();
+        $seminar = Seminar::findOrFail($id);
 
         $data = [
             'title' => 'Review Seminar TA',
@@ -402,5 +422,33 @@ class SeminarController extends Controller
         ];
 
         return view('pages.mahasiswa.seminar.detail', $data);
+    }
+
+    public function editProposal($id)
+    {
+        $seminar = Seminar::findOrFail($id);
+
+        $data = [
+            'title' => 'Submit Laporan Seminar Proposal',
+            'active' => 'seminar',
+            'seminar' => $seminar,
+        ];
+
+        return view('pages.mahasiswa.seminar.submit-proposal', $data);
+    }
+
+    public function updateProposal(Request $request, $id)
+    {
+        $seminar = Seminar::findOrFail($id);
+
+        $request->validate([
+           'lampiran_proposal' => ['required', 'mimes:pdf, docx'] ,
+        ]);
+
+        $seminar->update([
+            'lampiran_proposal' => AppHelper::instance()->uploadLampiran($request->lampiran_proposal, 'lampiran'),
+        ]);
+
+        return redirect('seminar-mahasiswa')->with('success','Laporan Seminar Proposal Berhasil di submit.');
     }
 }

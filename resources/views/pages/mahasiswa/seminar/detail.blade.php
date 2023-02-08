@@ -35,11 +35,11 @@
                             bg-success @endif
                             ">
                                 @if ($seminar->is_valid == 0)
-                                review
+                                REVIEW
                                 @elseif ($seminar->is_valid == 1)
-                                diterima
+                                VALID
                                 @elseif ($seminar->is_valid == 2)
-                                revisi
+                                TIDAK VALID
                                 @endif
                             </div>
                         </div>

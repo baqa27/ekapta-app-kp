@@ -15,8 +15,13 @@ class CreateReviewSeminarsTable extends Migration
     {
         Schema::create('review_seminars', function (Blueprint $table) {
             $table->id();
-            $table->integer('nilai')->nullable();
+            $table->integer('nilai_1')->nullable();
+            $table->integer('nilai_2')->nullable();
+            $table->integer('nilai_3')->nullable();
+            $table->integer('nilai_4')->nullable();
             $table->string('status')->nullable();
+            $table->string('lampiran')->nullable();
+            $table->string('keterangan')->nullable();
             $table->timestamp('tanggal_acc')->nullable();
             $table->string('dosen_status');
             $table->timestamps();

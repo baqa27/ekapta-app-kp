@@ -21,6 +21,7 @@ class Seminar extends Model
         'lampiran_3',
         'lampiran_4',
         'lampiran_5',
+        'lampiran_proposal',
         'is_valid',
         'tanggal_acc',
     ];

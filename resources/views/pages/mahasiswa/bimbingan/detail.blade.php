@@ -99,7 +99,7 @@
                                                         <span class="text-secondary ml-2"><b>Lampiran : </b></span>
                                                         <a href="{{ asset($revisi->lampiran) }}" target="_blank">
                                                             <i class="fas fa-paperclip ml-1"></i>
-                                                            {{ Str::substr($revisi->lampiran, 16) }}
+                                                            {{ Str::substr($revisi->lampiran, 40) }}
                                                         </a>
                                                     </small>
                                                 </div>

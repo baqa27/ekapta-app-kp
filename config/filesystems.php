@@ -34,7 +34,7 @@ return [
             'driver' => 'local',
             'root' => storage_path('app'),
         ],
-        
+
         'hosting' => [
             'driver' => 'local',
             'root' => public_path().env('FOLDER_HOSTING').'/storage',
@@ -80,6 +80,7 @@ return [
         public_path('lampiran-bimbingan') => storage_path('app/public/lampiran-bimbingan'),
         public_path('lampiran-revisi') => storage_path('app/public/lampiran-revisi'),
         public_path('lampiran-ttd') => storage_path('app/public/lampiran-ttd'),
+        public_path('lampiran') => storage_path('app/public/lampiran'),
     ],
 
 ];
