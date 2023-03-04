@@ -81,7 +81,7 @@
                                                                 <a href="{{ asset($revisi->lampiran) }}"
                                                                    target="_blank">
                                                                     <i class="fas fa-paperclip ml-1"></i>
-                                                                    {{ Str::substr($revisi->lampiran, 40) }}
+                                                                    {{ Str::substr($revisi->lampiran, 16) }}
                                                                 </a>
                                                             </small>
                                                         </div>
@@ -109,7 +109,7 @@
                                                     <b>Lampiran : </b>
                                                     <a href="{{ asset($review->lampiran) }}" class="ml-3 text-primary"
                                                        target="_blank"><i class="fas fa-paperclip mr-2"></i>
-                                                        {{ Str::substr($review->lampiran, 40) }}</a>
+                                                        {{ Str::substr($review->lampiran, 16) }}</a>
                                                 </small>
                                             </div>
                                         </div>

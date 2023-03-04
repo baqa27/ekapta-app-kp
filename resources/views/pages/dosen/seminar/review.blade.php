@@ -87,7 +87,7 @@
                                 <b>Laporan Seminar Proposal : </b>
                                 <a href="{{ asset($review_seminar->lampiran) }}" class="ml-3 text-primary"
                                    target="_blank"><i class="fas fa-paperclip mr-2"></i>
-                                    {{ Str::substr($review_seminar->lampiran, 40) }}</a>
+                                    {{ Str::substr($review_seminar->lampiran, 16) }}</a>
                             </div>
                             @endif
 
@@ -237,7 +237,7 @@
                                             @if ($revisi->lampiran)
                                                 <a href="{{ asset($revisi->lampiran) }}" class="ml-3" target="_blank"><i
                                                         class="fas fa-paperclip"></i>
-                                                    {{ Str::substr($revisi->lampiran, 40) }}</a>
+                                                    {{ Str::substr($revisi->lampiran, 16) }}</a>
                                             @endif
                                         </small>
                                     </div>

@@ -85,7 +85,7 @@
 
                             <p class="mt-3"><b>Lampiran : </b> <a href="{{ asset($bimbingan->lampiran) }}" class="ml-3"
                                     target="_blank"><i class="fas fa-paperclip"></i>
-                                    {{ Str::substr($bimbingan->lampiran, 40) }}</a></p>
+                                    {{ Str::substr($bimbingan->lampiran, 16) }}</a></p>
 
                             <hr>
                             <div class="bordered mt-2">

@@ -104,7 +104,7 @@
                                 </div>
                                 <div class="col-md-8">
                                     <a href="{{ asset($pendaftaran->lampiran_1) }}" target="_blank"><i
-                                            class="fas fa-paperclip"></i> Lampiran</a>
+                                            class="fas fa-paperclip"></i> {{ Str::substr($pendaftaran->lampiran_1, 16) }}</a>
                                 </div>
                             </div>
                             <hr>
@@ -115,7 +115,7 @@
                                 </div>
                                 <div class="col-md-8">
                                     <a href="{{ asset($pendaftaran->lampiran_2) }}" target="_blank"><i
-                                            class="fas fa-paperclip"></i> Lampiran</a>
+                                            class="fas fa-paperclip"></i> {{ Str::substr($pendaftaran->lampiran_2, 16) }}</a>
                                 </div>
                             </div>
                             <hr>
@@ -126,7 +126,7 @@
                                 </div>
                                 <div class="col-md-8">
                                     <a href="{{ asset($pendaftaran->lampiran_3) }}" target="_blank"><i
-                                            class="fas fa-paperclip"></i> Lampiran</a>
+                                            class="fas fa-paperclip"></i> {{ Str::substr($pendaftaran->lampiran_3, 16) }}</a>
                                 </div>
                             </div>
                             <hr>
@@ -137,7 +137,7 @@
                                 </div>
                                 <div class="col-md-8">
                                     <a href="{{ asset($pendaftaran->lampiran_4) }}" target="_blank"><i
-                                            class="fas fa-paperclip"></i> Lampiran</a>
+                                            class="fas fa-paperclip"></i> {{ Str::substr($pendaftaran->lampiran_4, 16) }}</a>
                                 </div>
                             </div>
                             <hr>
@@ -148,7 +148,7 @@
                                 </div>
                                 <div class="col-md-8">
                                     <a href="{{ asset($pendaftaran->lampiran_5) }}" target="_blank"><i
-                                            class="fas fa-paperclip"></i> Lampiran</a>
+                                            class="fas fa-paperclip"></i> {{ Str::substr($pendaftaran->lampiran_4, 16) }}</a>
                                 </div>
                             </div>
                             <hr>
