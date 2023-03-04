@@ -167,7 +167,7 @@
             <p>Nilai </p>
         </td>
         <td>
-            @if($is_complete)
+            @if($is_complete != null)
                 <p>: {{ $nilai }}</p>
             @endif
         </td>
@@ -179,7 +179,7 @@
         </td>
         <td>
             <p>:
-                @if($is_complete)
+                @if($is_complete != null)
                     @if($nilai == 'A')
                         Baik Sekali
                     @elseif($nilai == 'B')
