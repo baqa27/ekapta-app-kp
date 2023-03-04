@@ -114,8 +114,8 @@ class PendaftaranController extends Controller
             $validatedData['pengajuan_id'] = $pengajuan->id;
 
             setlocale(LC_TIME, 'id');
-            $tanggal_pembayaran = Carbon::parse($request->tanggal_pembayaran)->formatLocalized('%d %B %Y');
-            $validatedData['tanggal_pembayaran'] = $tanggal_pembayaran;
+            $tanggal_pembayaran = Carbon::parse($request->tanggal_pembayaran);
+            $validatedData['tanggal_pembayaran'] = $tanggal_pembayaran->dayName.', '.$tanggal_pembayaran->day.' '.$tanggal_pembayaran->monthName.' '.$tanggal_pembayaran->year;
 
             Pendaftaran::create($validatedData);
             return redirect('pendaftaran-mahasiswa')->with('success', 'Berhasil melakukan pendaftaran');
