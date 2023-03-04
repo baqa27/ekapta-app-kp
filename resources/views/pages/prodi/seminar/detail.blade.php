@@ -233,14 +233,7 @@
 
                                 </div>
 
-                                @if($review->status == null || $review->status == 'revisi')
-                                    <div class="card-footer">
-                                        <a href="{{ route('review.seminar.edit', $review->id) }}"
-                                           class="btn btn-primary col-md-12">
-                                            <i class="bi bi-upload"></i> Submit Laporan Proposal
-                                        </a>
-                                    </div>
-                                @elseif($review->status == 'review' || $review->status == 'diterima')
+                                @if($review->status == 'review' || $review->status == 'diterima')
                                     <div class="card-footer">
                                         Keterangan :
                                         <div class="bg-secondary rounded p-2">{!! $review->keterangan !!}
