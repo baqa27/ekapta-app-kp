@@ -67,6 +67,8 @@ class BimbinganController extends Controller
             $is_seminar = true;
         }
 
+        $date_expired = Carbon::parse($pendaftaran_acc->tanggal_acc)->addMonthsNoOverflow(12);
+
         return view('pages.mahasiswa.bimbingan.bimbingan', [
             'title' => 'Bimbingan Tugas Akhir',
             'active' => 'bimbingan',
@@ -74,7 +76,7 @@ class BimbinganController extends Controller
             'bimbingans_pendamping' => $mahasiswa->bimbingans()->where('pembimbing', 'pendamping')->get(),
             'dosen_utama' => $dosenUtama,
             'dosen_pendamping' => $dosenPendamping,
-            'date_expired' => Carbon::parse($pendaftaran_acc->tanggal_acc)->addMonthsNoOverflow(12),
+            'date_expired' => $date_expired->day.' '.$date_expired->monthName.' '.$date_expired->year,
             'is_seminar' => $is_seminar,
             'is_expired' => AppHelper::instance()->is_expired_in_one_year($pendaftaran_acc->tanggal_acc),
             'pendaftaran_acc' => $pendaftaran_acc,

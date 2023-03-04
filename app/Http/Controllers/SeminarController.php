@@ -344,8 +344,10 @@ class SeminarController extends Controller
     public function seminarReviewAdmin($id)
     {
         $seminar = Seminar::findOrFail($id);
+        $mahasiswa = $seminar->mahasiswa;
+        $prodi = Prodi::where('namaprodi', $mahasiswa->prodi)->first();
 
-        $dosens = Dosen::all();
+        $dosens = Dosen::where('kodeprodi', $prodi->kode)->get();
 
         $mahasiswa = Mahasiswa::findOrFail(Auth::guard('mahasiswa')->user()->id);
         $dosen_utama = $mahasiswa->dosens()->where('status', 'utama')->first();
