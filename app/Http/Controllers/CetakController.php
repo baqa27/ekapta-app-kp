@@ -172,6 +172,8 @@ class CetakController extends Controller
             $dosens[] = $review->dosen;
         }
 
+        $seminars_acc = $seminar->reviews()->where('status', ReviewSeminar::DITERIMA)->get();
+
         $data = [
             'title' => 'Berita Acara Ujian Proposal',
             'kop_surat' => AppHelper::instance()->convertImage('public/ekapta/assets/img/kop-surat.jpg'),
@@ -183,6 +185,7 @@ class CetakController extends Controller
             'dosen_2' => $dosens[1],
             'dosen_3' => $dosens[2],
             'nilai' => $nilai_huruf,
+            'is_complete' => count($seminars_acc) == 5 ? true : null,
         ];
 
         $pdf = PDF::setOptions(['isHTML5ParserEnabled' => true, 'isRemoteEnabled' => true]);

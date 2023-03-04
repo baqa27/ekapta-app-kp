@@ -167,7 +167,9 @@
             <p>Nilai </p>
         </td>
         <td>
-            <p>: {{ $nilai }}</p>
+            @if($is_complete)
+                <p>: {{ $nilai }}</p>
+            @endif
         </td>
     </tr>
     <tr>
@@ -177,16 +179,18 @@
         </td>
         <td>
             <p>:
-                @if($nilai == 'A')
-                    Baik Sekali
-                @elseif($nilai == 'B')
-                    Baik
-                @elseif($nilai == 'C')
-                    Cukup
-                @elseif($nilai == 'D')
-                    Kurang
-                @elseif($nilai == 'E')
-                    Kurang Sekali
+                @if($is_complete)
+                    @if($nilai == 'A')
+                        Baik Sekali
+                    @elseif($nilai == 'B')
+                        Baik
+                    @elseif($nilai == 'C')
+                        Cukup
+                    @elseif($nilai == 'D')
+                        Kurang
+                    @elseif($nilai == 'E')
+                        Kurang Sekali
+                    @endif
                 @endif
             </p>
         </td>
