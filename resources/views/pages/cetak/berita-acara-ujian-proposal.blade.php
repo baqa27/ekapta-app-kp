@@ -167,9 +167,11 @@
             <p>Nilai </p>
         </td>
         <td>
-            @if($is_complete != null)
-                <p>: {{ $nilai }}</p>
-            @endif
+            <p>:
+                @if($is_complete != null)
+                    {{ $nilai }}
+                @endif
+            </p>
         </td>
     </tr>
     <tr>
