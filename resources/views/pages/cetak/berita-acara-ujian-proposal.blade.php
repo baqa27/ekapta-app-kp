@@ -152,7 +152,13 @@
             <p>Dinyatakan </p>
         </td>
         <td>
-            <p>: {{ $seminar->is_lulus == 1 ? 'LULUS' : 'TIDAK LULUS' }}</p>
+            <p>:
+                @if($seminar->is_lulus == 1)
+                    LULUS
+                @elseif($seminar->is_lulus == 2)
+                    TIDAK LULUS
+                @endif
+            </p>
         </td>
     </tr>
     <tr>
