@@ -24,6 +24,8 @@ class Seminar extends Model
         'lampiran_proposal',
         'is_valid',
         'tanggal_acc',
+        'tanggal_ujian',
+        'is_lulus',
     ];
 
     public function revisis()

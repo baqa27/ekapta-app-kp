@@ -25,53 +25,10 @@
 
             <div class="row">
                 <div class="col-md-12">
-                    <div class="card card-primary card-outline">
-                        <div class="card-header">
-                            <h3 class="card-title">Detail Prodi</h3>
-                        </div>
-                        <div class="card-body">
 
-                            <div class="row">
-                                <div class="col-md-3">
-                                    Nama Prodi
-                                </div>
-                                <div class="col-md-9">
-                                    <span class="mr-3">:</span>
-                                    <b>{{ $prodi->namaprodi }}</b>
-                                </div>
-                            </div>
-                            <hr>
-
-                            <div class="row">
-                                <div class="col-md-3">
-                                    Jenjang
-                                </div>
-                                <div class="col-md-9">
-                                    <span class="mr-3">:</span>
-                                    <b>{{ $prodi->jenjang }}</b>
-                                </div>
-                            </div>
-                            <hr>
-
-                            <div class="row">
-                                <div class="col-md-3">
-                                    Kaprodi
-                                </div>
-                                <div class="col-md-9">
-                                    <span class="mr-3">:</span>
-                                    <b>{{ \App\Helpers\AppHelper::instance()->getDosen($prodi->kodekaprodi) != null
-                                        ? \App\Helpers\AppHelper::instance()->getDosen($prodi->kodekaprodi)->nama .
-                                            ', ' .
-                                            \App\Helpers\AppHelper::instance()->getDosen($prodi->kodekaprodi)->gelar
-                                        : '' }}</b>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
                     <div class="card card-primary card-outline mt-3">
                         <div class="card-header">
-                            <h3 class="card-title">Bagian Bimbingan</h3>
+                            <h3 class="card-title">Bagian Bimbingan Prordi {{ $prodi->namaprodi }}</h3>
                         </div>
                         <div class="card-body">
 
@@ -111,20 +68,21 @@
 
                                         <div class="float-right">
                                             <div class="d-flex">
-                                                {{-- @if (count($bagian->bimbingans) == 0)
-                                                    <div onclick="confirmActive()">
-                                                        <form action="{{ route('bagian.active') }}" method="post">
-                                                            @csrf
-                                                            <input type="hidden" name="id"
-                                                                value="{{ $bagian->id }}">
-                                                            <button class="btn btn-success btn-sm float-right mr-2"
-                                                                type="submit">
-                                                                <i class="fas fa-check-circle"></i>
-                                                                Aktifkan
-                                                            </button>
-                                                        </form>
-                                                    </div>
-                                                @endif --}}
+{{--                                                 @if (count($bagian->bimbingans) == 0)--}}
+{{--                                                    <div onclick="confirmActive()">--}}
+{{--                                                        <form action="{{ route('bagian.active') }}" method="post">--}}
+{{--                                                            @csrf--}}
+{{--                                                            <input type="hidden" name="id"--}}
+{{--                                                                value="{{ $bagian->id }}">--}}
+{{--                                                            <button class="btn btn-success btn-sm float-right mr-2"--}}
+{{--                                                                type="submit">--}}
+{{--                                                                <i class="fas fa-check-circle"></i>--}}
+{{--                                                                Aktifkan--}}
+{{--                                                            </button>--}}
+{{--                                                        </form>--}}
+{{--                                                    </div>--}}
+{{--                                                @endif--}}
+
                                                 <button type="button" class="btn btn-primary btn-sm mr-2"
                                                     data-toggle="modal" data-target="#modal-edit-{{ $bagian->id }}">
                                                     <i class="bi bi-pencil-square"></i>

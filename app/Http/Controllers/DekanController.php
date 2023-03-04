@@ -33,7 +33,7 @@ class DekanController extends Controller
             'sampai' => 'required',
             'image' => 'required|mimes:png,jpg,jpeg|max:300'
         ]);
-        $validatedData['image'] = AppHelper::instance()->uploadLampiran($request->image, 'lampiran-ttd');
+        $validatedData['image'] = AppHelper::instance()->uploadLampiran($request->image, 'images');
         Dekan::create($validatedData);
         return back()->with('success', 'Dekan berhasil ditambahkan');
     }
@@ -52,7 +52,7 @@ class DekanController extends Controller
 
         if ($request->file('image')) {
             AppHelper::instance()->deleteLampiran($dekan->image);
-            $validatedData['image'] = AppHelper::instance()->uploadLampiran($request->image, 'lampiran-ttd');
+            $validatedData['image'] = AppHelper::instance()->uploadLampiran($request->image, 'images');
             $dekan->update([
                 'image' => $validatedData['image'],
             ]);

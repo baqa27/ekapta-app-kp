@@ -7,6 +7,7 @@ use App\Models\Mahasiswa;
 use App\Models\Pendaftaran;
 use App\Models\Pengajuan;
 use App\Models\Prodi;
+use App\Models\ReviewSeminar;
 use App\Models\Seminar;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -135,15 +136,53 @@ class CetakController extends Controller
     {
         $seminar = Seminar::findOrFail($seminar);
 
-        $prodi = Prodi::where('namaprodi', $seminar->mahasiswa->prodi)->first();
+        $reviews_penguji = $seminar->reviews()->where('dosen_status', ReviewSeminar::DOSEN_PENGUJI)->get();
+        $reviews_pembimbing = $seminar->reviews()->where('dosen_status', ReviewSeminar::DOSEN_PEMBIMBING)->get();
 
-        $dekan = $prodi->fakultas->dekans()->where('status', 'active')->first();
+        $nilai_dosen_penguji_1 = AppHelper::instance()->hitung_nilai_seminar($reviews_penguji[0]->nilai_1, $reviews_penguji[0]->nilai_2, $reviews_penguji[0]->nilai_3, $reviews_penguji[0]->nilai_4);
+        $nilai_dosen_penguji_2 = AppHelper::instance()->hitung_nilai_seminar($reviews_penguji[1]->nilai_1, $reviews_penguji[1]->nilai_2, $reviews_penguji[1]->nilai_3, $reviews_penguji[1]->nilai_4);
+        $nilai_dosen_penguji_3 = AppHelper::instance()->hitung_nilai_seminar($reviews_penguji[2]->nilai_1, $reviews_penguji[2]->nilai_2, $reviews_penguji[2]->nilai_3, $reviews_penguji[2]->nilai_4);
+
+        $nilai_dosen_pembimbing_1 = AppHelper::instance()->hitung_nilai_seminar($reviews_pembimbing[0]->nilai_1, $reviews_pembimbing[0]->nilai_2, $reviews_pembimbing[0]->nilai_3, $reviews_pembimbing[0]->nilai_4);
+        $nilai_dosen_pembimbing_2 = AppHelper::instance()->hitung_nilai_seminar($reviews_pembimbing[1]->nilai_1, $reviews_pembimbing[1]->nilai_2, $reviews_pembimbing[1]->nilai_3, $reviews_pembimbing[1]->nilai_4);
+
+        $nilai_dosen_pembimbing = ($nilai_dosen_pembimbing_1 + $nilai_dosen_pembimbing_2) / 2;
+        $nilai_dosen_penguji = ($nilai_dosen_penguji_1 + $nilai_dosen_penguji_2 + $nilai_dosen_penguji_3) / 3;
+
+        $prodi = Prodi::where('namaprodi', $seminar->mahasiswa->prodi)->first();
+        $presentase_nilai = $prodi->presentase_nilai;
+
+        $nilai = ($presentase_nilai->bobot_pembimbing / 100 * $nilai_dosen_pembimbing) + ($presentase_nilai->bobot_penguji / 100 * $nilai_dosen_penguji);
+
+        $nilai_huruf = null;
+        if ($nilai > 85) {
+            $nilai_huruf = 'A';
+        } else if ($nilai > 69) {
+            $nilai_huruf = 'B';
+        } else if ($nilai > 55) {
+            $nilai_huruf = 'C';
+        } else if ($nilai > 45) {
+            $nilai_huruf = 'D';
+        } else if ($nilai > 0) {
+            $nilai_huruf = 'E';
+        }
+
+        $dosens = null;
+        foreach ($seminar->reviews()->where('dosen_status', ReviewSeminar::DOSEN_PENGUJI)->get() as $review) {
+            $dosens[] = $review->dosen;
+        }
 
         $data = [
             'title' => 'Berita Acara Ujian Proposal',
             'kop_surat' => AppHelper::instance()->convertImage('public/ekapta/assets/img/kop-surat.jpg'),
             'seminar' => $seminar,
-            'ttd_dekan' => AppHelper::instance()->convertImage('storage/app/public/' . $dekan->image)
+            'ttd_dosen_1' => AppHelper::instance()->convertImage('storage/app/public/' . $dosens[0]->ttd),
+            'ttd_dosen_2' => AppHelper::instance()->convertImage('storage/app/public/' . $dosens[1]->ttd),
+            'ttd_dosen_3' => AppHelper::instance()->convertImage('storage/app/public/' . $dosens[2]->ttd),
+            'dosen_1' => $dosens[0],
+            'dosen_2' => $dosens[1],
+            'dosen_3' => $dosens[2],
+            'nilai' => $nilai_huruf,
         ];
 
         $pdf = PDF::setOptions(['isHTML5ParserEnabled' => true, 'isRemoteEnabled' => true]);

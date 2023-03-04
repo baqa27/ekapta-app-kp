@@ -91,7 +91,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link {{ $active=='seminar' ? 'active' : '' }}">
+                    <a href="{{ route('seminar.prodi') }}" class="nav-link {{ $active=='seminar' ? 'active' : '' }}">
                         <i class="nav-icon fas fa-th"></i>
                         <p>
                             Seminar TA

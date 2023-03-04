@@ -113,7 +113,7 @@ class BimbinganController extends Controller
                     'bagian_id' => 'required',
                 ]);
                 $bimbingan = new Bimbingan;
-                $bimbingan->lampiran = AppHelper::instance()->uploadLampiran($request->lampiran, 'lampiran-bimbingan');
+                $bimbingan->lampiran = AppHelper::instance()->uploadLampiran($request->lampiran, 'lampirans');
                 $bimbingan->keterangan = $request->keterangan;
                 $bimbingan->bagian_id = $request->bagian_id;
 
@@ -223,7 +223,7 @@ class BimbinganController extends Controller
             ]);
             if ($request->file('lampiran')) {
                 AppHelper::instance()->deleteLampiran($bimbingan->lampiran);
-                $validatedData['lampiran'] = AppHelper::instance()->uploadLampiran($request->lampiran, 'lampiran-bimbingan');
+                $validatedData['lampiran'] = AppHelper::instance()->uploadLampiran($request->lampiran, 'lampirans');
             }
             $validatedData['keterangan'] = $request->keterangan;
             if ($bimbingan->status == null) {
@@ -281,7 +281,7 @@ class BimbinganController extends Controller
         ]);
 
         $revisi->catatan = $request->catatan;
-        $revisi->lampiran = AppHelper::instance()->uploadLampiran($request->lampiran, 'lampiran-revisi');
+        $revisi->lampiran = AppHelper::instance()->uploadLampiran($request->lampiran, 'lampirans');
         $revisi->dosen_id = Auth::guard('dosen')->user()->id;
         $bimbingan->update([
             'status' => 'revisi',

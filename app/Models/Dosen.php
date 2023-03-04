@@ -26,6 +26,7 @@ class Dosen extends Authenticatable
         'hp',
         'kodeprodi',
         'password',
+        'ttd',
     ];
 
     protected $hidden = [

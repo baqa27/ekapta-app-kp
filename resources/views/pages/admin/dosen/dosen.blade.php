@@ -43,6 +43,8 @@
                                         <th>NIDN</th>
                                         <th>Nama Dosen</th>
                                         <th>Prodi</th>
+                                        <th>TTD</th>
+                                        <th>Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -57,6 +59,17 @@
                                             <td>
                                                 {{ \App\Helpers\AppHelper::instance()->getProdi($dosen->kodeprodi) != null ? \App\Helpers\AppHelper::instance()->getProdi($dosen->kodeprodi)->namaprodi : '' }}
                                             </td>
+                                            <th>
+                                                @if($dosen->ttd)
+                                                    <img src="{{ asset($dosen->ttd) }}" height="50"/>
+                                                @endif
+                                            </th>
+                                            <td>
+                                                <a href="{{ route('dosen.edit', $dosen->id) }}"
+                                                   class="btn btn-primary btn-sm shadow">
+                                                    <i class="bi bi-gear mr-1"></i> Setting
+                                                </a>
+                                            </td>
                                         </tr>
                                     @endforeach
 
@@ -67,6 +80,8 @@
                                         <th>NIDN</th>
                                         <th>Nama Dosen</th>
                                         <th>Prodi</th>
+                                        <th>TTD</th>
+                                        <th>Aksi</th>
                                     </tr>
                                 </tfoot>
                             </table>

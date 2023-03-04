@@ -81,11 +81,12 @@ class FakultasController extends Controller
 
         if ($request->file('image')) {
             AppHelper::instance()->deleteLampiran($fakultas->image);
-            $validatedData['image'] = AppHelper::instance()->uploadLampiran($request->image, 'lampiran-ttd');
+            $validatedData['image'] = AppHelper::instance()->uploadLampiran($request->image, 'images');
             $fakultas->update([
                 'image' => $validatedData['image'],
             ]);
         }
+
         return back()->with('success', 'TTD fakultas berhasil disimpan');
     }
 }

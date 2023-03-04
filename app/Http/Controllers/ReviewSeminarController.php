@@ -7,7 +7,6 @@ use App\Models\ReviewSeminar;
 use App\Models\RevisiReviewSeminar;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-use function GuzzleHttp\Promise\all;
 
 class ReviewSeminarController extends Controller
 {
@@ -47,7 +46,7 @@ class ReviewSeminarController extends Controller
             AppHelper::instance()->deleteLampiran($review_seminar->lampiran);
         }
 
-        $validatedData['lampiran'] = AppHelper::instance()->uploadLampiran($request->lampiran,'lampiran');
+        $validatedData['lampiran'] = AppHelper::instance()->uploadLampiran($request->lampiran,'lampirans');
 
         $review_seminar->update($validatedData);
 
@@ -58,12 +57,20 @@ class ReviewSeminarController extends Controller
     {
         $review_seminar = ReviewSeminar::findOrFail($id);
 
+        $is_dosen_penguji_utama = $review_seminar->seminar->reviews()->where('dosen_status', ReviewSeminar::DOSEN_PENGUJI)->first();
+
+        $form_status = false;
+        if ($is_dosen_penguji_utama->id == $review_seminar->id){
+            $form_status = true;
+        }
+
         $data = [
             'title' => 'Review Seminar TA',
             'active' => 'seminar',
             'sidebar' => 'partials.sidebarDosen',
             'review_seminar' => $review_seminar,
             'revisis' => $review_seminar->revisis()->orderBy('created_at','desc')->paginate(5),
+            'form_status' => $form_status ? 1 : 0,
         ];
 
         return view('pages.dosen.seminar.review', $data);
@@ -87,7 +94,7 @@ class ReviewSeminarController extends Controller
         ]);
 
         if ($request->file('lampiran')) {
-            $revisi->lampiran = AppHelper::instance()->uploadLampiran($request->lampiran, 'lampiran-revisi');
+            $revisi->lampiran = AppHelper::instance()->uploadLampiran($request->lampiran, 'lampirans');
         }
 
         if ($review_seminar->status == ReviewSeminar::REVIEW) {
@@ -137,6 +144,12 @@ class ReviewSeminarController extends Controller
     public function reviewNilai(Request $request)
     {
         $review_seminar = ReviewSeminar::findOrFail($request->id);
+
+        if ($request->is_lulus){
+            $review_seminar->seminar->update([
+                'is_lulus' => $request->is_lulus,
+            ]);
+        }
 
         $review_seminar->update([
             'nilai_1' => $request->nilai_1,

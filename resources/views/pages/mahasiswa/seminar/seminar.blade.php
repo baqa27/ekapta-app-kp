@@ -133,9 +133,13 @@
                                                     @endforeach
 
                                                     @if(count($reviews_acc) == 3)
-                                                        <a href="{{ route('seminar.edit.proposal', $seminar->id) }}" class="btn btn-primary btn-sm">
+                                                        <a href="{{ route('seminar.edit.proposal', $seminar->id) }}" class="btn btn-primary btn-sm mr-1">
                                                             <i class="bi bi-upload"></i>  Submit Laporan Proposal
                                                         </a>
+                                                        <a href="{{ route('cetak.berita.acara.ujian.proposal', $seminar->id) }}" class="btn btn-success btn-sm" target="_blank">
+                                                            <i class="bi bi-download"></i>  Berita Acara Ujian Proposal
+                                                        </a>
+                                                    @elseif(count($reviews_acc) != 0)
                                                         <a href="{{ route('cetak.berita.acara.ujian.proposal', $seminar->id) }}" class="btn btn-success btn-sm" target="_blank">
                                                             <i class="bi bi-download"></i>  Berita Acara Ujian Proposal
                                                         </a>

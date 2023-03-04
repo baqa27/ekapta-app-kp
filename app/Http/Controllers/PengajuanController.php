@@ -125,7 +125,7 @@ class PengajuanController extends Controller
                 'lampiran' => ['required', 'mimes:pdf'],
             ]);
             if ($request->file('lampiran')) {
-                $validatedData['lampiran'] = AppHelper::instance()->uploadLampiran($request->lampiran, 'lampiran-pengajuan');
+                $validatedData['lampiran'] = AppHelper::instance()->uploadLampiran($request->lampiran, 'lampirans');
             }
             $validatedData['mahasiswa_id'] = Auth::guard('mahasiswa')->user()->id;
             $validatedData['prodi'] = Auth::guard('mahasiswa')->user()->prodi;
@@ -165,7 +165,7 @@ class PengajuanController extends Controller
 
         if ($request->file('lampiran')) {
             AppHelper::instance()->deleteLampiran($pengajuan->lampiran);
-            $validatedData['lampiran'] = AppHelper::instance()->uploadLampiran($request->lampiran, 'lampiran-pengajuan');
+            $validatedData['lampiran'] = AppHelper::instance()->uploadLampiran($request->lampiran, 'lampirans');
         }
 
         $validatedData['nim'] = Auth::guard('mahasiswa')->user()->nim;
@@ -239,7 +239,7 @@ class PengajuanController extends Controller
                 ]);
 
                 if ($request->file('lampiran')) {
-                    $revisi->lampiran = AppHelper::instance()->uploadLampiran($request->lampiran, 'lampiran-revisi');
+                    $revisi->lampiran = AppHelper::instance()->uploadLampiran($request->lampiran, 'lampirans');
                 }
 
                 $pengajuan->revisis()->save($revisi);
@@ -290,7 +290,7 @@ class PengajuanController extends Controller
                 ]);
 
                 if ($request->file('lampiran')) {
-                    $revisi->lampiran = AppHelper::instance()->uploadLampiran($request->lampiran, 'lampiran-revisi');
+                    $revisi->lampiran = AppHelper::instance()->uploadLampiran($request->lampiran, 'lampirans');
                 }
 
                 $pengajuan->update([

@@ -128,6 +128,7 @@ Route::group(['middleware' => 'isAdmin'], function(){
     Route::post('seminar/revisi', [SeminarController::class, 'revisiSeminar'])->name('seminar.revisi');
     Route::post('seminar/cancel-acc', [SeminarController::class, 'cancelAcc'])->name('seminar.cancel.acc');
     Route::post('/seminar/revisi/delete', [SeminarController::class, 'deleteRevisi'])->name('seminar.revisi.delete');
+    Route::post('/seminar/set/date-exam', [SeminarController::class, 'setDateExamp'])->name('seminar.set.date.exam');
 });
 
 Route::group(['middleware' => 'isDosen'], function(){
@@ -140,10 +141,17 @@ Route::group(['middleware' => 'isDosen'], function(){
     Route::post('review/seminar/cancel/acc', [ReviewSeminarController::class, 'reviewCancelAcc'])->name('review.seminar.cancel.acc');
 });
 
+Route::group(['middleware' => 'isProdi'], function(){
+    Route::get('seminar-prodi', [SeminarController::class, 'seminarProdi'])->name('seminar.prodi');
+    Route::get('seminar/detail-prodi/{id}', [SeminarController::class, 'seminarProdiDetail'])->name('seminar.prodi.detail');
+});
+
 // Prodi
 Route::get('/prodis', [ProdiController::class, 'index'])->name('prodis')->middleware('isAdmin');
 Route::get('/prodi/{id}', [ProdiController::class, 'detail'])->middleware('isAdmin');
 Route::post('/prodi/import', [ProdiController::class, 'import'])->name('prodi.import')->middleware('isAdmin');
+Route::get('/prodi/presentase-nilai/{id}', [ProdiController::class, 'presentaseNilai'])->name('prodi.presentase.nilai');
+Route::post('/prodi/presentase-nilai/store', [ProdiController::class, 'presentaseNilaiStore'])->name('prodi.presentase.nilai.store');
 
 // Mahasiswa
 Route::get('profile', [MahasiswaController::class, 'profile'])->name('profile')->middleware('isMahasiswa');
@@ -155,6 +163,8 @@ Route::post('mahasiswa/detail/import', [MahasiswaController::class, 'importDetai
 //Dosen
 Route::get('/dosens', [DosenController::class, 'index'])->name('dosens')->middleware('isAdmin');
 Route::post('/dosen/import', [DosenController::class, 'import'])->name('dosen.import')->middleware('isAdmin');
+Route::get('dosen/{id}', [DosenController::class, 'edit'])->name('dosen.edit')->middleware('isAdmin');
+Route::put('dosen/{id}', [DosenController::class, 'update'])->name('dosen.update')->middleware('isAdmin');
 
 //Fakultas
 Route::get('/fakultas', [FakultasController::class, 'index'])->name('fakultas')->middleware('isAdmin');

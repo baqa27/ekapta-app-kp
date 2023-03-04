@@ -64,7 +64,11 @@
                                             <td>
                                                 <a href="{{ url('/prodi/' . $prodi->id) }}"
                                                     class="btn btn-primary btn-sm shadow">
-                                                    <i class="fas fa-plus mr-1"></i> Manage Bagian Bimbingan
+                                                    <i class="fas fa-plus mr-1"></i> Bagian Bimbingan
+                                                </a>
+                                                <a href="{{ route('prodi.presentase.nilai' , $prodi->id) }}"
+                                                    class="btn btn-warning btn-sm shadow">
+                                                    <i class="fas fa-star"></i> Presentase Nilai
                                                 </a>
                                             </td>
                                         </tr>

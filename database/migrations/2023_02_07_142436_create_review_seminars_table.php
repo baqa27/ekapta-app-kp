@@ -24,6 +24,7 @@ class CreateReviewSeminarsTable extends Migration
             $table->string('keterangan')->nullable();
             $table->timestamp('tanggal_acc')->nullable();
             $table->string('dosen_status');
+            $table->boolean('is_lulus')->nullable();
             $table->timestamps();
             $table->foreignId('seminar_id')->constrained();
             $table->foreignId('dosen_id')->constrained();

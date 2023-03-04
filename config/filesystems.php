@@ -75,12 +75,13 @@ return [
 
     'links' => [
         // public_path('storage') => storage_path('app/public'),
-        public_path('lampiran-pengajuan') => storage_path('app/public/lampiran-pengajuan'),
-        public_path('lampiran-pendaftaran') => storage_path('app/public/lampiran-pendaftaran'),
-        public_path('lampiran-bimbingan') => storage_path('app/public/lampiran-bimbingan'),
-        public_path('lampiran-revisi') => storage_path('app/public/lampiran-revisi'),
-        public_path('lampiran-ttd') => storage_path('app/public/lampiran-ttd'),
-        public_path('lampiran') => storage_path('app/public/lampiran'),
+        // public_path('lampiran-pengajuan') => storage_path('app/public/lampiran-pengajuan'),
+        // public_path('lampiran-pendaftaran') => storage_path('app/public/lampiran-pendaftaran'),
+        // public_path('lampiran-bimbingan') => storage_path('app/public/lampiran-bimbingan'),
+        // public_path('lampiran-revisi') => storage_path('app/public/lampiran-revisi'),
+        // public_path('lampiran-ttd') => storage_path('app/public/lampiran-ttd'),
+        public_path('lampirans') => storage_path('app/public/lampirans'),
+        public_path('images') => storage_path('app/public/images'),
     ],
 
 ];

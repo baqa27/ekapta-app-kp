@@ -12,6 +12,7 @@ use App\Models\Prodi;
 use App\Models\ReviewSeminar;
 use App\Models\RevisiSeminar;
 use App\Models\Seminar;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
@@ -39,7 +40,7 @@ class SeminarController extends Controller
         }
 
         $seminar = $mahasiswa->seminar;
-        if(!$seminar){
+        if (!$seminar) {
             return redirect('seminar/create');
         }
 
@@ -90,6 +91,28 @@ class SeminarController extends Controller
         return view('pages.dosen.seminar.seminar', $data);
     }
 
+    public function seminarProdi()
+    {
+        $prodi = Auth::guard('prodi')->user();
+        $seminars = Seminar::with(['mahasiswa'])->get();
+
+        $seminars_prodi = [];
+        foreach ($seminars as $seminar){
+            if ($seminar->mahasiswa->prodi == $prodi->namaprodi){
+                $seminars_prodi[] = $seminar;
+            }
+        }
+
+        $data = [
+            'title' => 'Daftar Seminar Mahasiswa',
+            'active' => 'seminar',
+            'sidebar' => 'partials.sidebarProdi',
+            'seminars' => $seminars_prodi,
+        ];
+
+        return view('pages.prodi.seminar.seminar', $data);
+    }
+
     public function create()
     {
         $mahasiswa = Mahasiswa::findOrFail(Auth::guard('mahasiswa')->user()->id);
@@ -137,11 +160,11 @@ class SeminarController extends Controller
             'lampiran_5' => ['required', 'mimes:jpg,png,jpeg,pdf'],
         ]);
 
-        $validatedData['lampiran_1'] = AppHelper::instance()->uploadLampiran($request->file('lampiran_1'), 'lampiran-pendaftaran');
-        $validatedData['lampiran_2'] = AppHelper::instance()->uploadLampiran($request->file('lampiran_2'), 'lampiran-pendaftaran');
-        $validatedData['lampiran_3'] = AppHelper::instance()->uploadLampiran($request->file('lampiran_3'), 'lampiran-pendaftaran');
-        $validatedData['lampiran_4'] = AppHelper::instance()->uploadLampiran($request->file('lampiran_4'), 'lampiran-pendaftaran');
-        $validatedData['lampiran_5'] = AppHelper::instance()->uploadLampiran($request->file('lampiran_5'), 'lampiran-pendaftaran');
+        $validatedData['lampiran_1'] = AppHelper::instance()->uploadLampiran($request->file('lampiran_1'), 'lampirans');
+        $validatedData['lampiran_2'] = AppHelper::instance()->uploadLampiran($request->file('lampiran_2'), 'lampirans');
+        $validatedData['lampiran_3'] = AppHelper::instance()->uploadLampiran($request->file('lampiran_3'), 'lampirans');
+        $validatedData['lampiran_4'] = AppHelper::instance()->uploadLampiran($request->file('lampiran_4'), 'lampirans');
+        $validatedData['lampiran_5'] = AppHelper::instance()->uploadLampiran($request->file('lampiran_5'), 'lampirans');
 
         $validatedData['mahasiswa_id'] = Auth::guard('mahasiswa')->user()->id;
         $validatedData['pengajuan_id'] = $pengajuan->id;
@@ -231,23 +254,23 @@ class SeminarController extends Controller
 
         if ($request->file('lampiran_1')) {
             AppHelper::instance()->deleteLampiran($seminar->lampiran_1);
-            $validatedData['lampiran_1'] = AppHelper::instance()->uploadLampiran($request->lampiran_1, 'lampiran-pendaftaran');
+            $validatedData['lampiran_1'] = AppHelper::instance()->uploadLampiran($request->lampiran_1, 'lampirans');
         }
         if ($request->file('lampiran_2')) {
             AppHelper::instance()->deleteLampiran($seminar->lampiran_2);
-            $validatedData['lampiran_2'] = AppHelper::instance()->uploadLampiran($request->lampiran_2, 'lampiran-pendaftaran');
+            $validatedData['lampiran_2'] = AppHelper::instance()->uploadLampiran($request->lampiran_2, 'lampirans');
         }
         if ($request->file('lampiran_3')) {
             AppHelper::instance()->deleteLampiran($seminar->lampiran_3);
-            $validatedData['lampiran_3'] = AppHelper::instance()->uploadLampiran($request->lampiran_3, 'lampiran-pendaftaran');
+            $validatedData['lampiran_3'] = AppHelper::instance()->uploadLampiran($request->lampiran_3, 'lampirans');
         }
         if ($request->file('lampiran_4')) {
             AppHelper::instance()->deleteLampiran($seminar->lampiran_4);
-            $validatedData['lampiran_4'] = AppHelper::instance()->uploadLampiran($request->lampiran_4, 'lampiran-pendaftaran');
+            $validatedData['lampiran_4'] = AppHelper::instance()->uploadLampiran($request->lampiran_4, 'lampirans');
         }
         if ($request->file('lampiran_5')) {
             AppHelper::instance()->deleteLampiran($seminar->lampiran_5);
-            $validatedData['lampiran_5'] = AppHelper::instance()->uploadLampiran($request->lampiran_5, 'lampiran-pendaftaran');
+            $validatedData['lampiran_5'] = AppHelper::instance()->uploadLampiran($request->lampiran_5, 'lampirans');
         }
 
         $validatedData['is_valid'] = 0;
@@ -268,7 +291,7 @@ class SeminarController extends Controller
     {
         $seminar = Seminar::findOrFail($request->id);
 
-        if ($seminar->is_valid == 1){
+        if ($seminar->is_valid == 1 || count($seminar->reviews) == 5) {
             return back();
         }
 
@@ -303,11 +326,11 @@ class SeminarController extends Controller
     {
         $seminar = Seminar::findOrFail($request->id);
 
-        if (count($seminar->reviews) == 5){
+        if (count($seminar->reviews) == 5) {
             return back();
         }
 
-        foreach ($seminar->reviews as $review){
+        foreach ($seminar->reviews as $review) {
             $review->delete();
         }
 
@@ -376,7 +399,7 @@ class SeminarController extends Controller
             ]
         ]);
         if ($request->file('lampiran')) {
-            $revisi->lampiran = AppHelper::instance()->uploadLampiran($request->lampiran, 'lampiran-revisi');
+            $revisi->lampiran = AppHelper::instance()->uploadLampiran($request->lampiran, 'lampirans');
         }
         if ($seminar->is_valid == Seminar::REVIEW) {
             $seminar->update([
@@ -442,13 +465,59 @@ class SeminarController extends Controller
         $seminar = Seminar::findOrFail($id);
 
         $request->validate([
-           'lampiran_proposal' => ['required', 'mimes:pdf, docx'] ,
+            'lampiran_proposal' => ['required', 'mimes:pdf, docx'],
         ]);
 
         $seminar->update([
-            'lampiran_proposal' => AppHelper::instance()->uploadLampiran($request->lampiran_proposal, 'lampiran'),
+            'lampiran_proposal' => AppHelper::instance()->uploadLampiran($request->lampiran_proposal, 'lampirans'),
         ]);
 
-        return redirect('seminar-mahasiswa')->with('success','Laporan Seminar Proposal Berhasil di submit.');
+        return redirect('seminar-mahasiswa')->with('success', 'Laporan Seminar Proposal Berhasil di submit.');
+    }
+
+    public function setDateExamp(Request $request)
+    {
+        $seminar = Seminar::findOrFail($request->seminar_id);
+        $validatedData = $request->validate([
+            'tanggal_ujian' => 'required',
+        ]);
+        $seminar->update($validatedData);
+        return back();
+    }
+
+    public function seminarProdiDetail($id)
+    {
+        $seminar = Seminar::findOrFail($id);
+
+        $prodi = Prodi::where('namaprodi', $seminar->mahasiswa->prodi)->first();
+        $presentase_nilai = $prodi->presentase_nilai;
+
+        $reviews_penguji = $seminar->reviews()->where('dosen_status', ReviewSeminar::DOSEN_PENGUJI)->get();
+        $reviews_pembimbing = $seminar->reviews()->where('dosen_status', ReviewSeminar::DOSEN_PEMBIMBING)->get();
+
+        $nilai_dosen_penguji_1 = AppHelper::instance()->hitung_nilai_seminar($reviews_penguji[0]->nilai_1, $reviews_penguji[0]->nilai_2, $reviews_penguji[0]->nilai_3, $reviews_penguji[0]->nilai_4);
+        $nilai_dosen_penguji_2 = AppHelper::instance()->hitung_nilai_seminar($reviews_penguji[1]->nilai_1, $reviews_penguji[1]->nilai_2, $reviews_penguji[1]->nilai_3, $reviews_penguji[1]->nilai_4);
+        $nilai_dosen_penguji_3 = AppHelper::instance()->hitung_nilai_seminar($reviews_penguji[2]->nilai_1, $reviews_penguji[2]->nilai_2, $reviews_penguji[2]->nilai_3, $reviews_penguji[2]->nilai_4);
+
+        $nilai_dosen_pembimbing_1 = AppHelper::instance()->hitung_nilai_seminar($reviews_pembimbing[0]->nilai_1, $reviews_pembimbing[0]->nilai_2, $reviews_pembimbing[0]->nilai_3, $reviews_pembimbing[0]->nilai_4);
+        $nilai_dosen_pembimbing_2 = AppHelper::instance()->hitung_nilai_seminar($reviews_pembimbing[1]->nilai_1, $reviews_pembimbing[1]->nilai_2, $reviews_pembimbing[1]->nilai_3, $reviews_pembimbing[1]->nilai_4);
+
+        $nilai_dosen_pembimbing = ($nilai_dosen_pembimbing_1 + $nilai_dosen_pembimbing_2) / 2;
+        $nilai_dosen_penguji = ($nilai_dosen_penguji_1 + $nilai_dosen_penguji_2 + $nilai_dosen_penguji_3) / 3;
+
+        $nilai = ($presentase_nilai->bobot_pembimbing / 100 * $nilai_dosen_pembimbing) + ($presentase_nilai->bobot_penguji / 100 * $nilai_dosen_penguji);
+
+        $data = [
+            'title' => 'Detail Seminar Mahasiswa',
+            'active' => 'seminar',
+            'sidebar' => 'partials.sidebarProdi',
+            'seminar' => $seminar,
+            'revisis' => $seminar->revisis()->paginate(5),
+            'nilai' => $nilai,
+            'nilai_dosen_penguji' => $nilai_dosen_penguji,
+            'nilai_dosen_pembimbing' => $nilai_dosen_pembimbing,
+        ];
+
+        return view('pages.prodi.seminar.detail', $data);
     }
 }

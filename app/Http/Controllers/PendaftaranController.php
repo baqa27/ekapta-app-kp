@@ -104,11 +104,11 @@ class PendaftaranController extends Controller
                 'lampiran_5' => ['required', 'mimes:pdf,png,jpg,jpeg'],
             ]);
 
-            $validatedData['lampiran_1'] = AppHelper::instance()->uploadLampiran($request->file('lampiran_1'), 'lampiran-pendaftaran');
-            $validatedData['lampiran_2'] = AppHelper::instance()->uploadLampiran($request->file('lampiran_2'), 'lampiran-pendaftaran');
-            $validatedData['lampiran_3'] = AppHelper::instance()->uploadLampiran($request->file('lampiran_3'), 'lampiran-pendaftaran');
-            $validatedData['lampiran_4'] = AppHelper::instance()->uploadLampiran($request->file('lampiran_4'), 'lampiran-pendaftaran');
-            $validatedData['lampiran_5'] = AppHelper::instance()->uploadLampiran($request->file('lampiran_5'), 'lampiran-pendaftaran');
+            $validatedData['lampiran_1'] = AppHelper::instance()->uploadLampiran($request->file('lampiran_1'), 'lampirans');
+            $validatedData['lampiran_2'] = AppHelper::instance()->uploadLampiran($request->file('lampiran_2'), 'lampirans');
+            $validatedData['lampiran_3'] = AppHelper::instance()->uploadLampiran($request->file('lampiran_3'), 'lampirans');
+            $validatedData['lampiran_4'] = AppHelper::instance()->uploadLampiran($request->file('lampiran_4'), 'lampirans');
+            $validatedData['lampiran_5'] = AppHelper::instance()->uploadLampiran($request->file('lampiran_5'), 'lampirans');
 
             $validatedData['mahasiswa_id'] = Auth::guard('mahasiswa')->user()->id;
             $validatedData['pengajuan_id'] = $pengajuan->id;
@@ -223,23 +223,23 @@ class PendaftaranController extends Controller
 
         if ($request->file('lampiran_1')) {
             AppHelper::instance()->deleteLampiran($pendaftaran->lampiran_1);
-            $validatedData['lampiran_1'] = AppHelper::instance()->uploadLampiran($request->lampiran_1, 'lampiran-pendaftaran');
+            $validatedData['lampiran_1'] = AppHelper::instance()->uploadLampiran($request->lampiran_1, 'lampirans');
         }
         if ($request->file('lampiran_2')) {
             AppHelper::instance()->deleteLampiran($pendaftaran->lampiran_2);
-            $validatedData['lampiran_2'] = AppHelper::instance()->uploadLampiran($request->lampiran_2, 'lampiran-pendaftaran');
+            $validatedData['lampiran_2'] = AppHelper::instance()->uploadLampiran($request->lampiran_2, 'lampirans');
         }
         if ($request->file('lampiran_3')) {
             AppHelper::instance()->deleteLampiran($pendaftaran->lampiran_3);
-            $validatedData['lampiran_3'] = AppHelper::instance()->uploadLampiran($request->lampiran_3, 'lampiran-pendaftaran');
+            $validatedData['lampiran_3'] = AppHelper::instance()->uploadLampiran($request->lampiran_3, 'lampirans');
         }
         if ($request->file('lampiran_4')) {
             AppHelper::instance()->deleteLampiran($pendaftaran->lampiran_4);
-            $validatedData['lampiran_4'] = AppHelper::instance()->uploadLampiran($request->lampiran_4, 'lampiran-pendaftaran');
+            $validatedData['lampiran_4'] = AppHelper::instance()->uploadLampiran($request->lampiran_4, 'lampirans');
         }
         if ($request->file('lampiran_5')) {
             AppHelper::instance()->deleteLampiran($pendaftaran->lampiran_5);
-            $validatedData['lampiran_5'] = AppHelper::instance()->uploadLampiran($request->lampiran_5, 'lampiran-pendaftaran');
+            $validatedData['lampiran_5'] = AppHelper::instance()->uploadLampiran($request->lampiran_5, 'lampirans');
         }
 
         $validatedData['mahasiswa_id'] = Auth::guard('mahasiswa')->user()->id;
@@ -349,7 +349,7 @@ class PendaftaranController extends Controller
             }), 'mimes:pdf,docx']
         ]);
         if ($request->file('lampiran')) {
-            $revisi->lampiran = AppHelper::instance()->uploadLampiran($request->lampiran, 'lampiran-revisi');
+            $revisi->lampiran = AppHelper::instance()->uploadLampiran($request->lampiran, 'lampirans');
         }
         if ($pendaftaran->status == Pendaftaran::REVIEW) {
             $pendaftaran->update([

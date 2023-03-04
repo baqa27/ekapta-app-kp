@@ -27,7 +27,7 @@
                 @foreach($seminar->reviews as $review)
                     @if($review->dosen_status == 'penguji')
                         <div class="col-md-4">
-                        <div class="card card-primary card-outline">
+                            <div class="card card-primary card-outline">
                                 <div class="ribbon-wrapper ribbon-lg">
                                     <div class="ribbon
                                 @if($review->status == 'diterima')
@@ -52,13 +52,14 @@
                                     </div>
                                 </div>
 
-                            <div class="card-body">
-                                Dosen Penguji : <br>
-                                <b>{{ $review->dosen->nama  }}, {{ $review->dosen->gelar }}</b> <br><br>
+                                <div class="card-body">
+                                    Dosen Penguji : <br>
+                                    <b>{{ $review->dosen->nama  }}, {{ $review->dosen->gelar }}</b> <br><br>
 
-                                {{-- Reviews --}}
-                                Catatan Dosen <span class="badge bg-danger"> {{ count($review->revisis)  }} </span><br><br>
-                                <div class="p-2 rounded reviews-box">
+                                    {{-- Reviews --}}
+                                    Catatan Dosen <span
+                                        class="badge bg-danger"> {{ count($review->revisis)  }} </span><br><br>
+                                    <div class="p-2 rounded reviews-box">
                                         @foreach($review->revisis()->orderBy('created_at', 'desc')->get() as $revisi)
                                             <div class="direct-chat-msg">
                                                 <div class="direct-chat-infos clearfix">
@@ -75,7 +76,8 @@
                                                     @if ($revisi->lampiran)
                                                         <div class="p-1 mt-3 bg-light rounded">
                                                             <small>
-                                                                <span class="text-secondary ml-2"><b>Lampiran : </b></span>
+                                                                <span
+                                                                    class="text-secondary ml-2"><b>Lampiran : </b></span>
                                                                 <a href="{{ asset($revisi->lampiran) }}"
                                                                    target="_blank">
                                                                     <i class="fas fa-paperclip ml-1"></i>
@@ -89,37 +91,38 @@
                                         @endforeach
                                     </div>
 
-                            </div>
+                                </div>
 
-                            @if($review->status == null || $review->status == 'revisi')
-                                <div class="card-footer">
-                                    <a href="{{ route('review.seminar.edit', $review->id) }}" class="btn btn-primary col-md-12">
-                                        <i class="bi bi-upload"></i> Submit Laporan Proposal
-                                    </a>
-                                </div>
-                            @elseif($review->status == 'review' || $review->status == 'diterima')
-                                <div class="card-footer">
-                                    Keterangan :
-                                   <div class="bg-secondary rounded p-2">{!! $review->keterangan !!}
-                                       <div class="bg-light p-1 rounded mt-1">
-                                           <small>
-                                               <b>Lampiran : </b>
-                                               <a href="{{ asset($review->lampiran) }}" class="ml-3 text-primary"
-                                                  target="_blank"><i class="fas fa-paperclip mr-2"></i>
-                                                   {{ Str::substr($review->lampiran, 40) }}</a>
-                                           </small>
-                                       </div>
-                                   </div>
-                                </div>
-                            @endif
+                                @if($review->status == null || $review->status == 'revisi')
+                                    <div class="card-footer">
+                                        <a href="{{ route('review.seminar.edit', $review->id) }}"
+                                           class="btn btn-primary col-md-12">
+                                            <i class="bi bi-upload"></i> Submit Laporan Proposal
+                                        </a>
+                                    </div>
+                                @elseif($review->status == 'review' || $review->status == 'diterima')
+                                    <div class="card-footer">
+                                        Keterangan :
+                                        <div class="bg-secondary rounded p-2">{!! $review->keterangan !!}
+                                            <div class="bg-light p-1 rounded mt-1">
+                                                <small>
+                                                    <b>Lampiran : </b>
+                                                    <a href="{{ asset($review->lampiran) }}" class="ml-3 text-primary"
+                                                       target="_blank"><i class="fas fa-paperclip mr-2"></i>
+                                                        {{ Str::substr($review->lampiran, 40) }}</a>
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
 
                             </div>
 
                         </div>
-                        @endif
-                    @endforeach
-                </div>
+                    @endif
+                @endforeach
             </div>
         </div>
-        <!-- /.content -->
-    @endsection
+    </div>
+    <!-- /.content -->
+@endsection

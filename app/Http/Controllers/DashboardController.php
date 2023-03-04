@@ -21,7 +21,7 @@ class DashboardController extends Controller
 
         $mahasiswa = Auth::guard('mahasiswa')->user();
         $pengajuan_acc = $mahasiswa->pengajuans()->where('status', Pengajuan::DITERIMA)->first();
-        $pendaftaran_acc = $pengajuan_acc->pendaftaran()->where('status', Pendaftaran::DITERIMA)->first();
+        $pendaftaran_acc = $pengajuan_acc ? $pengajuan_acc->pendaftaran()->where('status', Pendaftaran::DITERIMA)->first() : null;
 
         return view('pages.mahasiswa.dashboard.home', [
             'title' => 'Dashboard',

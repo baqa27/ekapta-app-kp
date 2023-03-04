@@ -244,9 +244,13 @@
                                         data-original-title="2005">
                                         <div class="inner-circle"></div>
                                         <p class="h6 mt-3 mb-1">Bimbingan TA</p>
-                                        @if (count(\App\Helpers\AppHelper::instance()->getBimbinganIsAcc(Auth::guard('mahasiswa')->user()->id)) ==
+                                        @if(count($mahasiswa->bimbingans) != 0)
+                                            @if (count(\App\Helpers\AppHelper::instance()->getBimbinganIsAcc(Auth::guard('mahasiswa')->user()->id)) ==
                                             count($bagians))
-                                            <div class="bg-soft-success text-success rounded mt-3">Selesai</div>
+                                                <div class="bg-soft-success text-success rounded mt-3">Selesai</div>
+                                            @else
+                                                <div class="bg-soft-warning text-warning rounded mt-3">Belum Selesai</div>
+                                            @endif
                                         @else
                                             <div class="bg-soft-warning text-warning rounded mt-3">Belum Selesai</div>
                                         @endif

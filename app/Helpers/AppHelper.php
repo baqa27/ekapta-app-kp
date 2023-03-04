@@ -116,6 +116,11 @@ class AppHelper
         return $status;
     }
 
+    public function hitung_nilai_seminar($nilai_1, $nilai_2, $nilai_3, $nilai_4)
+    {
+        return ($nilai_1 + $nilai_2 + $nilai_3 + $nilai_4) / 4;
+    }
+
     public static function instance()
     {
         return new AppHelper();

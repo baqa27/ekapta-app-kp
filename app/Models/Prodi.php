@@ -32,4 +32,9 @@ class Prodi extends Authenticatable
     {
         return $this->belongsTo(Fakultas::class);
     }
+
+    public function presentase_nilai()
+    {
+        return $this->hasOne(PresentaseNilai::class);
+    }
 }

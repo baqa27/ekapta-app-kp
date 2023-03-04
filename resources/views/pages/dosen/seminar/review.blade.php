@@ -124,7 +124,7 @@
                                     <div class="row">
                                         <div class="col-md-3">
                                             <div class="form-group">
-                                                <label for="exampleInputFile">Substansi / Isi Materi : 30%</label>
+                                                <label for="exampleInputFile">Substansi / Isi Materi</label>
                                                 <input type="number" name="nilai_1" class="form-control @error('nilai_1') is-invalid @enderror" value="{{ $review_seminar->nilai_1 }}" required>
                                                 @error('nilai_1')
                                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -133,7 +133,7 @@
                                         </div>
                                         <div class="col-md-3">
                                             <div class="form-group">
-                                                <label for="exampleInputFile">Kompetensi Ilmu  : 25%</label>
+                                                <label for="exampleInputFile">Kompetensi Ilmu </label>
                                                 <input type="number" name="nilai_2" class="form-control @error('nilai_2') is-invalid @enderror" value="{{ $review_seminar->nilai_2 }}" required>
                                                 @error('nilai_2')
                                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -142,7 +142,7 @@
                                         </div>
                                         <div class="col-md-3">
                                             <div class="form-group">
-                                                <label for="exampleInputFile">Metodologi dan Redaksi TA : 20%</label>
+                                                <label for="exampleInputFile">Metodologi dan Redaksi TA</label>
                                                 <input type="number" name="nilai_3" class="form-control @error('nilai_3') is-invalid @enderror" value="{{ $review_seminar->nilai_3 }}" required>
                                                 @error('nilai_3')
                                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -151,13 +151,30 @@
                                         </div>
                                         <div class="col-md-3">
                                             <div class="form-group">
-                                                <label for="exampleInputFile">Presentasi : 25%</label>
+                                                <label for="exampleInputFile">Presentasi</label>
                                                 <input type="number" name="nilai_4" class="form-control @error('nilai_4') is-invalid @enderror" value="{{ $review_seminar->nilai_4 }}" required>
                                                 @error('nilai_4')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                                 @enderror
                                             </div>
                                         </div>
+
+                                        @if($form_status == 1)
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="exampleInputFile">Status</label>
+                                                    <select class="form-control" name="is_lulus" required>
+                                                        <option value="">-- pilih --</option>
+                                                        <option value="1" {{ $review_seminar->seminar->is_lulus == 1 ? 'selected' :'' }}>Lulus</option>
+                                                        <option value="2" {{ $review_seminar->seminar->is_lulus == 2 ? 'selected' :'' }}>Tidak Lulus</option>
+                                                    </select>
+                                                    @error('status')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                        @endif
+
                                     </div>
                                     <button type="submit" class="btn btn-primary mt-3">Submit Nilai</button>
                                 </form>
