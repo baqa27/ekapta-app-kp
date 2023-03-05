@@ -92,7 +92,7 @@
                                     <div class="col-md-7">
                                         <b><a href="{{ asset($seminar->lampiran_proposal) }}" target="_blank"><i
                                                     class="fas fa-download"></i>
-                                                {{ Str::substr($seminar->lampiran_proposal, 16) }}</a>
+                                                {{ Str::substr($seminar->lampiran_proposal, 40) }}</a>
                                         </b>
                                     </div>
                                 </div>
@@ -148,7 +148,7 @@
                                             @if ($revisi->lampiran)
                                                 <a href="{{ asset($revisi->lampiran) }}" class="ml-3" target="_blank"><i
                                                         class="fas fa-paperclip"></i>
-                                                    {{ Str::substr($revisi->lampiran, 16) }}</a>
+                                                    {{ Str::substr($revisi->lampiran, 40) }}</a>
                                             @endif
                                         </div>
                                     @endif
@@ -221,7 +221,7 @@
                                                                 <a href="{{ asset($revisi->lampiran) }}"
                                                                    target="_blank">
                                                                     <i class="fas fa-paperclip ml-1"></i>
-                                                                    {{ Str::substr($revisi->lampiran, 16) }}
+                                                                    {{ Str::substr($revisi->lampiran, 40) }}
                                                                 </a>
                                                             </small>
                                                         </div>
@@ -242,7 +242,7 @@
                                                     <b>Lampiran : </b>
                                                     <a href="{{ asset($review->lampiran) }}" class="ml-3 text-primary"
                                                        target="_blank"><i class="fas fa-paperclip mr-2"></i>
-                                                        {{ Str::substr($review->lampiran, 16) }}</a>
+                                                        {{ Str::substr($review->lampiran, 40) }}</a>
                                                 </small>
                                             </div>
                                         </div>
@@ -260,7 +260,7 @@
                 <div class="card-header">
                     Nilai Seminar TA
                 </div>
-                <div class="card-body">
+                <div class="card-body table-responsive">
                     <table class="table table-bordered">
                         <thead>
                         <tr>

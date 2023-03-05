@@ -83,7 +83,7 @@
                             <hr>
                             <p class="mt-3"><b>Lampiran : </b> <a href="{{ asset($pengajuan->lampiran) }}" class="ml-3"
                                     target="_blank"><i class="fas fa-paperclip"></i>
-                                    {{ Str::substr($pengajuan->lampiran, 16) }}</a></p>
+                                    {{ Str::substr($pengajuan->lampiran, 40) }}</a></p>
                         </div>
                         <div class="card-footer">
                             <div class="d-flex">
@@ -170,7 +170,7 @@
                                             @if ($revisi->lampiran)
                                                 <a href="{{ asset($revisi->lampiran) }}" class="ml-3"
                                                     target="_blank"><i class="fas fa-paperclip"></i>
-                                                    {{ Str::substr($revisi->lampiran, 16) }}</a>
+                                                    {{ Str::substr($revisi->lampiran, 40) }}</a>
                                             @endif
                                         </small>
                                     </div>

@@ -52,7 +52,7 @@
                             @endif
                             <hr>
                             <p class="mt-3"><b>Lampiran : </b> <a href="{{ asset($pengajuan->lampiran) }}" class="ml-3"
-                                    target="_blank"><i class="fas fa-paperclip"></i> {{ Str::substr($pengajuan->lampiran, 16) }}</a></p>
+                                    target="_blank"><i class="fas fa-paperclip"></i> {{ Str::substr($pengajuan->lampiran, 40) }}</a></p>
                         </div>
 
                     </div>
@@ -95,7 +95,7 @@
                                                         <span class="text-secondary ml-2"><b>Lampiran : </b></span>
                                                         <a href="{{ asset($revisi->lampiran) }}" target="_blank">
                                                             <i class="fas fa-paperclip ml-1"></i>
-                                                            {{ Str::substr($revisi->lampiran, 16) }}
+                                                            {{ Str::substr($revisi->lampiran, 40) }}
                                                         </a>
                                                     </small>
                                                 </div>
