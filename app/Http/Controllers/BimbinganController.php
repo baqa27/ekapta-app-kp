@@ -109,7 +109,7 @@ class BimbinganController extends Controller
             if ($bimbinganIfExists->isEmpty()) {
                 $mahasiswa = Mahasiswa::findOrFail(Auth::guard('mahasiswa')->user()->id);
                 $request->validate([
-                    'lampiran' => ['required', 'mimes:pdf'],
+                    'lampiran' => ['required', 'mimes:pdf', 'max:5000'],
                     'bagian_id' => 'required',
                 ]);
                 $bimbingan = new Bimbingan;
@@ -214,12 +214,7 @@ class BimbinganController extends Controller
                 return redirect('bimbingan-mahasiswa')->with('warning', 'Bimbingan tidak bisa diedit');
             }
             $validatedData = $request->validate([
-                'lampiran' => [Rule::requiredIf(function () {
-                    if (empty($this->request->lampiran)) {
-                        return false;
-                    }
-                    return true;
-                }), 'mimes:pdf,docx']
+                'lampiran' => ['required', 'mimes:pdf', 'max:5000'],
             ]);
             if ($request->file('lampiran')) {
                 AppHelper::instance()->deleteLampiran($bimbingan->lampiran);
@@ -277,7 +272,7 @@ class BimbinganController extends Controller
                     return false;
                 }
                 return true;
-            }), 'mimes:pdf,docx']
+            }), 'mimes:pdf,docx', 'max:5000']
         ]);
 
         $revisi->catatan = $request->catatan;

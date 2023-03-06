@@ -153,11 +153,11 @@ class SeminarController extends Controller
         }
 
         $validatedData = $request->validate([
-            'lampiran_1' => ['required', 'mimes:jpg,png,jpeg,pdf'],
-            'lampiran_2' => ['required', 'mimes:jpg,png,jpeg,pdf'],
-            'lampiran_3' => ['required', 'mimes:jpg,png,jpeg,pdf'],
-            'lampiran_4' => ['required', 'mimes:jpg,png,jpeg,pdf'],
-            'lampiran_5' => ['required', 'mimes:jpg,png,jpeg,pdf'],
+            'lampiran_1' => ['required', 'mimes:jpg,png,jpeg,pdf', 'max:5000'],
+            'lampiran_2' => ['required', 'mimes:jpg,png,jpeg,pdf', 'max:5000'],
+            'lampiran_3' => ['required', 'mimes:jpg,png,jpeg,pdf', 'max:5000'],
+            'lampiran_4' => ['required', 'mimes:jpg,png,jpeg,pdf', 'max:5000'],
+            'lampiran_5' => ['required', 'mimes:jpg,png,jpeg,pdf', 'max:5000'],
         ]);
 
         $validatedData['lampiran_1'] = AppHelper::instance()->uploadLampiran($request->file('lampiran_1'), 'lampirans');
@@ -212,7 +212,7 @@ class SeminarController extends Controller
                     }
                     return true;
                 }),
-                'mimes:pdf,png,jpg,jpeg'
+                'mimes:pdf,png,jpg,jpeg', 'max:5000'
             ],
             'lampiran_2' => [
                 Rule::requiredIf(function () {
@@ -221,7 +221,7 @@ class SeminarController extends Controller
                     }
                     return true;
                 }),
-                'mimes:pdf,png,jpg,jpeg'
+                'mimes:pdf,png,jpg,jpeg', 'max:5000'
             ],
             'lampiran_3' => [
                 Rule::requiredIf(function () {
@@ -230,7 +230,7 @@ class SeminarController extends Controller
                     }
                     return true;
                 }),
-                'mimes:pdf,png,jpg,jpeg'
+                'mimes:pdf,png,jpg,jpeg', 'max:5000'
             ],
             'lampiran_4' => [
                 Rule::requiredIf(function () {
@@ -239,7 +239,7 @@ class SeminarController extends Controller
                     }
                     return true;
                 }),
-                'mimes:pdf,png,jpg,jpeg'
+                'mimes:pdf,png,jpg,jpeg', 'max:5000'
             ],
             'lampiran_5' => [
                 Rule::requiredIf(function () {
@@ -248,7 +248,7 @@ class SeminarController extends Controller
                     }
                     return true;
                 }),
-                'mimes:pdf,png,jpg,jpeg'
+                'mimes:pdf,png,jpg,jpeg', 'max:5000'
             ],
         ]);
 
@@ -397,7 +397,7 @@ class SeminarController extends Controller
                     }
                     return true;
                 }),
-                'mimes:pdf,docx'
+                'mimes:pdf,docx', 'max:5000'
             ]
         ]);
         if ($request->file('lampiran')) {
@@ -467,7 +467,7 @@ class SeminarController extends Controller
         $seminar = Seminar::findOrFail($id);
 
         $request->validate([
-            'lampiran_proposal' => ['required', 'mimes:pdf, docx'],
+            'lampiran_proposal' => ['required', 'mimes:pdf, docx', 'max:5000'],
         ]);
 
         $seminar->update([
