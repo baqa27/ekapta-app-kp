@@ -87,7 +87,7 @@
                             @if($ujian->lampiran_proposal)
                                 <div class="row">
                                     <div class="col-md-5">
-                                        Proposal Seminar TA
+                                        Proposal Ujian TA
                                     </div>
                                     <div class="col-md-7">
                                         <b><a href="{{ asset($ujian->lampiran_proposal) }}" target="_blank"><i
