@@ -124,10 +124,8 @@ class DashboardController extends Controller
         $pendaftaran_acc = $pengajuan_acc ? $pengajuan_acc->pendaftaran()->where('status', Pendaftaran::DITERIMA)->first() : null;
 
         $bimbingans_acc = $mahasiswa->bimbingans()->where('status', Bimbingan::DITERIMA)->get();
-        $seminars_acc = $mahasiswa->seminar->reviews()->where('status', ReviewSeminar::DITERIMA)->get();
-        $ujians_acc = $mahasiswa->ujian->reviews()->where('status', ReviewUjian::DITERIMA)->get();
-        $bagians_is_seminar = $prodi->bagians()->where('is_seminar', 1)->get();
-        $bagians_is_ujian = $prodi->bagians()->where('is_pendadaran', 1)->get();
+        $seminars_acc = $mahasiswa->seminar ? $mahasiswa->seminar->reviews()->where('status', ReviewSeminar::DITERIMA)->get() : null;
+        $ujians_acc = $mahasiswa->ujian ?$mahasiswa->ujian->reviews()->where('status', ReviewUjian::DITERIMA)->get() : null;
 
         $is_bimbingan_completed = false;
         if (count($bimbingans_acc ) - count($prodi->bagians) == count($prodi->bagians)){
@@ -135,13 +133,17 @@ class DashboardController extends Controller
         }
 
         $is_seminar_completed = false;
-        if (count($seminars_acc) == 5){
-            $is_seminar_completed = true;
+        if ($mahasiswa->seminar){
+            if (count($seminars_acc) == 5){
+                $is_seminar_completed = true;
+            }
         }
 
         $is_ujian_completed = false;
-        if (count($ujians_acc) == 5){
-            $is_ujian_completed = true;
+        if ($mahasiswa->ujian){
+            if (count($ujians_acc) == 5){
+                $is_ujian_completed = true;
+            }
         }
 
         return view('pages.mahasiswa.dashboard.home-ta', [
@@ -150,9 +152,9 @@ class DashboardController extends Controller
             'mahasiswa' => $mahasiswa,
             'pengajuan_acc' => $pengajuan_acc,
             'pendaftaran_acc' => $pendaftaran_acc,
-            'is_bimbingan_completed' => $is_bimbingan_completed,
-            'is_seminar_completed' => $is_seminar_completed,
-            'is_ujian_completed' => $is_ujian_completed,
+            'is_bimbingan_completed' => count($mahasiswa->bimbingans) != 0 ? $is_bimbingan_completed : false,
+            'is_seminar_completed' => $mahasiswa->seminar ? $is_seminar_completed : false,
+            'is_ujian_completed' => $mahasiswa->ujian ? $is_ujian_completed : false,
         ]);
     }
 
