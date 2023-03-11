@@ -1,48 +1,54 @@
 <nav class="main-header navbar navbar-expand-md navbar-light navbar-white sticky-top">
     <div class="container">
-        <a href="#" class="navbar-brand">
+        <a href="{{ route('dashboard.mahasiswa') }}" class="navbar-brand">
             <img src="{{ asset('ekapta') }}/adminLTE/dist/img/AdminLTELogo.png" alt="AdminLTE Logo"
-                class="brand-image img-circle elevation-3" style="opacity: .8">
+                 class="brand-image img-circle elevation-3" style="opacity: .8">
             <span class="brand-text font-weight-light">
-                {{-- {{ Auth::guard('mahasiswa')->user()->nama }} --}}
-                {{ config('app.name') }}
+                <b>{{ config('app.name') }}</b>
             </span>
         </a>
 
         <button class="navbar-toggler order-1" type="button" data-toggle="collapse" data-target="#navbarCollapse"
-            aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
 
         <div class="collapse navbar-collapse order-3" id="navbarCollapse">
             <!-- Left navbar links -->
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a href="{{ route('dashboard.mahasiswa') }}"
-                        class="nav-link {{ $active == 'dashboard' ? 'active' : '' }}">Dashboard</a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('pengajuan.mahasiswa') }}"
-                        class="nav-link {{ $active == 'pengajuan' ? 'active' : '' }}">Pengajuan
-                        TA</a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('pendaftaran.mahasiswa') }}"
-                        class="nav-link {{ $active == 'pendaftaran' ? 'active' : '' }}">Pendaftaran TA</a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('bimbingan.mahasiswa') }}"
-                        class="nav-link {{ $active == 'bimbingan' ? 'active' : '' }}">Bimbingan</a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('seminar.mahasiswa') }}" class="nav-link {{ $active == 'seminar' ? 'active' : '' }}">Seminar
-                        Proposal</a>
-                </li>
-                <li class="nav-item">
-                    <a href="" class="nav-link {{ $active == 'ujian' ? 'active' : '' }}">Ujian
-                        Pendadaran</a>
-                </li>
-            </ul>
+
+            @if($active == 'dashboard' || $active == 'pengajuan' || $active == 'pendaftaran' || $active == 'bimbingan' || $active == 'seminar' || $active == 'ujian')
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a href="{{ route('dashboard.mahasiswa.ta') }}"
+                           class="nav-link {{ $active == 'dashboard' ? 'active' : '' }}">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('pengajuan.mahasiswa') }}"
+                           class="nav-link {{ $active == 'pengajuan' ? 'active' : '' }}">Pengajuan
+                            TA</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('pendaftaran.mahasiswa') }}"
+                           class="nav-link {{ $active == 'pendaftaran' ? 'active' : '' }}">Pendaftaran TA</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('bimbingan.mahasiswa') }}"
+                           class="nav-link {{ $active == 'bimbingan' ? 'active' : '' }}">Bimbingan</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('seminar.mahasiswa') }}"
+                           class="nav-link {{ $active == 'seminar' ? 'active' : '' }}">Seminar
+                            Proposal</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('ujian.mahasiswa') }}"
+                           class="nav-link {{ $active == 'ujian' ? 'active' : '' }}">Ujian
+                            Pendadaran</a>
+                    </li>
+                </ul>
+            @endif
+
+
         </div>
 
         <!-- Right navbar links -->

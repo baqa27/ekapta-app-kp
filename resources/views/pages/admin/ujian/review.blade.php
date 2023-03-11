@@ -10,7 +10,7 @@
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="#">Semiar TA</a></li>
+                        <li class="breadcrumb-item"><a href="#">Ujian TA</a></li>
                         <li class="breadcrumb-item active">{{ $title }}</li>
                     </ol>
                 </div><!-- /.col -->
@@ -28,17 +28,17 @@
                         <div class="ribbon-wrapper ribbon-lg">
                             <div
                                 class="ribbon
-                            @if ($seminar->is_valid == 0) bg-secondary
-                            @elseif ($seminar->is_valid == 2)
+                            @if ($ujian->is_valid == 0) bg-secondary
+                            @elseif ($ujian->is_valid == 2)
                             bg-warning
-                            @elseif ($seminar->is_valid == 1)
+                            @elseif ($ujian->is_valid == 1)
                             bg-success @endif
                             ">
-                                @if ($seminar->is_valid == 0)
+                                @if ($ujian->is_valid == 0)
                                     review
-                                @elseif ($seminar->is_valid == 1)
+                                @elseif ($ujian->is_valid == 1)
                                     diterima
-                                @elseif ($seminar->is_valid == 2)
+                                @elseif ($ujian->is_valid == 2)
                                     revisi
                                 @endif
                             </div>
@@ -49,7 +49,7 @@
                                     NIM
                                 </div>
                                 <div class="col-md-7">
-                                    <b>{{ $seminar->mahasiswa->nim }}</b>
+                                    <b>{{ $ujian->mahasiswa->nim }}</b>
                                 </div>
                             </div>
                             <hr>
@@ -59,7 +59,7 @@
                                     Nama Lengkap
                                 </div>
                                 <div class="col-md-7">
-                                    <b>{{  $seminar->mahasiswa->nama }}</b>
+                                    <b>{{  $ujian->mahasiswa->nama }}</b>
                                 </div>
                             </div>
                             <hr>
@@ -69,7 +69,7 @@
                                     Prodi
                                 </div>
                                 <div class="col-md-7">
-                                    <b>{{  $seminar->mahasiswa->prodi }}</b>
+                                    <b>{{  $ujian->mahasiswa->prodi }}</b>
                                 </div>
                             </div>
                             <hr>
@@ -99,7 +99,7 @@
                                     Judul Tugas Akhir
                                 </div>
                                 <div class="col-md-7">
-                                    <b>{{ $seminar->pengajuan->judul }}</b>
+                                    <b>{{ $ujian->pengajuan->judul }}</b>
                                 </div>
                             </div>
                             <hr>
@@ -109,9 +109,9 @@
                                     Bukti Lunas Pembayaran SPP Sampai Semester Terakhir
                                 </div>
                                 <div class="col-md-7">
-                                    <a href="{{ asset($seminar->lampiran_1) }}" target="_blank"><i
+                                    <a href="{{ asset($ujian->lampiran_1) }}" target="_blank"><i
                                             class="fas fa-paperclip"></i>
-                                        {{ Str::substr($seminar->lampiran_1, 40) }}</a>
+                                        {{ Str::substr($ujian->lampiran_1, 40) }}</a>
                                 </div>
                             </div>
                             <hr>
@@ -121,73 +121,109 @@
                                     Bukti Lunas Pembayaran Tugas Akhir (TA)
                                 </div>
                                 <div class="col-md-7">
-                                    <a href="{{ asset($seminar->lampiran_2) }}" target="_blank"><i
+                                    <a href="{{ asset($ujian->lampiran_2) }}" target="_blank"><i
                                             class="fas fa-paperclip"></i>
-                                        {{ Str::substr($seminar->lampiran_2, 40) }}</a>
+                                        {{ Str::substr($ujian->lampiran_2, 40) }}</a>
                                 </div>
                             </div>
                             <hr>
 
-{{--                            <div class="row">--}}
-{{--                                <div class="col-md-5">--}}
-{{--                                    Berkas File Tugas Akhir Lengkap--}}
-{{--                                </div>--}}
-{{--                                <div class="col-md-7">--}}
-{{--                                    <a href="{{ asset($seminar->lampiran_3) }}" target="_blank"><i--}}
-{{--                                            class="fas fa-paperclip"></i>--}}
-{{--                                        {{ Str::substr($seminar->lampiran_3, 40) }}</a>--}}
-{{--                                </div>--}}
-{{--                            </div>--}}
-{{--                            <hr>--}}
+                            <div class="row">
+                                <div class="col-md-5">
+                                    Scan Ijazah Terakhir Yang Asli
+                                </div>
+                                <div class="col-md-7">
+                                    <a href="{{ asset($ujian->lampiran_3) }}" target="_blank"><i
+                                            class="fas fa-paperclip"></i>
+                                        {{ Str::substr($ujian->lampiran_3, 40) }}</a>
+                                </div>
+                            </div>
+                            <hr>
 
-{{--                            <div class="row">--}}
-{{--                                <div class="col-md-5">--}}
-{{--                                    Scan Lembar Bimbingan TA Yang Telah di Acc--}}
-{{--                                </div>--}}
-{{--                                <div class="col-md-7">--}}
-{{--                                    <a href="{{ asset($seminar->lampiran_4) }}" target="_blank"><i--}}
-{{--                                            class="fas fa-paperclip"></i>--}}
-{{--                                        {{ Str::substr($seminar->lampiran_4, 40) }}</a>--}}
-{{--                                </div>--}}
-{{--                            </div>--}}
-{{--                            <hr>--}}
+                            <div class="row">
+                                <div class="col-md-5">
+                                    Scan KTP / Kartu Keluarga Terbaru
+                                </div>
+                                <div class="col-md-7">
+                                    <a href="{{ asset($ujian->lampiran_4) }}" target="_blank"><i
+                                            class="fas fa-paperclip"></i>
+                                        {{ Str::substr($ujian->lampiran_4, 40) }}</a>
+                                </div>
+                            </div>
+                            <hr>
 
-{{--                            <div class="row">--}}
-{{--                                <div class="col-md-5">--}}
-{{--                                    Scan Lembar Persetujuan--}}
-{{--                                </div>--}}
-{{--                                <div class="col-md-7">--}}
-{{--                                    <a href="{{ asset($seminar->lampiran_5) }}" target="_blank"><i--}}
-{{--                                            class="fas fa-paperclip"></i>--}}
-{{--                                        {{ Str::substr($seminar->lampiran_5, 40) }}</a>--}}
-{{--                                </div>--}}
-{{--                            </div>--}}
-{{--                            <hr>--}}
+                            <div class="row">
+                                <div class="col-md-5">
+                                    Scan Sertifikat TOEFL
+                                </div>
+                                <div class="col-md-7">
+                                    <a href="{{ asset($ujian->lampiran_5) }}" target="_blank"><i
+                                            class="fas fa-paperclip"></i>
+                                        {{ Str::substr($ujian->lampiran_5, 40) }}</a>
+                                </div>
+                            </div>
+                            <hr>
+
+                            <div class="row">
+                                <div class="col-md-5">
+                                    Scan Sertifikat Tahfidz
+                                </div>
+                                <div class="col-md-7">
+                                    <a href="{{ asset($ujian->lampiran_6) }}" target="_blank"><i
+                                            class="fas fa-paperclip"></i>
+                                        {{ Str::substr($ujian->lampiran_6, 40) }}</a>
+                                </div>
+                            </div>
+                            <hr>
+
+                            <div class="row">
+                                <div class="col-md-5">
+                                    Scan Sertifikat Komputer
+                                </div>
+                                <div class="col-md-7">
+                                    <a href="{{ asset($ujian->lampiran_7) }}" target="_blank"><i
+                                            class="fas fa-paperclip"></i>
+                                        {{ Str::substr($ujian->lampiran_7, 40) }}</a>
+                                </div>
+                            </div>
+                            <hr>
+
+                            <div class="row">
+                                <div class="col-md-5">
+                                    Transkrip Nilai Semenara (Tanpa Nilai D/E/Kosong, kecuali nilai Tugas Akhir/Skripsi)
+                                </div>
+                                <div class="col-md-7">
+                                    <a href="{{ asset($ujian->lampiran_8) }}" target="_blank"><i
+                                            class="fas fa-paperclip"></i>
+                                        {{ Str::substr($ujian->lampiran_8, 40) }}</a>
+                                </div>
+                            </div>
+                            <hr>
 
                             <div class="row">
                                 <div class="col-md-5">
                                     Tanggal Pendaftaran
                                 </div>
                                 <div class="col-md-7">
-                                    <b>{{ $seminar->created_at->format('d M Y H:m') }}</b>
+                                    <b>{{ $ujian->created_at->format('d M Y H:m') }}</b>
                                 </div>
                             </div>
 
-                            @if ($seminar->tanggal_acc)
+                            @if ($ujian->tanggal_acc)
                                 <hr>
                                 <div class="row">
                                     <div class="col-md-5">
                                         Tanggal Acc
                                     </div>
                                     <div class="col-md-7">
-                                        <b class="text-success">{{ date('d M Y H:m', strtotime($seminar->tanggal_acc)) }}</b>
+                                        <b class="text-success">{{ date('d M Y H:m', strtotime($ujian->tanggal_acc)) }}</b>
                                     </div>
                                 </div>
                             @endif
 
-                            @if ($seminar->tanggal_ujian)
+                            @if ($ujian->tanggal_ujian)
                                 @php
-                                    $tanggal_ujian = \Carbon\Carbon::parse($seminar->tanggal_ujian)
+                                    $tanggal_ujian = \Carbon\Carbon::parse($ujian->tanggal_ujian)
                                 @endphp
                                 <hr>
                                 <div class="row">
@@ -202,26 +238,26 @@
 
                         </div>
 
-                        @if ($seminar->is_valid == 0)
+                        @if ($ujian->is_valid == 0)
                             <div class="card-footer">
                                 <div class="d-flex">
                                     <button type="button" class="btn btn-primary mr-2" data-toggle="modal"
                                             data-target="#modal-revisi">
-                                        <i class="bi bi-pencil-square mr-2"></i> Revisi seminar
+                                        <i class="bi bi-pencil-square mr-2"></i> Revisi ujian
                                     </button>
 
                                     <div onclick="confirmAcc()">
-                                        <form action="{{ route('seminar.acc') }}" method="post">
+                                        <form action="{{ route('ujian.acc') }}" method="post">
                                             @csrf
-                                            <input type="hidden" name="id" value="{{ $seminar->id }}">
+                                            <input type="hidden" name="id" value="{{ $ujian->id }}">
                                             <button type="submit" class="btn btn-success mr-2">
-                                                <i class="fas fa-check mr-2"></i> Acc seminar
+                                                <i class="fas fa-check mr-2"></i> Acc ujian
                                             </button>
                                         </form>
                                     </div>
                                 </div>
                             </div>
-                        @elseif ($seminar->is_valid == 1)
+                        @elseif ($ujian->is_valid == 1)
                             <div class="card-footer">
                                 <div class="d-flex">
                                     <button type="button" class="btn btn-primary mr-2" data-toggle="modal"
@@ -234,8 +270,8 @@
                                             data-target="#modal-set-date-exam">
                                         <i class="bi bi-calendar mr-2"></i> Tentukan Tanggal Ujian
                                     </button>
-                                    <a href="{{ route('cetak.berita.acara.ujian.proposal', $seminar->id) }}" class="btn btn-success" target="_blank">
-                                        <i class="bi bi-download"></i>  Berita Acara Ujian Proposal
+                                    <a href="{{ route('cetak.berita.acara.ujian.pendadaran', $ujian->id) }}" class="btn btn-success" target="_blank">
+                                        <i class="bi bi-download"></i>  Berita Acara Ujian Pendadaran
                                     </a>
                                 </div>
                             </div>
@@ -247,10 +283,10 @@
                         <div class="card-header">
                             <h3 class="card-title"><strong>Revisi</strong>
                                 <span class="badge bg-danger rounded-pill">
-                                    {{ count($seminar->revisis) }}
+                                    {{ count($ujian->revisis) }}
                                 </span>
                             </h3>
-                            @if ($seminar->is_valid == 2)
+                            @if ($ujian->is_valid == 2)
                                 <div class="float-right">
                                     <button type="button" class="btn btn-primary mr-2" data-toggle="modal"
                                             data-target="#modal-revisi">
@@ -268,7 +304,7 @@
                                         <i class="fas fa-calendar mr-2"></i>
                                         {{ $revisi->created_at->format('d M Y H:m') }}
                                         <div class="float-right" onclick="confirmDelete()">
-                                            <form action="{{ route('seminar.revisi.delete') }}" method="post">
+                                            <form action="{{ route('ujian.revisi.delete') }}" method="post">
                                                 @csrf
                                                 <input type="hidden" name="id" value="{{ $revisi->id }}">
                                                 <button class="btn btn-danger btn-sm float-right" type="submit">
@@ -306,15 +342,15 @@
     <!-- /.content -->
 
     <!-- Modal Revisi -->
-    @if ($seminar->is_valid == 0 || $seminar->is_valid == 2)
+    @if ($ujian->is_valid == 0 || $ujian->is_valid == 2)
         <div class="modal fade" id="modal-revisi">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <form action="{{ route('seminar.revisi') }}" method="post" enctype="multipart/form-data">
+                    <form action="{{ route('ujian.revisi') }}" method="post" enctype="multipart/form-data">
                         @csrf
-                        <input type="hidden" name="id" value="{{ $seminar->id }}">
+                        <input type="hidden" name="id" value="{{ $ujian->id }}">
                         <div class="modal-header">
-                            <h4 class="modal-title">Revisi seminar</h4>
+                            <h4 class="modal-title">Revisi ujian</h4>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -381,10 +417,10 @@
                         @endif
 
                         @if($reviews_check)
-                            <form action="{{ route('ploting.penguji') }}" method="post">
+                            <form action="{{ route('ploting.penguji.ujian') }}" method="post">
                                 @csrf
 
-                                <input type="hidden" value="{{ $seminar->id }}" name="seminar_id"/>
+                                <input type="hidden" value="{{ $ujian->id }}" name="ujian_id"/>
                                 <div class="form-group mt-2">
                                     <label for="" class="form-label">Dosen Peguji 1</label>
                                     <div class="col-md-12">
@@ -445,9 +481,9 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form action="{{ route('seminar.set.date.exam') }}" method="post">
+                        <form action="{{ route('ujian.set.date.exam') }}" method="post">
                             @csrf
-                            <input type="hidden" value="{{ $seminar->id }}" name="seminar_id"/>
+                            <input type="hidden" value="{{ $ujian->id }}" name="ujian_id"/>
                             <div class="form-group mb-3">
                                 <label for="" class="form-label">Tanggal Ujian</label>
                                 <input type="date" class="form-control" name="tanggal_ujian" required>

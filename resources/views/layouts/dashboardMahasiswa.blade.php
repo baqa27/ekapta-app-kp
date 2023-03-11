@@ -57,16 +57,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
         </aside>
         <!-- /.control-sidebar -->
 
-        <!-- Main Footer -->
-        <footer class="main-footer">
-            <!-- To the right -->
-            <div class="float-right d-none d-sm-inline">
-                Template by <a href="https://adminlte.io">AdminLTE</a>
-            </div>
-            <!-- Default to the left -->
-            &copy 2022-All Right Reserverd. Presented by <a href="https://fastikom-unsiq.ac.id/"
-                class="text-decoration-none fw-semibold">Fastikom</a>
-        </footer>
     </div>
     <!-- ./wrapper -->
 

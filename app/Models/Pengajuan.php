@@ -37,6 +37,11 @@ class Pengajuan extends Model
         return $this->hasOne(Seminar::class);
     }
 
+    public function ujian()
+    {
+        return $this->hasOne(Ujian::class);
+    }
+
     public function mahasiswa(){
         return $this->belongsTo(Mahasiswa::class);
     }

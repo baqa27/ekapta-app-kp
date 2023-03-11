@@ -9,6 +9,8 @@ use App\Models\Mahasiswa;
 use App\Models\Pendaftaran;
 use App\Models\Pengajuan;
 use App\Models\Prodi;
+use App\Models\ReviewSeminar;
+use App\Models\ReviewUjian;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -17,20 +19,15 @@ class DashboardController extends Controller
 
     public function dashboardMahasiswa()
     {
-        $prodi = Prodi::where('namaprodi', Auth::guard('mahasiswa')->user()->prodi)->first();
-
         $mahasiswa = Auth::guard('mahasiswa')->user();
-        $pengajuan_acc = $mahasiswa->pengajuans()->where('status', Pengajuan::DITERIMA)->first();
-        $pendaftaran_acc = $pengajuan_acc ? $pengajuan_acc->pendaftaran()->where('status', Pendaftaran::DITERIMA)->first() : null;
 
-        return view('pages.mahasiswa.dashboard.home', [
-            'title' => 'Dashboard',
-            'active' => 'dashboard',
-            'bagians' => $prodi->bagians,
+        $data = [
+            'title' => config('app.name'),
             'mahasiswa' => $mahasiswa,
-            'pengajuan_acc' => $pengajuan_acc,
-            'pendaftaran_acc' => $pendaftaran_acc,
-        ]);
+            'active' => ''
+        ];
+
+        return view('pages.mahasiswa.home', $data);
     }
 
     public function dashboardProdi()
@@ -117,5 +114,55 @@ class DashboardController extends Controller
             'bimbingans_review' => $bimbingans_review,
             'bimbingans_revisi' => $bimbingans_revisi,
         ]);
+    }
+
+    public function dashboardMahasiswaTA()
+    {
+        $mahasiswa = Auth::guard('mahasiswa')->user();
+        $prodi = Prodi::where('namaprodi', Auth::guard('mahasiswa')->user()->prodi)->first();
+        $pengajuan_acc = $mahasiswa->pengajuans()->where('status', Pengajuan::DITERIMA)->first();
+        $pendaftaran_acc = $pengajuan_acc ? $pengajuan_acc->pendaftaran()->where('status', Pendaftaran::DITERIMA)->first() : null;
+
+        $bimbingans_acc = $mahasiswa->bimbingans()->where('status', Bimbingan::DITERIMA)->get();
+        $seminars_acc = $mahasiswa->seminar->reviews()->where('status', ReviewSeminar::DITERIMA)->get();
+        $ujians_acc = $mahasiswa->ujian->reviews()->where('status', ReviewUjian::DITERIMA)->get();
+        $bagians_is_seminar = $prodi->bagians()->where('is_seminar', 1)->get();
+        $bagians_is_ujian = $prodi->bagians()->where('is_pendadaran', 1)->get();
+
+        $is_bimbingan_completed = false;
+        if (count($bimbingans_acc ) - count($prodi->bagians) == count($prodi->bagians)){
+            $is_bimbingan_completed = true;
+        }
+
+        $is_seminar_completed = false;
+        if (count($seminars_acc) == 5){
+            $is_seminar_completed = true;
+        }
+
+        $is_ujian_completed = false;
+        if (count($ujians_acc) == 5){
+            $is_ujian_completed = true;
+        }
+
+        return view('pages.mahasiswa.dashboard.home-ta', [
+            'title' => 'Dashboard',
+            'active' => 'dashboard',
+            'mahasiswa' => $mahasiswa,
+            'pengajuan_acc' => $pengajuan_acc,
+            'pendaftaran_acc' => $pendaftaran_acc,
+            'is_bimbingan_completed' => $is_bimbingan_completed,
+            'is_seminar_completed' => $is_seminar_completed,
+            'is_ujian_completed' => $is_ujian_completed,
+        ]);
+    }
+
+    public function dashboardMahasiswaKP()
+    {
+        return "<center><h1>SEDANG DALAM TAHAP PENGEMBANGAN</h1></center>";
+    }
+
+    public function dashboardMahasiswaJilid()
+    {
+        return "<center><h1>SEDANG DALAM TAHAP PENGEMBANGAN</h1></center>";
     }
 }

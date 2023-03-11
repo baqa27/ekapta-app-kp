@@ -22,6 +22,14 @@
     <!-- Main content -->
     <div class="content">
         <div class="container">
+
+            @if($is_ujian === true)
+                <div class="mb-3 bg-success rounded p-2">
+                    Selamat anda sudah bisa melakukan pendaftaran Ujian Pendadaran TA. Silahkan lakukan pendaftaran
+                    <a href="{{ route('ujian.create') }}"><b><u>Ujian Pendadaran TA!</u></b></a>
+                </div>
+            @endif
+
             @if (!$seminar)
                 <a href="{{ route('seminar.create') }}" class="btn btn-primary mb-4"><i class="fas fa-plus mr-2"></i>
                     Pendaftaran Seminar Proposal</a>
@@ -33,14 +41,14 @@
                 @elseif($seminar->is_valid == 1)
                     @foreach($seminar->reviews()->where('dosen_status', 'penguji')->get() as $review)
                         @if(!$review->lampiran)
-                            <div class="mb-3 bg-success rounded p-2">
+                            <div class="mb-3 bg-primary rounded p-2">
                                 Pendaftaran Seminar TA sudah di ACC oleh Admin, silahkan submit <a
-                                    href="{{ route('seminar.reviews', $seminar->id)  }}"><u><b>Laporan Proposal</b></u></a>
+                                    href="{{ route('seminar.reviews', $seminar->id)  }}"><u><b>Laporan Proposal!</b></u></a>
                             </div>
                             @break
                         @else
-                            <div class="mb-3 bg-success rounded p-2">
-                                Silahkan tunggu review dan penilain dari dosen pembimbing dan penguji.
+                            <div class="mb-3 bg-secondary rounded p-2">
+                                Silahkan tunggu review dan penilaian dari dosen pembimbing dan penguji!
                             </div>
                             @break
                         @endif
@@ -120,8 +128,8 @@
                                                 @elseif ($seminar->is_valid == 1)
                                                     @foreach($seminar->reviews()->where('dosen_status', 'penguji')->get() as $review)
                                                         @if(!$review->lampiran)
-                                                            <a href="{{ route('seminar.reviews', $seminar->id)  }}" class="btn btn-primary btn-sm">
-                                                                <i class="bi bi-upload mr-1"></i> Submit Laporan Proposal
+                                                            <a href="{{ route('seminar.reviews', $seminar->id)  }}" class="btn btn-info btn-sm">
+                                                                <i class="bi bi-star mr-1"></i> Lihat Review
                                                             </a>
                                                             @break
                                                         @else

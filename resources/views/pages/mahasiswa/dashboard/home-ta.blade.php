@@ -244,13 +244,8 @@
                                         data-original-title="2005">
                                         <div class="inner-circle"></div>
                                         <p class="h6 mt-3 mb-1">Bimbingan TA</p>
-                                        @if(count($mahasiswa->bimbingans) != 0)
-                                            @if (count(\App\Helpers\AppHelper::instance()->getBimbinganIsAcc(Auth::guard('mahasiswa')->user()->id)) ==
-                                            count($bagians))
-                                                <div class="bg-soft-success text-success rounded mt-3">Selesai</div>
-                                            @else
-                                                <div class="bg-soft-warning text-warning rounded mt-3">Belum Selesai</div>
-                                            @endif
+                                        @if($is_bimbingan_completed === true)
+                                            <div class="bg-soft-success text-success rounded mt-3">Selesai</div>
                                         @else
                                             <div class="bg-soft-warning text-warning rounded mt-3">Belum Selesai</div>
                                         @endif
@@ -263,7 +258,11 @@
                                         data-original-title="2010">
                                         <div class="inner-circle"></div>
                                         <p class="h6 mt-3 mb-1">Seminar Proposal</p>
-                                        <div class="bg-soft-warning text-warning rounded mt-3">Belum Selesai</div>
+                                        @if($is_seminar_completed === true)
+                                            <div class="bg-soft-success text-success rounded mt-3">Selesai</div>
+                                        @else
+                                            <div class="bg-soft-warning text-warning rounded mt-3">Belum Selesai</div>
+                                        @endif
                                     </div>
                                 </div>
                                 <div class="timeline-step mb-0">
@@ -273,7 +272,11 @@
                                         data-original-title="2020">
                                         <div class="inner-circle"></div>
                                         <p class="h6 mt-3 mb-1">Ujian Pendadaran</p>
-                                        <div class="bg-soft-warning text-warning rounded mt-3">Belum Selesai</div>
+                                        @if($is_ujian_completed === true)
+                                            <div class="bg-soft-success text-success rounded mt-3">Selesai</div>
+                                        @else
+                                            <div class="bg-soft-warning text-warning rounded mt-3">Belum Selesai</div>
+                                        @endif
                                     </div>
                                 </div>
                             </div>

@@ -36,7 +36,7 @@ class ReviewSeminarController extends Controller
         }
 
         $validatedData = $request->validate([
-           'lampiran' => ['required', 'mimes:pdf, docx'],
+           'lampiran' => ['required', 'mimes:pdf, docx', 'max:5000'],
         ]);
 
         $validatedData['keterangan'] = $request->keterangan;
@@ -89,7 +89,7 @@ class ReviewSeminarController extends Controller
                     }
                     return true;
                 }),
-                'mimes:pdf,docx'
+                'mimes:pdf,docx', 'max:5000'
             ]
         ]);
 

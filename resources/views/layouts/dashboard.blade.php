@@ -168,7 +168,7 @@
         </script>
     @enderror
 
-    @if ($active == 'pengajuan' || $active == 'seminar')
+    @if ($active == 'pengajuan' || $active == 'seminar' || $active == 'ujian')
         <script>
             $(document).ready(function() {
                 $('.select-1').select2();

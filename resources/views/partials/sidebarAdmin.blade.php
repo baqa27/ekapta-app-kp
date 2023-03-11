@@ -100,10 +100,10 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link {{ $active == 'ujian' ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-th"></i>
+                    <a href="{{ route('ujian.admin') }}" class="nav-link {{ $active == 'ujian' ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-check"></i>
                         <p>
-                            Ujian Pendadaran TA
+                            Validasi Ujian TA
                         </p>
                     </a>
                 </li>

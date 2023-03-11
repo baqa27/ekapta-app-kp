@@ -99,7 +99,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link {{ $active=='ujian' ? 'active' : '' }}">
+                    <a href="{{ route('ujian.prodi') }}" class="nav-link {{ $active=='ujian' ? 'active' : '' }}">
                         <i class="nav-icon fas fa-th"></i>
                         <p>
                             Ujian Pendadaran TA

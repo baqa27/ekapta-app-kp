@@ -103,64 +103,64 @@
                                     @enderror
                                 </div>
 
-                                <div class="form-group">
-                                    <label for="exampleInputFile">Berkas File Tugas Akhir Lengkap (Dari Halaman
-                                        Judul sampai Daftar Pustaka dan Lampiran)</label>
-                                    <div class="input-group mb-3">
-                                        <div class="custom-file">
-                                            <input type="file" class="custom-file-input" name="lampiran_3"
-                                                @error('lampiran_3') is-invalid @enderror required>
-                                            <label class="custom-file-label" for="exampleInputFile">Choose
-                                                file</label>
-                                        </div>
-                                        <div class="input-group-append">
-                                            <span class="input-group-text">Dokumen</span>
-                                        </div>
-                                    </div>
-                                    @error('lampiran_3')
-                                        <small class="text-danger"
-                                            style="position:relative;top:-15px;left:5px">{{ $message }}</small>
-                                    @enderror
-                                </div>
+{{--                                <div class="form-group">--}}
+{{--                                    <label for="exampleInputFile">Berkas File Tugas Akhir Lengkap (Dari Halaman--}}
+{{--                                        Judul sampai Daftar Pustaka dan Lampiran)</label>--}}
+{{--                                    <div class="input-group mb-3">--}}
+{{--                                        <div class="custom-file">--}}
+{{--                                            <input type="file" class="custom-file-input" name="lampiran_3"--}}
+{{--                                                @error('lampiran_3') is-invalid @enderror required>--}}
+{{--                                            <label class="custom-file-label" for="exampleInputFile">Choose--}}
+{{--                                                file</label>--}}
+{{--                                        </div>--}}
+{{--                                        <div class="input-group-append">--}}
+{{--                                            <span class="input-group-text">Dokumen</span>--}}
+{{--                                        </div>--}}
+{{--                                    </div>--}}
+{{--                                    @error('lampiran_3')--}}
+{{--                                        <small class="text-danger"--}}
+{{--                                            style="position:relative;top:-15px;left:5px">{{ $message }}</small>--}}
+{{--                                    @enderror--}}
+{{--                                </div>--}}
 
-                                <div class="form-group">
-                                    <label for="exampleInputFile">Scan Lembar Bimbingan TA Yang Telah di Acc.
-                                        Oleh Dosen Pembimbing 1 dan 2</label>
-                                    <div class="input-group mb-3">
-                                        <div class="custom-file">
-                                            <input type="file" class="custom-file-input" name="lampiran_4"
-                                                @error('lampiran_4') is-invalid @enderror required>
-                                            <label class="custom-file-label" for="exampleInputFile">Choose
-                                                file</label>
-                                        </div>
-                                        <div class="input-group-append">
-                                            <span class="input-group-text">Dokumen</span>
-                                        </div>
-                                    </div>
-                                    @error('lampiran_4')
-                                        <small class="text-danger"
-                                            style="position:relative;top:-15px;left:5px">{{ $message }}</small>
-                                    @enderror
-                                </div>
+{{--                                <div class="form-group">--}}
+{{--                                    <label for="exampleInputFile">Scan Lembar Bimbingan TA Yang Telah di Acc.--}}
+{{--                                        Oleh Dosen Pembimbing 1 dan 2</label>--}}
+{{--                                    <div class="input-group mb-3">--}}
+{{--                                        <div class="custom-file">--}}
+{{--                                            <input type="file" class="custom-file-input" name="lampiran_4"--}}
+{{--                                                @error('lampiran_4') is-invalid @enderror required>--}}
+{{--                                            <label class="custom-file-label" for="exampleInputFile">Choose--}}
+{{--                                                file</label>--}}
+{{--                                        </div>--}}
+{{--                                        <div class="input-group-append">--}}
+{{--                                            <span class="input-group-text">Dokumen</span>--}}
+{{--                                        </div>--}}
+{{--                                    </div>--}}
+{{--                                    @error('lampiran_4')--}}
+{{--                                        <small class="text-danger"--}}
+{{--                                            style="position:relative;top:-15px;left:5px">{{ $message }}</small>--}}
+{{--                                    @enderror--}}
+{{--                                </div>--}}
 
-                                <div class="form-group">
-                                    <label for="exampleInputFile">Scan Lembar Persetujuan</label>
-                                    <div class="input-group mb-3">
-                                        <div class="custom-file">
-                                            <input type="file" class="custom-file-input" name="lampiran_5"
-                                                @error('lampiran_5') is-invalid @enderror required>
-                                            <label class="custom-file-label" for="exampleInputFile">Choose
-                                                file</label>
-                                        </div>
-                                        <div class="input-group-append">
-                                            <span class="input-group-text">Dokumen</span>
-                                        </div>
-                                    </div>
-                                    @error('lampiran_5')
-                                        <small class="text-danger"
-                                            style="position:relative;top:-15px;left:5px">{{ $message }}</small>
-                                    @enderror
-                                </div>
+{{--                                <div class="form-group">--}}
+{{--                                    <label for="exampleInputFile">Scan Lembar Persetujuan</label>--}}
+{{--                                    <div class="input-group mb-3">--}}
+{{--                                        <div class="custom-file">--}}
+{{--                                            <input type="file" class="custom-file-input" name="lampiran_5"--}}
+{{--                                                @error('lampiran_5') is-invalid @enderror required>--}}
+{{--                                            <label class="custom-file-label" for="exampleInputFile">Choose--}}
+{{--                                                file</label>--}}
+{{--                                        </div>--}}
+{{--                                        <div class="input-group-append">--}}
+{{--                                            <span class="input-group-text">Dokumen</span>--}}
+{{--                                        </div>--}}
+{{--                                    </div>--}}
+{{--                                    @error('lampiran_5')--}}
+{{--                                        <small class="text-danger"--}}
+{{--                                            style="position:relative;top:-15px;left:5px">{{ $message }}</small>--}}
+{{--                                    @enderror--}}
+{{--                                </div>--}}
 
                                 <div class="form-group mt-4">
                                     <button type="submit" class="btn btn-success">Submit</button>

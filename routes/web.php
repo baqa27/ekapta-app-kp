@@ -16,6 +16,8 @@ use App\Http\Controllers\PlotingController;
 use App\Http\Controllers\ProdiController;
 use App\Http\Controllers\SeminarController;
 use App\Http\Controllers\ReviewSeminarController;
+use App\Http\Controllers\UjianController;
+use App\Http\Controllers\ReviewUjianController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -36,6 +38,9 @@ Route::post('/login/admin', [LoginController::class, 'cekAdmin'])->name('cek.adm
 
 // Dashboard
 Route::get('/dashboard-mahasiswa', [DashboardController::class, 'dashboardMahasiswa'])->name('dashboard.mahasiswa')->middleware('isMahasiswa');
+Route::get('/dashboard-mahasiswa-ta', [DashboardController::class, 'dashboardMahasiswaTA'])->name('dashboard.mahasiswa.ta')->middleware('isMahasiswa');
+Route::get('/dashboard-mahasiswa-kp', [DashboardController::class, 'dashboardMahasiswaKP'])->name('dashboard.mahasiswa.kp')->middleware('isMahasiswa');
+Route::get('/dashboard-mahasiswa-jilid', [DashboardController::class, 'dashboardMahasiswaJilid'])->name('dashboard.mahasiswa.jilid')->middleware('isMahasiswa');
 Route::get('/dashboard-prodi', [DashboardController::class, 'dashboardProdi'])->name('dashboard.prodi')->middleware('isProdi');
 Route::get('/dashboard-dosen', [DashboardController::class, 'dashboardDosen'])->name('dashboard.dosen')->middleware('isDosen');
 Route::get('/dashboard-admin', [DashboardController::class, 'dashboardAdmin'])->name('dashboard.admin')->middleware('isAdmin');
@@ -63,6 +68,7 @@ Route::put('pengajuan/edit/judul/{id}', [PengajuanController::class, 'editJudulP
 // Ploting pembimbing
 Route::post('/ploting/pembimbing', [PlotingController::class, 'plotingPembimbing'])->name('ploting.pembimbing')->middleware('isProdi');
 Route::post('/ploting/penguji', [PlotingController::class, 'plotingPenguji'])->name('ploting.penguji')->middleware('isAdmin');
+Route::post('/ploting/penguji/ujian', [PlotingController::class, 'plotingPengujiUjian'])->name('ploting.penguji.ujian')->middleware('isAdmin');
 
 // Pendaftaran TA
 Route::get('/pendaftaran-admin', [PendaftaranController::class, 'pendaftaranAdmin'])->name('pendaftaran.admin')->middleware('isAdmin');
@@ -105,8 +111,8 @@ Route::post('/bimbingan/cancel/acc', [BimbinganController::class, 'cancelAcc'])-
 Route::post('/bimbingan/cancel/revisi', [BimbinganController::class, 'cancelRevisi'])->name('bimbingan.cancel.revisi')->middleware('isDosen');
 Route::get('/bimbingan/review-prodi/{id}', [BimbinganController::class, 'reviewProdi'])->name('bimbingan.review.prodi')->middleware('isProdi');
 
-// Seminar Route
 Route::group(['middleware' => 'isMahasiswa'], function(){
+    // Route for Seminar TA
     Route::get('seminar-mahasiswa', [SeminarController::class, 'seminarMahasiswa'])->name('seminar.mahasiswa');
     Route::get('seminar/create', [SeminarController::class, 'create'])->name('seminar.create');
     Route::get('seminar/edit/{id}', [SeminarController::class, 'edit'])->name('seminar.edit');
@@ -119,19 +125,44 @@ Route::group(['middleware' => 'isMahasiswa'], function(){
     Route::post('seminar/delete', [SeminarController::class, 'delete'])->name('seminar.delete');
     Route::get('review/seminar/edit/{id}', [ReviewSeminarController::class, 'edit'])->name('review.seminar.edit');
     Route::post('review/seminar/update', [ReviewSeminarController::class, 'update'])->name('review.seminar.update');
+
+    // Route for Ujian TA
+    Route::get('ujian-mahasiswa', [UjianController::class, 'ujianMahasiswa'])->name('ujian.mahasiswa');
+    Route::get('ujian/create', [UjianController::class, 'create'])->name('ujian.create');
+    Route::post('ujian/store', [UjianController::class, 'store'])->name('ujian.store');
+    Route::get('ujian/detail/{id}', [UjianController::class, 'detail'])->name('ujian.detail');
+    Route::get('ujian/edit/{id}', [UjianController::class, 'edit'])->name('ujian.edit');
+    Route::put('ujian/update/{id}', [UjianController::class, 'update'])->name('ujian.update');
+    Route::delete('ujian/delete/{id}', [UjianController::class, 'delete'])->name('ujian.delete');
+    Route::get('ujian/reviews/{id}', [UjianController::class, 'ujianReviews'])->name('ujian.reviews');
+    Route::get('review/ujian/edit/{id}', [ReviewUjianController::class, 'edit'])->name('review.ujian.edit');
+    Route::post('review/ujian/update', [ReviewUjianController::class, 'update'])->name('review.ujian.update');
+    Route::get('ujian/edit/proposal/{id}', [UjianController::class, 'editProposal'])->name('ujian.edit.proposal');
+    Route::put('ujian/update/proposal/{id}', [UjianController::class, 'updateProposal'])->name('ujian.update.proposal');
 });
 
 Route::group(['middleware' => 'isAdmin'], function(){
+    // Route for Seminar TA
     Route::get('seminar-admin', [SeminarController::class,'seminarAdmin'])->name('seminar.admin');
     Route::get('seminar/review/{id}', [SeminarController::class,'seminarReviewAdmin'])->name('seminar.review.admin');
     Route::post('seminar/acc', [SeminarController::class, 'accSeminar'])->name('seminar.acc');
     Route::post('seminar/revisi', [SeminarController::class, 'revisiSeminar'])->name('seminar.revisi');
     Route::post('seminar/cancel-acc', [SeminarController::class, 'cancelAcc'])->name('seminar.cancel.acc');
     Route::post('/seminar/revisi/delete', [SeminarController::class, 'deleteRevisi'])->name('seminar.revisi.delete');
-    Route::post('/seminar/set/date-exam', [SeminarController::class, 'setDateExamp'])->name('seminar.set.date.exam');
+    Route::post('/seminar/set/date-exam', [SeminarController::class, 'setDateExam'])->name('seminar.set.date.exam');
+
+    // Route for Ujian TA
+    Route::get('ujian-admin', [UjianController::class,'ujianAdmin'])->name('ujian.admin');
+    Route::get('ujian/review/{id}', [UjianController::class,'ujianReviewAdmin'])->name('ujian.review.admin');
+    Route::post('ujian/acc', [UjianController::class, 'accUjian'])->name('ujian.acc');
+    Route::post('ujian/revisi', [UjianController::class, 'revisiUjian'])->name('ujian.revisi');
+    Route::post('ujian/cancel-acc', [UjianController::class, 'cancelAcc'])->name('ujian.cancel.acc');
+    Route::post('/ujian/revisi/delete', [UjianController::class, 'deleteRevisi'])->name('ujian.revisi.delete');
+    Route::post('/ujian/set/date-exam', [UjianController::class, 'setDateExam'])->name('ujian.set.date.exam');
 });
 
 Route::group(['middleware' => 'isDosen'], function(){
+    // Route for Seminar TA
     Route::get('seminar-dosen', [SeminarController::class,'seminarDosen'])->name('seminar.dosen');
     Route::get('review/seminar/{id}', [ReviewSeminarController::class, 'reviewDosen'])->name('review.seminar.dosen');
     Route::post('review/seminar/revisi/store', [ReviewSeminarController::class, 'revisiStore'])->name('review.seminar.revisi.store');
@@ -139,11 +170,25 @@ Route::group(['middleware' => 'isDosen'], function(){
     Route::post('review/seminar/acc', [ReviewSeminarController::class, 'reviewAcc'])->name('review.seminar.acc');
     Route::post('review/seminar/nilai', [ReviewSeminarController::class, 'reviewNilai'])->name('review.seminar.nilai');
     Route::post('review/seminar/cancel/acc', [ReviewSeminarController::class, 'reviewCancelAcc'])->name('review.seminar.cancel.acc');
+
+    // Route for Seminar TA
+    Route::get('ujian-dosen', [UjianController::class,'ujianDosen'])->name('ujian.dosen');
+    Route::get('review/ujian/{id}', [ReviewUjianController::class, 'reviewDosen'])->name('review.ujian.dosen');
+    Route::post('review/ujian/revisi/store', [ReviewUjianController::class, 'revisiStore'])->name('review.ujian.revisi.store');
+    Route::post('review/ujian/revisi/delete', [ReviewUjianController::class, 'revisiDelete'])->name('review.ujian.revisi.delete');
+    Route::post('review/ujian/acc', [ReviewUjianController::class, 'reviewAcc'])->name('review.ujian.acc');
+    Route::post('review/ujian/nilai', [ReviewUjianController::class, 'reviewNilai'])->name('review.ujian.nilai');
+    Route::post('review/ujian/cancel/acc', [ReviewUjianController::class, 'reviewCancelAcc'])->name('review.ujian.cancel.acc');
 });
 
 Route::group(['middleware' => 'isProdi'], function(){
+    // Route for Seminar TA
     Route::get('seminar-prodi', [SeminarController::class, 'seminarProdi'])->name('seminar.prodi');
     Route::get('seminar/detail-prodi/{id}', [SeminarController::class, 'seminarProdiDetail'])->name('seminar.prodi.detail');
+
+    // Route for Ujian TA
+    Route::get('ujian-prodi', [UjianController::class, 'ujianProdi'])->name('ujian.prodi');
+    Route::get('ujian/detail-prodi/{id}', [UjianController::class, 'ujianProdiDetail'])->name('ujian.prodi.detail');
 });
 
 // Prodi
@@ -183,11 +228,14 @@ Route::post('/dekan/enabled', [DekanController::class, 'enabled'])->name('dekan.
 Route::post('/dekan/disabled', [DekanController::class, 'disabled'])->name('dekan.disabled')->middleware('isAdmin');
 
 // Cetak Dokumen
-Route::get('/cetak/lembar-persetujuan-pembimbing-mahasiswa', [CetakController::class, 'cetakLembarPersetujuanMahasiswa'])->name('cetak.lembar.persetujuan.mahasiswa')->middleware('isMahasiswa');
-Route::get('/cetak/lembar-pernyataan-keaslian', [CetakController::class, 'cetakLembarPernyataanKeaslian'])->name('cetak.lembar.pernyataan.keaslian')->middleware('isMahasiswa');
-Route::get('/cetak/surat-tugas-bimbingan', [CetakController::class, 'cetakSuratTugasBimbinganMahasiswa'])->name('cetak.surat.tugas.bimbingan')->middleware('isMahasiswa');
-Route::get('/cetak/surat-tugas-bimbingan/{pendaftaran}', [CetakController::class, 'cetakSuratTugasBimbingan']);
-Route::get('/cetak/berita-acara-ujian-proposal/{seminar}', [CetakController::class, 'cetakBeritaAcaraUjianProposal'])->name('cetak.berita.acara.ujian.proposal')->middleware('isMahasiswa');
+Route::group(['middleware' => 'isLogin'], function (){
+    Route::get('/cetak/lembar-persetujuan-pembimbing-mahasiswa', [CetakController::class, 'cetakLembarPersetujuanMahasiswa'])->name('cetak.lembar.persetujuan.mahasiswa');
+    Route::get('/cetak/lembar-pernyataan-keaslian', [CetakController::class, 'cetakLembarPernyataanKeaslian'])->name('cetak.lembar.pernyataan.keaslian');
+    Route::get('/cetak/surat-tugas-bimbingan', [CetakController::class, 'cetakSuratTugasBimbinganMahasiswa'])->name('cetak.surat.tugas.bimbingan');
+    Route::get('/cetak/surat-tugas-bimbingan/{pendaftaran}', [CetakController::class, 'cetakSuratTugasBimbingan']);
+    Route::get('/cetak/berita-acara-ujian-proposal/{seminar}', [CetakController::class, 'cetakBeritaAcaraUjianProposal'])->name('cetak.berita.acara.ujian.proposal');
+    Route::get('/cetak/berita-acara-ujian-pendadaran/{ujian}', [CetakController::class, 'cetakBeritaAcaraUjianPendadaran'])->name('cetak.berita.acara.ujian.pendadaran');
+});
 
 // Logout
 Route::get('/logout/mahasiswa', function (Request $request) {

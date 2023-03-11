@@ -71,5 +71,6 @@ class Kernel extends HttpKernel
         'isProdiLogin' => \App\Http\Middleware\IsProdiLogin::class,
         'isAdmin' => \App\Http\Middleware\IsAdmin::class,
         'isAdminLogin' => \App\Http\Middleware\IsAdminLogin::class,
+        'isLogin' => \App\Http\Middleware\IsLogin::class,
     ];
 }

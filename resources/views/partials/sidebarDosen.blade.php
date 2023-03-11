@@ -91,10 +91,10 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="nav-icon fas fa-th"></i>
+                    <a href="{{ route('ujian.dosen') }}" class="nav-link {{ $active=='ujian' ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-star"></i>
                         <p>
-                            Ujian Pendadaran TA
+                            Review Ujian TA
                         </p>
                     </a>
                 </li>

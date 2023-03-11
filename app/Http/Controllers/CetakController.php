@@ -8,7 +8,9 @@ use App\Models\Pendaftaran;
 use App\Models\Pengajuan;
 use App\Models\Prodi;
 use App\Models\ReviewSeminar;
+use App\Models\ReviewUjian;
 use App\Models\Seminar;
+use App\Models\Ujian;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use PDF;
@@ -177,7 +179,7 @@ class CetakController extends Controller
         $data = [
             'title' => 'Berita Acara Ujian Proposal',
             'kop_surat' => AppHelper::instance()->convertImage('public/ekapta/assets/img/kop-surat.jpg'),
-            'seminar' => $seminar,
+            'ujian_or_seminar' => $seminar,
             'ttd_dosen_1' => AppHelper::instance()->convertImage('storage/app/public/' . $dosens[0]->ttd),
             'ttd_dosen_2' => AppHelper::instance()->convertImage('storage/app/public/' . $dosens[1]->ttd),
             'ttd_dosen_3' => AppHelper::instance()->convertImage('storage/app/public/' . $dosens[2]->ttd),
@@ -189,9 +191,71 @@ class CetakController extends Controller
         ];
 
         $pdf = PDF::setOptions(['isHTML5ParserEnabled' => true, 'isRemoteEnabled' => true]);
-        $pdf->loadView('pages.cetak.berita-acara-ujian-proposal', $data);
+        $pdf->loadView('pages.cetak.berita-acara-ujian', $data);
         $pdf->setPaper('A4', 'portrait');
 
         return $pdf->stream('Berita-Acara-Ujian-Proposal.pdf');
+    }
+
+    public function cetakBeritaAcaraUjianPendadaran($ujian)
+    {
+        $ujian = Ujian::findOrFail($ujian);
+        $prodi = Prodi::where('namaprodi', $ujian->mahasiswa->prodi)->first();
+        $presentase_nilai = $prodi->presentase_nilai;
+
+        $reviews_penguji = $ujian->reviews()->where('dosen_status', ReviewUjian::DOSEN_PENGUJI)->get();
+        $reviews_pembimbing = $ujian->reviews()->where('dosen_status', ReviewUjian::DOSEN_PEMBIMBING)->get();
+
+        $nilai_dosen_penguji_1 = AppHelper::instance()->hitung_nilai_ujian($reviews_penguji[0]->nilai_1, $reviews_penguji[0]->nilai_2, $reviews_penguji[0]->nilai_3, $reviews_penguji[0]->nilai_4, $prodi->id);
+        $nilai_dosen_penguji_2 = AppHelper::instance()->hitung_nilai_ujian($reviews_penguji[1]->nilai_1, $reviews_penguji[1]->nilai_2, $reviews_penguji[1]->nilai_3, $reviews_penguji[1]->nilai_4, $prodi->id);
+        $nilai_dosen_penguji_3 = AppHelper::instance()->hitung_nilai_ujian($reviews_penguji[2]->nilai_1, $reviews_penguji[2]->nilai_2, $reviews_penguji[2]->nilai_3, $reviews_penguji[2]->nilai_4, $prodi->id);
+
+        $nilai_dosen_pembimbing_1 = AppHelper::instance()->hitung_nilai_ujian($reviews_pembimbing[0]->nilai_1, $reviews_pembimbing[0]->nilai_2, $reviews_pembimbing[0]->nilai_3, $reviews_pembimbing[0]->nilai_4, $prodi->id);
+        $nilai_dosen_pembimbing_2 = AppHelper::instance()->hitung_nilai_ujian($reviews_pembimbing[1]->nilai_1, $reviews_pembimbing[1]->nilai_2, $reviews_pembimbing[1]->nilai_3, $reviews_pembimbing[1]->nilai_4, $prodi->id);
+
+        $nilai_dosen_pembimbing = ($nilai_dosen_pembimbing_1 + $nilai_dosen_pembimbing_2) / 2;
+        $nilai_dosen_penguji = ($nilai_dosen_penguji_1 + $nilai_dosen_penguji_2 + $nilai_dosen_penguji_3) / 3;
+
+        $nilai = ($presentase_nilai->bobot_pembimbing / 100 * $nilai_dosen_pembimbing) + ($presentase_nilai->bobot_penguji / 100 * $nilai_dosen_penguji);
+
+        $nilai_huruf = null;
+        if ($nilai > 85) {
+            $nilai_huruf = 'A';
+        } else if ($nilai > 69) {
+            $nilai_huruf = 'B';
+        } else if ($nilai > 55) {
+            $nilai_huruf = 'C';
+        } else if ($nilai > 45) {
+            $nilai_huruf = 'D';
+        } else if ($nilai > 0) {
+            $nilai_huruf = 'E';
+        }
+
+        $dosens = null;
+        foreach ($ujian->reviews()->where('dosen_status', ReviewUjian::DOSEN_PENGUJI)->get() as $review) {
+            $dosens[] = $review->dosen;
+        }
+
+        $ujians_acc = $ujian->reviews()->where('status', ReviewUjian::DITERIMA)->get();
+
+        $data = [
+            'title' => 'Berita Acara Ujian Proposal',
+            'kop_surat' => AppHelper::instance()->convertImage('public/ekapta/assets/img/kop-surat.jpg'),
+            'ujian_or_seminar' => $ujian,
+            'ttd_dosen_1' => AppHelper::instance()->convertImage('storage/app/public/' . $dosens[0]->ttd),
+            'ttd_dosen_2' => AppHelper::instance()->convertImage('storage/app/public/' . $dosens[1]->ttd),
+            'ttd_dosen_3' => AppHelper::instance()->convertImage('storage/app/public/' . $dosens[2]->ttd),
+            'dosen_1' => $dosens[0],
+            'dosen_2' => $dosens[1],
+            'dosen_3' => $dosens[2],
+            'nilai' => $nilai_huruf,
+            'is_complete' => count($ujians_acc) == 5 ? true : null,
+        ];
+
+        $pdf = PDF::setOptions(['isHTML5ParserEnabled' => true, 'isRemoteEnabled' => true]);
+        $pdf->loadView('pages.cetak.berita-acara-ujian', $data);
+        $pdf->setPaper('A4', 'portrait');
+
+        return $pdf->stream('Berita-Acara-Ujian-Pendadaran.pdf');
     }
 }

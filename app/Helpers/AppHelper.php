@@ -121,6 +121,16 @@ class AppHelper
         return ($nilai_1 + $nilai_2 + $nilai_3 + $nilai_4) / 4;
     }
 
+    public function hitung_nilai_ujian($nilai_1, $nilai_2, $nilai_3, $nilai_4, $prodi)
+    {
+        $prodi = Prodi::findOrFail($prodi);
+        $presentase_nilai = $prodi->presentase_nilai;
+
+        $nilai = ($nilai_1 * $presentase_nilai->presentase_1 / 100) + ($nilai_2 * $presentase_nilai->presentase_2 / 100) + ($nilai_3 * $presentase_nilai->presentase_3 / 100) + ($nilai_4 * $presentase_nilai->presentase_4 / 100);
+
+        return $nilai;
+    }
+
     public static function instance()
     {
         return new AppHelper();

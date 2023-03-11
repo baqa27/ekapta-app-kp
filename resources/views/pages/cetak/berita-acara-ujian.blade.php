@@ -76,7 +76,7 @@
             <p>Hari</p>
         </td>
         <td>
-            : {{ \Carbon\Carbon::parse($seminar->tanggal_ujian)->dayName }}
+            : {{ \Carbon\Carbon::parse($ujian_or_seminar->tanggal_ujian)->dayName }}
         </td>
     </tr>
     <tr>
@@ -85,7 +85,7 @@
             <p>Tanggal</p>
         </td>
         <td>
-            : {{ \Carbon\Carbon::parse($seminar->tanggal_ujian)->day.' '.\Carbon\Carbon::parse($seminar->tanggal_ujian)->monthName.' '.\Carbon\Carbon::parse($seminar->tanggal_ujian)->year  }}
+            : {{ \Carbon\Carbon::parse($ujian_or_seminar->tanggal_ujian)->day.' '.\Carbon\Carbon::parse($ujian_or_seminar->tanggal_ujian)->monthName.' '.\Carbon\Carbon::parse($ujian_or_seminar->tanggal_ujian)->year  }}
         </td>
     </tr>
 </table>
@@ -113,7 +113,7 @@
             <p><b>NIM</b></p>
         </td>
         <td>
-            <b>: {{ $seminar->mahasiswa->nim }}</b>
+            <b>: {{ $ujian_or_seminar->mahasiswa->nim }}</b>
         </td>
     </tr>
     <tr>
@@ -122,7 +122,7 @@
             <p><b>Nama</b></p>
         </td>
         <td>
-            <b>: {{ $seminar->mahasiswa->nama }}</b>
+            <b>: {{ $ujian_or_seminar->mahasiswa->nama }}</b>
         </td>
     </tr>
     <tr>
@@ -131,7 +131,7 @@
             <p><b>Program Studi</b></p>
         </td>
         <td>
-            <b>: {{ $seminar->mahasiswa->prodi }}</b>
+            <b>: {{ $ujian_or_seminar->mahasiswa->prodi }}</b>
         </td>
     </tr>
     <tr>
@@ -140,7 +140,7 @@
             <p><b>Judul Tugas Akhir</b></p>
         </td>
         <td>
-            <b style="padding-right: 10px;">: {{ $seminar->pengajuan->judul }}</b>
+            <b style="padding-right: 10px;">: {{ $ujian_or_seminar->pengajuan->judul }}</b>
         </td>
     </tr>
     <tr>
@@ -153,9 +153,9 @@
         </td>
         <td>
             <p>:
-                @if($seminar->is_lulus == 1)
+                @if($ujian_or_seminar->is_lulus == 1)
                     LULUS
-                @elseif($seminar->is_lulus == 2)
+                @elseif($ujian_or_seminar->is_lulus == 2)
                     TIDAK LULUS
                 @endif
             </p>

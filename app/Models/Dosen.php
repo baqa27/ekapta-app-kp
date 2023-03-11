@@ -55,4 +55,9 @@ class Dosen extends Authenticatable
     {
         return $this->hasMany(ReviewSeminar::class);
     }
+
+    public function ujians()
+    {
+        return $this->hasMany(ReviewUjian::class);
+    }
 }

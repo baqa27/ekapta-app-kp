@@ -56,8 +56,12 @@ class Mahasiswa extends Authenticatable
         return $this->hasMany(Pendaftaran::class);
     }
 
-
     public function seminar(){
         return $this->hasOne(Seminar::class);
+    }
+
+    public function ujian()
+    {
+        return $this->hasOne(Ujian::class);
     }
 }
