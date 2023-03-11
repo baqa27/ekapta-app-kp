@@ -8,10 +8,8 @@
 <div class="container" id="home">
     <div class="row container-home">
         <div class="col-md-6 container-text-home">
-            <h1 class="fw-bolder">Lorem ipsum dolor sit amet</h1>
-            <p class="text-secondary fs-5 mt-4">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut odio
-                ea nemo eum laboriosam voluptatem harum dignissimos blanditiis, error maiores mollitia id illo et
-                incidunt est pariatur cupiditate repellendus laborum!</p>
+            <h1 class="fw-bolder">{{ config('app.name') }}</h1>
+            <p class="text-secondary fs-5 mt-4">{{ env("APP_SYNONYM") }}</p>
             <a href="#alur" class="btn btn-primary-me mt-5">Mulai Sekarang</a>
         </div>
         <div class="col-md-6 container-image-home">
@@ -29,10 +27,7 @@
             <hr class="col-md-3">
         </div>
         <div class="d-flex justify-content-center">
-            <p class="mt-4 col-md-6 text-secondary fs-5">Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Cum
-                eum, temporibus mollitia eius fuga est! Incidunt labore ipsam neque maiores quisquam ea ipsa earum
-                magnam, cum deleniti nostrum mollitia eaque?</p>
+            <p class="mt-4 col-md-6 text-secondary fs-5">{{ env("APP_DESCRIPTION") }}</p>
         </div>
     </div>
 </div>

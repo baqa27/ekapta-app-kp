@@ -7,7 +7,7 @@
             <div class="row mb-3 mt-5">
                 <div class="col-sm-12">
                     <h1 class="mb-3"> Hai! {{ Auth::guard('mahasiswa')->user()->nama }}</h1>
-                    <p>Selamat Datang di {{ config('app.name') }}, {{ config('app.name') }} adalah Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquam ducimus et explicabo iste placeat quidem quisquam, reprehenderit tenetur voluptate! Aliquam commodi delectus dolorem enim minus nesciunt nobis, quaerat repellendus voluptate.</p>
+                    <p>Selamat Datang di {{ config('app.name') }}, {{ env("APP_DESCRIPTION") }}</p>
                 </div>
             </div><!-- /.row -->
         </div><!-- /.container-fluid -->
