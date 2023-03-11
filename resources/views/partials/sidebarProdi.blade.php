@@ -39,7 +39,7 @@
     <!-- Brand Logo -->
     <a href="index3.html" class="brand-link">
         <img src="{{ asset('ekapta') }}/adminLTE/dist/img/AdminLTELogo.png" alt="AdminLTE Logo"
-            class="brand-image img-circle elevation-3" style="opacity: .8">
+             class="brand-image img-circle elevation-3" style="opacity: .8">
         <span class="brand-text font-weight-light">Panel Prodi</span>
     </a>
 
@@ -50,7 +50,7 @@
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
             <div class="image">
                 <img src="{{ asset('ekapta') }}/adminLTE/dist/img/default-profile.png" class="img-circle elevation-2"
-                    alt="User Image">
+                     alt="User Image">
             </div>
             <div class="info">
                 <a href="#" class="d-block">{{ Auth::guard('prodi')->user()->namaprodi }}</a>
@@ -63,7 +63,7 @@
 
                 <li class="nav-item">
                     <a href="{{ route('dashboard.prodi') }}"
-                        class="nav-link {{ $active=='dashboard' ? 'active' : '' }}">
+                       class="nav-link {{ $active=='dashboard' ? 'active' : '' }}">
                         <i class="nav-icon fas fa-tachometer-alt"></i>
                         <p>
                             Dashboard
@@ -71,40 +71,60 @@
                     </a>
                 </li>
 
-                <li class="nav-item">
-                    <a href="{{ route('pengajuan.prodi') }}"
-                        class="nav-link {{ $active=='pengajuan' ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-check"></i>
+                <li class="nav-item
+                    @if($active == 'pengajuan' || $active == 'bimbingan' || $active == 'seminar' || $active == 'ujian')
+                    menu-open
+                    @endif">
+                    <a href="#" class="nav-link
+                    @if($active == 'pengajuan' || $active == 'bimbingan' || $active == 'seminar' || $active == 'ujian')
+                    active
+                    @endif">
+                        <i class="nav-icon fas fa-th"></i>
                         <p>
-                            Validasi Pengajuan TA
+                            Menu Tugas Akhir
+                            <i class="fas fa-angle-right right"></i>
                         </p>
                     </a>
-                </li>
+                    <ul class="nav nav-treeview">
 
-                <li class="nav-item">
-                    <a href="{{ route('bimbingan.prodi') }}"
-                        class="nav-link {{ $active=='bimbingan' ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-th"></i>
-                        <p>
-                            Bimbingan TA
-                        </p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('seminar.prodi') }}" class="nav-link {{ $active=='seminar' ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-th"></i>
-                        <p>
-                            Seminar TA
-                        </p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('ujian.prodi') }}" class="nav-link {{ $active=='ujian' ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-th"></i>
-                        <p>
-                            Ujian Pendadaran TA
-                        </p>
-                    </a>
+                        <li class="nav-item">
+                            <a href="{{ route('pengajuan.prodi') }}"
+                               class="nav-link {{ $active=='pengajuan' ? 'active' : '' }}">
+                                <i class="nav-icon far fa-circle"></i>
+                                <p>
+                                    Validasi Pengajuan TA
+                                </p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="{{ route('bimbingan.prodi') }}"
+                               class="nav-link {{ $active=='bimbingan' ? 'active' : '' }}">
+                                <i class="nav-icon far fa-circle"></i>
+                                <p>
+                                    Bimbingan TA
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('seminar.prodi') }}"
+                               class="nav-link {{ $active=='seminar' ? 'active' : '' }}">
+                                <i class="nav-icon far fa-circle"></i>
+                                <p>
+                                    Seminar TA
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('ujian.prodi') }}"
+                               class="nav-link {{ $active=='ujian' ? 'active' : '' }}">
+                                <i class="nav-icon far fa-circle"></i>
+                                <p>
+                                    Ujian Pendadaran TA
+                                </p>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
             </ul>
         </nav>

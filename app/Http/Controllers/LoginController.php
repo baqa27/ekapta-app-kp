@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Admin;
 use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -62,12 +63,12 @@ class LoginController extends Controller
 
     public function cekAdmin(Request $request)
     {
-        $credentials = $request->validate([
+        $request->validate([
             'kode' => ['required'],
             'password' => ['required'],
         ]);
 
-        if (Auth::guard('admin')->attempt($credentials)) {
+        if (Auth::guard('admin')->attempt(['kode' => $request->kode, 'password' => $request->password, 'type' => Admin::TYPE_SUPER_ADMIN])) {
             $request->session()->regenerate();
             return redirect()->intended('dashboard-admin');
         }

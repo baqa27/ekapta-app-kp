@@ -39,7 +39,7 @@
     <!-- Brand Logo -->
     <a href="#" class="brand-link">
         <img src="{{ asset('ekapta') }}/adminLTE/dist/img/AdminLTELogo.png" alt="AdminLTE Logo"
-            class="brand-image img-circle elevation-3" style="opacity: .8">
+             class="brand-image img-circle elevation-3" style="opacity: .8">
         <span class="brand-text font-weight-light">Panel Admin</span>
     </a>
 
@@ -50,7 +50,7 @@
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
             <div class="image">
                 <img src="{{ asset('ekapta') }}/adminLTE/dist/img/default-profile.png" class="img-circle elevation-2"
-                    alt="User Image">
+                     alt="User Image">
             </div>
             <div class="info">
                 <a href="#" class="d-block">{{ Auth::guard('admin')->user()->nama }}</a>
@@ -64,7 +64,7 @@
 
                 <li class="nav-item">
                     <a href="{{ route('dashboard.admin') }}"
-                        class="nav-link {{ $active == 'dashboard' ? 'active' : '' }}">
+                       class="nav-link {{ $active == 'dashboard' ? 'active' : '' }}">
                         <i class="nav-icon fas fa-tachometer-alt"></i>
                         <p>
                             Dashboard
@@ -72,46 +72,69 @@
                     </a>
                 </li>
 
-                <li class="nav-item">
-                    <a href="{{ route('pengajuan.admin') }}"
-                        class="nav-link {{ $active == 'pengajuan' ? 'active' : '' }}">
+                <li class="nav-item
+                    @if($active == 'pengajuan' || $active == 'pendaftaran' || $active == 'bimbingan' || $active == 'seminar' || $active == 'ujian')
+                    menu-open
+                    @endif">
+                    <a href="#" class="nav-link
+                    @if($active == 'pengajuan' || $active == 'pendaftaran' || $active == 'bimbingan' || $active == 'seminar' || $active == 'ujian')
+                    active
+                    @endif">
                         <i class="nav-icon fas fa-th"></i>
                         <p>
-                            Pengajuan TA
+                            Menu Tugas Akhir
+                            <i class="fas fa-angle-right right"></i>
                         </p>
                     </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ route('pengajuan.admin') }}"
+                               class="nav-link {{ $active == 'pengajuan' ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>
+                                    Pengajuan TA
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('pendaftaran.admin') }}"
+                               class="nav-link {{ $active == 'pendaftaran' ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>
+                                    Validasi Pendaftaran TA
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('seminar.admin') }}"
+                               class="nav-link {{ $active == 'seminar' ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>
+                                    Validasi Seminar TA
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('ujian.admin') }}"
+                               class="nav-link {{ $active == 'ujian' ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>
+                                    Validasi Ujian TA
+                                </p>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
 
-                <li class="nav-item">
-                    <a href="{{ route('pendaftaran.admin') }}"
-                        class="nav-link {{ $active == 'pendaftaran' ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-check"></i>
-                        <p>
-                            Validasi Pendaftaran TA
-                        </p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('seminar.admin') }}" class="nav-link {{ $active == 'seminar' ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-check"></i>
-                        <p>
-                            Validasi Seminar TA
-                        </p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('ujian.admin') }}" class="nav-link {{ $active == 'ujian' ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-check"></i>
-                        <p>
-                            Validasi Ujian TA
-                        </p>
-                    </a>
-                </li>
-
-                <li
-                    class="nav-item {{ $active == 'prodi' || $active == 'mahasiswa' || $active == 'dosen' || $active == 'fakultas' ? 'menu-open' : '' }}">
-                    <a href="#" class="nav-link">
-                        <i class="nav-icon far fa-folder"></i>
+                <li class="nav-item
+                    @if($active == 'prodi' || $active == 'mahasiswa' || $active == 'dosen' || $active == 'fakultas')
+                    menu-open
+                    @endif">
+                    <a href="#" class="nav-link
+                    @if($active == 'prodi' || $active == 'mahasiswa' || $active == 'dosen' || $active == 'fakultas')
+                    active
+                    @endif">
+                        <i class="nav-icon fas fa-folder"></i>
                         <p>
                             Master Data
                             <i class="fa fa-angle-right right"></i>
@@ -120,27 +143,27 @@
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
                             <a href="{{ route('prodis') }}" class="nav-link {{ $active == 'prodi' ? 'active' : '' }}">
-                                <i class="fas fa-building nav-icon"></i>
+                                <i class="far fa-circle nav-icon"></i>
                                 <p>Prodi</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="{{ route('mahasiswas') }}"
-                                class="nav-link {{ $active == 'mahasiswa' ? 'active' : '' }}">
-                                <i class="fas fa-users nav-icon"></i>
+                               class="nav-link {{ $active == 'mahasiswa' ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
                                 <p>Mahasiswa</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="{{ route('dosens') }}" class="nav-link {{ $active == 'dosen' ? 'active' : '' }}">
-                                <i class="fas fa-users nav-icon"></i>
+                                <i class="far fa-circle nav-icon"></i>
                                 <p>Dosen</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="{{ route('fakultas') }}"
-                                class="nav-link {{ $active == 'fakultas' ? 'active' : '' }}">
-                                <i class="fas fa-building nav-icon"></i>
+                               class="nav-link {{ $active == 'fakultas' ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
                                 <p>Fakultas</p>
                             </a>
                         </li>

@@ -80,6 +80,7 @@ class DatabaseSeeder extends Seeder
             'email' => $faker->email(),
             'hp' => $faker->phoneNumber(),
             'password' => Hash::make(123456),
+            'type' => Admin::TYPE_SUPER_ADMIN,
         ]);
     }
 }

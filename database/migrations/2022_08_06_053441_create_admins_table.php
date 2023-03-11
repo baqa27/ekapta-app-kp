@@ -24,6 +24,7 @@ class CreateAdminsTable extends Migration
             $table->string('email');
             $table->string('hp');
             $table->string('password');
+            $table->tinyInteger('type')->default(0);
             $table->timestamps();
         });
     }

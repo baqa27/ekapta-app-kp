@@ -24,6 +24,7 @@ class CreateSeminarsTable extends Migration
             $table->boolean('is_valid')->default(0);
             $table->timestamp('tanggal_acc')->nullable();
             $table->timestamp('tanggal_ujian')->nullable();
+            $table->tinyInteger('is_lulus')->nullable();
             $table->timestamps();
             $table->foreignId('pengajuan_id')->constrained();
             $table->foreignId('mahasiswa_id')->constrained();

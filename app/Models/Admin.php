@@ -10,6 +10,9 @@ class Admin extends Authenticatable
 {
     use HasFactory;
 
+    public const TYPE_SUPER_ADMIN = 1;
+    public const TYPE_ADMIN_FOTOCOPY = 2;
+
     protected $fillable = [
         'kode',
         'nik',
@@ -20,6 +23,7 @@ class Admin extends Authenticatable
         'email',
         'hp',
         'password',
+        'type',
     ];
 
     protected $hidden = [

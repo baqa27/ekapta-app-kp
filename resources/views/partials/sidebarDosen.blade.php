@@ -39,7 +39,7 @@
     <!-- Brand Logo -->
     <a href="index3.html" class="brand-link">
         <img src="{{ asset('ekapta') }}/adminLTE/dist/img/AdminLTELogo.png" alt="AdminLTE Logo"
-            class="brand-image img-circle elevation-3" style="opacity: .8">
+             class="brand-image img-circle elevation-3" style="opacity: .8">
         <span class="brand-text font-weight-light">Panel Dosen</span>
     </a>
 
@@ -50,7 +50,7 @@
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
             <div class="image">
                 <img src="{{ asset('ekapta') }}/adminLTE/dist/img/default-profile.png" class="img-circle elevation-2"
-                    alt="User Image">
+                     alt="User Image">
             </div>
             <div class="info">
                 <a href="#" class="d-block">{{ Auth::guard('dosen')->user()->nama.',
@@ -64,7 +64,7 @@
 
                 <li class="nav-item">
                     <a href="{{ route('dashboard.dosen') }}"
-                        class="nav-link {{ $active=='dashboard' ? 'active' : '' }}">
+                       class="nav-link {{ $active=='dashboard' ? 'active' : '' }}">
                         <i class="nav-icon fas fa-tachometer-alt"></i>
                         <p>
                             Dashboard
@@ -72,32 +72,53 @@
                     </a>
                 </li>
 
-                <li class="nav-item">
-                    <a href="{{ route('bimbingan.dosen') }}"
-                        class="nav-link {{ $active=='bimbingan' ? 'active' : '' }}">
-                        <i class="nav-icon fa fa-check"></i>
+                <li class="nav-item
+                 @if($active == 'bimbingan' || $active == 'seminar' || $active == 'ujian')
+                    menu-open
+                    @endif">
+                    <a href="#" class="nav-link
+                    @if($active == 'bimbingan' || $active == 'seminar' || $active == 'ujian')
+                    active
+                    @endif">
+                        <i class="nav-icon fas fa-th"></i>
                         <p>
-                            Validasi Bimbingan TA
+                            Menu Tugas Akhir
+                            <i class="fas fa-angle-right right"></i>
                         </p>
                     </a>
+                    <ul class="nav nav-treeview">
+
+                        <li class="nav-item">
+                            <a href="{{ route('bimbingan.dosen') }}"
+                               class="nav-link {{ $active=='bimbingan' ? 'active' : '' }}">
+                                <i class="nav-icon far fa-circle"></i>
+                                <p>
+                                    Validasi Bimbingan TA
+                                </p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="{{ route('seminar.dosen') }}"
+                               class="nav-link {{ $active=='seminar' ? 'active' : '' }}">
+                                <i class="nav-icon far fa-circle"></i>
+                                <p>
+                                    Review Seminar TA
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('ujian.dosen') }}"
+                               class="nav-link {{ $active=='ujian' ? 'active' : '' }}">
+                                <i class="nav-icon far fa-circle"></i>
+                                <p>
+                                    Review Ujian TA
+                                </p>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
 
-                <li class="nav-item">
-                    <a href="{{ route('seminar.dosen') }}" class="nav-link {{ $active=='seminar' ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-star"></i>
-                        <p>
-                            Review Seminar TA
-                        </p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('ujian.dosen') }}" class="nav-link {{ $active=='ujian' ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-star"></i>
-                        <p>
-                            Review Ujian TA
-                        </p>
-                    </a>
-                </li>
             </ul>
         </nav>
         <!-- /.sidebar-menu -->
