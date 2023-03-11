@@ -128,8 +128,8 @@
                                                 @elseif ($seminar->is_valid == 1)
                                                     @foreach($seminar->reviews()->where('dosen_status', 'penguji')->get() as $review)
                                                         @if(!$review->lampiran)
-                                                            <a href="{{ route('seminar.reviews', $seminar->id)  }}" class="btn btn-info btn-sm">
-                                                                <i class="bi bi-star mr-1"></i> Lihat Review
+                                                            <a href="{{ route('seminar.reviews', $seminar->id)  }}" class="btn btn-primary btn-sm">
+                                                                <i class="bi bi-upload mr-1"></i>  Submit Laporan Proposal
                                                             </a>
                                                             @break
                                                         @else
