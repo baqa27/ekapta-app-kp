@@ -17,9 +17,9 @@ class IsLogin
      */
     public function handle(Request $request, Closure $next)
     {
-        if (!Auth::guard('mahasiswa')->user() || !Auth::guard('dosen')->user() || !Auth::guard('prodi')->user() || !Auth::guard('mahasiswa')->user()) {
-            abort(404);
+        if (Auth::guard('mahasiswa')->user() || Auth::guard('dosen')->user() || Auth::guard('prodi')->user() || Auth::guard('admin')->user()) {
+            return $next($request);
         }
-        return $next($request);
+        abort(404);
     }
 }
