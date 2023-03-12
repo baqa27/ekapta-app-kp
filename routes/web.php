@@ -38,7 +38,7 @@ Route::get('/login/admin', [LoginController::class, 'loginAdmin'])->name('login.
 Route::post('/login/admin', [LoginController::class, 'cekAdmin'])->name('cek.admin')->middleware('isAdminLogin');
 
 // Dashboard
-Route::get('/dashboard-mahasiswa', [DashboardController::class, 'dashboardMahasiswa'])->name('dashboard.mahasiswa')->middleware('isMahasiswa');
+Route::get('/dashboard-mahasiswa', [DashboardController::class, 'dashboardMahasiswaTA'])->name('dashboard.mahasiswa')->middleware('isMahasiswa');
 Route::get('/dashboard-mahasiswa-ta', [DashboardController::class, 'dashboardMahasiswaTA'])->name('dashboard.mahasiswa.ta')->middleware('isMahasiswa');
 Route::get('/dashboard-mahasiswa-kp', [DashboardController::class, 'dashboardMahasiswaKP'])->name('dashboard.mahasiswa.kp')->middleware('isMahasiswa');
 Route::get('/dashboard-mahasiswa-jilid', [DashboardController::class, 'dashboardMahasiswaJilid'])->name('dashboard.mahasiswa.jilid')->middleware('isMahasiswa');
