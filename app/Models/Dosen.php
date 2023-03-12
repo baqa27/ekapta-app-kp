@@ -40,6 +40,12 @@ class Dosen extends Authenticatable
             ->withPivot(['status']);
     }
 
+    public function prodis()
+    {
+        return $this->belongsToMany(Prodi::class, 'dosen_prodis', 'dosen_id', 'prodi_id')
+            ->withPivot(['kode','nidn']);
+    }
+
     public function revisis()
     {
         return $this->hasMany(RevisiBimbingan::class);

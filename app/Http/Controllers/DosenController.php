@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helpers\AppHelper;
 use App\Imports\DosensImport;
 use App\Models\Dosen;
+use App\Models\Prodi;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -38,11 +39,23 @@ class DosenController extends Controller
     {
         $dosen = Dosen::findOrFail($id);
 
+        $dosen_prodi_id = [];
+        foreach ($dosen->prodis as $prodi){
+            $dosen_prodi_id[] = $prodi->id;
+        }
+
+        if (count($dosen->prodis) == 0){
+            $prodis = Prodi::all();
+        }else{
+            $prodis = Prodi::whereNotIn('id', $dosen_prodi_id)->get();
+        }
+
         return view('pages.admin.dosen.setting',[
             'title' => 'Setting Dosen',
             'active' => 'dosen',
             'sidebar' => 'partials.sidebarAdmin',
             'dosen' => $dosen,
+            'prodis' => $prodis,
         ]);
     }
 

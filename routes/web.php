@@ -18,6 +18,7 @@ use App\Http\Controllers\SeminarController;
 use App\Http\Controllers\ReviewSeminarController;
 use App\Http\Controllers\UjianController;
 use App\Http\Controllers\ReviewUjianController;
+use App\Http\Controllers\DosenProdiController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -159,6 +160,10 @@ Route::group(['middleware' => 'isAdmin'], function(){
     Route::post('ujian/cancel-acc', [UjianController::class, 'cancelAcc'])->name('ujian.cancel.acc');
     Route::post('/ujian/revisi/delete', [UjianController::class, 'deleteRevisi'])->name('ujian.revisi.delete');
     Route::post('/ujian/set/date-exam', [UjianController::class, 'setDateExam'])->name('ujian.set.date.exam');
+
+    // Route for Dosen Prodi
+    Route::post('/dosen-prodi/import', [DosenProdiController::class, 'import'])->name('dosen.prodi.import');
+    Route::put('/dosen-prodi/update/{dosen}', [DosenProdiController::class, 'update'])->name('dosen.prodi.update');
 });
 
 Route::group(['middleware' => 'isDosen'], function(){

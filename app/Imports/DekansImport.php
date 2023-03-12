@@ -24,8 +24,8 @@ class DekansImport implements ToModel, WithHeadingRow
             'nidn' => $row['nidn'],
             'namadekan' => $row['namadekan'],
             'gelar' => $row['gelar'],
-            'dari' => $row['dari'] != null ? Carbon::parse($row['dari']) : '',
-            'sampai' => $row['sampai'] != null ? Carbon::parse($row['sampai']) : '',
+            'dari' => $row['dari'] != null ? $row['dari']: '',
+            'sampai' => $row['sampai'] != null ? $row['sampai'] : '',
             'fakultas_id' => $this->fakultas,
         ]);
     }

@@ -356,7 +356,8 @@ class UjianController extends Controller
         $mahasiswa = $ujian->mahasiswa;
         $prodi = Prodi::where('namaprodi', $mahasiswa->prodi)->first();
 
-        $dosens = Dosen::where('kodeprodi', $prodi->kode)->get();
+        //$dosens = Dosen::where('kodeprodi', $prodi->kode)->get();
+        $dosens = $prodi->dosens;
 
         $dosen_utama = $mahasiswa->dosens()->where('status', 'utama')->first();
         $dosen_pendamping = $mahasiswa->dosens()->where('status', 'pendamping')->first();

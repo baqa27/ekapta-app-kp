@@ -48,14 +48,6 @@
             @yield('content')
 
         </div>
-        <!-- /.content-wrapper -->
-        <footer class="main-footer">
-            &copy 2022-All Right Reserverd. Presented by <a href="https://fastikom-unsiq.ac.id/"
-                class="text-decoration-none fw-semibold">Fastikom</a>
-            <div class="float-right d-none d-sm-inline">
-                Template by <a href="https://adminlte.io">AdminLTE</a>
-            </div>
-        </footer>
 
         <!-- Control Sidebar -->
         <aside class="control-sidebar control-sidebar-dark">
@@ -168,7 +160,7 @@
         </script>
     @enderror
 
-    @if ($active == 'pengajuan' || $active == 'seminar' || $active == 'ujian')
+    @if ($active == 'pengajuan' || $active == 'seminar' || $active == 'ujian' || $active == 'dosen')
         <script>
             $(document).ready(function() {
                 $('.select-1').select2();

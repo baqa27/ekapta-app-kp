@@ -27,63 +27,117 @@
                 <div class="col-md-12">
                     <div class="card card-primary card-outline">
                         <div class="card-header">
-                            <h3 class="card-title">Setting Fakultas</h3>
+                            <h3 class="card-title">Setting Dosen</h3>
                         </div>
                         <div class="card-body">
 
-                            <div class="col-md-12">
-                                <div class="row mt-3">
-                                    <div class="col-md-3">
-                                        NIDN
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="col-md-12">
+                                        <div class="row mt-3">
+                                            <div class="col-md-3">
+                                                NIDN
+                                            </div>
+                                            <div class="col-md-9">
+                                                <span class="mr-3">:</span>
+                                                <b>{{ $dosen->nidn }}</b>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="col-md-9">
-                                        <span class="mr-3">:</span>
-                                        <b>{{ $dosen->nidn }}</b>
+
+                                    <div class="col-md-12">
+                                        <div class="row mt-3">
+                                            <div class="col-md-3">
+                                                Nama Dosen
+                                            </div>
+                                            <div class="col-md-9">
+                                                <span class="mr-3">:</span>
+                                                <b>{{ $dosen->nama }}, {{ $dosen->gelar }}</b>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <div class="row mt-3">
+                                            <div class="col-md-3">
+                                                Prodi
+                                            </div>
+                                            <div class="col-md-9">
+                                                <span class="mr-3">:</span>
+                                                <b>{{ \App\Helpers\AppHelper::instance()->getProdi($dosen->kodeprodi) != null ? \App\Helpers\AppHelper::instance()->getProdi($dosen->kodeprodi)->namaprodi : '' }}</b>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <div class="col-md-12">
-                                <div class="row mt-3">
-                                    <div class="col-md-3">
-                                        Nama Dosen
-                                    </div>
-                                    <div class="col-md-9">
-                                        <span class="mr-3">:</span>
-                                        <b>{{ $dosen->nama }}, {{ $dosen->gelar }}</b>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-md-12">
-                                <div class="row mt-3">
-                                    <div class="col-md-3">
-                                        Prodi
-                                    </div>
-                                    <div class="col-md-9">
-                                        <span class="mr-3">:</span>
-                                        <b>{{ \App\Helpers\AppHelper::instance()->getProdi($dosen->kodeprodi) != null ? \App\Helpers\AppHelper::instance()->getProdi($dosen->kodeprodi)->namaprodi : '' }}</b>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="mt-5">
-                                <div class="row">
-                                    <div class="col-md-3">
-                                        <button type="button" class="btn btn-primary btn-sm mr-2 mb-1" data-toggle="modal"
+                                <div class="col-md-4">
+                                    <div class="col-md-12">
+                                        <button type="button" class="btn btn-info btn-sm mr-2 mb-1" data-toggle="modal"
                                                 data-target="#modal-edit">
-                                            <i class="bi bi-pencil-square mr-2"></i> TTD Dosen
+                                            <i class="bi bi-pencil-square mr-2"></i> Edit TTD Dosen
                                         </button>
                                     </div>
-                                    <div class="col-md-9">
-                                        <img src="{{ asset($dosen->ttd != null ? $dosen->ttd : 'ekapta/assets/img/not-found.png') }}"
-                                             alt="Stempel Fakultas" height="100">
+                                    <div class="col-md-12">
+                                        <img
+                                            src="{{ asset($dosen->ttd != null ? $dosen->ttd : 'ekapta/assets/img/not-found.png') }}"
+                                            alt="Stempel Fakultas" height="100">
                                     </div>
                                 </div>
                             </div>
 
                         </div>
 
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <div class="card card-primary card-outline">
+                        <div class="card-header">Penugasan Dosen</div>
+                        <div class="card-body">
+                            <form action="{{route('dosen.prodi.update', $dosen->id)}}" method="post">
+                                @method('PUT')
+                                @csrf
+                                <table id="example1" class="table">
+                                    <thead>
+                                    <tr>
+                                        <th>Aksi</th>
+                                        <th>Prodi</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @foreach($dosen->prodis as $dosen_prodi)
+                                        <tr>
+                                            <td>
+                                                <input type="checkbox" name="prodis[]"
+                                                       value="{{$dosen_prodi->id }}"
+                                                       class="form-check" checked>
+                                            </td>
+                                            <td>{{ $dosen_prodi->namaprodi }}</td>
+                                        </tr>
+                                    @endforeach
+
+                                    @foreach($prodis as $prodi)
+                                        <tr>
+                                            <td>
+                                                <input type="checkbox" name="prodis[]"
+                                                       value="{{ $prodi->id }}"
+                                                       class="form-check">
+                                            </td>
+                                            <td>{{ $prodi->namaprodi }}</td>
+                                        </tr>
+                                    @endforeach
+
+                                    </tbody>
+                                    <tfoot>
+                                    <tr>
+                                        <td colspan="2">
+                                            <button class="btn btn-primary" type="submit">Simpan</button>
+                                        </td>
+                                    </tr>
+                                    </tfoot>
+                                </table>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -110,7 +164,7 @@
                             <div class="input-group mb-3">
                                 <div class="custom-file">
                                     <input type="file" class="custom-file-input @error('ttd')is-invalid @enderror"
-                                        name="ttd" required>
+                                           name="ttd" required>
                                     <label class="custom-file-label" for="exampleInputFile">Choose
                                         file</label>
                                 </div>
@@ -119,7 +173,7 @@
                                 </div>
                             </div>
                             @error('ttd')
-                                <div class="text-danger"><small>{{ $message }}</small></div>
+                            <div class="text-danger"><small>{{ $message }}</small></div>
                             @enderror
                         </div>
                     </div>

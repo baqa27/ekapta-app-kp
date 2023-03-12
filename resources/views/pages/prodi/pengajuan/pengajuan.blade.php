@@ -82,7 +82,7 @@
                                                     </td>
                                                     <td>
                                                         <a href="{{ url('/pengajuan/review/' . $pengajuan->id) }}"
-                                                            class="btn btn-primary btn-sm shadow">
+                                                           class="btn btn-primary btn-sm shadow">
                                                             <i class="fas fa-check-circle mr-1"></i> Review
                                                         </a>
                                                     </td>

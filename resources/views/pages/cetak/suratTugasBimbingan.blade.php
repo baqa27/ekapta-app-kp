@@ -269,7 +269,7 @@
                 <center>
                     <span>
                         Dekan <br>
-                        <div class="d-flex">
+                        <div class="d-flex" style="height: 180px">
                             <img src="{{ $stempel }}" alt="Stempel Dekan" height="180" id="stempel">
                             <img src="{{ $ttd_dekan }}" alt="TTD Dekan" height="110" id="ttd">
                         </div>

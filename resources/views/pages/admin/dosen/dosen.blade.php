@@ -36,6 +36,11 @@
                                 <i class="bi bi-upload mr-2"></i> Import Data Dosen
                             </button>
 
+                            <button type="button" class="btn btn-info mr-2" data-toggle="modal"
+                                data-target="#modal-import-penugasan">
+                                <i class="bi bi-upload mr-2"></i> Import Data Penugasasan
+                            </button>
+
                             <table id="example1" class="table table-bordered">
                                 <thead>
                                     <tr>
@@ -100,6 +105,48 @@
                     @csrf
                     <div class="modal-header">
                         <h4 class="modal-title">Import Data Dosen</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="" class="form-label">Pilih File <br>
+                                <small>Format file <b>.csv / .xlsx </b></small></label>
+                            <div class="input-group mb-3">
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input @error('file')is-invalid @enderror"
+                                        name="file">
+                                    <label class="custom-file-label" for="exampleInputFile">Choose
+                                        file</label>
+                                </div>
+                                <div class="input-group-append">
+                                    <span class="input-group-text">Dokumen</span>
+                                </div>
+                            </div>
+                            @error('file')
+                                <small class="text-danger"
+                                    style="position:relative;top:-15px;left:5px">{{ $message }}</small>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="modal-footer justify-content-between">
+                        <button type="submit" class="btn btn-success">Import</button>
+                    </div>
+                </form>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+    <div class="modal fade" id="modal-import-penugasan">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form action="{{ route('dosen.prodi.import') }}" method="post" enctype="multipart/form-data">
+                    @csrf
+                    <div class="modal-header">
+                        <h4 class="modal-title">Import Data Penugasan</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>

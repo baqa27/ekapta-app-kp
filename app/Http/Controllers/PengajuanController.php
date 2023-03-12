@@ -84,12 +84,19 @@ class PengajuanController extends Controller
     public function pengajuanReview($id)
     {
         $pengajuan = Pengajuan::findOrFail($id);
+        $prodi = Auth::guard('prodi')->user();
         $mahasiswa = $pengajuan->mahasiswa;
         $dosenUtama = $mahasiswa->dosens()->where('status', 'utama')->first();
         $dosenPendamping = $mahasiswa->dosens()->where('status', 'pendamping')->first();
-        $dosens = Dosen::where('kodeprodi', Auth::guard('prodi')->user()->kode)->get();
+        //$dosens = Dosen::where('kodeprodi', Auth::guard('prodi')->user()->kode)->get();
+        $dosens = $prodi->dosens;
         $pengajuanCekIsPlagiat = Pengajuan::where('judul', 'LIKE', '%' . $pengajuan->judul . '%')->get();
-        return view('pages.prodi.pengajuan.review', [
+
+        if ($pengajuan->prodi != $prodi->namaprodi){
+            abort(404);
+        }
+
+        $data = [
             'title' => 'Review pengajuan',
             'active' => 'pengajuan',
             'pengajuan' => $pengajuan,
@@ -100,7 +107,9 @@ class PengajuanController extends Controller
             'dosen_pendamping' => $dosenPendamping,
             'mahasiswa' => $mahasiswa,
             'pengajuanCekIsPlagiat' => $pengajuanCekIsPlagiat,
-        ]);
+        ];
+
+        return view('pages.prodi.pengajuan.review', $data);
     }
 
     public function pengajuanReviewAdmin($id)
