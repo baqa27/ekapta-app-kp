@@ -71,7 +71,7 @@
                                         data-target="#modal-edit">
                                         <i class="bi bi-pencil-square mr-2"></i> Edit TTD Dekan
                                     </button>
-                                    <img src="{{ asset($dekanActive != null ? $dekanActive->image : 'ekapta/assets/img/not-found.png') }}"
+                                    <img src="{{ asset($dekanActive->image != null ? $dekanActive->image : 'ekapta/assets/img/not-found.png') }}"
                                         alt="TTD Dekan" height="50">
                                 </div>
                             </div>
