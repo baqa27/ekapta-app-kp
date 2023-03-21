@@ -21,6 +21,9 @@
                 <a href="#" class="dropdown-item">
                     {{ Auth::guard('prodi')->user()->namaprodi }} {{ '('.Auth::guard('prodi')->user()->kode.')' }}
                 </a>
+                <a href="{{ route('prodi.account') }}" class="dropdown-item">
+                    <i class="bi bi-gear mr-2"></i> Pengaturan Akun
+                </a>
                 <div class="dropdown-divider"></div>
                 <a href="{{ route('logout.prodi') }}" class="dropdown-item dropdown-footer bg-danger">Logout <i
                         class="bi bi-box-arrow-right ml-2"></i></a>

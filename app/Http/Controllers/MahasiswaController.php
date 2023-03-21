@@ -8,6 +8,7 @@ use App\Models\Mahasiswa;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Facades\Excel;
 
 class MahasiswaController extends Controller
@@ -29,7 +30,7 @@ class MahasiswaController extends Controller
         $mahasiswa = Mahasiswa::where('nim', Auth::guard('mahasiswa')->user()->nim)->first();
         return view('pages.mahasiswa.profile', [
             'title' => 'Profil Mahasiswa',
-            'active' => '',
+            'active' => 'profile',
             'mahasiswa' => $mahasiswa,
         ]);
     }
@@ -64,5 +65,31 @@ class MahasiswaController extends Controller
         } catch (Exception $e) {
             return back()->with('warning', 'Data semester dan status mahasiswa gagal di import');
         }
+    }
+
+    function account(){
+        $mahasiswa = Auth::guard('mahasiswa')->user();
+
+        $data = [
+            'title' => 'Pengaturan Akun',
+            'active' => 'profile',
+            'mahasiswa' => $mahasiswa,
+        ];
+
+        return view('pages.mahasiswa.account', $data);
+    }
+
+    function accountUpdate(Request $request, $id){
+        $mahasiwa = Mahasiswa::findOrFail($id);
+
+        $request->validate([
+           'password' => ['required','string' ,'min:6'],
+        ]);
+
+        $mahasiwa->update([
+            'password' => Hash::make($request->password),
+        ]);
+
+        return back()->with('success', 'Password berhasil diubah');
     }
 }

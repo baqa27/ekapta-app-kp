@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\BagianController;
 use App\Http\Controllers\BimbinganController;
 use App\Http\Controllers\CetakController;
@@ -164,6 +165,10 @@ Route::group(['middleware' => 'isAdmin'], function(){
     // Route for Dosen Prodi
     Route::post('/dosen-prodi/import', [DosenProdiController::class, 'import'])->name('dosen.prodi.import');
     Route::put('/dosen-prodi/update/{dosen}', [DosenProdiController::class, 'update'])->name('dosen.prodi.update');
+
+    // Route for Setting
+    Route::get('admin/account', [AdminController::class, 'account'])->name('admin.account');
+    Route::put('admin/account/{id}', [AdminController::class, 'accountUpdate'])->name('admin.account.update');
 });
 
 Route::group(['middleware' => 'isDosen'], function(){
@@ -184,6 +189,10 @@ Route::group(['middleware' => 'isDosen'], function(){
     Route::post('review/ujian/acc', [ReviewUjianController::class, 'reviewAcc'])->name('review.ujian.acc');
     Route::post('review/ujian/nilai', [ReviewUjianController::class, 'reviewNilai'])->name('review.ujian.nilai');
     Route::post('review/ujian/cancel/acc', [ReviewUjianController::class, 'reviewCancelAcc'])->name('review.ujian.cancel.acc');
+
+    // Route for Setting
+    Route::get('dosen/account', [DosenController::class, 'account'])->name('dosen.account');
+    Route::put('dosen/account/{id}', [DosenController::class, 'accountUpdate'])->name('dosen.account.update');
 });
 
 Route::group(['middleware' => 'isProdi'], function(){
@@ -194,6 +203,10 @@ Route::group(['middleware' => 'isProdi'], function(){
     // Route for Ujian TA
     Route::get('ujian-prodi', [UjianController::class, 'ujianProdi'])->name('ujian.prodi');
     Route::get('ujian/detail-prodi/{id}', [UjianController::class, 'ujianProdiDetail'])->name('ujian.prodi.detail');
+
+    // Route for Setting
+    Route::get('prodi/account', [ProdiController::class, 'account'])->name('prodi.account');
+    Route::put('prodi/account/{id}', [ProdiController::class, 'accountUpdate'])->name('prodi.account.update');
 });
 
 // Prodi
@@ -204,7 +217,9 @@ Route::get('/prodi/presentase-nilai/{id}', [ProdiController::class, 'presentaseN
 Route::post('/prodi/presentase-nilai/store', [ProdiController::class, 'presentaseNilaiStore'])->name('prodi.presentase.nilai.store');
 
 // Mahasiswa
-Route::get('profile', [MahasiswaController::class, 'profile'])->name('profile')->middleware('isMahasiswa');
+Route::get('mahasiswa/profile', [MahasiswaController::class, 'profile'])->name('profile')->middleware('isMahasiswa');
+Route::get('mahasiswa/account', [MahasiswaController::class, 'account'])->name('mahasiswa.account')->middleware('isMahasiswa');
+Route::put('mahasiswa/account/{id}', [MahasiswaController::class, 'accountUpdate'])->name('mahasiswa.account.update')->middleware('isMahasiswa');
 Route::post('profile/update', [MahasiswaController::class, 'update'])->name('profile.update')->middleware('isMahasiswa');
 Route::get('mahasiswas', [MahasiswaController::class, 'index'])->name('mahasiswas')->middleware('isAdmin');
 Route::post('mahasiswa/import', [MahasiswaController::class, 'import'])->name('mahasiswa.import')->middleware('isAdmin');

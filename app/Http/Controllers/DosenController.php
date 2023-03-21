@@ -8,6 +8,8 @@ use App\Models\Dosen;
 use App\Models\Prodi;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -77,5 +79,32 @@ class DosenController extends Controller
         ]);
 
         return back()->with('success','TTD Dosen berhasil di update.');
+    }
+
+    function account(){
+        $dosen = Auth::guard('dosen')->user();
+
+        $data = [
+            'title' => 'Pengaturan Akun',
+            'active' => '',
+            'sidebar' => 'partials.sidebarDosen',
+            'dosen' => $dosen,
+        ];
+
+        return view('pages.dosen.account', $data);
+    }
+
+    function accountUpdate(Request $request, $id){
+        $dosen = Dosen::findOrFail($id);
+
+        $request->validate([
+            'password' => ['required','string' ,'min:6'],
+        ]);
+
+        $dosen->update([
+            'password' => Hash::make($request->password),
+        ]);
+
+        return back()->with('success', 'Password berhasil diubah');
     }
 }

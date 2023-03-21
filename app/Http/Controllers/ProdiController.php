@@ -6,6 +6,8 @@ use App\Imports\ProdisImport;
 use App\Models\PresentaseNilai;
 use App\Models\Prodi;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ProdiController extends Controller
@@ -88,5 +90,32 @@ class ProdiController extends Controller
         ]);
 
         return back()->with('success', 'Presentase Nilai Berhasil Disimpan');
+    }
+
+    function account(){
+        $prodi = Auth::guard('prodi')->user();
+
+        $data = [
+            'title' => 'Pengaturan Akun',
+            'active' => '',
+            'sidebar' => 'partials.sidebarProdi',
+            'prodi' => $prodi,
+        ];
+
+        return view('pages.prodi.account', $data);
+    }
+
+    function accountUpdate(Request $request, $id){
+        $prodi = Prodi::findOrFail($id);
+
+        $request->validate([
+            'password' => ['required','string' ,'min:6'],
+        ]);
+
+        $prodi->update([
+            'password' => Hash::make($request->password),
+        ]);
+
+        return back()->with('success', 'Password berhasil diubah');
     }
 }
