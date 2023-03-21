@@ -152,7 +152,7 @@
                             <div class="input-group mb-3">
                                 <div class="custom-file">
                                     <input type="file" class="custom-file-input @error('file')is-invalid @enderror"
-                                        name="file">
+                                        name="file" required>
                                     <label class="custom-file-label" for="exampleInputFile">Choose
                                         file</label>
                                 </div>
