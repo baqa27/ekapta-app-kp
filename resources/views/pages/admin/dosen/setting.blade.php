@@ -39,7 +39,6 @@
                                                 NIDN
                                             </div>
                                             <div class="col-md-9">
-                                                <span class="mr-3">:</span>
                                                 <b>{{ $dosen->nidn }}</b>
                                             </div>
                                         </div>
@@ -51,7 +50,6 @@
                                                 Nama Dosen
                                             </div>
                                             <div class="col-md-9">
-                                                <span class="mr-3">:</span>
                                                 <b>{{ $dosen->nama }}, {{ $dosen->gelar }}</b>
                                             </div>
                                         </div>
@@ -63,7 +61,6 @@
                                                 Prodi
                                             </div>
                                             <div class="col-md-9">
-                                                <span class="mr-3">:</span>
                                                 <b>{{ \App\Helpers\AppHelper::instance()->getProdi($dosen->kodeprodi) != null ? \App\Helpers\AppHelper::instance()->getProdi($dosen->kodeprodi)->namaprodi : '' }}</b>
                                             </div>
                                         </div>

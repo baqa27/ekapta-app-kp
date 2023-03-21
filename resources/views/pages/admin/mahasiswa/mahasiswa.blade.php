@@ -31,12 +31,12 @@
                         </div>
                         <div class="card-body">
 
-                            <button type="button" class="btn btn-primary mr-2" data-toggle="modal"
+                            <button type="button" class="btn btn-primary col-md-4 col-sm-12 mb-2" data-toggle="modal"
                                 data-target="#modal-import-1">
                                 <i class="bi bi-upload mr-2"></i> Import Data Mahasiswa
                             </button>
 
-                            <button type="button" class="btn btn-info mr-2" data-toggle="modal"
+                            <button type="button" class="btn btn-info col-md-4 col-sm-12 mb-2" data-toggle="modal"
                                 data-target="#modal-import-2">
                                 <i class="bi bi-upload mr-2"></i> Import Data Mahasiswa Detail
                             </button>
@@ -109,7 +109,7 @@
                             <div class="input-group mb-3">
                                 <div class="custom-file">
                                     <input type="file" class="custom-file-input @error('file')is-invalid @enderror"
-                                        name="file">
+                                        name="file" required>
                                     <label class="custom-file-label" for="exampleInputFile">Choose
                                         file</label>
                                 </div>
