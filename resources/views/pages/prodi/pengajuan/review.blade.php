@@ -217,7 +217,7 @@
                                 <span class="text-secondary">
                                     [{{ $no++ }}]
                                     [Judul : {{ $result->judul }}]
-                                    [Prodi : {{ $result->prodi }} ]
+                                    [Prodi : {{ $result->prodi->namaprodi }} ]
                                     [Status : {{ $result->status }} ]</span>
                             </del>
                             <br>
