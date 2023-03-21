@@ -43,4 +43,8 @@ class Prodi extends Authenticatable
         return $this->belongsToMany(Dosen::class, 'dosen_prodis', 'prodi_id', 'dosen_id')
             ->withPivot(['kode','nidn']);
     }
+
+    function pengajuans(){
+        return $this->hasMany(Pengajuan::class);
+    }
 }

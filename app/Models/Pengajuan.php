@@ -16,7 +16,7 @@ class Pengajuan extends Model
 
     protected $fillable = [
         'mahasiswa_id',
-        'prodi',
+        'prodi_id',
         'judul',
         'deskripsi',
         'lampiran',
@@ -44,5 +44,9 @@ class Pengajuan extends Model
 
     public function mahasiswa(){
         return $this->belongsTo(Mahasiswa::class);
+    }
+
+    public function prodi(){
+        return $this->belongsTo(Prodi::class);
     }
 }

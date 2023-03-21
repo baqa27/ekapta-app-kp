@@ -11,6 +11,7 @@ use App\Models\Pengajuan;
 use App\Models\Prodi;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class AppHelper
 {
@@ -81,6 +82,10 @@ class AppHelper
     public function uploadLampiran($lampiran, $path)
     {
         if ($lampiran) {
+            // Use when hoting
+            //$lampiranPath = $lampiran->store($path, 'public');
+            //return '/ekapta-app/storage/app/public/'.$lampiranPath;
+
             $lampiranPath = $lampiran->store($path, 'public');
             return $lampiranPath;
         }
@@ -88,6 +93,13 @@ class AppHelper
 
     public function deleteLampiran($lampiran)
     {
+        // Use when hoting
+        //$target = Str::substr($lampiran,20); //output : /app/public/[files]
+        //if ($target) {
+        //   if (file_exists(storage_path($target))) {
+        //        unlink(storage_path($target));
+        //    }
+        //}
         if ($lampiran) {
             if (file_exists(public_path($lampiran))) {
                 unlink(public_path($lampiran));

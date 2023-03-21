@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Pengajuan;
+use App\Models\Prodi;
 use App\Models\RevisiPengajuan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,14 +17,22 @@ class PengajuanController extends Controller
 
     public function pengajuanProdi()
     {
-        $pengajuans = Pengajuan::where('status', Pengajuan::REVIEW)->where('prodi', Auth::guard('prodi')->user()->namaprodi)->orderBy('created_at', 'desc')->get();
-        $pengajuans_acc = Pengajuan::where('status', Pengajuan::DITERIMA)->where('prodi', Auth::guard('prodi')->user()->namaprodi)->orderBy('created_at', 'desc')->get();
-        $pengajuans_revisi = Pengajuan::where('status', Pengajuan::REVISI)->where('prodi', Auth::guard('prodi')->user()->namaprodi)->orderBy('created_at', 'desc')->get();
-        $pengajuans_ditolak = Pengajuan::where('status', Pengajuan::DITOLAK)->where('prodi', Auth::guard('prodi')->user()->namaprodi)->orderBy('created_at', 'desc')->get();
+        //$pengajuans = Pengajuan::where('status', Pengajuan::REVIEW)->where('prodi', Auth::guard('prodi')->user()->namaprodi)->orderBy('created_at', 'desc')->get();
+        //$pengajuans_acc = Pengajuan::where('status', Pengajuan::DITERIMA)->where('prodi', Auth::guard('prodi')->user()->namaprodi)->orderBy('created_at', 'desc')->get();
+        //$pengajuans_revisi = Pengajuan::where('status', Pengajuan::REVISI)->where('prodi', Auth::guard('prodi')->user()->namaprodi)->orderBy('created_at', 'desc')->get();
+        //$pengajuans_ditolak = Pengajuan::where('status', Pengajuan::DITOLAK)->where('prodi', Auth::guard('prodi')->user()->namaprodi)->orderBy('created_at', 'desc')->get();
+
+        $prodi = Auth::guard('prodi')->user();
+
+        $pengajuans_review = $prodi->pengajuans()->where('status', Pengajuan::REVIEW)->orderBy('created_at', 'desc')->get();
+        $pengajuans_acc = $prodi->pengajuans()->where('status', Pengajuan::DITERIMA)->orderBy('created_at', 'desc')->get();
+        $pengajuans_revisi = $prodi->pengajuans()->where('status', Pengajuan::REVISI)->orderBy('created_at', 'desc')->get();
+        $pengajuans_ditolak = $prodi->pengajuans()->where('status', Pengajuan::DITOLAK)->orderBy('created_at', 'desc')->get();
+
         return view('pages.prodi.pengajuan.pengajuan', [
             'title' => 'Pengajuan Tugas Akhir',
             'active' => 'pengajuan',
-            'pengajuans' => $pengajuans,
+            'pengajuans' => $pengajuans_review,
             'sidebar' => 'partials.sidebarProdi',
             'active' => 'pengajuan',
             'pengajuans_acc' => $pengajuans_acc,
@@ -92,7 +101,7 @@ class PengajuanController extends Controller
         $dosens = $prodi->dosens;
         $pengajuanCekIsPlagiat = Pengajuan::where('judul', 'LIKE', '%' . $pengajuan->judul . '%')->get();
 
-        if ($pengajuan->prodi != $prodi->namaprodi){
+        if ($pengajuan->prodi->namaprodi != $prodi->namaprodi){
             abort(404);
         }
 
@@ -127,6 +136,8 @@ class PengajuanController extends Controller
     public function store(Request $request)
     {
         $cekPengajuan = Pengajuan::where('mahasiswa_id', Auth::guard('mahasiswa')->user()->id)->whereIn('status', [Pengajuan::REVIEW, Pengajuan::REVISI, Pengajuan::DITERIMA])->get();
+        $prodi = Prodi::where('namaprodi', Auth::guard('mahasiswa')->user()->prodi)->first();
+
         if ($cekPengajuan->isEmpty()) {
             $validatedData = $request->validate([
                 'judul' => ['required', 'min:5'],
@@ -136,9 +147,13 @@ class PengajuanController extends Controller
             if ($request->file('lampiran')) {
                 $validatedData['lampiran'] = AppHelper::instance()->uploadLampiran($request->lampiran, 'lampirans');
             }
+
             $validatedData['mahasiswa_id'] = Auth::guard('mahasiswa')->user()->id;
-            $validatedData['prodi'] = Auth::guard('mahasiswa')->user()->prodi;
+
+            $validatedData['prodi_id'] = $prodi->id;
+
             Pengajuan::create($validatedData);
+
             return redirect('pengajuan-mahasiswa')->with('success', 'Berhasil melakukan pengajuan tugas akhir');
         } else {
             return redirect('pengajuan-mahasiswa')->with('warning', 'Menunggu review dari prodi');

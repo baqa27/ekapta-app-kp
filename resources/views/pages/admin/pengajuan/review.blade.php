@@ -51,7 +51,7 @@
                                 </tr>
                                 <tr>
                                     <td><b class="mr-3">Prodi</b></td>
-                                    <td>{{ $pengajuan->mahasiswa->prodi }}</td>
+                                    <td>{{ $pengajuan->prodi->namaprodi }}</td>
                                 </tr>
                                 <tr>
                                     <td><b class="mr-3">Judul TA</b></td>

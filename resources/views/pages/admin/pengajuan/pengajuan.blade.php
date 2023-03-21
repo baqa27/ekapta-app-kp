@@ -53,7 +53,7 @@
                                         {{ $pengajuan->mahasiswa->nama }} - {{ $pengajuan->mahasiswa->nim }}
                                     </td>
                                     <td>
-                                        {{ $pengajuan->mahasiswa->prodi }}
+                                        {{ $pengajuan->prodi->namaprodi }}
                                     </td>
                                     <td>{{ $pengajuan->judul }}</td>
                                     <td>
