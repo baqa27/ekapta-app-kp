@@ -86,7 +86,7 @@
 
                             <div class="row">
                                 <div class="col-md-5">
-                                    Pembimbing Pendamping (1) Tugas Akhir
+                                    Pembimbing Pendamping (2) Tugas Akhir
                                 </div>
                                 <div class="col-md-7">
                                     <b>{{ $dosen_pendamping->nama . ', ' . $dosen_pendamping->gelar }}</b>
@@ -213,7 +213,7 @@
                                 <hr>
                                 <div class="row">
                                     <div class="col-md-5">
-                                        Tanggal Acc
+                                        Validasi Pendaftaran
                                     </div>
                                     <div class="col-md-7">
                                         <b class="text-success">{{ date('d M Y H:m', strtotime($ujian->tanggal_acc)) }}</b>

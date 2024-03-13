@@ -50,6 +50,7 @@
                                         <th>Prodi</th>
                                         <th>Semester</th>
                                         <th>Status</th>
+                                        <th>Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -68,6 +69,12 @@
                                             <td>
                                                 {{ \App\Helpers\AppHelper::instance()->getMahasiswaDetail($mahasiswa->nim) != null ? \App\Helpers\AppHelper::instance()->getMahasiswaDetail($mahasiswa->nim)->status : '' }}
                                             </td>
+                                            <td>
+                                                <a href="{{ route('mahasiswa.reset.password' , $mahasiswa->id) }}"
+                                                    class="btn btn-danger btn-sm shadow" onclick="return confirm('Yakin ingin reset password?')">
+                                                    <i class="fas fa-history"></i> Reset Password
+                                                </a>
+                                            </td>
                                         </tr>
                                     @endforeach
 
@@ -80,6 +87,7 @@
                                         <th>Prodi</th>
                                         <th>Semester</th>
                                         <th>Status</th>
+                                        <th>Aksi</th>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -103,6 +111,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
+                        <a href="https://drive.google.com/drive/folders/1AD3y7NZGUvjkoyQAdyegVzVXWNB_XJqQ?usp=sharing" class="btn btn-warning btn-sm shadow" target="_blank"><i class="fas fa-download"></i> Download Template File Import</a> <br><br>
                         <div class="form-group">
                             <label for="" class="form-label">Pilih File <br>
                                 <small>Format file <b>.csv / .xlsx </b></small></label>
@@ -146,6 +155,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
+                        <a href="https://drive.google.com/drive/folders/1AD3y7NZGUvjkoyQAdyegVzVXWNB_XJqQ?usp=sharing" class="btn btn-warning btn-sm shadow" target="_blank"><i class="fas fa-download"></i> Download Template File Import</a> <br><br>
                         <div class="form-group">
                             <label for="" class="form-label">Pilih File <br>
                                 <small>Format file <b>.csv / .xlsx </b></small></label>

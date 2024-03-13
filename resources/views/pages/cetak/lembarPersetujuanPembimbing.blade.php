@@ -232,11 +232,13 @@
             <td height="100" width="580">
                 <center>
                     <p>
+                        @if (\App\Helpers\AppHelper::instance()->getDosen($prodi->kodekaprodi))
                         Kaprodi {{ $prodi->namaprodi }} <br><br><br><br>
                         <b><u>{{ \App\Helpers\AppHelper::instance()->getDosen($prodi->kodekaprodi)->nama.',
                                 '.\App\Helpers\AppHelper::instance()->getDosen($prodi->kodekaprodi)->gelar
                                 }}</u></b><br>
                         <b>NIDN. {{ \App\Helpers\AppHelper::instance()->getDosen($prodi->kodekaprodi)->nidn }}</b>
+                        @endif
                     </p>
                 </center>
             </td>

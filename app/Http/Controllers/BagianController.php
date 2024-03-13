@@ -10,6 +10,7 @@ use App\Models\Pendaftaran;
 use App\Models\Prodi;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 
 class BagianController extends Controller
@@ -74,28 +75,32 @@ class BagianController extends Controller
             return back()->with('warning', 'Mahasiswa tidak ditemukan');
         }
         foreach ($pendaftaransAcc as $pendaftaran) {
-            $mahasiswas = Mahasiswa::where('nim', $pendaftaran->nim)->get();
-            foreach ($mahasiswas as $mahasiswa) {
-                foreach ($mahasiswa->dosens as $dosen) {
-                    if ($dosen->pivot->status == 'utama') {
-                        $bimbingan = Bimbingan::create([
-                            'mahasiswa_id' => $mahasiswa->id,
-                            'bagian_id' => $request->id,
-                            'pembimbing' => 'utama',
-                        ]);
-                        $bimbingan->dosens()->attach([$dosen->id]);
-                    } else if ($dosen->pivot->status == 'pendamping') {
-                        $bimbingan = Bimbingan::create([
-                            'mahasiswa_id' => $mahasiswa->id,
-                            'bagian_id' => $request->id,
-                            'pembimbing' => 'pendamping',
-                        ]);
-                        $bimbingan->dosens()->attach([$dosen->id]);
-                    }
+            $mahasiswa = $pendaftaran->mahasiswa;
+            foreach ($mahasiswa->dosens as $dosen) {
+                if ($dosen->pivot->status == 'utama') {
+                    $bimbingan = Bimbingan::create([
+                        'mahasiswa_id' => $mahasiswa->id,
+                        'bagian_id' => $request->id,
+                        'pembimbing' => 'utama',
+                    ]);
+                    $bimbingan->dosens()->attach([$dosen->id]);
+                } else if ($dosen->pivot->status == 'pendamping') {
+                    $bimbingan = Bimbingan::create([
+                        'mahasiswa_id' => $mahasiswa->id,
+                        'bagian_id' => $request->id,
+                        'pembimbing' => 'pendamping',
+                    ]);
+                    $bimbingan->dosens()->attach([$dosen->id]);
                 }
             }
         }
 
         return back()->with('success', 'Bagian Bimbingan berhasil diaktifkan');
+    }
+
+    public function up($id)
+    {
+        $bagian = Bagian::with(['prodi'])->where('id', $id)->first();
+        return $prodi = $bagian->prodi()->with(['bagians'])->get();
     }
 }

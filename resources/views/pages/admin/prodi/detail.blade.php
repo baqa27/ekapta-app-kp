@@ -55,33 +55,41 @@
                                         <span style="position: relative;top:2px;">{{ $bagian->bagian }}</span>
 
                                         @if ($bagian->is_seminar == 1)
-                                        <span class="badge bg-success ml-3" style="position: relative;top:2px;">
-                                            <i class="bi bi-check-circle mr-1"></i>
-                                            Sebagai Syarat Seminar</span>
+                                            <span class="badge bg-success ml-3" style="position: relative;top:2px;">
+                                                <i class="bi bi-check-circle mr-1"></i>
+                                                Sebagai Syarat Seminar</span>
                                         @endif
 
                                         @if ($bagian->is_pendadaran == 1)
-                                        <span class="badge bg-success ml-3" style="position: relative;top:2px;">
-                                            <i class="bi bi-check-circle mr-1"></i>
-                                            Sebagai Syarat Pendadaran</span>
+                                            <span class="badge bg-success ml-3" style="position: relative;top:2px;">
+                                                <i class="bi bi-check-circle mr-1"></i>
+                                                Sebagai Syarat Pendadaran</span>
                                         @endif
 
                                         <div class="float-right">
                                             <div class="d-flex">
-{{--                                                 @if (count($bagian->bimbingans) == 0)--}}
-{{--                                                    <div onclick="confirmActive()">--}}
-{{--                                                        <form action="{{ route('bagian.active') }}" method="post">--}}
-{{--                                                            @csrf--}}
-{{--                                                            <input type="hidden" name="id"--}}
-{{--                                                                value="{{ $bagian->id }}">--}}
-{{--                                                            <button class="btn btn-success btn-sm float-right mr-2"--}}
-{{--                                                                type="submit">--}}
-{{--                                                                <i class="fas fa-check-circle"></i>--}}
-{{--                                                                Aktifkan--}}
-{{--                                                            </button>--}}
-{{--                                                        </form>--}}
-{{--                                                    </div>--}}
-{{--                                                @endif--}}
+                                                @if (count($bagian->bimbingans) == 0)
+                                                    <div onclick="confirmActive()">
+                                                        <form action="{{ route('bagian.active') }}" method="post">
+                                                            @csrf
+                                                            <input type="hidden" name="id"
+                                                                value="{{ $bagian->id }}">
+                                                            <button class="btn btn-success btn-sm float-right mr-2"
+                                                                type="submit">
+                                                                <i class="fas fa-check-circle"></i>
+                                                                Aktifkan
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                @endif
+
+
+                                                {{-- <a href="{{ route('bagian.up', $bagian->id) }}" class="btn btn-secondary btn-sm">
+                                                    <i class="fas fa-arrow-up"></i>
+                                                </a>
+                                                <a href="{{ route('bagian.down', $bagian->id) }}" class="btn btn-secondary btn-sm">
+                                                    <i class="fas fa-arrow-down"></i>
+                                                </a> --}}
 
                                                 <button type="button" class="btn btn-primary btn-sm mr-2"
                                                     data-toggle="modal" data-target="#modal-edit-{{ $bagian->id }}">
@@ -164,6 +172,9 @@
                         </button>
                     </div>
                     <div class="modal-body">
+                        <a href="https://drive.google.com/drive/folders/1AD3y7NZGUvjkoyQAdyegVzVXWNB_XJqQ?usp=sharing"
+                            class="btn btn-warning btn-sm shadow" target="_blank"><i class="fas fa-download"></i>
+                            Download Template File Import</a> <br><br>
                         <div class="form-group">
                             <label for="" class="form-label">Pilih File Import<br>
                                 <small>Format file : <b>.csv / .xlsx </b></small></label>
@@ -220,16 +231,14 @@
                             </div>
 
                             <div class="form-check">
-                                <input type="checkbox" class="form-check-input" name="is_seminar" @if ($bagian->is_seminar == 1)
-                                    checked
-                                @endif>
-                                <label class="form-check-label" for="exampleCheck1" >Sebagai Syarat Seminar</label>
+                                <input type="checkbox" class="form-check-input" name="is_seminar"
+                                    @if ($bagian->is_seminar == 1) checked @endif>
+                                <label class="form-check-label" for="exampleCheck1">Sebagai Syarat Seminar</label>
                             </div>
 
                             <div class="form-check">
-                                <input type="checkbox" class="form-check-input" name="is_pendadaran" @if ($bagian->is_pendadaran == 1)
-                                checked
-                            @endif>
+                                <input type="checkbox" class="form-check-input" name="is_pendadaran"
+                                    @if ($bagian->is_pendadaran == 1) checked @endif>
                                 <label class="form-check-label" for="exampleCheck1">Sebagai Syarat Pendadaran</label>
                             </div>
                         </div>

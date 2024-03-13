@@ -81,7 +81,7 @@ class DosenController extends Controller
         return back()->with('success','TTD Dosen berhasil di update.');
     }
 
-    function account(){
+    public function account(){
         $dosen = Auth::guard('dosen')->user();
 
         $data = [
@@ -94,7 +94,7 @@ class DosenController extends Controller
         return view('pages.dosen.account', $data);
     }
 
-    function accountUpdate(Request $request, $id){
+    public function accountUpdate(Request $request, $id){
         $dosen = Dosen::findOrFail($id);
 
         $request->validate([
@@ -107,4 +107,21 @@ class DosenController extends Controller
 
         return back()->with('success', 'Password berhasil diubah');
     }
+
+    public function resetPassword($id){
+        $dosen = Dosen::findOrFail($id);
+        $dosen->update([
+            'password' => Hash::make($dosen->nidn)
+        ]);
+        return back()->with('success', 'Password berhasil direset');
+    }
+
+    public function changeManual($id){
+        $dosen = Dosen::findOrFail($id);
+        $dosen->update([
+            'is_manual' => $dosen->is_manual == 1 ? 0 : 1,
+        ]);
+        return back()->with('success', 'Password berhasil di'.$dosen->is_manual == 1 ? 'enable' : 'disable');
+    }
+
 }

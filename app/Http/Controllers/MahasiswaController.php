@@ -49,12 +49,12 @@ class MahasiswaController extends Controller
 
     public function import(Request $request)
     {
-        try {
+        //try {
             Excel::import(new MahasiswasImport, $request->file('file'));
             return back()->with('success', 'Data Mahasiswa berhasil di Import');
-        } catch (Exception $e) {
-            return back()->with('warning', 'Data Mahasiswa gagal di Import');
-        }
+        //} catch (Exception $e) {
+        //    return back()->with('warning', 'Data Mahasiswa gagal di Import');
+        //}
     }
 
     public function importDetail(Request $request)
@@ -91,5 +91,13 @@ class MahasiswaController extends Controller
         ]);
 
         return back()->with('success', 'Password berhasil diubah');
+    }
+
+    function resetPassword($id){
+        $mahasiswa = Mahasiswa::findOrFail($id);
+        $mahasiswa->update([
+            'password' => Hash::make($mahasiswa->nim)
+        ]);
+        return back()->with('success', 'Password berhasil direset');
     }
 }

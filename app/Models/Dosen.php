@@ -27,6 +27,7 @@ class Dosen extends Authenticatable
         'kodeprodi',
         'password',
         'ttd',
+        'is_manual',
     ];
 
     protected $hidden = [
@@ -35,9 +36,9 @@ class Dosen extends Authenticatable
 
     public function mahasiswas()
     {
-        return $this->belongsToMany(Mahasiswa::class, 'dosen_mahasiswas', 'mahasiswa_id', 'dosen_id')
+        return $this->belongsToMany(Mahasiswa::class, 'dosen_mahasiswas', 'dosen_id', 'mahasiswa_id')
             ->withTimestamps()
-            ->withPivot(['status']);
+            ->withPivot(['status','lampiran']);
     }
 
     public function prodis()

@@ -164,8 +164,7 @@
 
                                 <div class="form-group">
                                     <label for="exampleInputFile">Bukti Pembayaran Tugas Akhir <br>
-                                        <small>Pembayaran Tugas Akhir (TA) ke Juru bayar FASTIKOM. ( Mas
-                                            Harri)</small> </label>
+                                        <small>Pembayaran Tugas Akhir (TA) ke Juru bayar FASTIKOM (Mas Harri) di kantor FASTIKOM atau bisa transfer melalui Bank BRI No. <b>011201103039505</b> a.n. <b>Harri Kurniawan R</b>.</small> </label>
                                     <div class="input-group mb-3">
                                         <div class="custom-file">
                                             <input type="file"
@@ -185,13 +184,13 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="exampleInputEmail1">Nomor Pembayaran <br> <small>(PBXXXX) yang
+                                    <label for="exampleInputEmail1">Nomor Pembayaran (Opsional)<br> <small>(PBXXXX) yang
                                             tertera pada Bukti Bayar FASTIKOM (BUKAN NOMOR TRANSFER DARI
                                             BANK)</small></label>
                                     <input type="text"
                                         class="form-control @error('nomor_pembayaran') is-invalid @enderror"
                                         placeholder="Masukkan Nomor Pembayaran.." value="{{ old('nomor_pembayaran') }}"
-                                        name="nomor_pembayaran" required>
+                                        name="nomor_pembayaran">
                                     @error('nomor_pembayaran')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror

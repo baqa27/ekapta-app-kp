@@ -68,7 +68,7 @@
                                             </td>
                                             <td>
                                                 @if ($pengajuan->tanggal_acc != null)
-                                                    {{ date('d M y H:m', strtotime($pengajuan->tanggal_acc)) }}
+                                                    {{ date('d M Y H:m', strtotime($pengajuan->tanggal_acc)) }}
                                                 @endif
                                             </td>
                                             <td>

@@ -76,11 +76,11 @@
                 </li>
 
                 <li class="nav-item
-                 @if($active == 'bimbingan' || $active == 'seminar' || $active == 'ujian')
+                 @if($active == 'bimbingan' || $active == 'seminar' || $active == 'ujian' || $active=='bimbingan-progress')
                     menu-open
                     @endif">
                     <a href="#" class="nav-link
-                    @if($active == 'bimbingan' || $active == 'seminar' || $active == 'ujian')
+                    @if($active == 'bimbingan' || $active == 'seminar' || $active == 'ujian' || $active=='bimbingan-progress')
                     active
                     @endif">
                         <i class="nav-icon fas fa-th"></i>
@@ -90,6 +90,16 @@
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
+
+                        <li class="nav-item">
+                            <a href="{{ route('bimbingan.dosen.progress') }}"
+                               class="nav-link {{ $active=='bimbingan-progress' ? 'active' : '' }}">
+                                <i class="nav-icon far fa-circle"></i>
+                                <p>
+                                    Progress Bimbingan TA
+                                </p>
+                            </a>
+                        </li>
 
                         <li class="nav-item">
                             <a href="{{ route('bimbingan.dosen') }}"

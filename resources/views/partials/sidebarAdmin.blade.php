@@ -76,11 +76,11 @@
                 </li>
 
                 <li class="nav-item
-                    @if($active == 'pengajuan' || $active == 'pendaftaran' || $active == 'bimbingan' || $active == 'seminar' || $active == 'ujian')
+                    @if($active == 'pengajuan' || $active == 'pendaftaran' || $active == 'bimbingan' || $active == 'seminar' || $active == 'ujian' || $active == 'bimbingan-input')
                     menu-open
                     @endif">
                     <a href="#" class="nav-link
-                    @if($active == 'pengajuan' || $active == 'pendaftaran' || $active == 'bimbingan' || $active == 'seminar' || $active == 'ujian')
+                    @if($active == 'pengajuan' || $active == 'pendaftaran' || $active == 'bimbingan' || $active == 'seminar' || $active == 'ujian' || $active == 'bimbingan-input')
                     active
                     @endif">
                         <i class="nav-icon fas fa-th"></i>
@@ -105,6 +105,24 @@
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>
                                     Validasi Pendaftaran TA
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('bimbingan.admin') }}"
+                               class="nav-link {{ $active == 'bimbingan' ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>
+                                    Progres Bimbingan TA
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('bimbingan.admin.input') }}"
+                               class="nav-link {{ $active == 'bimbingan-input' ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>
+                                    Input Bimbingan TA
                                 </p>
                             </a>
                         </li>

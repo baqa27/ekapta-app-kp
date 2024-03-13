@@ -29,6 +29,16 @@
                     <a href="{{ route('ujian.create') }}"><b><u>Ujian Pendadaran TA!</u></b></a>
                 </div>
             @endif
+          
+           @if(count($reviews_acc) < 3)
+                <div class="mb-3 bg-secondary rounded p-2">
+                    Silahkan tunggu review dan penilaian dari dosen pembimbing dan penguji!
+                </div>
+            @else
+                <div class="mb-3 bg-primary rounded p-2">
+                    Selamat bimbingan Seminar TA anda sudah selesai.
+                </div>
+            @endif
 
             @if (!$seminar)
                 <a href="{{ route('seminar.create') }}" class="btn btn-primary mb-4"><i class="fas fa-plus mr-2"></i>
@@ -44,11 +54,6 @@
                             <div class="mb-3 bg-primary rounded p-2">
                                 Pendaftaran Seminar TA sudah di ACC oleh Admin, silahkan submit <a
                                     href="{{ route('seminar.reviews', $seminar->id)  }}"><u><b>Laporan Proposal!</b></u></a>
-                            </div>
-                            @break
-                        @else
-                            <div class="mb-3 bg-secondary rounded p-2">
-                                Silahkan tunggu review dan penilaian dari dosen pembimbing dan penguji!
                             </div>
                             @break
                         @endif

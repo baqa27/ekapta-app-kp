@@ -21,6 +21,16 @@
         <div class="container-fluid">
 
             <div class="row">
+                <div class="col-12">
+                    <div class="mb-4">
+                        <a href="{{ route('bimbingan.rekap.dosen') }}" class="btn btn-secondary btn-sm shadow" target="_blank">
+                            <i class="bi bi-people"></i> Rekap Bimbingan Dosen
+                        </a>
+                        <a href="{{ route('bimbingan.prodi') }}" class="btn btn-success btn-sm shadow">
+                            <i class="bi bi-download"></i> Download Laporan Progres Bimbingan TA
+                        </a>
+                    </div>
+                </div>
                 <div class="col-12 col-sm-6 col-md-3">
                     <div class="info-box">
                         <span class="info-box-icon bg-secondary elevation-1"><i class="fas fa-check"></i></span>

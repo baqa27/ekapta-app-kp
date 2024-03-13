@@ -45,7 +45,7 @@
         <td height="60">
             <center>
                 <h4>
-                    <u>BERITA ACARA UJIAN TUGAS AKHIR</u>
+                    <u>{{ $title }}</u>
                 </h4>
             </center>
         </td>
@@ -202,8 +202,7 @@
 <table>
     <tr>
         <td colspan="3" width="700" height="50">
-            <p class="text-keterangan">Wonosobo,
-                8 Februari 2023</p>
+            <p class="text-keterangan">Wonosobo, {{ $tanggal_ujian }}</p>
         </td>
     </tr>
     <tr>

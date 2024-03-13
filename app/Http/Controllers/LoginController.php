@@ -71,6 +71,9 @@ class LoginController extends Controller
         if (Auth::guard('admin')->attempt(['kode' => $request->kode, 'password' => $request->password, 'type' => Admin::TYPE_SUPER_ADMIN])) {
             $request->session()->regenerate();
             return redirect()->intended('dashboard-admin');
+        } elseif (Auth::guard('admin')->attempt(['kode' => $request->kode, 'password' => $request->password, 'type' => Admin::TYPE_ADMIN_FOTOCOPY])) {
+            $request->session()->regenerate();
+            return redirect()->intended('dashboard-fotokopi');
         }
 
         return back()->with('error', 'User tidak ditemukan');

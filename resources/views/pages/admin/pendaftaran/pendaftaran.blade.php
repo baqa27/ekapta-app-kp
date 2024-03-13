@@ -128,7 +128,7 @@
                                                     <td>
                                                         {{  $pendaftaran->mahasiswa->prodi }}
                                                     </td>
-                                                    <td>{{ $pendaftaran->judul }}</td>
+                                                    <td>{{ $pendaftaran->pengajuan->judul }}</td>
                                                     <td>
                                                         @if ($pendaftaran->status == 'review')
                                                             <span class="badge bg-secondary">Review</span>
@@ -212,7 +212,7 @@
                                                     <td>
                                                         {{  $pendaftaran->mahasiswa->prodi }}
                                                     </td>
-                                                    <td>{{ $pendaftaran->judul }}</td>
+                                                    <td>{{ $pendaftaran->pengajuan->judul }}</td>
                                                     <td>
                                                         @if ($pendaftaran->status == 'review')
                                                             <span class="badge bg-secondary">Review</span>

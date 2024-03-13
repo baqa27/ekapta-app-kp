@@ -35,7 +35,7 @@ class Mahasiswa extends Authenticatable
     {
         return $this->belongsToMany(Dosen::class, 'dosen_mahasiswas', 'mahasiswa_id', 'dosen_id')
             ->withTimestamps()
-            ->withPivot(['status']);
+            ->withPivot(['status','lampiran']);
     }
 
     public function bimbingans()
@@ -63,5 +63,10 @@ class Mahasiswa extends Authenticatable
     public function ujian()
     {
         return $this->hasOne(Ujian::class);
+    }
+
+    public function jilid()
+    {
+        return $this->hasOne(Jilid::class);
     }
 }

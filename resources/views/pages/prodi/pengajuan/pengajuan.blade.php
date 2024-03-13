@@ -186,7 +186,7 @@
                                 <!-- /.tab-pane -->
                                 <div class="tab-pane" id="tab_3">
 
-                                    <table id="example2" class="table table-bordered">
+                                    <table id="example3" class="table table-bordered">
                                         <thead>
                                             <tr>
                                                 <th>No</th>
@@ -248,7 +248,7 @@
                                 <!-- /.tab-pane -->
                                 <div class="tab-pane" id="tab_4">
 
-                                    <table id="example2" class="table table-bordered">
+                                    <table id="example4" class="table table-bordered">
                                         <thead>
                                             <tr>
                                                 <th>No</th>

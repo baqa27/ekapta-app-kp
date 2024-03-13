@@ -40,6 +40,7 @@
                                 <thead>
                                     <tr>
                                         <th>No</th>
+                                        <th>Kode Prodi</th>
                                         <th>Nama Prodi</th>
                                         <th>Jenjang</th>
                                         <th>Bagian Bimbingan</th>
@@ -53,6 +54,7 @@
                                     @foreach ($prodis as $prodi)
                                         <tr>
                                             <td>{{ $no++ }}</td>
+                                            <td>{{ $prodi->kode }}</td>
                                             <td>{{ $prodi->namaprodi }}</td>
                                             <td>{{ $prodi->jenjang }}</td>
                                             <td>
@@ -70,6 +72,10 @@
                                                     class="btn btn-warning btn-sm shadow">
                                                     <i class="fas fa-star"></i> Presentase Nilai
                                                 </a>
+                                                <a href="{{ route('prodi.reset.password' , $prodi->id) }}"
+                                                    class="btn btn-danger btn-sm shadow" onclick="return confirm('Yakin ingin reset password?')">
+                                                    <i class="fas fa-history"></i> Reset Password
+                                                </a>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -78,6 +84,7 @@
                                 <tfoot>
                                     <tr>
                                         <th>No</th>
+                                        <th>Kode Prodi</th>
                                         <th>Nama Prodi</th>
                                         <th>Jenjang</th>
                                         <th>Bagian Bimbingan</th>
@@ -106,6 +113,7 @@
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
+                            <a href="https://drive.google.com/drive/folders/1AD3y7NZGUvjkoyQAdyegVzVXWNB_XJqQ?usp=sharing" class="btn btn-warning btn-sm shadow" target="_blank"><i class="fas fa-download"></i> Download Template File Import</a> <br><br>
                             <label for="" class="form-label">Pilih File <br>
                                 <small>Format file <b>.csv / .xlsx </b></small></label>
                             <div class="input-group mb-3">

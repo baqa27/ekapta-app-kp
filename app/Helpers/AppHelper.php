@@ -53,6 +53,7 @@ class AppHelper
         if ($prodi) {
             return $prodi;
         }
+        return null;
     }
 
     public function getPendaftaran($nim)
@@ -83,8 +84,8 @@ class AppHelper
     {
         if ($lampiran) {
             // Use when hoting
-            //$lampiranPath = $lampiran->store($path, 'public');
-            //return '/ekapta-app/storage/app/public/'.$lampiranPath;
+            // $lampiranPath = $lampiran->store($path, 'public');
+            // return '/ekapta-app/storage/app/public/'.$lampiranPath;
 
             $lampiranPath = $lampiran->store($path, 'public');
             return $lampiranPath;
@@ -94,16 +95,17 @@ class AppHelper
     public function deleteLampiran($lampiran)
     {
         // Use when hoting
-        //$target = Str::substr($lampiran,20); //output : /app/public/[files]
-        //if ($target) {
-        //   if (file_exists(storage_path($target))) {
-        //        unlink(storage_path($target));
+        $target = Str::substr($lampiran,20); //output : /app/public/[files]
+        // if ($target) {
+        //    if (file_exists(storage_path($target))) {
+        //         unlink(storage_path($target));
         //    }
-        //}
+        // }
+
         if ($lampiran) {
-            if (file_exists(public_path($lampiran))) {
-                unlink(public_path($lampiran));
-            }
+           if (file_exists(public_path($lampiran))) {
+               unlink(public_path($lampiran));
+           }
         }
     }
 
@@ -141,6 +143,36 @@ class AppHelper
         $nilai = ($nilai_1 * $presentase_nilai->presentase_1 / 100) + ($nilai_2 * $presentase_nilai->presentase_2 / 100) + ($nilai_3 * $presentase_nilai->presentase_3 / 100) + ($nilai_4 * $presentase_nilai->presentase_4 / 100);
 
         return $nilai;
+    }
+
+    public static function parse_date($date){
+        $parse_date = Carbon::parse($date);
+        $new_date = $parse_date->isoFormat('dddd, D MMMM YYYY H:mm');
+        return $new_date.' WIB';
+    }
+
+    public static function parse_date_short($date){
+        $parse_date = Carbon::parse($date);
+        $new_date = $parse_date->isoFormat('dddd, D MMMM YYYY');
+        return $new_date;
+    }
+
+    public static function count_mahasiswa_bimbingan_dosen($dosen, $is_utama = true){
+        if ($is_utama) {
+            $mahasiswas = $dosen->mahasiswas()->wherePivot('status', 'utama')->get();
+        }else{
+            $mahasiswas = $dosen->mahasiswas()->wherePivot('status', 'pendamping')->get();
+        }
+        return count($mahasiswas);
+    }
+
+    public static function check_bimbingan_is_complete($mahasiswa){
+        $bimbingans_acc = $mahasiswa->bimbingans()->where('status', Bimbingan::DITERIMA)->get();
+        $prodi = Prodi::where('namaprodi', $mahasiswa->prodi)->first();
+        if (count($bimbingans_acc ) - count($prodi->bagians) == count($prodi->bagians)){
+            return true;
+        }
+        return false;
     }
 
     public static function instance()

@@ -14,6 +14,7 @@ use App\Models\Ujian;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use PDF;
+use Illuminate\Support\Str;
 
 class CetakController extends Controller
 {
@@ -31,8 +32,8 @@ class CetakController extends Controller
             'kop_surat' => AppHelper::instance()->convertImage('public/ekapta/assets/img/kop-surat.jpg'),
             'mahasiswa' => $mahasiswa,
             'pengajuan' => $pengajuan,
-            'dosen_utama' => $dosenUtama,
-            'dosen_pendamping' => $dosenPendamping,
+            'dosen_utama' => $dosenUtama ? $dosenUtama : null,
+            'dosen_pendamping' => $dosenPendamping ? $dosenPendamping : null,
             'prodi' => $prodi,
         ];
 
@@ -84,8 +85,10 @@ class CetakController extends Controller
             'qr_code' => $qrcode,
             'date_expired' => $dateExpired->day.' '.$dateExpired->monthName.' '.$dateExpired->year,
             'dekan' => $dekan,
-            'stempel' => AppHelper::instance()->convertImage('storage/app/public/' . $prodi->fakultas->image),
-            'ttd_dekan' => AppHelper::instance()->convertImage('storage/app/public/' . $dekan->image),
+            'stempel' => $prodi->fakultas->image ? AppHelper::instance()->convertImage('storage/app/public/' . substr($prodi->fakultas->image,0)) : null,
+            // 'stempel' => $prodi->fakultas->image ? AppHelper::instance()->convertImage('storage/app/public/' . substr($prodi->fakultas->image,31)) : null,
+            'ttd_dekan' => $dekan->image ? AppHelper::instance()->convertImage('storage/app/public/' . substr($dekan->image,0)): null,
+            // 'ttd_dekan' => $dekan->image ? AppHelper::instance()->convertImage('storage/app/public/' . substr($dekan->image,31)): null,
         ];
 
         $pdf = PDF::setOptions(['isHTML5ParserEnabled' => true, 'isRemoteEnabled' => true]);
@@ -124,8 +127,10 @@ class CetakController extends Controller
             'qr_code' => $qrcode,
             'date_expired' => $dateExpired->day.' '.$dateExpired->monthName.' '.$dateExpired->year,
             'dekan' => $dekan,
-            'stempel' => $prodi->fakultas->image != null ? AppHelper::instance()->convertImage('storage/app/public/' . $prodi->fakultas->image) : '',
-            'ttd_dekan' => $dekan->image != null ? AppHelper::instance()->convertImage('storage/app/public/' . $dekan->image) : '',
+            'stempel' => $prodi->fakultas->image != null ? AppHelper::instance()->convertImage('storage/app/public/' . substr($prodi->fakultas->image, 0)) : null,
+            // 'stempel' => $prodi->fakultas->image != null ? AppHelper::instance()->convertImage('storage/app/public/' . substr($prodi->fakultas->image, 31)) : null,
+            'ttd_dekan' => $dekan->image != null ? AppHelper::instance()->convertImage('storage/app/public/' . substr($dekan->image, 0)) : null,
+            // 'ttd_dekan' => $dekan->image != null ? AppHelper::instance()->convertImage('storage/app/public/' . substr($dekan->image, 31)) : null,
         ];
 
         $pdf = PDF::setOptions(['isHTML5ParserEnabled' => true, 'isRemoteEnabled' => true]);
@@ -177,24 +182,25 @@ class CetakController extends Controller
         $seminars_acc = $seminar->reviews()->where('status', ReviewSeminar::DITERIMA)->get();
 
         $data = [
-            'title' => 'Berita Acara Ujian Proposal',
+            'title' => 'BERITA ACARA SEMINAR TUGAS AKHIR',
             'kop_surat' => AppHelper::instance()->convertImage('public/ekapta/assets/img/kop-surat.jpg'),
             'ujian_or_seminar' => $seminar,
-            'ttd_dosen_1' => AppHelper::instance()->convertImage('storage/app/public/' . $dosens[0]->ttd),
-            'ttd_dosen_2' => AppHelper::instance()->convertImage('storage/app/public/' . $dosens[1]->ttd),
-            'ttd_dosen_3' => AppHelper::instance()->convertImage('storage/app/public/' . $dosens[2]->ttd),
+            'ttd_dosen_1' => $dosens[0]->ttd ? AppHelper::instance()->convertImage('storage/app/public/' . substr($dosens[0]->ttd, 31)): null,
+            'ttd_dosen_2' => $dosens[0]->ttd ? AppHelper::instance()->convertImage('storage/app/public/' . substr($dosens[1]->ttd, 31)): null,
+            'ttd_dosen_3' => $dosens[0]->ttd ? AppHelper::instance()->convertImage('storage/app/public/' . substr($dosens[2]->ttd, 31)): null,
             'dosen_1' => $dosens[0],
             'dosen_2' => $dosens[1],
             'dosen_3' => $dosens[2],
             'nilai' => $nilai_huruf,
             'is_complete' => count($seminars_acc) == 5 ? true : null,
+            'tanggal_ujian' => Carbon::parse($seminar->tanggal_ujian)->day.' '.Carbon::parse($seminar->tanggal_ujian)->monthName.' '.Carbon::parse($seminar->tanggal_ujian)->year,
         ];
 
         $pdf = PDF::setOptions(['isHTML5ParserEnabled' => true, 'isRemoteEnabled' => true]);
         $pdf->loadView('pages.cetak.berita-acara-ujian', $data);
         $pdf->setPaper('A4', 'portrait');
 
-        return $pdf->stream('Berita-Acara-Ujian-Proposal.pdf');
+        return $pdf->stream('Berita-Acara-Seminar-Proposal.pdf');
     }
 
     public function cetakBeritaAcaraUjianPendadaran($ujian)
@@ -239,17 +245,18 @@ class CetakController extends Controller
         $ujians_acc = $ujian->reviews()->where('status', ReviewUjian::DITERIMA)->get();
 
         $data = [
-            'title' => 'Berita Acara Ujian Proposal',
+            'title' => 'BERITA ACARA UJIAN TUGAS AKHIR',
             'kop_surat' => AppHelper::instance()->convertImage('public/ekapta/assets/img/kop-surat.jpg'),
             'ujian_or_seminar' => $ujian,
-            'ttd_dosen_1' => AppHelper::instance()->convertImage('storage/app/public/' . $dosens[0]->ttd),
-            'ttd_dosen_2' => AppHelper::instance()->convertImage('storage/app/public/' . $dosens[1]->ttd),
-            'ttd_dosen_3' => AppHelper::instance()->convertImage('storage/app/public/' . $dosens[2]->ttd),
+            'ttd_dosen_1' => AppHelper::instance()->convertImage('storage/app/public/' . substr($dosens[0]->ttd, 31)),
+            'ttd_dosen_2' => AppHelper::instance()->convertImage('storage/app/public/' . substr($dosens[1]->ttd, 31)),
+            'ttd_dosen_3' => AppHelper::instance()->convertImage('storage/app/public/' . substr($dosens[2]->ttd, 31)),
             'dosen_1' => $dosens[0],
             'dosen_2' => $dosens[1],
             'dosen_3' => $dosens[2],
             'nilai' => $nilai_huruf,
             'is_complete' => count($ujians_acc) == 5 ? true : null,
+            'tanggal_ujian' => Carbon::parse($ujian->tanggal_ujian)->day.' '.Carbon::parse($ujian->tanggal_ujian)->monthName.' '.Carbon::parse($ujian->tanggal_ujian)->year,
         ];
 
         $pdf = PDF::setOptions(['isHTML5ParserEnabled' => true, 'isRemoteEnabled' => true]);
@@ -257,5 +264,47 @@ class CetakController extends Controller
         $pdf->setPaper('A4', 'portrait');
 
         return $pdf->stream('Berita-Acara-Ujian-Pendadaran.pdf');
+    }
+
+    public function cetakRiwayatBimbinganMahasiswa(){
+        $mahasiswa = Mahasiswa::where('nim', Auth::guard('mahasiswa')->user()->nim)->first();
+        $pengajuan = $mahasiswa->pengajuans()->where('status', Pengajuan::DITERIMA)->first();
+        $pendaftaran = Pendaftaran::where('pengajuan_id', $pengajuan->id)->first();
+        $prodi = Prodi::where('namaprodi', $mahasiswa->prodi)->first();
+        $dosenUtama = $mahasiswa->dosens()->where('status', 'utama')->first();
+        $dosenPendamping = $mahasiswa->dosens()->where('status', 'pendamping')->first();
+
+        $qrcode = 'data:image/' . ';base64,' . base64_encode(\QrCode::format('svg')->size(200)->errorCorrection('H')->generate(url('public/riwayat-bimbingan/' . $mahasiswa->id)));
+
+        $dateLocale = Carbon::parse(now())->day.' '.Carbon::parse(now())->monthName.' '.Carbon::parse(now())->year;
+
+        $dateExpired = Carbon::parse($pendaftaran->tanggal_acc)->addMonthsNoOverflow(12);
+
+        $bimbingan_dosen_utama = $dosenUtama->bimbingans()->with(['revisis','bagian'])->where('mahasiswa_id', $mahasiswa->id)->get();
+        $bimbingan_dosen_pendamping = $dosenPendamping->bimbingans()->with(['revisis','bagian'])->where('mahasiswa_id', $mahasiswa->id)->get();
+
+        $data = [
+            'title' => 'Lembar Bimbingan Skripsi',
+            'kop_surat' => AppHelper::instance()->convertImage('public/ekapta/assets/img/kop-surat.jpg'),
+            'mahasiswa' => $mahasiswa,
+            'pendaftaran' => $pendaftaran,
+            'pengajuan' => $pengajuan,
+            'dosen_utama' => $dosenUtama,
+            'dosen_pendamping' => $dosenPendamping,
+            'prodi' => $prodi,
+            'date' => now(),
+            'dateLocale' => $dateLocale,
+            'qr_code' => $qrcode,
+            'date_expired' => $dateExpired->day.' '.$dateExpired->monthName.' '.$dateExpired->year,
+            'ttd_dosen_utama' => $dosenUtama->ttd != null ? AppHelper::instance()->convertImage('storage/app/public/' . substr($dosenUtama->ttd, 0)) : null,
+            'ttd_dosen_pendamping' => $dosenPendamping->ttd != null ? AppHelper::instance()->convertImage('storage/app/public/' . substr($dosenPendamping->ttd, 0)) : null,
+            'bimbingan_dosen_utama' => $bimbingan_dosen_utama,
+            'bimbingan_dosen_pendamping' => $bimbingan_dosen_pendamping,
+        ];
+
+        $pdf = PDF::setOptions(['isHTML5ParserEnabled' => true, 'isRemoteEnabled' => true]);
+        $pdf->loadView('pages.cetak.lembarBimbinganSkripsi', $data);
+        $pdf->setPaper('A4', 'portrait');
+        return $pdf->stream('Lembar-Bimbingan-Skripsi.pdf');
     }
 }

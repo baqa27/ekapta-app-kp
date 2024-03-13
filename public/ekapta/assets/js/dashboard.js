@@ -136,6 +136,15 @@ $(function() {
     }).buttons().container().appendTo('#example3_wrapper .col-md-6:eq(0)');
 
 });
+$(function() {
+    $("#examplebutton").DataTable({
+        "responsive": true,
+        "lengthChange": false,
+        "autoWidth": false,
+        "buttons": ["copy", "csv", "excel", "pdf", "print"]
+    }).buttons().container().appendTo('#examplebutton_wrapper .col-md-6:eq(0)');
+
+});
 
 // Calendar
 // $('#calendar').datetimepicker({

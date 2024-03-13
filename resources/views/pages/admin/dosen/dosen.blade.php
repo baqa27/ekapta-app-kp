@@ -61,18 +61,39 @@
                                             <td>{{ $no++ }}</td>
                                             <td>{{ $dosen->nidn }}</td>
                                             <td>{{ $dosen->nama . ', ' . $dosen->gelar }}</td>
-                                            <td>
+                                            {{-- <td>
                                                 {{ \App\Helpers\AppHelper::instance()->getProdi($dosen->kodeprodi) != null ? \App\Helpers\AppHelper::instance()->getProdi($dosen->kodeprodi)->namaprodi : '' }}
+                                            </td> --}}
+                                            <td>
+                                                @foreach ($dosen->prodis as $prodi)
+                                                    {{ $prodi->namaprodi }},
+                                                @endforeach
                                             </td>
                                             <th>
-                                                @if($dosen->ttd)
-                                                    <img src="{{ asset($dosen->ttd) }}" height="50"/>
+                                                @if ($dosen->ttd)
+                                                    <img src="{{ asset($dosen->ttd) }}" height="50" />
                                                 @endif
                                             </th>
                                             <td>
+                                                @if ($dosen->is_manual == 1)
+                                                    <a href="{{ route('dosen.change.manual', $dosen->id) }}"
+                                                        class="btn btn-secondary btn-sm shadow" onclick="return confirm('Yakin ingin disable?')">
+                                                        <i class="bi bi-circle mr-1"></i> Disable Input Manual
+                                                    </a>
+                                                @else
+                                                <a href="{{ route('dosen.change.manual', $dosen->id) }}"
+                                                    class="btn btn-success btn-sm shadow" onclick="return confirm('Yakin ingin enable?')">
+                                                    <i class="bi bi-check mr-1"></i> Enable Input Manual
+                                                </a>
+                                                @endif
                                                 <a href="{{ route('dosen.edit', $dosen->id) }}"
-                                                   class="btn btn-primary btn-sm shadow">
+                                                    class="btn btn-primary btn-sm shadow">
                                                     <i class="bi bi-gear mr-1"></i> Setting
+                                                </a>
+                                                <a href="{{ route('dosen.reset.password', $dosen->id) }}"
+                                                    class="btn btn-danger btn-sm shadow"
+                                                    onclick="return confirm('Yakin ingin reset password?')">
+                                                    <i class="fas fa-history"></i> Reset Password
                                                 </a>
                                             </td>
                                         </tr>
@@ -110,6 +131,9 @@
                         </button>
                     </div>
                     <div class="modal-body">
+                        <a href="https://drive.google.com/drive/folders/1AD3y7NZGUvjkoyQAdyegVzVXWNB_XJqQ?usp=sharing"
+                            class="btn btn-warning btn-sm shadow" target="_blank"><i class="fas fa-download"></i> Download
+                            Template File Import</a> <br><br>
                         <div class="form-group">
                             <label for="" class="form-label">Pilih File <br>
                                 <small>Format file <b>.csv / .xlsx </b></small></label>
@@ -152,6 +176,9 @@
                         </button>
                     </div>
                     <div class="modal-body">
+                        <a href="https://drive.google.com/drive/folders/1AD3y7NZGUvjkoyQAdyegVzVXWNB_XJqQ?usp=sharing"
+                            class="btn btn-warning btn-sm shadow" target="_blank"><i class="fas fa-download"></i> Download
+                            Template File Import</a> <br><br>
                         <div class="form-group">
                             <label for="" class="form-label">Pilih File <br>
                                 <small>Format file <b>.csv / .xlsx </b></small></label>

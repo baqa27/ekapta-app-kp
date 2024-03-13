@@ -23,6 +23,19 @@
     <div class="content">
         <div class="container">
 
+            @if (\App\Helpers\AppHelper::check_bimbingan_is_complete($mahasiswa))
+                <a href="{{ route('cetak.riwayat.bimbingan.mahasiswa') }}" class="btn btn-warning shadow mb-3" target="_blank"><i class="fas fa-download"></i> DOWNLOAD LEMBAR BIMBINGAN SKRIPSI</a>
+                @if ($jilid)
+                @if ($jilid->status == 1)
+                <a href="#" class="btn btn-success shadow mb-3"><i class="bi bi-check-circle "></i> PENJILIDAN SUDAH DI KONFIRMASI. SILAHKAN BAYAR KE FOTOKOPIAN SEBESAR <b>Rp {{ number_format($jilid->total_pembayaran, 0, ',', '.') }}</b></a>
+                @else
+                <a href="#" class="btn btn-secondary shadow mb-3"><i class="bi bi-hourglass-bottom "></i> SUDAH PENGAJUAN JILID KE FOTOKOPIAN. SILAHKAN TUNGGU KONFIRMASI DARI ADMIN!</a>
+                @endif
+                @else
+                <a href="{{ route('jilid.store') }}" class="btn btn-primary shadow mb-3"><i class="fas fa-book"></i> AJUKAN PENJILIDAN SKRIPSI KE FOTOKOPIAN</a>
+                @endif
+            @endif
+
             @if ($is_expired)
                 <div class="mb-3 bg-danger rounded p-2">
                     Masa bimbingan anda sudah habis, silahkan lakukan <a href="{{ route('pendaftaran.disable', $pendaftaran_acc->id) }}"><u><b>Perpanjangan

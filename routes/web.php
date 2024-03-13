@@ -20,6 +20,7 @@ use App\Http\Controllers\ReviewSeminarController;
 use App\Http\Controllers\UjianController;
 use App\Http\Controllers\ReviewUjianController;
 use App\Http\Controllers\DosenProdiController;
+use App\Http\Controllers\JilidController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -94,10 +95,13 @@ Route::post('/bagian/update', [BagianController::class, 'update'])->name('bagian
 Route::post('/bagian/delete', [BagianController::class, 'delete'])->name('bagian.delete')->middleware('isAdmin');
 Route::post('/bagian/import', [BagianController::class, 'import'])->name('bagian.import')->middleware('isAdmin');
 Route::post('/bagian/active', [BagianController::class, 'bagianActive'])->name('bagian.active')->middleware('isAdmin');
+Route::get('/bagian/up/{id}', [BagianController::class, 'up'])->name('bagian.up')->middleware('isAdmin');
+Route::get('/bagian/down/{id}', [BagianController::class, 'down'])->name('bagian.down')->middleware('isAdmin');
 
 // Bimbingan TA
 Route::get('/bimbingan-prodi', [BimbinganController::class, 'bimbinganProdi'])->name('bimbingan.prodi')->middleware('isProdi');
 Route::get('/bimbingan-dosen', [BimbinganController::class, 'bimbinganDosen'])->name('bimbingan.dosen')->middleware('isDosen');
+Route::get('/bimbingan-dosen-progress', [BimbinganController::class, 'bimbinganDosenProgress'])->name('bimbingan.dosen.progress')->middleware('isDosen');
 Route::get('/bimbingan-mahasiswa', [BimbinganController::class, 'bimbinganMahasiswa'])->name('bimbingan.mahasiswa')->middleware('isMahasiswa');
 Route::get('/bimbingan/create', [BimbinganController::class, 'create'])->name('bimbingan.create')->middleware('isMahasiswa');
 Route::post('/bimbingan/store', [BimbinganController::class, 'store'])->name('bimbingan.store')->middleware('isMahasiswa');
@@ -112,6 +116,11 @@ Route::get('/bimbingan/review/{id}', [BimbinganController::class, 'bimbinganRevi
 Route::post('/bimbingan/cancel/acc', [BimbinganController::class, 'cancelAcc'])->name('bimbingan.cancel.acc')->middleware('isDosen');
 Route::post('/bimbingan/cancel/revisi', [BimbinganController::class, 'cancelRevisi'])->name('bimbingan.cancel.revisi')->middleware('isDosen');
 Route::get('/bimbingan/review-prodi/{id}', [BimbinganController::class, 'reviewProdi'])->name('bimbingan.review.prodi')->middleware('isProdi');
+Route::get('/bimbingan/review-admin/{id}', [BimbinganController::class, 'reviewAdmin'])->name('bimbingan.review.admin')->middleware('isAdmin');
+Route::get('/bimbingan/rekap-dosen', [BimbinganController::class, 'rekapDosen'])->name('bimbingan.rekap.dosen')->middleware('isProdi');
+Route::get('/bimbingan/input', [BimbinganController::class, 'bimbinganAdminInput'])->name('bimbingan.admin.input')->middleware('isAdmin');
+Route::get('/bimbingan/input/{dosen_id}/{mahasiswa_id}', [BimbinganController::class, 'bimbinganAdminInputCreate'])->name('bimbingan.admin.input.create')->middleware('isAdmin');
+Route::post('/bimbingan/store', [BimbinganController::class, 'bimbinganAdminInputStore'])->name('bimbingan.admin.input.store')->middleware('isAdmin');
 
 Route::group(['middleware' => 'isMahasiswa'], function(){
     // Route for Seminar TA
@@ -230,6 +239,7 @@ Route::get('/dosens', [DosenController::class, 'index'])->name('dosens')->middle
 Route::post('/dosen/import', [DosenController::class, 'import'])->name('dosen.import')->middleware('isAdmin');
 Route::get('dosen/{id}', [DosenController::class, 'edit'])->name('dosen.edit')->middleware('isAdmin');
 Route::put('dosen/{id}', [DosenController::class, 'update'])->name('dosen.update')->middleware('isAdmin');
+Route::get('/dosen/change-manual/{id}', [DosenController::class, 'changeManual'])->name('dosen.change.manual')->middleware('isAdmin');
 
 //Fakultas
 Route::get('/fakultas', [FakultasController::class, 'index'])->name('fakultas')->middleware('isAdmin');
@@ -247,6 +257,12 @@ Route::post('/dekan/delete', [DekanController::class, 'delete'])->name('dekan.de
 Route::post('/dekan/enabled', [DekanController::class, 'enabled'])->name('dekan.enabled')->middleware('isAdmin');
 Route::post('/dekan/disabled', [DekanController::class, 'disabled'])->name('dekan.disabled')->middleware('isAdmin');
 
+// Jilid
+Route::get('dashboard-fotokopi',[JilidController::class, 'index'])->name('jilid.index')->middleware('isAdminFotokopi');
+Route::get('jilid/detail/{id}',[JilidController::class, 'detail'])->name('jilid.detail')->middleware('isAdminFotokopi');
+Route::put('jilid/acc/{id}',[JilidController::class, 'acc'])->name('jilid.acc')->middleware('isAdminFotokopi');
+Route::get('jilid/store',[JilidController::class, 'store'])->name('jilid.store')->middleware('isMahasiswa');
+
 // Cetak Dokumen
 Route::group(['middleware' => 'isLogin'], function (){
     Route::get('/cetak/lembar-persetujuan-pembimbing-mahasiswa', [CetakController::class, 'cetakLembarPersetujuanMahasiswa'])->name('cetak.lembar.persetujuan.mahasiswa');
@@ -255,7 +271,13 @@ Route::group(['middleware' => 'isLogin'], function (){
     Route::get('/cetak/surat-tugas-bimbingan/{pendaftaran}', [CetakController::class, 'cetakSuratTugasBimbingan']);
     Route::get('/cetak/berita-acara-ujian-proposal/{seminar}', [CetakController::class, 'cetakBeritaAcaraUjianProposal'])->name('cetak.berita.acara.ujian.proposal');
     Route::get('/cetak/berita-acara-ujian-pendadaran/{ujian}', [CetakController::class, 'cetakBeritaAcaraUjianPendadaran'])->name('cetak.berita.acara.ujian.pendadaran');
+    Route::get('/cetak/berita-acara-ujian-pendadaran/{ujian}', [CetakController::class, 'cetakBeritaAcaraUjianPendadaran'])->name('cetak.berita.acara.ujian.pendadaran');
+    Route::get('/cetak/surat-riwayat-bimbingan-mahasiswa', [CetakController::class, 'cetakRiwayatBimbinganMahasiswa'])->name('cetak.riwayat.bimbingan.mahasiswa');
+    Route::get('/cetak/surat-riwayat-bimbingan/{$id}', [CetakController::class, 'cetakRiwayatBimbingan'])->name('cetak.riwayat.bimbingan');
 });
+
+//Public
+Route::get('/public/riwayat-bimbingan/{id}',[BimbinganController::class, 'public'])->name('bimbingan.public');
 
 // Logout
 Route::get('/logout/mahasiswa', function (Request $request) {
@@ -312,3 +334,11 @@ Route::get('/back/dashboard', function () {
         return redirect('login');
     }
 })->name('back.dashboard');
+
+Route::group(['middleware' => 'isAdmin'], function (){
+    Route::get('mahasiswa/reset-password/{id}', [MahasiswaController::class, 'resetPassword'])->name('mahasiswa.reset.password');
+    Route::get('dosen/reset-password/{id}', [DosenController::class, 'resetPassword'])->name('dosen.reset.password');
+    Route::get('prodi/reset-password/{id}', [ProdiController::class, 'resetPassword'])->name('prodi.reset.password');
+
+    Route::get('laporan-bimbingan-mahasiswa', [BimbinganController::class, 'bimbinganAdmin'])->name('bimbingan.admin');
+});

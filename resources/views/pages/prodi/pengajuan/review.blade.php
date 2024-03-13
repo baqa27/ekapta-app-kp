@@ -346,6 +346,11 @@
             <div class="modal fade" id="modal-edit">
                 <div class="modal-dialog">
                     <div class="modal-content">
+                        <div class="mb-3">
+                            <a href="{{ route('bimbingan.rekap.dosen') }}" class="btn btn-primary btn-sm" target="_blank">
+                                <i class="fas fa-people"></i> Lihat Rekap Bimbingan Dosen
+                            </a>
+                        </div>
                         <form action="{{ route('ploting.pembimbing') }}" method="post">
                             @csrf
                             <input type="hidden" name="id" value="{{ $pengajuan->id }}">
@@ -409,6 +414,11 @@
                             </button>
                         </div>
                         <div class="modal-body">
+                            <div class="mb-3">
+                                <a href="{{ route('bimbingan.rekap.dosen') }}" class="btn btn-primary btn-sm" target="_blank">
+                                    <i class="fas fa-users"></i> Lihat Rekap Bimbingan Dosen
+                                </a>
+                            </div>
                             <div class="form-group">
                                 <label for="" class="form-label">Dosen Pembimbing Utama </label>
                                 <input type="text" class="form-control"

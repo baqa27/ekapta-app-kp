@@ -80,7 +80,7 @@
 
                             <div class="row">
                                 <div class="col-md-5">
-                                    Pembimbing Pendamping (1) Tugas Akhir
+                                    Pembimbing Pendamping (2) Tugas Akhir
                                 </div>
                                 <div class="col-md-7">
                                     <b>{{ $dosen_pendamping->nama . ', ' . $dosen_pendamping->gelar }}</b>
@@ -230,7 +230,7 @@
 
                             <div class="row">
                                 <div class="col-md-5">
-                                    Tanggal Acc
+                                    Tanggal Validasi
                                 </div>
                                 <div class="col-md-7">
                                     @if ($pendaftaran->tanggal_acc)

@@ -93,8 +93,11 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="exampleInputEmail1">Dosen Wali</label>
+                                             @php
+                                                $dosen_wali = \App\Helpers\AppHelper::instance()->getDosen($mahasiswa->kodedosenwali) ? \App\Helpers\AppHelper::instance()->getDosen($mahasiswa->kodedosenwali) : null
+                                            @endphp
                                             <input type="text" class="form-control"
-                                                value="{{ \App\Helpers\AppHelper::instance()->getDosen($mahasiswa->kodedosenwali)->nama }}"
+                                                value="{{ $dosen_wali ? $dosen_wali->nama.', '.$dosen_wali->gelar : '' }}"
                                                 disabled>
                                         </div>
                                     </div>

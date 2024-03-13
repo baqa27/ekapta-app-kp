@@ -47,6 +47,7 @@ class PendaftaranController extends Controller
         }
 
         $pendaftaranIsAcc = Pendaftaran::where('pengajuan_id', $pengajuan->id)->with(['revisis'])->where('status', Pendaftaran::DITERIMA)->get();
+        $pendaftarans_review_acc_revisi = Pendaftaran::where('pengajuan_id', $pengajuan->id)->with(['revisis'])->whereIn('status', [Pendaftaran::REVIEW, Pendaftaran::DITERIMA, Pendaftaran::REVISI])->get();
 
         return view('pages.mahasiswa.pendaftaran.pendaftaran', [
             'title' => 'Pendaftaran Tugas Akhir',
@@ -55,6 +56,7 @@ class PendaftaranController extends Controller
             'dosen_utama' => $dosenUtama,
             'dosen_pendamping' => $dosenPendamping,
             'pendaftaranIsAcc' => $pendaftaranIsAcc,
+            'pendaftarans_review_acc_revisi' => $pendaftarans_review_acc_revisi,
         ]);
     }
 
@@ -63,9 +65,9 @@ class PendaftaranController extends Controller
         $mahasiswa = Mahasiswa::where('nim', Auth::guard('mahasiswa')->user()->nim)->first();
         $pengajuan = $mahasiswa->pengajuans()->where('status', Pengajuan::DITERIMA)->first();
 
-        $pendaftaranIsAcc = Pendaftaran::where('pengajuan_id', $pengajuan->id)->where('status', Pendaftaran::DITERIMA)->first();
+        $pendaftarans_review_acc = Pendaftaran::where('pengajuan_id', $pengajuan->id)->whereIn('status', [Pendaftaran::DITERIMA, Pendaftaran::REVIEW])->get();
 
-        if ($pendaftaranIsAcc) {
+        if (count($pendaftarans_review_acc) != 0) {
             return redirect('pendaftaran-mahasiswa')->with('warning', 'Anda sudah melakukan pendaftaran tugas akhir');
         } else if (count(Auth::guard('mahasiswa')->user()->dosens) == 0) {
             return back()->with('warning', 'Silahkan tunggu ploting dosen pembimbing oleh Prodi');
@@ -88,13 +90,13 @@ class PendaftaranController extends Controller
         $mahasiswa = Mahasiswa::where('nim', Auth::guard('mahasiswa')->user()->nim)->first();
         $pengajuan = $mahasiswa->pengajuans()->where('status', Pengajuan::DITERIMA)->first();
 
-        $pendaftaran_acc = Pendaftaran::where('pengajuan_id', $pengajuan->id)->where('status', Pendaftaran::DITERIMA)->first();
+        $pendaftarans_review_acc = Pendaftaran::where('pengajuan_id', $pengajuan->id)->whereIn('status', [Pendaftaran::DITERIMA, Pendaftaran::REVIEW])->get();
 
-        if ($pendaftaran_acc) {
+        if (count($pendaftarans_review_acc) != 0) {
             return redirect('pendaftaran-mahasiswa')->with('warning', 'Anda sudah melakukan pendaftaran');
         } else {
             $validatedData = $request->validate([
-                'nomor_pembayaran' => 'required',
+                // 'nomor_pembayaran' => 'required',
                 'tanggal_pembayaran' => 'required',
                 'biaya' => 'required',
                 'lampiran_1' => ['required', 'mimes:pdf', 'max:5000'],
@@ -187,7 +189,7 @@ class PendaftaranController extends Controller
     {
         $pendaftaran = Pendaftaran::findOrFail($request->id);
         $validatedData = $request->validate([
-            'nomor_pembayaran' => 'required',
+            // 'nomor_pembayaran' => 'required',
             'biaya' => 'required',
             'lampiran_1' => [Rule::requiredIf(function () {
                 if (empty($this->request->lampiran_1)) {

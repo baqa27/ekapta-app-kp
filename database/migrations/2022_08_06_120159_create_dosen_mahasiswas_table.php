@@ -17,6 +17,7 @@ class CreateDosenMahasiswasTable extends Migration
             $table->foreignId('mahasiswa_id');
             $table->foreignId('dosen_id');
             $table->string('status')->nullable();
+            $table->string('lampiran')->nullable();
             $table->timestamps();
         });
     }

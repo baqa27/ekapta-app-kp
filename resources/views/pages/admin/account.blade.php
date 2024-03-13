@@ -40,7 +40,7 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="exampleInputEmail1">Username</label>
+                                    <label for="exampleInputEmail1">Nama</label>
                                     <input type="text" class="form-control" name="nama" value="{{ $admin->nama }}" required>
                                 </div>
 

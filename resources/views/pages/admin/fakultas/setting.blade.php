@@ -71,8 +71,13 @@
                                         data-target="#modal-edit">
                                         <i class="bi bi-pencil-square mr-2"></i> Edit TTD Dekan
                                     </button>
-                                    <img src="{{ asset($dekanActive->image != null ? $dekanActive->image : 'ekapta/assets/img/not-found.png') }}"
-                                        alt="TTD Dekan" height="50">
+                                     @if($dekanActive)
+                                        <img src="{{ asset($dekanActive->image != null ? $dekanActive->image : 'ekapta/assets/img/not-found.png') }}"
+                                             alt="TTD Dekan" height="50">
+                                    @else
+                                        <img src="{{ asset('ekapta/assets/img/not-found.png') }}"
+                                             alt="TTD Dekan" height="50">
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -377,6 +382,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
+                        <a href="https://drive.google.com/drive/folders/1AD3y7NZGUvjkoyQAdyegVzVXWNB_XJqQ?usp=sharing" class="btn btn-warning btn-sm shadow" target="_blank"><i class="fas fa-download"></i> Download Template File Import</a> <br><br>
                         <div class="form-group">
                             <label for="" class="form-label">Pilih File Import<br>
                                 <small>Format file : <b>.csv / .xlsx </b></small></label>

@@ -118,4 +118,12 @@ class ProdiController extends Controller
 
         return back()->with('success', 'Password berhasil diubah');
     }
+
+    function resetPassword($id){
+        $prodi = Prodi::findOrFail($id);
+        $prodi->update([
+            'password' => Hash::make($prodi->kode)
+        ]);
+        return back()->with('success', 'Password berhasil direset');
+    }
 }

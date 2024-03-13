@@ -86,7 +86,7 @@
 
                             <div class="row">
                                 <div class="col-md-5">
-                                    Pembimbing Pendamping (1) Tugas Akhir
+                                    Pembimbing Pendamping (2) Tugas Akhir
                                 </div>
                                 <div class="col-md-7">
                                     <b>{{ $dosen_pendamping->nama . ', ' . $dosen_pendamping->gelar }}</b>
@@ -177,7 +177,7 @@
                                 <hr>
                                 <div class="row">
                                     <div class="col-md-5">
-                                        Tanggal Acc
+                                        Validasi Pendaftaran
                                     </div>
                                     <div class="col-md-7">
                                         <b class="text-success">{{ date('d M Y H:m', strtotime($seminar->tanggal_acc)) }}</b>
@@ -412,9 +412,9 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="" class="form-label">Dosen Penguji 3</label>
+                                    <label for="" class="form-label">Dosen Penguji 3 (Opsional)</label>
                                     <div class="col-md-12">
-                                        <select class="select-3" name="dosen_penguji[]" style="width: 100%" required>
+                                        <select class="select-3" name="dosen_penguji[]" style="width: 100%">
                                             <option value="">Pilih</option>
                                             @foreach ($dosens as $dosen)
                                                 <option value="{{ $dosen->id }}">
