@@ -6,7 +6,7 @@
         <div class="container">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">{{ $title }}</h1>
+                    <h1 class="m-0">{{ config('app.name') }}</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -30,7 +30,58 @@
                         </div>
                         <div class="card-body">
                             <div class="p-3 rounded border">
-                                <table>
+                                <div class="row mb-2">
+                                    <div class="col-md-3">
+                                        NIM/NAMA MAHASISWA
+                                    </div>
+                                    <div class="col-md-9">
+                                        <b>{{ $mahasiswa->nim . '/' . $mahasiswa->nama }}</b>
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-md-3">
+                                        PRODI
+                                    </div>
+                                    <div class="col-md-9">
+                                        <b>{{ $prodi ? $prodi->namaprodi : '-' }}</b>
+                                    </div>
+                                </div>
+                                 <div class="row mb-2">
+                                    <div class="col-md-3">
+                                        JUDUL SKRIPSI
+                                    </div>
+                                    <div class="col-md-9">
+                                        <b>{{ $pengajuan ? $pengajuan->judul : '-' }}</b>
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-md-3">
+                                        TANGGAL DAFTAR
+                                    </div>
+                                    <div class="col-md-9">
+                                        <b>{{ $pengajuan ? \App\Helpers\AppHelper::parse_date($pengajuan->pendaftaran->created_at) : '-' }}</b>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        TANGGAL BERAKHIR BIMBINGAN
+                                    </div>
+                                    <div class="col-md-9">
+                                        @if($pendaftaran)
+                                            @if ($is_expired)
+                                                <span class="badge bg-danger">TIDAK AKTIF</span>
+                                            @else
+                                                <span class="bg-primary rounded badge bg-primary countdown"
+                                                    data-expire="{{ \Carbon\Carbon::parse($date_expired)->format('Y/m/d h:i:s') }}">
+                                                </span>
+                                            @endif
+                                        @else
+                                        -
+                                        @endif
+                                    </div>
+                                </div>
+
+                                {{--<table>
                                     <tr>
                                         <td>NIM/NAMA MAHASISWA</td>
                                         <td>: <b>{{ $mahasiswa->nim . '/' . $mahasiswa->nama }}</b></td>
@@ -40,45 +91,65 @@
                                         <td>: <b>{{ $prodi ? $prodi->namaprodi : '' }}</b></td>
                                     </tr>
                                     <tr>
+                                        <td>JUDUL SKRIPSI</td>
+                                        <td>: <b>{{ $pengajuan ? $pengajuan->judul : '' }}</b></td>
+                                    </tr>
+                                    <tr>
+                                        <td>TANGGAL DAFTAR</td>
+                                        <td>: <b>{{ $pendaftaran ? \App\Helpers\AppHelper::parse_date($pendaftaran->created_at) : '' }}</b></td>
+                                    </tr>
+                                    <tr>
                                         <td>TANGGAL BERAKHIR BIMBINGAN</td>
                                         <td>
-                                            @if ($is_expired)
-                                                <span class="badge bg-danger">TIDAK AKTIF</span>
+                                            @if($pendaftaran)
+                                                @if ($is_expired)
+                                                    <span class="badge bg-danger">TIDAK AKTIF</span>
+                                                @else
+                                                    <span class="d-flex justify-content-center bg-primary rounded badge bg-primary countdown"
+                                                        data-expire="{{ \Carbon\Carbon::parse($date_expired)->format('Y/m/d h:i:s') }}">
+                                                    </span>
+                                                @endif
                                             @else
-                                                <span class="d-flex justify-content-center bg-primary rounded badge bg-primary countdown"
-                                                    data-expire="{{ \Carbon\Carbon::parse($date_expired)->format('Y/m/d h:i:s') }}">
-                                                </span>
+                                            -
                                             @endif
                                         </td>
                                     </tr>
-                                </table>
+                                </table>--}}
                             </div>
                             <div class="mt-3">
                                 <span class="badge badge-success"> <i class="fas fa-check-circle mr-1"></i>
                                     Diterima/Acc
                                 </span>
                                 <span class="badge badge-secondary"> <i class="fas fa-circle mr-1"></i>
-                                    Review/Belum Di Acc
+                                    Belum Bimbingan/Review/Belum Di Acc
                                 </span>
                             </div>
                             <div class="mt-3 row">
                                 <div class="col-md-6">
-                                    Pembimbing 1: <b>{{ $dosen_utama->nama . ',' . $dosen_utama->gelar }}</b><br>
-                                    @foreach ($mahasiswa->bimbingans()->where('pembimbing', 'utama')->get() as $bimbingan)
-                                        <a href="#"
-                                            class="btn {{ $bimbingan->status == 'diterima' ? 'btn-success' : 'btn-secondary' }} mb-3"><i
-                                                class="fas {{ $bimbingan->status == 'diterima' ? 'fa-check-circle' : 'fa-circle' }}"></i>
-                                            {{ $bimbingan->bagian->bagian }}</a>
-                                    @endforeach
+                                    @if($dosen_utama)
+                                        Pembimbing 1: <b>{{ $dosen_utama->nama . ', ' . $dosen_utama->gelar }}</b><br>
+                                        @foreach ($mahasiswa->bimbingans()->where('pembimbing', 'utama')->get() as $bimbingan)
+                                            <a href="#"
+                                                class="btn {{ $bimbingan->status == 'diterima' ? 'btn-success' : 'btn-secondary' }} mb-3"><i
+                                                    class="fas {{ $bimbingan->status == 'diterima' ? 'fa-check-circle' : 'fa-circle' }}"></i>
+                                                {{ $bimbingan->bagian->bagian }}</a>
+                                        @endforeach
+                                    @else
+                                        TIDAK ADA BIMBINGAN
+                                    @endif
                                 </div>
                                 <div class="col-md-6">
-                                    Pembimbing 2: <b>{{ $dosen_pendamping->nama . ',' . $dosen_pendamping->gelar }}</b><br>
-                                    @foreach ($mahasiswa->bimbingans()->where('pembimbing', 'pendamping')->get() as $bimbingan)
-                                        <a href="#"
-                                            class="btn {{ $bimbingan->status == 'diterima' ? 'btn-success' : 'btn-secondary' }} mb-3"><i
-                                                class="fas {{ $bimbingan->status == 'diterima' ? 'fa-check-circle' : 'fa-circle' }}"></i>
-                                            {{ $bimbingan->bagian->bagian }}</a>
-                                    @endforeach
+                                    @if($dosen_pendamping)
+                                        Pembimbing 2: <b>{{ $dosen_pendamping->nama . ', ' . $dosen_pendamping->gelar }}</b><br>
+                                        @foreach ($mahasiswa->bimbingans()->where('pembimbing', 'pendamping')->get() as $bimbingan)
+                                            <a href="#"
+                                                class="btn {{ $bimbingan->status == 'diterima' ? 'btn-success' : 'btn-secondary' }} mb-3"><i
+                                                    class="fas {{ $bimbingan->status == 'diterima' ? 'fa-check-circle' : 'fa-circle' }}"></i>
+                                                {{ $bimbingan->bagian->bagian }}</a>
+                                        @endforeach
+                                    @else
+                                        TIDAK ADA BIMBINGAN
+                                    @endif
                                 </div>
                             </div>
                         </div>

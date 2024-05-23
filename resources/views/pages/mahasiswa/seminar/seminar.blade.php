@@ -29,7 +29,7 @@
                     <a href="{{ route('ujian.create') }}"><b><u>Ujian Pendadaran TA!</u></b></a>
                 </div>
             @endif
-          
+
            @if(count($reviews_acc) < 3)
                 <div class="mb-3 bg-secondary rounded p-2">
                     Silahkan tunggu review dan penilaian dari dosen pembimbing dan penguji!
@@ -104,6 +104,7 @@
                                     <tr>
                                         <th>No</th>
                                         <th>Pendaftaran</th>
+                                        <th>Tanggal Ujian</th>
                                         <th>Status</th>
                                         <th>Aksi</th>
                                     </tr>
@@ -117,12 +118,19 @@
                                                 <a href="{{ route('seminar.detail', $seminar->id) }}">{{ $seminar->pengajuan->judul }}</a>
                                             </td>
                                             <td>
-                                                @if ($seminar->is_valid == 0)
-                                                    <span class="badge bg-secondary">REVIEW</span>
-                                                @elseif ($seminar->is_valid == 1)
-                                                    <span class="badge bg-success">VALID</span>
-                                                @elseif ($seminar->is_valid == 2)
-                                                    <span class="badge bg-warning">TIDAK VALID</span>
+                                                {{ $seminar->tanggal_ujian ? \App\Helpers\AppHelper::parse_date_short($seminar->tanggal_ujian) : null }}
+                                            </td>
+                                            <td>
+                                                @if ($seminar->is_lulus == 1)
+                                                    <span class="badge bg-success">LULUS</span>
+                                                @else
+                                                    @if ($seminar->is_valid == 0)
+                                                        <span class="badge bg-secondary">REVIEW</span>
+                                                    @elseif ($seminar->is_valid == 1)
+                                                        <span class="badge bg-success">VALID</span>
+                                                    @elseif ($seminar->is_valid == 2)
+                                                        <span class="badge bg-warning">TIDAK VALID</span>
+                                                    @endif
                                                 @endif
                                             </td>
                                             <td>
@@ -149,13 +157,13 @@
                                                         <a href="{{ route('seminar.edit.proposal', $seminar->id) }}" class="btn btn-primary btn-sm mr-1">
                                                             <i class="bi bi-upload"></i>  Submit Laporan Proposal
                                                         </a>
-                                                        <a href="{{ route('cetak.berita.acara.ujian.proposal', $seminar->id) }}" class="btn btn-success btn-sm" target="_blank">
+                                                        {{--<a href="{{ route('cetak.berita.acara.ujian.proposal', $seminar->id) }}" class="btn btn-success btn-sm" target="_blank">
                                                             <i class="bi bi-download"></i>  Berita Acara Ujian Proposal
                                                         </a>
                                                     @elseif(count($reviews_acc) != 0)
                                                         <a href="{{ route('cetak.berita.acara.ujian.proposal', $seminar->id) }}" class="btn btn-success btn-sm" target="_blank">
                                                             <i class="bi bi-download"></i>  Berita Acara Ujian Proposal
-                                                        </a>
+                                                        </a>--}}
                                                     @endif
 
                                                 @elseif ($seminar->is_valid == 2)

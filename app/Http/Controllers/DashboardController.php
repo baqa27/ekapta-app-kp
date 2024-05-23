@@ -11,6 +11,8 @@ use App\Models\Pengajuan;
 use App\Models\Prodi;
 use App\Models\ReviewSeminar;
 use App\Models\ReviewUjian;
+use App\Models\Seminar;
+use App\Models\Ujian;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -20,7 +22,7 @@ class DashboardController extends Controller
     public function dashboardMahasiswa()
     {
         $mahasiswa = Auth::guard('mahasiswa')->user();
-
+        
         $data = [
             'title' => config('app.name'),
             'mahasiswa' => $mahasiswa,
@@ -72,6 +74,16 @@ class DashboardController extends Controller
         $pendaftarans_review = Pendaftaran::where('status', 'review')->get();
         $pendaftarans_revisi = Pendaftaran::where('status', 'revisi')->get();
 
+        $seminars = Seminar::all();
+        $seminars_diterima = Seminar::where('is_valid', '1')->get();
+        $seminars_review = Seminar::where('is_valid', '0')->get();
+        $seminars_revisi = Seminar::where('is_valid', '2')->get();
+
+        $ujians = Ujian::all();
+        $ujians_diterima = Ujian::where('is_valid', '1')->get();
+        $ujians_review = Ujian::where('is_valid', '0')->get();
+        $ujians_revisi = Ujian::where('is_valid', '2')->get();
+
         $mahasiswas = Mahasiswa::all();
         $prodis = Prodi::all();
         $dosens = Dosen::all();
@@ -94,6 +106,14 @@ class DashboardController extends Controller
             'dosens' => $dosens,
             'prodis' => $prodis,
             'fakultas' => $fakultas,
+            'seminars' => $seminars,
+            'seminars_diterima' => $seminars_diterima,
+            'seminars_revisi' => $seminars_revisi,
+            'seminars_review' => $seminars_review,
+            'ujians' => $ujians,
+            'ujians_diterima' => $ujians_diterima,
+            'ujians_revisi' => $ujians_revisi,
+            'ujians_review' => $ujians_review,
         ]);
     }
 
@@ -119,6 +139,9 @@ class DashboardController extends Controller
     public function dashboardMahasiswaTA()
     {
         $mahasiswa = Auth::guard('mahasiswa')->user();
+        if($mahasiswa->email == '-'){
+            return redirect()->route('profile');
+        }
         $prodi = Prodi::where('namaprodi', Auth::guard('mahasiswa')->user()->prodi)->first();
         $pengajuan_acc = $mahasiswa->pengajuans()->where('status', Pengajuan::DITERIMA)->first();
         $pendaftaran_acc = $pengajuan_acc ? $pengajuan_acc->pendaftaran()->where('status', Pendaftaran::DITERIMA)->first() : null;

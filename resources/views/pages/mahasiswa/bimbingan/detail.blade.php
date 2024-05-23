@@ -96,7 +96,7 @@
                                             @if ($revisi->lampiran)
                                                 <div class="p-1 mt-3 bg-light rounded">
                                                     <small>
-                                                        <span class="text-secondary ml-2"><b>Lampiran : </b></span>
+                                                        <span class="text-secondary ml-2"><b>Lampiran bimbingan sebelumnya: </b></span>
                                                         <a href="{{ asset($revisi->lampiran) }}" target="_blank">
                                                             <i class="fas fa-paperclip ml-1"></i>
                                                             {{ Str::substr($revisi->lampiran, 40) }}

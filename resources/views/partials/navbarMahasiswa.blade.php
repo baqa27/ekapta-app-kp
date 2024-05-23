@@ -1,9 +1,9 @@
 <nav class="main-header navbar navbar-expand-md navbar-light navbar-white sticky-top">
     <div class="container">
         <a href="{{ route('dashboard.mahasiswa') }}" class="navbar-brand">
-            <img src="{{ asset('ekapta') }}/adminLTE/dist/img/AdminLTELogo.png" alt="AdminLTE Logo"
+            <img src="https://unsiq.ac.id/img/UNSIQ-bunder.ico" alt="AdminLTE Logo"
                  class="brand-image img-circle elevation-3" style="opacity: .8">
-            <span class="brand-text font-weight-light">
+            <span class="brand-text font-weight-light" style="text-transform: uppercase;">
                 <b>{{ config('app.name') }}</b>
             </span>
         </a>

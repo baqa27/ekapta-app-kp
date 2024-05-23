@@ -35,6 +35,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <!-- SweetAlert2 -->
     <link rel="stylesheet"
         href="{{ asset('ekapta') }}/adminLTE/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
+    <link rel="shortcut icon" href="https://unsiq.ac.id/img/UNSIQ-bunder.ico" type="image/x-icon"> 
 </head>
 
 <body class="hold-transition layout-top-nav">

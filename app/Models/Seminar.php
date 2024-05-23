@@ -13,14 +13,17 @@ class Seminar extends Model
     public const DITERIMA = 1;
     public const REVISI = 2;
 
+    public const VALID = 1;
+    public const NOT_VALID = 0;
+
     protected $fillable = [
         'pengajuan_id',
         'mahasiswa_id',
         'lampiran_1',
         'lampiran_2',
         'lampiran_3',
-        'lampiran_4',
-        'lampiran_5',
+        'jumlah_bayar',
+        'nomor_pembayaran',
         'lampiran_proposal',
         'is_valid',
         'is_lulus',

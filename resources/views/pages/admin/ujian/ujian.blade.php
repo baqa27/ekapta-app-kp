@@ -7,6 +7,9 @@
             <div class="row mb-2">
                 <div class="col-sm-6">
                     <h1 class="m-0">{{ $title }}</h1>
+                    <a href="{{ route('ujian.rekap') }}" class="btn btn-success btn-sm shadow mt-3" target="_blank">
+                        <i class="bi bi-people"></i> Rekap Pendaftaran Ujian Pendadaran Mahasiswa
+                    </a>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -105,6 +108,7 @@
                                                 <th>Prodi</th>
                                                 <th>Judul</th>
                                                 <th>Tanggal Pendaftaran</th>
+                                                <th>Tanggal Ujian</th>
                                                 <th>Aksi</th>
                                             </tr>
                                         </thead>
@@ -124,6 +128,9 @@
                                                     <td>{{ $ujian->pengajuan->judul }}</td>
                                                     <td>
                                                         {{ date('d M Y H:i', strtotime($ujian->created_at)) }}
+                                                    </td>
+                                                    <td>
+                                                        {{ \App\Helpers\AppHelper::parse_date_short($ujian->tanggal_ujian) }}
                                                     </td>
                                                     <td>
                                                         <div class="d-flex">
@@ -156,6 +163,7 @@
                                                 <th>Prodi</th>
                                                 <th>Judul</th>
                                                 <th>Tanggal Pendaftaran</th>
+                                                <th>Tanggal Ujian</th>
                                                 <th>Aksi</th>
                                             </tr>
                                         </tfoot>

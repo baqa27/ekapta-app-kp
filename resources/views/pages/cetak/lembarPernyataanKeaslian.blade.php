@@ -111,7 +111,7 @@
                 <center>
                     <br>
                     <div class="box">
-                        <p>Materai <br> 6000</p>
+                        <p>Materai <br> 10.000</p>
                     </div>
                     <br>
                     <p class="text-ttd">

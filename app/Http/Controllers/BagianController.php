@@ -51,9 +51,17 @@ class BagianController extends Controller
     public function delete(Request $request)
     {
         $bagian = Bagian::findOrFail($request->id);
+
+        // Nonaktifkan jika ingin mengapus bagian tertentu
         if (count($bagian->bimbingans) != 0) {
             return back()->with('warning', 'Tidak dapat menghapus bagian bimbingan');
         }
+
+        //Aktifkan jika ingin mengapus bagian tertentu
+        foreach ($bagian->bimbingans as $bimbingan) {
+            $bimbingan->delete();
+        }
+
         $bagian->delete();
         return back()->with('success', 'Bagian berhasil dihapus');
     }
@@ -70,27 +78,35 @@ class BagianController extends Controller
 
     public function bagianActive(Request $request)
     {
-        $pendaftaransAcc = Pendaftaran::where('status', 'diterima')->get();
-        if (count($pendaftaransAcc) == 0) {
-            return back()->with('warning', 'Mahasiswa tidak ditemukan');
+        $prodi = Prodi::findOrFail($request->prodi_id);
+        $pendaftaransAcc = Pendaftaran::with(['mahasiswa'])
+        ->where('status', 'diterima')
+        ->whereHas('mahasiswa', function ($query) use($prodi) {
+            $query->where('prodi', $prodi->namaprodi);
+        })
+        ->get();
+        if (count($pendaftaransAcc) == 0 || !$prodi) {
+            return back()->with('warning', 'Pendaftaran mahasiswa tidak ditemukan');
         }
         foreach ($pendaftaransAcc as $pendaftaran) {
-            $mahasiswa = $pendaftaran->mahasiswa;
-            foreach ($mahasiswa->dosens as $dosen) {
-                if ($dosen->pivot->status == 'utama') {
-                    $bimbingan = Bimbingan::create([
-                        'mahasiswa_id' => $mahasiswa->id,
-                        'bagian_id' => $request->id,
-                        'pembimbing' => 'utama',
-                    ]);
-                    $bimbingan->dosens()->attach([$dosen->id]);
-                } else if ($dosen->pivot->status == 'pendamping') {
-                    $bimbingan = Bimbingan::create([
-                        'mahasiswa_id' => $mahasiswa->id,
-                        'bagian_id' => $request->id,
-                        'pembimbing' => 'pendamping',
-                    ]);
-                    $bimbingan->dosens()->attach([$dosen->id]);
+            $mahasiswa = $pendaftaran->mahasiswa()->where('prodi', $prodi->namaprodi)->first();
+            if ($mahasiswa) {
+                foreach ($mahasiswa->dosens as $dosen) {
+                    if ($dosen->pivot->status == 'utama') {
+                        $bimbingan = Bimbingan::create([
+                            'mahasiswa_id' => $mahasiswa->id,
+                            'bagian_id' => $request->id,
+                            'pembimbing' => 'utama',
+                        ]);
+                        $bimbingan->dosens()->attach([$dosen->id]);
+                    } else if ($dosen->pivot->status == 'pendamping') {
+                        $bimbingan = Bimbingan::create([
+                            'mahasiswa_id' => $mahasiswa->id,
+                            'bagian_id' => $request->id,
+                            'pembimbing' => 'pendamping',
+                        ]);
+                        $bimbingan->dosens()->attach([$dosen->id]);
+                    }
                 }
             }
         }

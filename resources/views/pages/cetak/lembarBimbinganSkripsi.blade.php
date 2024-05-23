@@ -1,3 +1,31 @@
+@php
+$bulan = null;
+if ($date->format('m') == '01'){
+$bulan = 'I';
+}elseif ($date->format('m') == '02'){
+$bulan = 'II';
+}elseif ($date->format('m') == '03'){
+$bulan = 'III';
+}elseif ($date->format('m') == '04'){
+$bulan = 'IV';
+}elseif ($date->format('m') == '05'){
+$bulan = 'V';
+}elseif ($date->format('m') == '06'){
+$bulan = 'VI';
+}elseif ($date->format('m') == '07'){
+$bulan = 'VII';
+}elseif ($date->format('m') == '08'){
+$bulan = 'VIII';
+}elseif ($date->format('m') == '09'){
+$bulan = 'IX';
+}elseif ($date->format('m') == '10'){
+$bulan = 'X';
+}elseif ($date->format('m') == '11'){
+$bulan = 'XI';
+}elseif ($date->format('m') == '12'){
+$bulan = 'XII';
+}
+@endphp
 <!DOCTYPE html>
 <html lang="en">
 
@@ -98,33 +126,39 @@
     <img src="{{ $qr_code }}" alt="QR Code" height="80" id="qr-code">
 
     <table class="margin-left">
-        <tr>
-            <td>NAMA</td>
-            <td>: {{ $mahasiswa->nama }}</td>
+         <tr>
+            <td width="120">NAMA</td>
+            <td width="2">:</td>
+            <td width="350">{{ $mahasiswa->nama }}</td>
         </tr>
         <tr>
             <td>NIM</td>
-            <td>: {{ $mahasiswa->nim }}</td>
+            <td width="2">:</td>
+            <td>{{ $mahasiswa->nim }}</td>
         </tr>
         <tr>
             <td>PRODI</td>
-            <td>: {{ $prodi->namaprodi }}</td>
+            <td width="2">:</td>
+            <td>{{ $prodi->namaprodi }}</td>
         </tr>
         <tr>
-            <td>JUDUL TA</td>
-            <td>: {{ $pengajuan->judul }}</td>
+            <td style="text-align: left;vertical-align: top;">JUDUL TA</td>
+            <td width="2" style="text-align: left;vertical-align: top;">:</td>
+            <td>{{ $pengajuan->judul }}</td>
         </tr>
         <tr>
             <td>PEMBIMBING 1</td>
-            <td>: {{ $dosen_utama->nama . ',' . $dosen_utama->gelar }}</td>
+            <td width="2">:</td>
+            <td>{{ $dosen_utama->nama . ', ' . $dosen_utama->gelar }}</td>
         </tr>
         <tr>
             <td>NO SURAT TUGAS</td>
-            <td>: {{ $pengajuan->id }}</td>
+            <td width="2">:</td>
+            <td>{{ $no_urut }}/ST.TA/FASTIKOM-UNSIQ/{{$bulan}}/{{ $date->format('Y') }}</td>
         </tr>
     </table>
 
-    <table class="margin-left table-border" style="border: 1px solid black; border-collapse: collapse;height: 700px;">
+    <table class="margin-left table-border" style="border: 1px solid black; border-collapse: collapse;height: 670px;">
         <tr style="background-color: gray">
             <td width="20" style="text-align:center; border: 1px solid black; border-collapse: collapse;">No</td>
             <td width="100" style="text-align:center; border: 1px solid black; border-collapse: collapse;">TANGGAL
@@ -138,29 +172,31 @@
             $no_utama = 1;
         @endphp
         @foreach ($bimbingan_dosen_utama as $bimbingan)
-            <tr>
-                <td style="text-align:center; border: 1px solid black; border-collapse: collapse;">{{ $no_utama++ }}
-                </td>
-                <td style="border: 1px solid black; border-collapse: collapse;">
-                    {{ \App\Helpers\AppHelper::parse_date_short($bimbingan->tanggal_acc) }}</td>
-                <td style="border: 1px solid black; border-collapse: collapse;">
-                    <p>{{ $bimbingan->bagian->bagian }}</p>
-                    @if (count($bimbingan->revisis) != 0)
-                        <ul>
-                            @foreach ($bimbingan->revisis as $revisi)
-                                <li>{{ strip_tags($revisi->catatan) }}</li>
-                            @endforeach
-                        </ul>
-                    @endif
-                    {{-- <ul>
-                        <li>Lorem ipsum dolor sit amet</li>
-                        <li>consectetur adipisicing elit.</li>
-                    </ul> --}}
-                </td>
-                <td style="text-align:center; border: 1px solid black; border-collapse: collapse;">
-                    <img src="{{ $ttd_dosen_utama }}" height="50">
-                </td>
-            </tr>
+            @if($bimbingan->status == 'diterima')
+                <tr>
+                    <td style="text-align:center; border: 1px solid black; border-collapse: collapse;">{{ $no_utama++ }}
+                    </td>
+                    <td style="border: 1px solid black; border-collapse: collapse;">
+                        {{ \App\Helpers\AppHelper::parse_date_short($bimbingan->tanggal_acc) }}</td>
+                    <td style="border: 1px solid black; border-collapse: collapse;">
+                        <p>{{ $bimbingan->bagian->bagian }}</p>
+                        @if (count($bimbingan->revisis) != 0)
+                            <ul>
+                                @foreach ($bimbingan->revisis as $revisi)
+                                    <li>{{ strip_tags($revisi->catatan) }}</li>
+                                @endforeach
+                            </ul>
+                        @endif
+                        {{-- <ul>
+                            <li>Lorem ipsum dolor sit amet</li>
+                            <li>consectetur adipisicing elit.</li>
+                        </ul> --}}
+                    </td>
+                    <td style="text-align:center; border: 1px solid black; border-collapse: collapse;">
+                        <img src="{{ $ttd_dosen_utama }}" height="50"  style="max-width:60px;">
+                    </td>
+                </tr>
+            @endif
         @endforeach
     </table>
 
@@ -183,32 +219,38 @@
 
     <table class="margin-left">
         <tr>
-            <td>NAMA</td>
-            <td>: {{ $mahasiswa->nama }}</td>
+            <td width="120">NAMA</td>
+            <td width="2">:</td>
+            <td width="350">{{ $mahasiswa->nama }}</td>
         </tr>
         <tr>
             <td>NIM</td>
-            <td>: {{ $mahasiswa->nim }}</td>
+            <td width="2">:</td>
+            <td>{{ $mahasiswa->nim }}</td>
         </tr>
         <tr>
             <td>PRODI</td>
-            <td>: {{ $prodi->namaprodi }}</td>
+            <td width="2">:</td>
+            <td>{{ $prodi->namaprodi }}</td>
         </tr>
         <tr>
-            <td>JUDUL TA</td>
-            <td>: {{ $pengajuan->judul }}</td>
+            <td style="text-align: left;vertical-align: top;">JUDUL TA</td>
+            <td width="2" style="text-align: left;vertical-align: top;">:</td>
+            <td>{{ $pengajuan->judul }}</td>
         </tr>
         <tr>
             <td>PEMBIMBING 2</td>
-            <td>: {{ $dosen_pendamping->nama . ',' . $dosen_pendamping->gelar }}</td>
+            <td width="2">:</td>
+            <td>{{ $dosen_pendamping->nama . ', ' . $dosen_pendamping->gelar }}</td>
         </tr>
         <tr>
             <td>NO SURAT TUGAS</td>
-            <td>: {{ $pengajuan->id }}</td>
+            <td width="2">:</td>
+            <td>{{ $no_urut }}/ST.TA/FASTIKOM-UNSIQ/{{$bulan}}/{{ $date->format('Y') }}</td>
         </tr>
     </table>
 
-    <table class="margin-left table-border" style="border: 1px solid black; border-collapse: collapse;height: 700px;">
+    <table class="margin-left table-border" style="border: 1px solid black; border-collapse: collapse;height: 670px;">
         <tr style="background-color: gray">
             <td width="20" style="text-align:center; border: 1px solid black; border-collapse: collapse;">No</td>
             <td width="100" style="text-align:center; border: 1px solid black; border-collapse: collapse;">TANGGAL
@@ -222,30 +264,32 @@
             $no_pendamping = 1;
         @endphp
         @foreach ($bimbingan_dosen_pendamping as $bimbingan)
-            <tr>
-                <td style="text-align:center; border: 1px solid black; border-collapse: collapse;">
-                    {{ $no_pendamping++ }}
-                </td>
-                <td style="border: 1px solid black; border-collapse: collapse;">
-                    {{ \App\Helpers\AppHelper::parse_date_short($bimbingan->tanggal_acc) }}</td>
-                <td style="border: 1px solid black; border-collapse: collapse;">
-                    <p>{{ $bimbingan->bagian->bagian }}</p>
-                    @if (count($bimbingan->revisis) != 0)
-                        <ul>
-                            @foreach ($bimbingan->revisis as $revisi)
-                                <li>{{ strip_tags($revisi->catatan) }}</li>
-                            @endforeach
-                        </ul>
-                    @endif
-                    {{-- <ul>
-                        <li>Lorem ipsum dolor sit amet</li>
-                        <li>consectetur adipisicing elit.</li>
-                    </ul> --}}
-                </td>
-                <td style="text-align:center; border: 1px solid black; border-collapse: collapse;">
-                    <img src="{{ $ttd_dosen_pendamping }}" height="50">
-                </td>
-            </tr>
+            @if($bimbingan->status == 'diterima')
+                <tr>
+                    <td style="text-align:center; border: 1px solid black; border-collapse: collapse;">
+                        {{ $no_pendamping++ }}
+                    </td>
+                    <td style="border: 1px solid black; border-collapse: collapse;">
+                        {{ \App\Helpers\AppHelper::parse_date_short($bimbingan->tanggal_acc) }}</td>
+                    <td style="border: 1px solid black; border-collapse: collapse;">
+                        <p>{{ $bimbingan->bagian->bagian }}</p>
+                        @if (count($bimbingan->revisis) != 0)
+                            <ul>
+                                @foreach ($bimbingan->revisis as $revisi)
+                                    <li>{{ strip_tags($revisi->catatan) }}</li>
+                                @endforeach
+                            </ul>
+                        @endif
+                        {{-- <ul>
+                            <li>Lorem ipsum dolor sit amet</li>
+                            <li>consectetur adipisicing elit.</li>
+                        </ul> --}}
+                    </td>
+                    <td style="text-align:center; border: 1px solid black; border-collapse: collapse;">
+                        <img src="{{ $ttd_dosen_pendamping }}" height="50" style="max-width:60px;">
+                    </td>
+                </tr>
+            @endif
         @endforeach
     </table>
 

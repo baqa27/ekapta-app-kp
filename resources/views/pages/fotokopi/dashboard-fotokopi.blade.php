@@ -25,7 +25,8 @@
             <div class="mb-3 d-flex">
                 <h4 class="flex-grow-1">Selamat datang {{ Auth::guard('admin')->user()->nama }}</h4>
                 <div class="flex-shrink-0">
-                    <a href="{{ route('logout.admin') }}" class="btn btn-danger float-end">Logout <i class="bi bi-box-arrow-right ml-2"></i></a>
+                    <a href="{{ route('logout.admin') }}" class="btn btn-danger float-end">Logout <i
+                            class="bi bi-box-arrow-right ml-2"></i></a>
                 </div>
             </div>
             <div class="row">
@@ -52,7 +53,7 @@
                                     @foreach ($jilids as $jilid)
                                         <tr>
                                             <td>{{ $no++ }}</td>
-                                            <td>{{ $jilid->mahasiswa->nim.'/'.$jilid->mahasiswa->nama }}</td>
+                                            <td>{{ $jilid->mahasiswa->nim . '/' . $jilid->mahasiswa->nama }}</td>
                                             <td>
                                                 @if ($jilid->total_pembayaran)
                                                     <span class="text-success">
@@ -62,14 +63,21 @@
                                             </td>
                                             <td>
                                                 @if ($jilid->status == 1)
-                                                    <span class="badge bg-success">DISETUJUI</span>
-                                                @else
                                                     <span class="badge bg-secondary">REVIEW</span>
+                                                @elseif ($jilid->status == 3)
+                                                    <span class="badge bg-secondary">VALID</span>
                                                 @endif
                                             </td>
                                             <td>
-                                                <a href="{{ route('jilid.detail', $jilid->id) }}" class="btn btn-primary"><i
-                                                        class="fas fa-book"></i> JILID SKRIPSI</a>
+                                                @if ($jilid->status == 1)
+                                                    <a href="{{ route('jilid.detail', $jilid->id) }}"
+                                                        class="btn btn-secondary"><i class="fas fa-eye"></i> REVIEW JILID
+                                                        SKRIPSI</a>
+                                                @elseif ($jilid->status == 3)
+                                                    <a href="{{ route('jilid.detail', $jilid->id) }}"
+                                                        class="btn btn-primary"><i class="fas fa-book"></i> JILID
+                                                        SKRIPSI</a>
+                                                @endif
                                             </td>
                                         </tr>
                                     @endforeach

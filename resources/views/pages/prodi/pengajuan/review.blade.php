@@ -87,6 +87,9 @@
                         </div>
                         <div class="card-footer">
                             <div class="d-flex">
+                                <a href="{{ route('pengajuan.prodi') }}" class="btn btn-secondary mr-2">
+                                        <i class="bi bi-arrow-left mr-2"></i> Kembali
+                                </a>
                                 @if ($pengajuan->status == 'review')
                                     <button type="button" class="btn btn-primary mr-2" data-toggle="modal"
                                         data-target="#modal-revisi">
@@ -111,7 +114,7 @@
                                     @if (count($mahasiswa->bimbingans) == 0)
                                         <button type="button" class="btn btn-primary mr-2" data-toggle="modal"
                                             data-target="#modal-edit">
-                                            <i class="bi bi-pencil-square mr-2"></i> Ploting Dosen Pendamping
+                                            <i class="bi bi-pencil-square mr-2"></i> Ploting Dosen Pembimbing
                                         </button>
                                     @else
                                         <button type="button" class="btn btn-info mr-2" data-toggle="modal"
@@ -346,22 +349,22 @@
             <div class="modal fade" id="modal-edit">
                 <div class="modal-dialog">
                     <div class="modal-content">
-                        <div class="mb-3">
-                            <a href="{{ route('bimbingan.rekap.dosen') }}" class="btn btn-primary btn-sm" target="_blank">
-                                <i class="fas fa-people"></i> Lihat Rekap Bimbingan Dosen
-                            </a>
-                        </div>
                         <form action="{{ route('ploting.pembimbing') }}" method="post">
                             @csrf
                             <input type="hidden" name="id" value="{{ $pengajuan->id }}">
                             <input type="hidden" name="nim" value="{{ $pengajuan->mahasiswa->nim }}">
                             <div class="modal-header">
-                                <h4 class="modal-title">Edit Dosen Pembimbing</h4>
+                                <h4 class="modal-title">{{ count($mahasiswa->bimbingans) == 0 ? 'Ploting' : 'Edit' }} Dosen Pembimbing</h4>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
                             <div class="modal-body">
+                                <div class="mb-3">
+                                    <a href="{{ route('bimbingan.rekap.dosen') }}" class="btn btn-primary btn-sm" target="_blank">
+                                        <i class="fas fa-users"></i> Lihat Rekap Bimbingan Dosen
+                                    </a>
+                                </div>
                                 <div class="form-group">
                                     <label for="" class="form-label">Dosen Pembimbing Utama</label>
                                     <div class="col-md-12">

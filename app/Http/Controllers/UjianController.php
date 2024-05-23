@@ -15,18 +15,27 @@ use App\Models\Ujian;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+use Carbon\Carbon;
 
 class UjianController extends Controller
 {
     public function ujianMahasiswa()
     {
         $mahasiswa = Auth::guard('mahasiswa')->user();
+        if($mahasiswa->email == '-'){
+            return redirect()->route('profile');
+        }
         $ujian = $mahasiswa->ujian;
         $prodi = Prodi::where('namaprodi', $mahasiswa->prodi)->first();
         $bagians_is_ujian = $prodi->bagians()->where('is_pendadaran', 1)->get();
 
         $bimbingans_is_acc = $mahasiswa->bimbingans()->where('status', Bimbingan::DITERIMA)->get();
         $pendaftaran_acc = Pendaftaran::orderBy('created_at', 'desc')->where('mahasiswa_id', $mahasiswa->id)->where('status', 'diterima')->first();
+
+        $bagians = [];
+        foreach($bagians_is_ujian as $b){
+            array_push($bagians, $b->bagian);
+        }
 
         if (!$pendaftaran_acc) {
             return redirect('pendaftaran-mahasiswa');
@@ -36,7 +45,7 @@ class UjianController extends Controller
         $dosen_pendamping = $mahasiswa->dosens()->where('status', 'pendamping')->first();
 
         if (count($bimbingans_is_acc) - count($bagians_is_ujian) < count($bagians_is_ujian)) {
-            return redirect('bimbingan-mahasiswa')->with('warning', 'Selesaikan bimbingan anda sampai dengan BAB ' . count($bagians_is_ujian));
+            return redirect('bimbingan-mahasiswa')->with('warning', 'Selesaikan bimbingan: ' . implode(',', $bagians));
         }
 
         if (!$ujian) {
@@ -165,6 +174,7 @@ class UjianController extends Controller
             'lampiran_6' => ['required', 'mimes:jpg,png,jpeg,pdf', 'max:5000'],
             'lampiran_7' => ['required', 'mimes:jpg,png,jpeg,pdf', 'max:5000'],
             'lampiran_8' => ['required', 'mimes:jpg,png,jpeg,pdf', 'max:5000'],
+            'lampiran_laporan' => ['required', 'mimes:jpg,png,jpeg,pdf', 'max:5000'],
         ]);
 
         $validatedData['lampiran_1'] = AppHelper::instance()->uploadLampiran($request->file('lampiran_1'), 'lampirans');
@@ -175,6 +185,7 @@ class UjianController extends Controller
         $validatedData['lampiran_6'] = AppHelper::instance()->uploadLampiran($request->file('lampiran_6'), 'lampirans');
         $validatedData['lampiran_7'] = AppHelper::instance()->uploadLampiran($request->file('lampiran_7'), 'lampirans');
         $validatedData['lampiran_8'] = AppHelper::instance()->uploadLampiran($request->file('lampiran_8'), 'lampirans');
+        $validatedData['lampiran_laporan'] = AppHelper::instance()->uploadLampiran($request->file('lampiran_laporan'), 'lampirans');
 
         $validatedData['mahasiswa_id'] = Auth::guard('mahasiswa')->user()->id;
         $validatedData['pengajuan_id'] = $pengajuan->id;
@@ -191,6 +202,14 @@ class UjianController extends Controller
         $mahasiswa = $ujian->mahasiswa;
 
         $pendaftaran_acc = Pendaftaran::orderBy('created_at', 'desc')->where('mahasiswa_id', $mahasiswa->id)->where('status', 'diterima')->first();
+
+        if ($ujian->mahasiswa_id != Auth::guard('mahasiswa')->user()->id) {
+            abort(404);
+        }
+
+        if ($ujian->is_valid == Ujian::REVIEW || $ujian->is_valid == Ujian::DITERIMA) {
+            return redirect('ujian-mahasiswa');
+        }
 
         if (!$pendaftaran_acc) {
             return redirect('pendaftaran-mahasiswa');
@@ -282,6 +301,15 @@ class UjianController extends Controller
                 }),
                 'mimes:pdf,png,jpg,jpeg', 'max:5000'
             ],
+            'lampiran_laporan' => [
+                Rule::requiredIf(function () {
+                    if (empty($this->request->lampiran_5)) {
+                        return false;
+                    }
+                    return true;
+                }),
+                'mimes:pdf', 'max:5000'
+            ],
         ]);
 
         if ($request->file('lampiran_1')) {
@@ -306,15 +334,19 @@ class UjianController extends Controller
         }
         if ($request->file('lampiran_6')) {
             AppHelper::instance()->deleteLampiran($ujian->lampiran_6);
-            $validatedData['lampiran_6'] = AppHelper::instance()->uploadLampiran($request->lampiran_5, 'lampirans');
+            $validatedData['lampiran_6'] = AppHelper::instance()->uploadLampiran($request->lampiran_6, 'lampirans');
         }
         if ($request->file('lampiran_7')) {
             AppHelper::instance()->deleteLampiran($ujian->lampiran_7);
-            $validatedData['lampiran_7'] = AppHelper::instance()->uploadLampiran($request->lampiran_5, 'lampirans');
+            $validatedData['lampiran_7'] = AppHelper::instance()->uploadLampiran($request->lampiran_7, 'lampirans');
         }
         if ($request->file('lampiran_8')) {
             AppHelper::instance()->deleteLampiran($ujian->lampiran_8);
-            $validatedData['lampiran_8'] = AppHelper::instance()->uploadLampiran($request->lampiran_5, 'lampirans');
+            $validatedData['lampiran_8'] = AppHelper::instance()->uploadLampiran($request->lampiran_8, 'lampirans');
+        }
+        if ($request->file('lampiran_laporan')) {
+            AppHelper::instance()->deleteLampiran($ujian->lampiran_laporan);
+            $validatedData['lampiran_laporan'] = AppHelper::instance()->uploadLampiran($request->lampiran_laporan, 'lampirans');
         }
 
         $validatedData['is_valid'] = 0;
@@ -330,6 +362,10 @@ class UjianController extends Controller
         $mahasiswa = $ujian->mahasiswa;
 
         $pendaftaran_acc = Pendaftaran::orderBy('created_at', 'desc')->where('mahasiswa_id', $mahasiswa->id)->where('status', 'diterima')->first();
+
+        if ($ujian->mahasiswa_id != Auth::guard('mahasiswa')->user()->id) {
+            abort(404);
+        }
 
         if (!$pendaftaran_acc) {
             return redirect('pendaftaran-mahasiswa');
@@ -356,7 +392,6 @@ class UjianController extends Controller
         $mahasiswa = $ujian->mahasiswa;
         $prodi = Prodi::where('namaprodi', $mahasiswa->prodi)->first();
 
-        //$dosens = Dosen::where('kodeprodi', $prodi->kode)->get();
         $dosens = $prodi->dosens;
 
         $dosen_utama = $mahasiswa->dosens()->where('status', 'utama')->first();
@@ -404,6 +439,14 @@ class UjianController extends Controller
                 'is_valid' => Ujian::REVISI,
             ]);
             $ujian->revisis()->save($revisi);
+            if ($ujian->mahasiswa->email != '-') {
+                AppHelper::instance()->send_mail([
+                    'mail' => $ujian->mahasiswa->email,
+                    'subject' => 'Pendaftaran Ujian Tugas Ahir',
+                    'title' => 'EKAPTA',
+                    'message' => 'Pendaftaran Ujian Tugas Akhir Anda Berstatus REVISI. Silahkan perbaiki kemudian lakukan submit ulang!. <br><br>Catatan revisi: '.$request->catatan,
+                ]);
+            }
             return redirect('ujian-admin')->with('success', 'Ujian TA berhasil direvisi');
         } elseif ($ujian->is_valid == Ujian::REVISI) {
             $ujian->revisis()->save($revisi);
@@ -424,6 +467,9 @@ class UjianController extends Controller
         $dosen_utama = $mahasiswa->dosens()->where('status', 'utama')->first();
         $dosen_pendamping = $mahasiswa->dosens()->where('status', 'pendamping')->first();
 
+        $revisi = new RevisiUjian();
+        $revisi->catatan = $request->catatan;
+
         ReviewUjian::create([
             'ujian_id' => $ujian->id,
             'dosen_id' => $dosen_utama->id,
@@ -442,7 +488,15 @@ class UjianController extends Controller
             'is_valid' => 1,
             'tanggal_acc' => now(),
         ]);
-
+        $ujian->revisis()->save($revisi);
+        if ($ujian->mahasiswa->email != '-') {
+            AppHelper::instance()->send_mail([
+                'mail' => $ujian->mahasiswa->email,
+                'subject' => 'Pendaftaran Ujian Tugas Ahir',
+                'title' => 'EKAPTA',
+                'message' => 'Selamat Pendaftaran Ujian Tugas Akhir Anda Berstatus DITERIMA.',
+            ]);
+        }
         return back()->with('success', 'Pendaftaran Ujian TA berhasil di Acc.');
     }
 
@@ -479,6 +533,7 @@ class UjianController extends Controller
         $validatedData = $request->validate([
             'tanggal_ujian' => 'required',
         ]);
+        $validatedData['tanggal_ujian'] = Carbon::parse($request->tanggal_ujian);
         $ujian->update($validatedData);
         return back();
     }
@@ -535,33 +590,44 @@ class UjianController extends Controller
             return back();
         }
 
-        $reviews_penguji = $ujian->reviews()->where('dosen_status', ReviewUjian::DOSEN_PENGUJI)->get();
-        $reviews_pembimbing = $ujian->reviews()->where('dosen_status', ReviewUjian::DOSEN_PEMBIMBING)->get();
-
-        $nilai_dosen_penguji_1 = AppHelper::instance()->hitung_nilai_ujian($reviews_penguji[0]->nilai_1, $reviews_penguji[0]->nilai_2, $reviews_penguji[0]->nilai_3, $reviews_penguji[0]->nilai_4, $prodi->id);
-        $nilai_dosen_penguji_2 = AppHelper::instance()->hitung_nilai_ujian($reviews_penguji[1]->nilai_1, $reviews_penguji[1]->nilai_2, $reviews_penguji[1]->nilai_3, $reviews_penguji[1]->nilai_4, $prodi->id);
-        $nilai_dosen_penguji_3 = AppHelper::instance()->hitung_nilai_ujian($reviews_penguji[2]->nilai_1, $reviews_penguji[2]->nilai_2, $reviews_penguji[2]->nilai_3, $reviews_penguji[2]->nilai_4, $prodi->id);
-
-        $nilai_dosen_pembimbing_1 = AppHelper::instance()->hitung_nilai_ujian($reviews_pembimbing[0]->nilai_1, $reviews_pembimbing[0]->nilai_2, $reviews_pembimbing[0]->nilai_3, $reviews_pembimbing[0]->nilai_4, $prodi->id);
-        $nilai_dosen_pembimbing_2 = AppHelper::instance()->hitung_nilai_ujian($reviews_pembimbing[1]->nilai_1, $reviews_pembimbing[1]->nilai_2, $reviews_pembimbing[1]->nilai_3, $reviews_pembimbing[1]->nilai_4, $prodi->id);
-
-        $nilai_dosen_pembimbing = ($nilai_dosen_pembimbing_1 + $nilai_dosen_pembimbing_2) / 2;
-        $nilai_dosen_penguji = ($nilai_dosen_penguji_1 + $nilai_dosen_penguji_2 + $nilai_dosen_penguji_3) / 3;
-
-        $nilai = ($presentase_nilai->bobot_pembimbing / 100 * $nilai_dosen_pembimbing) + ($presentase_nilai->bobot_penguji / 100 * $nilai_dosen_penguji);
+        $nilai = AppHelper::hitung_nilai_mahasiswa($ujian);
 
         $data = [
-            'title' => 'Detail Seminar Mahasiswa',
+            'title' => 'Detail Ujian Mahasiswa',
             'active' => 'ujian',
             'sidebar' => 'partials.sidebarProdi',
             'ujian' => $ujian,
             'revisis' => $ujian->revisis()->paginate(5),
-            'nilai' => $nilai,
-            'nilai_dosen_penguji' => $nilai_dosen_penguji,
-            'nilai_dosen_pembimbing' => $nilai_dosen_pembimbing,
+            'nilai' => $nilai['nilai'],
+            'nilai_dosen_penguji' => $nilai['nilai_penguji'],
+            'nilai_dosen_pembimbing' => $nilai['nilai_pembimbing'],
             'prodi' => $prodi,
         ];
 
         return view('pages.prodi.ujian.detail', $data);
+    }
+
+    public function rekapUjian(){
+        $ujians = Ujian::where('is_valid', Ujian::VALID)
+            ->where('tanggal_ujian', null)
+            ->get();
+        return view('pages.admin.ujian.rekap',[
+            'title' => 'Rekap Pendaftaran Ujian Pendadaran Mahasiswa',
+            'sidebar' => 'partials.sidebarAdmin',
+            'active' => 'ujian',
+            'ujians' => $ujians,
+        ]);
+    }
+
+    public function updateStatus(Request $request)
+    {
+        $ujian = Ujian::findOrFail($request->ujian_id);
+        if ($ujian->is_valid == 0) {
+            return back();
+        }
+        $ujian->update([
+            'is_lulus' => $request->is_lulus,
+        ]);
+        return response()->json(['message' => 'Status seminar berhasil disimpan']);
     }
 }

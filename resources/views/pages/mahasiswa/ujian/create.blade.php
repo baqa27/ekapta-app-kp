@@ -217,6 +217,25 @@
                                     @enderror
                                 </div>
 
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">Laporan Skripsi (Format: .pdf, max 5Mb )</label>
+                                    <div class="input-group mb-3">
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input" name="lampiran_laporan"
+                                                   @error('lampiran_laporan') is-invalid @enderror required accept=".pdf">
+                                            <label class="custom-file-label" for="exampleInputFile">Choose
+                                                file</label>
+                                        </div>
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">Dokumen</span>
+                                        </div>
+                                    </div>
+                                    @error('lampiran_laporan')
+                                    <small class="text-danger"
+                                           style="position:relative;top:-15px;left:5px">{{ $message }}</small>
+                                    @enderror
+                                </div>
+
                                 <div class="form-group mt-4">
                                     <button type="submit" class="btn btn-success">Submit</button>
                                 </div>

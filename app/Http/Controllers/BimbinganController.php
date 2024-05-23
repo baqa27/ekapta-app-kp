@@ -49,10 +49,13 @@ class BimbinganController extends Controller
     public function bimbinganMahasiswa()
     {
         $mahasiswa = Mahasiswa::findOrFail(Auth::guard('mahasiswa')->user()->id);
+        if($mahasiswa->email == '-'){
+            return redirect()->route('profile');
+        }
         $dosenUtama = $mahasiswa->dosens()->where('status', 'utama')->first();
         $dosenPendamping = $mahasiswa->dosens()->where('status', 'pendamping')->first();
 
-        $pendaftaran_acc = Pendaftaran::orderBy('created_at','desc')->where('mahasiswa_id', Auth::guard('mahasiswa')->user()->id)->where('status', 'diterima')->first();
+        $pendaftaran_acc = Pendaftaran::orderBy('created_at', 'desc')->where('mahasiswa_id', Auth::guard('mahasiswa')->user()->id)->where('status', 'diterima')->first();
 
         if (!$pendaftaran_acc) {
             return redirect('pendaftaran-mahasiswa')->with('warning', 'Silahkan melakukan Pendaftaran Tugas Akhir terlebih dahulu');
@@ -137,15 +140,17 @@ class BimbinganController extends Controller
         $mahasiswa = Mahasiswa::findOrFail(Auth::guard('mahasiswa')->user()->id);
         $prodi = Prodi::where('namaprodi', $mahasiswa->prodi)->first();
 
-        $pendaftaran = Pendaftaran::orderBy('created_at','desc')->where('mahasiswa_id', $mahasiswa->id)->where('status', 'diterima')->first();
+        $pendaftaran = Pendaftaran::orderBy('created_at', 'desc')->where('mahasiswa_id', $mahasiswa->id)->where('status', 'diterima')->first();
 
-        if(AppHelper::instance()->is_expired_in_one_year($pendaftaran->tanggal_acc)){
-            return redirect('bimbingan-mahasiswa')->with('warning','Masa aktif bimbingan anda sudah berakhir, silahkan lakukan pendaftaran ulang');
+        if (AppHelper::instance()->is_expired_in_one_year($pendaftaran->tanggal_acc)) {
+            return redirect('bimbingan-mahasiswa')->with('warning', 'Masa aktif bimbingan anda sudah berakhir, silahkan lakukan pendaftaran ulang');
         }
 
         $bimbingan = Bimbingan::findOrFail($id);
 
-        if ($bimbingan->status == 'review' || $bimbingan->status == 'ditolak' ||    $bimbingan->status == 'diterima') {
+        if ($mahasiswa->id != $bimbingan->mahasiswa->id) {
+            abort(404);
+        } elseif ($bimbingan->status == 'review' || $bimbingan->status == 'ditolak' ||    $bimbingan->status == 'diterima') {
             return back()->with('warning', 'Bimbingan tidak dapat disubmit');
         } elseif (count($mahasiswa->bimbingans()->where('status', 'review')->get()) >= 2) {
             return back()->with('warning', 'Tunggu sampai bimbingan di Acc oleh dosen');
@@ -162,7 +167,7 @@ class BimbinganController extends Controller
     public function bimbinganDetail($id)
     {
         $bimbingan = Bimbingan::findOrFail($id);
-        if ($bimbingan->mahasiswa->nim != Auth::guard('mahasiswa')->user()->nim) {
+        if ($bimbingan->mahasiswa->id != Auth::guard('mahasiswa')->user()->id) {
             return back()->with('warning', 'Bimbingan tidak ditemukan');
         }
         if ($bimbingan->status == null) {
@@ -203,10 +208,10 @@ class BimbinganController extends Controller
         $bimbingan = Bimbingan::findOrFail($request->id);
         $cekBimbingan = Bimbingan::where('mahasiswa_id', Auth::guard('mahasiswa')->user()->id)->where('status', 'review')->get();
 
-        $pendaftaran = Pendaftaran::orderBy('created_at','desc')->where('mahasiswa_id', Auth::guard('mahasiswa')->user()->id)->where('status', 'diterima')->first();
+        $pendaftaran = Pendaftaran::orderBy('created_at', 'desc')->where('mahasiswa_id', Auth::guard('mahasiswa')->user()->id)->where('status', 'diterima')->first();
 
-        if(AppHelper::instance()->is_expired_in_one_year($pendaftaran->tanggal_acc)){
-            return redirect('bimbingan-mahasiswa')->with('warning','Masa aktif bimbingan anda sudah berakhir, silahkan lakukan pendaftaran ulang');
+        if (AppHelper::instance()->is_expired_in_one_year($pendaftaran->tanggal_acc)) {
+            return redirect('bimbingan-mahasiswa')->with('warning', 'Masa aktif bimbingan anda sudah berakhir, silahkan lakukan pendaftaran ulang');
         }
 
         if (count($cekBimbingan) >= 2) {
@@ -219,7 +224,7 @@ class BimbinganController extends Controller
                 'lampiran' => ['required', 'mimes:pdf', 'max:5000'],
             ]);
             if ($request->file('lampiran')) {
-                AppHelper::instance()->deleteLampiran($bimbingan->lampiran);
+                //AppHelper::instance()->deleteLampiran($bimbingan->lampiran);
                 $validatedData['lampiran'] = AppHelper::instance()->uploadLampiran($request->lampiran, 'lampirans');
             }
             $validatedData['keterangan'] = $request->keterangan;
@@ -252,10 +257,33 @@ class BimbinganController extends Controller
         if ($bimbingan->status == 'diterima') {
             return redirect('bimbingan-dosen')->with('warning', 'Bimbingan sudah di Acc');
         }
+        $revisi = new RevisiBimbingan;
+        $request->validate([
+            'catatan' => 'required',
+            'lampiran' => [Rule::requiredIf(function () {
+                if (empty($this->request->lampiran)) {
+                    return false;
+                }
+                return true;
+            }), 'mimes:pdf,docx', 'max:5000']
+        ]);
+        $revisi->catatan = $request->catatan;
+        //$revisi->lampiran = AppHelper::instance()->uploadLampiran($request->lampiran, 'lampirans');
+        $revisi->lampiran = $bimbingan->lampiran;
+        $revisi->dosen_id = Auth::guard('dosen')->user()->id;
         $bimbingan->update([
             'status' => 'diterima',
             'tanggal_acc' => now(),
         ]);
+        $bimbingan->revisis()->save($revisi);
+        if ($bimbingan->mahasiswa->email != '-') {
+            AppHelper::instance()->send_mail([
+                'mail' => $bimbingan->mahasiswa->email,
+                'subject' => 'Bimbingan Tugas Ahir',
+                'title' => 'EKAPTA',
+                'message' => 'Selamat Bimbingan Tugas Akhir Anda <b>'.$bimbingan->bagian->bagian.'</b> Berstatus DITERIMA. Silahkan lanjutkan ke bab berikutnya. Catatan: '.$request->catatan,
+            ]);
+        }
         return redirect('bimbingan-dosen')->with('success', 'Bimbingan berhasil di Acc');
     }
 
@@ -278,11 +306,20 @@ class BimbinganController extends Controller
         ]);
 
         $revisi->catatan = $request->catatan;
-        $revisi->lampiran = AppHelper::instance()->uploadLampiran($request->lampiran, 'lampirans');
+        //$revisi->lampiran = AppHelper::instance()->uploadLampiran($request->lampiran, 'lampirans');
+        $revisi->lampiran = $bimbingan->lampiran;
         $revisi->dosen_id = Auth::guard('dosen')->user()->id;
         $bimbingan->update([
             'status' => 'revisi',
         ]);
+        if ($bimbingan->mahasiswa->email != '-') {
+            AppHelper::instance()->send_mail([
+                'mail' => $bimbingan->mahasiswa->email,
+                'subject' => 'Bimbingan Tugas Ahir',
+                'title' => 'EKAPTA',
+                'message' => 'Bimbingan Tugas Akhir Anda <b>'.$bimbingan->bagian->bagian.'</b> Berstatus REVISI. Silahkan perbaiki kemudian submit ulang. <br><br> Catatan revisi : '. $request->catatan,
+            ]);
+        }
         $bimbingan->revisis()->save($revisi);
         return redirect('bimbingan-dosen')->with('success', 'Bimbingan berhasil direvisi');
     }
@@ -336,8 +373,11 @@ class BimbinganController extends Controller
 
     public function bimbinganAdmin()
     {
-        $mahasiswas = Mahasiswa::with(['bimbingans'])->get();
-
+        // $mahasiswas = Mahasiswa::with(['bimbingans','pendaftarans','dosens','ujian','seminar'])->where('id', 785)->first();
+        $mahasiswas = Mahasiswa::with(['bimbingans', 'pendaftarans', 'dosens', 'ujian', 'seminar'])->get();
+        // return $mahasiswas->seminar;
+        // return $mahasiswas->seminar->reviews;
+        // return $mahasiswas->pendaftarans()->where('status','diterima')->first();
         return view('pages.admin.bimbingan.bimbingan', [
             'title' => 'Laporan Bimbingan Tugas Akhir',
             'active' => 'bimbingan',
@@ -377,9 +417,10 @@ class BimbinganController extends Controller
         ]);
     }
 
-    public function rekapDosen(){
+    public function rekapDosen()
+    {
         $prodi =  Auth::guard('prodi')->user();
-        return view('pages.prodi.bimbingan.rekap-dosen',[
+        return view('pages.prodi.bimbingan.rekap-dosen', [
             'title' => 'Rekap Bimbingan Dosen',
             'sidebar' => 'partials.sidebarProdi',
             'active' => 'dashboard',
@@ -387,64 +428,105 @@ class BimbinganController extends Controller
         ]);
     }
 
-    public function bimbinganAdminInput(){
-        $dosens = Dosen::with(['mahasiswas'])->where('is_manual', 1)->get();
-        return view('pages.admin.bimbingan.bimbingan-input',[
+    public function bimbinganAdminInput()
+    {
+        if(Auth::guard('prodi')->user()){
+            $prodi = Auth::guard('prodi')->user();
+            $dosens = $prodi->dosens()->with(['mahasiswas'])->where('is_manual', 1)->get();
+            $sidebar = 'partials.sidebarProdi';
+        }else{
+            $dosens = Dosen::with(['mahasiswas'])->where('is_manual', 1)->get();
+            $sidebar = 'partials.sidebarAdmin';
+        }
+        return view('pages.admin.bimbingan.bimbingan-input', [
             'title' => 'Bimbingan Dosen',
-            'sidebar' => 'partials.sidebarAdmin',
+            'sidebar' => $sidebar,
             'active' => 'bimbingan-input',
             'dosens' => $dosens,
         ]);
     }
 
-    public function bimbinganAdminInputCreate($dosen_id, $mahasiswa_id){
+    public function bimbinganAdminInputCreate($dosen_id, $mahasiswa_id)
+    {
+        if(Auth::guard('prodi')->user()){
+            $sidebar = 'partials.sidebarProdi';
+            $route = 'bimbingan.prodi.input';
+        }else{
+            $sidebar = 'partials.sidebarAdmin';
+            $route = 'bimbingan.admin.input';
+        }
         $dosen = Dosen::findOrFail($dosen_id);
         $mahasiswa = Mahasiswa::findOrFail($mahasiswa_id);
         $bimbingans = $dosen->bimbingans()->where('mahasiswa_id', $mahasiswa->id)->get();
-        return view('pages.admin.bimbingan.bimbingan-store',[
+        return view('pages.admin.bimbingan.bimbingan-store', [
             'title' => 'Input Manual Bimbingan Dosen',
-            'sidebar' => 'partials.sidebarAdmin',
+            'sidebar' => $sidebar,
             'active' => 'bimbingan-input',
             'dosen' => $dosen,
             'mahasiswa' => $mahasiswa,
             'bimbingans' => $bimbingans,
             'dosen_mahasiswa' => DB::table('dosen_mahasiswas')->where('mahasiswa_id', $mahasiswa->id)->where('dosen_id', $dosen->id)->first(),
+            'route' => $route,
         ]);
     }
 
-    public function bimbinganAdminInputStore(Request $request){
+    public function bimbinganAdminInputStore(Request $request)
+    {
         $request->validate([
-            'lampiran' => ['mimes:pdf','max:1000'],
+            'lampiran' => [Rule::requiredIf(function(){
+                if (empty($this->request->lampiran)) {
+                    return false;
+                }
+                return true;
+            }) ,'mimes:pdf', 'max:1000'],
         ]);
-        $lampiran = AppHelper::instance()->uploadLampiran($request->lampiran, 'lampirans');
+        if($request->lampiran){
+            $lampiran = AppHelper::instance()->uploadLampiran($request->lampiran, 'lampirans');
+            DB::table('dosen_mahasiswas')->where('mahasiswa_id', $request->mahasiswa_id)->where('dosen_id', $request->dosen_id)->update(['lampiran' => $lampiran]);
+        }
         $dates = $request->dates;
         $ids = $request->ids;
-        for ($i=0;$i < count($request->ids);$i++) {
-            $bimbingan = Bimbingan::findOrFail($ids[$i]);
-            $bimbingan->update([
-                "status" => "diterima",
-                "tanggal_acc" => $dates[$i],
-            ]);
+        for ($i = 0; $i < count($request->dates); $i++) {
+            if ($dates[$i] != null) {
+                $bimbingan = Bimbingan::findOrFail($ids[$i]);
+                $bimbingan->update([
+                    "status" => "diterima",
+                    "tanggal_acc" => $dates[$i],
+                ]);
+                if ($bimbingan->mahasiswa->email != '-') {
+                    AppHelper::instance()->send_mail([
+                        'mail' => $bimbingan->mahasiswa->email,
+                        'subject' => 'Bimbingan Tugas Ahir',
+                        'title' => 'EKAPTA',
+                        'message' => 'Selamat Bimbingan Tugas Akhir Anda <b>'.$bimbingan->bagian->bagian.'</b> Berstatus DITERIMA. Silahkan lanjutkan ke bab berikutnya.',
+                    ]);
+                }
+            }
         }
-        DB::table('dosen_mahasiswas')->where('mahasiswa_id', $request->mahasiswa_id)->where('dosen_id', $request->dosen_id)->update(['lampiran' => $lampiran]);
         return back()->with('success', 'Berhasil disimpan');
     }
 
-    public function public($id){
-        $mahasiswa = Mahasiswa::with(['bimbingans'])->where('id', $id)->first();
+    public function public($id)
+    {
+        $mahasiswa = Mahasiswa::with(['bimbingans'])->where('id', base64_decode($id))->first();
+        if (!$mahasiswa) {
+            abort(404);
+        }
+        $pengajuan = $mahasiswa->pengajuans()->where('status', Pengajuan::DITERIMA)->first();
         $prodi = Prodi::where('namaprodi', $mahasiswa->prodi)->first();
         $dosen_utama = $mahasiswa->dosens()->where('status', 'utama')->first();
         $dosen_pendamping = $mahasiswa->dosens()->where('status', 'pendamping')->first();
-        $pendaftaran_acc = Pendaftaran::orderBy('created_at','desc')->where('mahasiswa_id', $mahasiswa->id)->where('status', 'diterima')->first();
-        return view('pages.public.detail',[
-            'title' => 'Detail Riwayat Bimbingan Mahasiswa',
+        $pendaftaran_acc = Pendaftaran::orderBy('created_at', 'desc')->where('mahasiswa_id', $mahasiswa->id)->where('status', 'diterima')->first();
+        return view('pages.public.detail', [
+            'title' => 'Riwayat Bimbingan Mahasiswa',
             'mahasiswa' => $mahasiswa,
             'prodi' => $prodi,
-            'dosen_utama' => $dosen_utama,
-            'dosen_pendamping' => $dosen_pendamping,
-            'date_expired' => Carbon::parse($pendaftaran_acc->tanggal_acc)->addMonthsNoOverflow(12),
-            'is_expired' => AppHelper::instance()->is_expired_in_one_year($pendaftaran_acc->tanggal_acc)
+            'dosen_utama' => $dosen_utama ? $dosen_utama : null,
+            'dosen_pendamping' => $dosen_pendamping ? $dosen_pendamping : null,
+            'date_expired' => $pendaftaran_acc ? Carbon::parse($pendaftaran_acc->tanggal_acc)->addMonthsNoOverflow(12) : null,
+            'is_expired' => $pendaftaran_acc ? AppHelper::instance()->is_expired_in_one_year($pendaftaran_acc->tanggal_acc) : null,
+            'pengajuan' => $pengajuan ? $pengajuan : null,
+            'pendaftaran' => $pendaftaran_acc ? $pendaftaran_acc : null,
         ]);
     }
-
 }

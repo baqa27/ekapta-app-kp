@@ -41,7 +41,7 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="#" class="brand-link">
-        <img src="{{ asset('ekapta') }}/adminLTE/dist/img/AdminLTELogo.png" alt="AdminLTE Logo"
+        <img src="https://unsiq.ac.id/img/UNSIQ-bunder.ico" alt="AdminLTE Logo"
              class="brand-image img-circle elevation-3" style="opacity: .8">
         <span class="brand-text font-weight-light">Panel Admin</span>
     </a>
@@ -141,6 +141,15 @@
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>
                                     Validasi Ujian TA
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('jilid.index') }}"
+                               class="nav-link" target="_blank">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>
+                                    Validasi Jilid TA
                                 </p>
                             </a>
                         </li>

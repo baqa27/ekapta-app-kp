@@ -35,11 +35,11 @@
                             bg-success @endif
                             ">
                                 @if ($seminar->is_valid == 0)
-                                REVIEW
+                                    REVIEW
                                 @elseif ($seminar->is_valid == 1)
-                                VALID
+                                    VALID
                                 @elseif ($seminar->is_valid == 2)
-                                TIDAK VALID
+                                    TIDAK VALID
                                 @endif
                             </div>
                         </div>
@@ -59,7 +59,7 @@
                                     Nama Lengkap
                                 </div>
                                 <div class="col-md-7">
-                                    <b>{{  $seminar->mahasiswa->nama }}</b>
+                                    <b>{{ $seminar->mahasiswa->nama }}</b>
                                 </div>
                             </div>
                             <hr>
@@ -69,7 +69,7 @@
                                     Prodi
                                 </div>
                                 <div class="col-md-7">
-                                    <b>{{  $seminar->mahasiswa->prodi }}</b>
+                                    <b>{{ $seminar->mahasiswa->prodi }}</b>
                                 </div>
                             </div>
                             <hr>
@@ -118,7 +118,7 @@
 
                             <div class="row">
                                 <div class="col-md-5">
-                                    Bukti Lunas Pembayaran Tugas Akhir (TA)
+                                    Bukti Lunas Pembayaran Seminar Tugas Akhir (TA)
                                 </div>
                                 <div class="col-md-7">
                                     <a href="{{ asset($seminar->lampiran_2) }}" target="_blank"><i
@@ -128,41 +128,78 @@
                             </div>
                             <hr>
 
-{{--                            <div class="row">--}}
-{{--                                <div class="col-md-5">--}}
-{{--                                    Berkas File Tugas Akhir Lengkap--}}
-{{--                                </div>--}}
-{{--                                <div class="col-md-7">--}}
-{{--                                    <a href="{{ asset($seminar->lampiran_3) }}" target="_blank"><i--}}
-{{--                                            class="fas fa-paperclip"></i>--}}
-{{--                                        {{ Str::substr($seminar->lampiran_3, 40) }}</a>--}}
-{{--                                </div>--}}
-{{--                            </div>--}}
-{{--                            <hr>--}}
+                            <div class="row">
+                                <div class="col-md-5">
+                                    File Laporan Proposal
+                                </div>
+                                <div class="col-md-7">
+                                    @if ($seminar->lampiran_3)
+                                        <a href="{{ asset($seminar->lampiran_3) }}" target="_blank"><i
+                                                class="fas fa-paperclip"></i>
+                                            {{ Str::substr($seminar->lampiran_3, 40) }}</a>
+                                    @else
+                                        <span class="text-danger">Belum Upload File Laporan Proposal</span>
+                                    @endif
+                                </div>
+                            </div>
+                            <hr>
 
-{{--                            <div class="row">--}}
-{{--                                <div class="col-md-5">--}}
-{{--                                    Scan Lembar Bimbingan TA Yang Telah di Acc--}}
-{{--                                </div>--}}
-{{--                                <div class="col-md-7">--}}
-{{--                                    <a href="{{ asset($seminar->lampiran_4) }}" target="_blank"><i--}}
-{{--                                            class="fas fa-paperclip"></i>--}}
-{{--                                        {{ Str::substr($seminar->lampiran_4, 40) }}</a>--}}
-{{--                                </div>--}}
-{{--                            </div>--}}
-{{--                            <hr>--}}
+                            <div class="row">
+                                <div class="col-md-5">
+                                    Nomor Pembayaran
+                                </div>
+                                <div class="col-md-7">
+                                    <b>{{ $seminar->nomor_pembayaran }}</b>
+                                </div>
+                            </div>
+                            <hr>
 
-{{--                            <div class="row">--}}
-{{--                                <div class="col-md-5">--}}
-{{--                                    Scan Lembar Persetujuan--}}
-{{--                                </div>--}}
-{{--                                <div class="col-md-7">--}}
-{{--                                    <a href="{{ asset($seminar->lampiran_5) }}" target="_blank"><i--}}
-{{--                                            class="fas fa-paperclip"></i>--}}
-{{--                                        {{ Str::substr($seminar->lampiran_5, 40) }}</a>--}}
-{{--                                </div>--}}
-{{--                            </div>--}}
-{{--                            <hr>--}}
+                            <div class="row">
+                                <div class="col-md-5">
+                                    Jumlah Pembayaran
+                                </div>
+                                <div class="col-md-7">
+                                    <b
+                                        class="text-success">{{ $seminar->jumlah_bayar ? 'Rp ' . $seminar->jumlah_bayar : '' }}</b>
+                                </div>
+                            </div>
+                            <hr>
+
+                            {{--                            <div class="row"> --}}
+                            {{--                                <div class="col-md-5"> --}}
+                            {{--                                    Berkas File Tugas Akhir Lengkap --}}
+                            {{--                                </div> --}}
+                            {{--                                <div class="col-md-7"> --}}
+                            {{--                                    <a href="{{ asset($seminar->lampiran_3) }}" target="_blank"><i --}}
+                            {{--                                            class="fas fa-paperclip"></i> --}}
+                            {{--                                        {{ Str::substr($seminar->lampiran_3, 40) }}</a> --}}
+                            {{--                                </div> --}}
+                            {{--                            </div> --}}
+                            {{--                            <hr> --}}
+
+                            {{--                            <div class="row"> --}}
+                            {{--                                <div class="col-md-5"> --}}
+                            {{--                                    Scan Lembar Bimbingan TA Yang Telah di Acc --}}
+                            {{--                                </div> --}}
+                            {{--                                <div class="col-md-7"> --}}
+                            {{--                                    <a href="{{ asset($seminar->lampiran_4) }}" target="_blank"><i --}}
+                            {{--                                            class="fas fa-paperclip"></i> --}}
+                            {{--                                        {{ Str::substr($seminar->lampiran_4, 40) }}</a> --}}
+                            {{--                                </div> --}}
+                            {{--                            </div> --}}
+                            {{--                            <hr> --}}
+
+                            {{--                            <div class="row"> --}}
+                            {{--                                <div class="col-md-5"> --}}
+                            {{--                                    Scan Lembar Persetujuan --}}
+                            {{--                                </div> --}}
+                            {{--                                <div class="col-md-7"> --}}
+                            {{--                                    <a href="{{ asset($seminar->lampiran_5) }}" target="_blank"><i --}}
+                            {{--                                            class="fas fa-paperclip"></i> --}}
+                            {{--                                        {{ Str::substr($seminar->lampiran_5, 40) }}</a> --}}
+                            {{--                                </div> --}}
+                            {{--                            </div> --}}
+                            {{--                            <hr> --}}
 
                             <div class="row">
                                 <div class="col-md-5">
@@ -174,17 +211,17 @@
                             </div>
 
                             @if ($seminar->tanggal_acc)
-                            <hr>
-                            <div class="row">
-                                <div class="col-md-5">
-                                    Tanggal Acc
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        Tanggal Validasi
+                                    </div>
+                                    <div class="col-md-7">
+                                        @if ($seminar->tanggal_acc)
+                                            <b class="text-success">{{ date('d M Y H:m', strtotime($seminar->tanggal_acc)) }}</b>
+                                        @endif
+                                    </div>
                                 </div>
-                                <div class="col-md-7">
-                                    @if ($seminar->tanggal_acc)
-                                    <b>{{ date('d M Y H:m', strtotime($seminar->tanggal_acc)) }}</b>
-                                    @endif
-                                </div>
-                            </div>
                             @endif
 
                         </div>

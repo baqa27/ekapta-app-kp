@@ -35,6 +35,9 @@ class PendaftaranController extends Controller
     public function pendaftaranMahasiswa()
     {
         $mahasiswa = Mahasiswa::where('nim', Auth::guard('mahasiswa')->user()->nim)->first();
+        if($mahasiswa->email == '-'){
+            return redirect()->route('profile');
+        }
         $pengajuan = $mahasiswa->pengajuans()->where('status', Pengajuan::DITERIMA)->first();
 
         $dosenUtama = $mahasiswa->dosens()->where('status', Dosen::UTAMA)->first();
@@ -96,7 +99,7 @@ class PendaftaranController extends Controller
             return redirect('pendaftaran-mahasiswa')->with('warning', 'Anda sudah melakukan pendaftaran');
         } else {
             $validatedData = $request->validate([
-                // 'nomor_pembayaran' => 'required',
+                'nomor_pembayaran' => 'required',
                 'tanggal_pembayaran' => 'required',
                 'biaya' => 'required',
                 'lampiran_1' => ['required', 'mimes:pdf', 'max:5000'],
@@ -127,9 +130,19 @@ class PendaftaranController extends Controller
     public function edit($id)
     {
         $pendaftaran = Pendaftaran::findOrFail($id);
+
+        if ($pendaftaran->mahasiswa_id != Auth::guard('mahasiswa')->user()->id) {
+            abort(404);
+        }
+
+        if ($pendaftaran->status == Pendaftaran::REVIEW || $pendaftaran->status == Pendaftaran::DITERIMA) {
+            return redirect('pendaftaran-mahasiswa');
+        }
+
         if ($pendaftaran->status == Pendaftaran::REVIEW ||  $pendaftaran->status == Pendaftaran::DITERIMA) {
             return back()->with('warning', 'Pendaftaran tidak bisa diedit');
         }
+
         $mahasiswa = Mahasiswa::where('id', $pendaftaran->mahasiswa_id)->first();
         $dosenUtama = $mahasiswa->dosens()->where('status', Dosen::UTAMA)->first();
         $dosenPendamping = $mahasiswa->dosens()->where('status', Dosen::PENDAMPING)->first();
@@ -171,6 +184,10 @@ class PendaftaranController extends Controller
         $dosenUtama = $mahasiswa->dosens()->where('status', Dosen::UTAMA)->first();
         $dosenPendamping = $mahasiswa->dosens()->where('status', Dosen::PENDAMPING)->first();
 
+        if ($pendaftaran->mahasiswa_id != Auth::guard('mahasiswa')->user()->id) {
+            abort(404);
+        }
+
         if (!$pendaftaran) {
             return back()->with('warning', 'Pendaftaran tidak ditemukan');
         }
@@ -189,7 +206,7 @@ class PendaftaranController extends Controller
     {
         $pendaftaran = Pendaftaran::findOrFail($request->id);
         $validatedData = $request->validate([
-            // 'nomor_pembayaran' => 'required',
+            'nomor_pembayaran' => 'required',
             'biaya' => 'required',
             'lampiran_1' => [Rule::requiredIf(function () {
                 if (empty($this->request->lampiran_1)) {
@@ -316,7 +333,14 @@ class PendaftaranController extends Controller
                     $bimbingan->dosens()->attach([$dosenPendamping->id]);
                 }
             }
-
+            if ($pendaftaran->mahasiswa->email != '-') {
+                AppHelper::instance()->send_mail([
+                    'mail' => $pendaftaran->mahasiswa->email,
+                    'subject' => 'Pendaftaran Tugas Ahir',
+                    'title' => 'EKAPTA',
+                    'message' => 'Selamat Pendaftaran Tugas Akhir Anda Berstatus DITERIMA. Anda bisa memulai Bimbingan Tugas Akhir.',
+                ]);
+            }
             return back()->with('success', 'Pendaftaran berhasil diacc');
         }
     }
@@ -358,6 +382,14 @@ class PendaftaranController extends Controller
                 'status' => Pendaftaran::REVISI,
             ]);
             $pendaftaran->revisis()->save($revisi);
+            if ($pendaftaran->mahasiswa->email != '-') {
+                AppHelper::instance()->send_mail([
+                    'mail' => $pendaftaran->mahasiswa->email,
+                    'subject' => 'Pendaftaran Tugas Ahir',
+                    'title' => 'EKAPTA',
+                    'message' => 'Pendaftaran Tugas Akhir Anda Berstatus REVISI. Silahkan perbaiki kemudian submit ulang Pendaftaran Tugas Ahir anda. <br><br> Catatan Revisi: '.$request->catatan,
+                ]);
+            }
             return redirect('pendaftaran-admin')->with('success', 'Pendaftaran berhasil direvisi');
         } elseif ($pendaftaran->status == Pendaftaran::REVISI) {
             $pendaftaran->revisis()->save($revisi);

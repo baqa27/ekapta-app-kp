@@ -136,15 +136,18 @@
                             </div>
 
                         </div>
-                        @if ($bimbingan->status == 'review')
-                            <div class="card-footer">
-                                <div class="d-flex">
+                        <div class="card-footer">
+                            <div class="d-flex">
+                                <a href="{{ route('bimbingan.dosen') }}" class="btn btn-secondary mr-2">
+                                        <i class="bi bi-arrow-left mr-2"></i> Kembali
+                                </a>
+                                @if ($bimbingan->status == 'review')
                                     <button type="button" class="btn btn-primary mr-2" data-toggle="modal"
                                         data-target="#modal-revisi">
                                         <i class="bi bi-pencil-square mr-2"></i> Revisi bimbingan
                                     </button>
 
-                                    <div onclick="confirmAcc()">
+                                    {{--<div onclick="confirmAcc()">
                                         <form action="{{ route('bimbingan.acc') }}" method="post">
                                             @csrf
                                             <input type="hidden" name="id" value="{{ $bimbingan->id }}">
@@ -152,10 +155,14 @@
                                                 <i class="fas fa-check mr-2"></i> Acc bimbingan
                                             </button>
                                         </form>
-                                    </div>
-                                </div>
+                                    </div>--}}
+                                    <button type="button" class="btn btn-success mr-2" data-toggle="modal"
+                                        data-target="#modal-acc">
+                                        <i class="fas fa-check mr-2"></i> Acc bimbingan
+                                    </button>
+                                @endif
                             </div>
-                        @endif
+                        </div>
                     </div>
 
                     {{-- Revisi --}}
@@ -180,7 +187,7 @@
                                                     {{ $revisi->created_at->format('d M Y H:m') }}
                                                 </span>
                                                 @if ($revisi->dosen->id == Auth::guard('dosen')->user()->id)
-                                                    <div onclick="confirmDelete()">
+                                                    {{--<div onclick="confirmDelete()">
                                                         <form action="{{ route('bimbingan.revisi.delete') }}"
                                                             method="post">
                                                             @csrf
@@ -190,7 +197,7 @@
                                                                 type="submit">
                                                                 <i class="fas fa-trash"></i></button>
                                                         </form>
-                                                    </div>
+                                                    </div>--}}
                                                 @endif
                                             </div>
                                         </div>
@@ -201,7 +208,7 @@
                                     @if ($revisi->lampiran)
                                     <div class="card-footer">
                                         <small>
-                                            Lampiran :
+                                            Lampiran bimbingan sebelumnya:
                                             @if ($revisi->lampiran)
                                                 <a href="{{ asset($revisi->lampiran) }}" class="ml-3" target="_blank"><i
                                                         class="fas fa-paperclip"></i>
@@ -246,7 +253,7 @@
                                 <small class="text-danger">{{ $message }}</small>
                             @enderror
                         </div>
-                        <div class="form-group">
+                        {{--<div class="form-group">
                             <label for="" class="form-label">Lampiran</label>
                             <div class="input-group mb-3">
                                 <div class="custom-file">
@@ -263,7 +270,57 @@
                                 <small class="text-danger"
                                     style="position:relative;top:-15px;left:5px">{{ $message }}</small>
                             @enderror
+                        </div>--}}
+                    </div>
+                    <div class="modal-footer justify-content-between">
+                        <button type="submit" class="btn btn-success">Simpan</button>
+                    </div>
+                </form>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+    <!-- Modal Acc -->
+    <div class="modal fade" id="modal-acc">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form action="{{ route('bimbingan.acc') }}" method="post" enctype="multipart/form-data">
+                    @csrf
+                    <input type="hidden" name="id" value="{{ $bimbingan->id }}">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Acc bimbingan</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="" class="form-label">Catatan</label>
+                            <textarea class="form-control" name="catatan" required></textarea>
+                            @error('catatan')
+                                <small class="text-danger">{{ $message }}</small>
+                            @enderror
                         </div>
+                        {{--<div class="form-group">
+                            <label for="" class="form-label">Lampiran</label>
+                            <div class="input-group mb-3">
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input @error('lampiran')is-invalid @enderror"
+                                        name="lampiran">
+                                    <label class="custom-file-label" for="exampleInputFile">Choose
+                                        file</label>
+                                </div>
+                                <div class="input-group-append">
+                                    <span class="input-group-text">Dokumen</span>
+                                </div>
+                            </div>
+                            @error('lampiran')
+                                <small class="text-danger"
+                                    style="position:relative;top:-15px;left:5px">{{ $message }}</small>
+                            @enderror
+                        </div>--}}
                     </div>
                     <div class="modal-footer justify-content-between">
                         <button type="submit" class="btn btn-success">Simpan</button>

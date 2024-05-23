@@ -25,7 +25,7 @@ class PengajuanController extends Controller
         $prodi = Auth::guard('prodi')->user();
 
         $pengajuans_review = $prodi->pengajuans()->where('status', Pengajuan::REVIEW)->orderBy('created_at', 'desc')->get();
-        $pengajuans_acc = $prodi->pengajuans()->where('status', Pengajuan::DITERIMA)->orderBy('created_at', 'desc')->get();
+        $pengajuans_acc = $prodi->pengajuans()->where('status', Pengajuan::DITERIMA)->orderBy('tanggal_acc', 'desc')->get();
         $pengajuans_revisi = $prodi->pengajuans()->where('status', Pengajuan::REVISI)->orderBy('created_at', 'desc')->get();
         $pengajuans_ditolak = $prodi->pengajuans()->where('status', Pengajuan::DITOLAK)->orderBy('created_at', 'desc')->get();
 
@@ -43,6 +43,9 @@ class PengajuanController extends Controller
 
     public function pengajuanMahasiswa()
     {
+        if(Auth::guard('mahasiswa')->user()->email == '-'){
+            return redirect()->route('profile');
+        }
         $pengajuans = Pengajuan::orderBy('created_at','desc')->where('mahasiswa_id', Auth::guard('mahasiswa')->user()->id)->get();
         $pengajuans_acc = Pengajuan::where('mahasiswa_id', Auth::guard('mahasiswa')->user()->id)->where('status', Pengajuan::DITERIMA)->get();
         return view('pages.mahasiswa.pengajuan.pengajuan', [
@@ -99,7 +102,7 @@ class PengajuanController extends Controller
         $dosenPendamping = $mahasiswa->dosens()->where('status', 'pendamping')->first();
         //$dosens = Dosen::where('kodeprodi', Auth::guard('prodi')->user()->kode)->get();
         $dosens = $prodi->dosens;
-        $pengajuanCekIsPlagiat = Pengajuan::where('judul', 'LIKE', '%' . $pengajuan->judul . '%')->get();
+        $pengajuanCekIsPlagiat = Pengajuan::where('judul', 'LIKE', '%' . $pengajuan->judul . '%')->whereNotIn('id',[$pengajuan->id])->get();
 
         if ($pengajuan->prodi->namaprodi != $prodi->namaprodi){
             abort(404);
@@ -163,9 +166,15 @@ class PengajuanController extends Controller
     public function edit($id)
     {
         $pengajuan = Pengajuan::findOrFail($id);
+
+        if ($pengajuan->mahasiswa_id != Auth::guard('mahasiswa')->user()->id) {
+            abort(404);
+        }
+
         if ($pengajuan->status == Pengajuan::REVIEW || $pengajuan->status == Pengajuan::DITERIMA) {
             return back()->with('warning', 'Pengajuan tidak bisa diedit');
         }
+
         return view('pages.mahasiswa.pengajuan.edit', [
             'title' => 'Form Edit Pengajuan Tugas Akhir',
             'active' => 'pengajuan',
@@ -225,6 +234,14 @@ class PengajuanController extends Controller
                     'status' => Pengajuan::DITERIMA,
                     'tanggal_acc' => now(),
                 ]);
+                if ($pengajuan->mahasiswa->email != '-') {
+                    AppHelper::instance()->send_mail([
+                        'mail' => $pengajuan->mahasiswa->email,
+                        'subject' => 'Pengajuan Tugas Ahir',
+                        'title' => 'EKAPTA',
+                        'message' => 'Selamat Pengajuan Tugas Akhir Anda Berstatus DITERIMA. Silahkan tunggu ploting dosen pembimbing dan segera lakukan pendaftaran tugas akhir.',
+                    ]);
+                }
                 return back()->with('success', 'Pengajuan berhasil diacc');
             }
         }
@@ -272,7 +289,14 @@ class PengajuanController extends Controller
             $pengajuan->update([
                 'status' => Pengajuan::DITOLAK,
             ]);
-
+            if ($pengajuan->mahasiswa->email != '-') {
+                AppHelper::instance()->send_mail([
+                    'mail' => $pengajuan->mahasiswa->email,
+                    'subject' => 'Pengajuan Tugas Ahir',
+                    'title' => 'EKAPTA',
+                    'message' => 'Pengajuan Tugas Akhir Anda Berstatus DITOLAK. Silahkan lakukan pengajuan ulang tugas akhir. <br><br> Catatan : '.$request->catatan,
+                ]);
+            }
             return redirect('pengajuan-prodi')->with('success', 'Pengajuan berhasil ditolak');
         }
     }
@@ -320,7 +344,14 @@ class PengajuanController extends Controller
                 $pengajuan->update([
                     'status' => Pengajuan::REVISI,
                 ]);
-
+                if ($pengajuan->mahasiswa->email != '-') {
+                    AppHelper::instance()->send_mail([
+                        'mail' => $pengajuan->mahasiswa->email,
+                        'subject' => 'Pengajuan Tugas Ahir',
+                        'title' => 'EKAPTA',
+                        'message' => 'Pengajuan Tugas Akhir Anda Berstatus REVISI. Silahkan perbaiki kemudian submit ulang Pengajuan Tugas Ahir anda. <br><br> Catatan Revisi: '.$request->catatan,
+                    ]);
+                }
                 $pengajuan->revisis()->save($revisi);
             }
 

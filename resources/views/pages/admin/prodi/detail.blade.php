@@ -28,7 +28,7 @@
 
                     <div class="card card-primary card-outline mt-3">
                         <div class="card-header">
-                            <h3 class="card-title">Bagian Bimbingan Prordi {{ $prodi->namaprodi }}</h3>
+                            <h3 class="card-title">Bagian Bimbingan Prodi {{ $prodi->namaprodi }}</h3>
                         </div>
                         <div class="card-body">
 
@@ -74,6 +74,8 @@
                                                             @csrf
                                                             <input type="hidden" name="id"
                                                                 value="{{ $bagian->id }}">
+                                                            <input type="hidden" name="prodi_id"
+                                                                value="{{ $prodi->id }}">
                                                             <button class="btn btn-success btn-sm float-right mr-2"
                                                                 type="submit">
                                                                 <i class="fas fa-check-circle"></i>
@@ -107,6 +109,20 @@
                                                         </form>
                                                     </div>
                                                 @endif
+
+                                                {{--TOMBOL ALTERNATIF DOWNLOAD, UNCOMMENT KODE DIBAWAH JIKA INGIN DIAKTIFKAN--}}
+                                                {{--<div onclick="confirmDelete()">
+                                                    <form action="{{ route('bagian.delete') }}" method="post">
+                                                        @csrf
+                                                        <input type="hidden" name="id"
+                                                            value="{{ $bagian->id }}">
+                                                        <button class="btn btn-danger btn-sm float-right"
+                                                            type="submit">
+                                                            <i class="fas fa-trash"></i></button>
+                                                    </form>
+                                                </div>--}}
+                                                {{-- END --}}
+
                                             </div>
                                         </div>
 

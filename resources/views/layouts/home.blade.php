@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="{{ asset('ekapta') }}/bootstrap/dist/css/bootstrap.rtl.min.css" />
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
+    <link rel="shortcut icon" href="https://unsiq.ac.id/img/UNSIQ-bunder.ico" type="image/x-icon"> 
 </head>
 <body>
 

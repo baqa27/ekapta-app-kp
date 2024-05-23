@@ -255,9 +255,12 @@
 
                         </div>
 
-                        @if ($pendaftaran->status == 'review')
-                            <div class="card-footer">
-                                <div class="d-flex">
+                        <div class="card-footer">
+                            <div class="d-flex">
+                                @if ($pendaftaran->status == 'review')
+                                    <a href="{{ route('pendaftaran.admin') }}" class="btn btn-secondary mr-2">
+                                            <i class="bi bi-arrow-left mr-2"></i> Kembali
+                                    </a>
                                     <button type="button" class="btn btn-primary mr-2" data-toggle="modal"
                                         data-target="#modal-revisi">
                                         <i class="bi bi-pencil-square mr-2"></i> Revisi Pendaftaran
@@ -272,9 +275,9 @@
                                             </button>
                                         </form>
                                     </div>
-                                </div>
+                                @endif
                             </div>
-                        @endif
+                        </div>
                     </div>
 
                     {{-- Revisi --}}

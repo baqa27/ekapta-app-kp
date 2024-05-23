@@ -71,7 +71,7 @@
                                             </td>
                                             <th>
                                                 @if ($dosen->ttd)
-                                                    <img src="{{ asset($dosen->ttd) }}" height="50" />
+                                                    <img src="{{ asset($dosen->ttd) }}" height="50" style="max-width: 60px;" />
                                                 @endif
                                             </th>
                                             <td>

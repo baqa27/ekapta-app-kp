@@ -16,7 +16,7 @@ class CreateJilidsTable extends Migration
         Schema::create('jilids', function (Blueprint $table) {
             $table->id();
             $table->integer('total_pembayaran')->nullable();
-            $table->boolean('status')->default(0);
+            $table->tinyInteger('status')->default(1);
             $table->timestamps();
             $table->foreignId('mahasiswa_id')->constrained('mahasiswas');
         });

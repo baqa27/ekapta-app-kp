@@ -39,6 +39,7 @@
                                     <th>Prodi</th>
                                     <th>Judul</th>
                                     <th>Tanggal Pendaftaran</th>
+                                    <th>Tanggal Ujian</th>
                                     <th>Aksi</th>
                                 </tr>
                                 </thead>
@@ -60,6 +61,9 @@
                                             {{ date('d M Y H:i', strtotime($ujian->created_at)) }}
                                         </td>
                                         <td>
+                                            {{ \App\Helpers\AppHelper::parse_date_short($ujian->tanggal_ujian) }}
+                                        </td>
+                                        <td>
                                             <a href="{{ route('ujian.prodi.detail' , $ujian->id) }}"
                                                class="btn btn-primary btn-sm shadow">
                                                 <i class="fas fa-info-circle mr-1"></i> Detail
@@ -76,6 +80,7 @@
                                     <th>Prodi</th>
                                     <th>Judul</th>
                                     <th>Tanggal Pendaftaran</th>
+                                    <th>Tanggal Ujian</th>
                                     <th>Aksi</th>
                                 </tr>
                                 </tfoot>

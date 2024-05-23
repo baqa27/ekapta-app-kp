@@ -10,7 +10,7 @@
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="#">Pendaftaran Seminar TA</a></li>
+                        <li class="breadcrumb-item"><a href="#">Pendaftaran Ujian Pendadaran TA</a></li>
                         <li class="breadcrumb-item active">{{ $title }}</li>
                     </ol>
                 </div><!-- /.col -->
@@ -202,6 +202,18 @@
 
                             <div class="row">
                                 <div class="col-md-5">
+                                    Laporan Skripsi
+                                </div>
+                                <div class="col-md-7">
+                                    <a href="{{ asset($ujian->lampiran_laporan) }}" target="_blank"><i
+                                            class="fas fa-paperclip"></i>
+                                        {{ Str::substr($ujian->lampiran_laporan, 40) }}</a>
+                                </div>
+                            </div>
+                            <hr>
+
+                            <div class="row">
+                                <div class="col-md-5">
                                     Tanggal Pendaftaran
                                 </div>
                                 <div class="col-md-7">
@@ -213,11 +225,11 @@
                             <hr>
                             <div class="row">
                                 <div class="col-md-5">
-                                    Tanggal Acc
+                                    Tanggal Validasi
                                 </div>
                                 <div class="col-md-7">
                                     @if ($ujian->tanggal_acc)
-                                    <b>{{ date('d M Y H:m', strtotime($ujian->tanggal_acc)) }}</b>
+                                    <b class="text-success">{{ date('d M Y H:m', strtotime($ujian->tanggal_acc)) }}</b>
                                     @endif
                                 </div>
                             </div>

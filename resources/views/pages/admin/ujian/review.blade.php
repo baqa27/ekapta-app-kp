@@ -59,7 +59,7 @@
                                     Nama Lengkap
                                 </div>
                                 <div class="col-md-7">
-                                    <b>{{  $ujian->mahasiswa->nama }}</b>
+                                    <b>{{ $ujian->mahasiswa->nama }}</b>
                                 </div>
                             </div>
                             <hr>
@@ -69,7 +69,7 @@
                                     Prodi
                                 </div>
                                 <div class="col-md-7">
-                                    <b>{{  $ujian->mahasiswa->prodi }}</b>
+                                    <b>{{ $ujian->mahasiswa->prodi }}</b>
                                 </div>
                             </div>
                             <hr>
@@ -202,6 +202,18 @@
 
                             <div class="row">
                                 <div class="col-md-5">
+                                    Laporan Skripsi
+                                </div>
+                                <div class="col-md-7">
+                                    <a href="{{ asset($ujian->lampiran_laporan) }}" target="_blank"><i
+                                            class="fas fa-paperclip"></i>
+                                        {{ Str::substr($ujian->lampiran_laporan, 40) }}</a>
+                                </div>
+                            </div>
+                            <hr>
+
+                            <div class="row">
+                                <div class="col-md-5">
                                     Tanggal Pendaftaran
                                 </div>
                                 <div class="col-md-7">
@@ -223,7 +235,7 @@
 
                             @if ($ujian->tanggal_ujian)
                                 @php
-                                    $tanggal_ujian = \Carbon\Carbon::parse($ujian->tanggal_ujian)
+                                    $tanggal_ujian = \App\Helpers\AppHelper::parse_date_short($ujian->tanggal_ujian);
                                 @endphp
                                 <hr>
                                 <div class="row">
@@ -231,7 +243,8 @@
                                         Tanggal Ujian
                                     </div>
                                     <div class="col-md-7">
-                                        <b class="text-danger">{{ $tanggal_ujian->dayName.','. $tanggal_ujian->day.' '.$tanggal_ujian->monthName.' '. $tanggal_ujian->year }}</b>
+                                        <b
+                                            class="text-danger">{{ $tanggal_ujian }}</b>
                                     </div>
                                 </div>
                             @endif
@@ -242,36 +255,46 @@
                             <div class="card-footer">
                                 <div class="d-flex">
                                     <button type="button" class="btn btn-primary mr-2" data-toggle="modal"
-                                            data-target="#modal-revisi">
+                                        data-target="#modal-revisi">
                                         <i class="bi bi-pencil-square mr-2"></i> Revisi ujian
                                     </button>
 
-                                    <div onclick="confirmAcc()">
+                                    {{-- <div onclick="confirmAcc()">
                                         <form action="{{ route('ujian.acc') }}" method="post">
                                             @csrf
                                             <input type="hidden" name="id" value="{{ $ujian->id }}">
                                             <button type="submit" class="btn btn-success mr-2">
-                                                <i class="fas fa-check mr-2"></i> Acc ujian
+                                                <i class="fas fa-check mr-2"></i> Acc Pendaftaran ujian
                                             </button>
                                         </form>
-                                    </div>
+                                    </div> --}}
+                                    <button type="button" class="btn btn-success mr-2" data-toggle="modal"
+                                        data-target="#modal-acc">
+                                        <i class="fas fa-check mr-2"></i> Acc Pendaftaran ujian
+                                    </button>
                                 </div>
                             </div>
                         @elseif ($ujian->is_valid == 1)
                             <div class="card-footer">
                                 <div class="d-flex">
                                     <button type="button" class="btn btn-primary mr-2" data-toggle="modal"
-                                            data-target="#modal-ploting-penguji">
-                                        <i class="bi bi-pencil-square mr-2"></i> @if(count($dosens_penguji) == 0)
+                                        data-target="#modal-ploting-penguji">
+                                        <i class="bi bi-pencil-square mr-2"></i>
+                                        @if (count($dosens_penguji) == 0)
                                             Ploting
                                         @endif Dosen Penguji
                                     </button>
                                     <button type="button" class="btn btn-warning mr-2" data-toggle="modal"
-                                            data-target="#modal-set-date-exam">
+                                        data-target="#modal-set-date-exam">
                                         <i class="bi bi-calendar mr-2"></i> Tentukan Tanggal Ujian
                                     </button>
-                                    <a href="{{ route('cetak.berita.acara.ujian.pendadaran', $ujian->id) }}" class="btn btn-success" target="_blank">
-                                        <i class="bi bi-download"></i>  Berita Acara Ujian Pendadaran
+                                    <a href="{{ route('cetak.berita.acara.ujian.pendadaran', $ujian->id) }}"
+                                        class="btn btn-success mr-2" target="_blank">
+                                        <i class="bi bi-download"></i> Berita Acara Ujian Pendadaran
+                                    </a>
+                                    <a href="{{ route('cetak.berita.acara.ujian.proposal.blank', [$ujian->id, 2]) }}"
+                                        class="btn btn-secondary" target="_blank">
+                                        <i class="bi bi-download"></i> Berita Acara Ujian Pendadaran Kosong
                                     </a>
                                 </div>
                             </div>
@@ -289,7 +312,7 @@
                             @if ($ujian->is_valid == 2)
                                 <div class="float-right">
                                     <button type="button" class="btn btn-primary mr-2" data-toggle="modal"
-                                            data-target="#modal-revisi">
+                                        data-target="#modal-revisi">
                                         <i class="bi bi-plus-square mr-2"></i> Tambahkan Revisi
                                     </button>
                                 </div>
@@ -320,8 +343,8 @@
                                         <div class="card-footer">
                                             Lampiran :
                                             @if ($revisi->lampiran)
-                                                <a href="{{ asset($revisi->lampiran) }}" class="ml-3" target="_blank"><i
-                                                        class="fas fa-paperclip"></i>
+                                                <a href="{{ asset($revisi->lampiran) }}" class="ml-3"
+                                                    target="_blank"><i class="fas fa-paperclip"></i>
                                                     {{ Str::substr($revisi->lampiran, 40) }}</a>
                                             @endif
                                         </div>
@@ -341,8 +364,8 @@
     </div>
     <!-- /.content -->
 
-    <!-- Modal Revisi -->
     @if ($ujian->is_valid == 0 || $ujian->is_valid == 2)
+        <!-- Modal Revisi -->
         <div class="modal fade" id="modal-revisi">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -358,16 +381,15 @@
                         <div class="modal-body">
                             <div class="form-group">
                                 <label for="" class="form-label">Catatan</label>
-                                <textarea id="summernote" name="catatan" required>
-                        </textarea>
+                                <textarea id="summernote" name="catatan" required></textarea>
                             </div>
-                            <div class="form-group">
+                            {{-- <div class="form-group">
                                 <label for="" class="form-label">Lampiran</label>
                                 <div class="input-group mb-3">
                                     <div class="custom-file">
                                         <input type="file"
-                                               class="custom-file-input @error('lampiran')is-invalid @enderror"
-                                               name="lampiran">
+                                            class="custom-file-input @error('lampiran')is-invalid @enderror"
+                                            name="lampiran">
                                         <label class="custom-file-label" for="exampleInputFile">Choose
                                             file</label>
                                     </div>
@@ -376,10 +398,58 @@
                                     </div>
                                 </div>
                                 @error('lampiran')
-                                <small class="text-danger"
-                                       style="position:relative;top:-15px;left:5px">{{ $message }}</small>
+                                    <small class="text-danger"
+                                        style="position:relative;top:-15px;left:5px">{{ $message }}</small>
                                 @enderror
+                            </div> --}}
+                        </div>
+                        <div class="modal-footer justify-content-between">
+                            <button type="submit" class="btn btn-success">Simpan</button>
+                        </div>
+                    </form>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+
+         <!-- Modal Acc -->
+        <div class="modal fade" id="modal-acc">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form action="{{ route('ujian.acc') }}" method="post" enctype="multipart/form-data">
+                        @csrf
+                        <input type="hidden" name="id" value="{{ $ujian->id }}">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Revisi ujian</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="" class="form-label">Catatan</label>
+                                <textarea class="form-control" name="catatan"></textarea>
                             </div>
+                            {{-- <div class="form-group">
+                                <label for="" class="form-label">Lampiran</label>
+                                <div class="input-group mb-3">
+                                    <div class="custom-file">
+                                        <input type="file"
+                                            class="custom-file-input @error('lampiran')is-invalid @enderror"
+                                            name="lampiran">
+                                        <label class="custom-file-label" for="exampleInputFile">Choose
+                                            file</label>
+                                    </div>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">Dokumen</span>
+                                    </div>
+                                </div>
+                                @error('lampiran')
+                                    <small class="text-danger"
+                                        style="position:relative;top:-15px;left:5px">{{ $message }}</small>
+                                @enderror
+                            </div> --}}
                         </div>
                         <div class="modal-footer justify-content-between">
                             <button type="submit" class="btn btn-success">Simpan</button>
@@ -391,36 +461,38 @@
             <!-- /.modal-dialog -->
         </div>
     @else
-
         <div class="modal fade" id="modal-ploting-penguji">
             <div class="modal-dialog">
                 <div class="modal-content">
 
                     <div class="modal-header">
-                        <h4 class="modal-title">@if(count($dosens_penguji) == 0)
+                        <h4 class="modal-title">
+                            @if (count($dosens_penguji) == 0)
                                 Ploting
-                            @endif Dosen Penguji</h4>
+                            @endif Dosen Penguji
+                        </h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        @if(count($dosens_penguji) != 0)
+                        @if (count($dosens_penguji) != 0)
                             <b>Dosen Penguji</b>
                             <div class="p-2 border rounded">
                                 @php $no = 1; @endphp
-                                @foreach($dosens_penguji as $dosen)
-                                    <span>Dosen Penguji{{ $no++  }}. <b>{{$dosen->dosen->nama}}, {{$dosen->dosen->gelar}}</b></span>
+                                @foreach ($dosens_penguji as $dosen)
+                                    <span>Dosen Penguji{{ $no++ }}. <b>{{ $dosen->dosen->nama }},
+                                            {{ $dosen->dosen->gelar }}</b></span>
                                     <br>
                                 @endforeach
                             </div>
                         @endif
 
-                        @if($reviews_check)
+                        @if ($reviews_check)
                             <form action="{{ route('ploting.penguji.ujian') }}" method="post">
                                 @csrf
 
-                                <input type="hidden" value="{{ $ujian->id }}" name="ujian_id"/>
+                                <input type="hidden" value="{{ $ujian->id }}" name="ujian_id" />
                                 <div class="form-group mt-2">
                                     <label for="" class="form-label">Dosen Peguji 1</label>
                                     <div class="col-md-12">
@@ -483,10 +555,10 @@
                     <div class="modal-body">
                         <form action="{{ route('ujian.set.date.exam') }}" method="post">
                             @csrf
-                            <input type="hidden" value="{{ $ujian->id }}" name="ujian_id"/>
+                            <input type="hidden" value="{{ $ujian->id }}" name="ujian_id" />
                             <div class="form-group mb-3">
                                 <label for="" class="form-label">Tanggal Ujian</label>
-                                <input type="date" class="form-control" name="tanggal_ujian" required>
+                                <input type="datetime-local" class="form-control" name="tanggal_ujian" required>
                             </div>
                             <button type="submit" class="btn btn-success">Simpan</button>
                         </form>

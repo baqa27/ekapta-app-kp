@@ -120,8 +120,10 @@
                                                 @endif
                                             </td>
                                             <td>
+                                                @if($mahasiswa->pendaftarans()->where('status','diterima')->first())
                                                 <a href="{{ url('cetak/surat-tugas-bimbingan/' . $mahasiswa->pendaftarans()->where('status','diterima')->first()->id) }}"
-                                                    target="_blank" class="btn btn-primary btn-sm "><i class="fas fa-download"></i> Surat Tugas Bimbingan TA</a>
+                                                    target="_blank" class="btn btn-success btn-sm "><i class="fas fa-download"></i> Surat Tugas Bimbingan TA</a>
+                                                @endif
                                             </td>
                                         </tr>
                                         {{-- @endif --}}

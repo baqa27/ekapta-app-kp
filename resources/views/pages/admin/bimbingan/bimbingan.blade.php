@@ -31,7 +31,7 @@
                                 </a>
                             </div> --}}
                         </div>
-                        <div class="card-body">
+                        <div class="card-body table-responsive">
 
                             {{-- <span class="badge badge-success"> <i class="fas fa-check-circle mr-1"></i>
                                 Diterima/Acc
@@ -40,16 +40,27 @@
                                 Review/Belum Di Acc
                             </span> --}}
 
-                            <table id="examplebutton" class="table table-bordered">
+                            <table id="examplebutton" class="table table-bordered ">
                                 <thead>
                                     <tr>
                                         <th>No</th>
-                                        <th>Mahasiswa</th>
+                                        <th>NIM</th>
+                                        <th>Nama Mahasiswa</th>
                                         <th>Prodi</th>
                                         <th>Judul Tugas Akhir</th>
                                         <th>Status Bimbingan</th>
                                         <th>Terakhir Bimbingan</th>
-                                        <th>Bagian Acc</th>
+                                        <th>Tanggal Pendaftaran TA</th>
+                                        <th>Pembimbing 1</th>
+                                        <th>Pembimbing 2</th>
+                                        <th>Penguji Seminar 1</th>
+                                        <th>Penguji Seminar 2</th>
+                                        <th>Penguji Seminar 3</th>
+                                        <th>Penguji Ujian 1</th>
+                                        <th>Penguji Ujian 2</th>
+                                        <th>Penguji Ujian 3</th>
+                                        <th>Tanggal Ujian Seminar</th>  
+                                        <th>Tanggal Ujian Pendadaran</th>
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
@@ -59,11 +70,17 @@
                                     @endphp
                                     @foreach ($mahasiswas as $mahasiswa)
                                         {{-- @if (count($mahasiswa->bimbingans) != 0) --}}
+                                        @php 
+                                        $pendaftaran_acc = \App\Models\Pendaftaran::where('mahasiswa_id', $mahasiswa->id)->where('status', 'diterima')->first(); 
+                                        $is_expired = $pendaftaran_acc ? \App\Helpers\AppHelper::instance()->is_expired_in_one_year($pendaftaran_acc->tanggal_acc) : null;
+                                        @endphp
                                         <tr>
                                             <td>{{ $no++ }}</td>
                                             <td>
+                                                {{ $mahasiswa->nim }}
+                                            </td>
+                                             <td>
                                                 {{ $mahasiswa->nama }}
-                                                {{ '(' . $mahasiswa->nim . ')' }}
                                             </td>
                                             <td>
                                                 {{ $mahasiswa->prodi }}
@@ -76,18 +93,32 @@
                                                 @endif
                                             </td>
                                             <td>
-                                                @if (count(
-                                                        $mahasiswa->bimbingans()->whereIn('status', ['revisi', 'review', 'diterima'])->get()) != 0)
-                                                    <span class="badge bg-success">AKTIF</span>
+                                                @if (count($mahasiswa->bimbingans) != 0)
+                                                    @if($pendaftaran_acc)
+                                                        @if($is_expired)
+                                                            <span class="badge bg-danger">TIDAK AKTIF</span>
+                                                        @else
+                                                            <span class="badge bg-success">AKTIF</span>
+                                                        @endif
+                                                    @else
+                                                        <span class="badge bg-danger">TIDAK AKTIF</span>
+                                                    @endif
                                                 @else
                                                     <span class="badge bg-danger">TIDAK AKTIF</span>
                                                 @endif
                                             </td>
                                             <td>
                                                 @if ($mahasiswa->bimbingans()->orderBy('created_at', 'desc')->whereIn('status', ['revisi', 'review', 'diterima'])->first())
-                                                    {{ \App\Helpers\AppHelper::parse_date($mahasiswa->bimbingans()->orderBy('created_at', 'desc')->first()->tanggal_bimbingan) }}
+                                                    {{ \App\Helpers\AppHelper::parse_date_export($mahasiswa->bimbingans()->orderBy('created_at', 'desc')->first()->tanggal_bimbingan) }}
                                                 @endif
                                             </td>
+
+                                             <td>
+                                                @if($mahasiswa->pendaftarans()->where('status', 'diterima')->first())
+                                                {{ \App\Helpers\AppHelper::parse_date_export($mahasiswa->pendaftarans()->where('status', 'diterima')->first()->created_at) }}
+                                                @endif
+                                            </td>
+                                            
                                             <td>
                                                 @if (count($mahasiswa->bimbingans) != 0)
                                                     @php
@@ -95,13 +126,8 @@
                                                             ->dosens()
                                                             ->where('status', 'utama')
                                                             ->first();
-                                                        $dosen_pendamping = $mahasiswa
-                                                            ->dosens()
-                                                            ->where('status', 'pendamping')
-                                                            ->first();
                                                     @endphp
-                                                    <small>Dosen Pembimbing 1
-                                                        <b>{{ $dosen_utama->nama.','.$dosen_utama->gelar }}</b></small>
+                                                    <small><b>{{ $dosen_utama->nama.','.$dosen_utama->gelar }}</b></small>
                                                     @foreach ($mahasiswa->bimbingans as $bimbingan)
                                                         @if ($bimbingan->pembimbing == 'utama')
                                                             <small>
@@ -116,10 +142,20 @@
                                                             </small>
                                                         @endif
                                                     @endforeach
-                                                    <hr>
+                                                @else
+                                                    <span class="badge bg-secondary">BELUM ADA BIMBINGAN</span>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if (count($mahasiswa->bimbingans) != 0)
+                                                    @php
+                                                        $dosen_pendamping = $mahasiswa
+                                                            ->dosens()
+                                                            ->where('status', 'pendamping')
+                                                            ->first();
+                                                    @endphp
                                                     <small>
-                                                        Dosen Pembimbing 2
-                                                            <b>{{ $dosen_pendamping->nama.','.$dosen_pendamping->gelar }}</b>
+                                                       <b>{{ $dosen_pendamping->nama.','.$dosen_pendamping->gelar }}</b>
                                                     </small>
                                                     @foreach ($mahasiswa->bimbingans as $bimbingan)
                                                         @if ($bimbingan->pembimbing == 'pendamping')
@@ -139,11 +175,70 @@
                                                     <span class="badge bg-secondary">BELUM ADA BIMBINGAN</span>
                                                 @endif
                                             </td>
+
+                                            @if($mahasiswa->seminar)
+                                                @if(count($mahasiswa->seminar->reviews) > 3)
+                                                    @foreach($mahasiswa->seminar->reviews()->where('dosen_status','penguji')->get() as $review)
+                                                        <td>
+                                                            {{ $review->dosen->nama.','.$review->dosen->gelar }}  
+                                                        </td>
+                                                    @endforeach
+                                                    @if(count($mahasiswa->seminar->reviews()->where('dosen_status','penguji')->get()) < 3)
+                                                        <td></td>
+                                                    @endif
+                                                @else
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                @endif
+                                            @else
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            @endif
+
+                                            @if($mahasiswa->ujian)
+                                                @if(count($mahasiswa->ujian->reviews) > 3)
+                                                    @foreach($mahasiswa->ujian->reviews()->where('dosen_status','penguji')->get() as $review)
+                                                        <td>
+                                                            {{ $review->dosen->nama.','.$review->dosen->gelar }}  
+                                                        </td>
+                                                    @endforeach
+                                                    @if(count($mahasiswa->ujian->reviews()->where('dosen_status','penguji')->get()) < 3)
+                                                        <td></td>
+                                                    @endif
+                                                @else
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                @endif
+                                            @else
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            @endif
+
+                                            <td>
+                                                @if($mahasiswa->seminar)
+                                                    {{ $mahasiswa->seminar->tanggal_ujian ? \App\Helpers\AppHelper::parse_date_export($mahasiswa->seminar->tanggal_ujian) : ''}}
+                                                @endif
+                                            </td>
+
+                                            <td>
+                                                @if($mahasiswa->ujian)
+                                                    {{ $mahasiswa->ujian->tanggal_ujian ? \App\Helpers\AppHelper::parse_date_export($mahasiswa->ujian->tanggal_ujian) : ''}}
+                                                @endif
+                                            </td>
+
                                             <td>
                                                 @if (count($mahasiswa->bimbingans) != 0)
                                                     <a href="{{ route('bimbingan.review.admin', $mahasiswa->pengajuans()->where('status', 'diterima')->first()->id) }}"
                                                         class="btn btn-primary btn-sm"><i class="bi bi-info-circle"></i>
                                                         Detail Bimbingan</a>
+                                                @endif
+                                                @if($mahasiswa->pendaftarans()->where('status','diterima')->first())
+                                                <a href="{{ url('cetak/surat-tugas-bimbingan/' . $mahasiswa->pendaftarans()->where('status','diterima')->first()->id) }}"
+                                                    target="_blank" class="btn btn-success btn-sm "><i class="fas fa-download"></i> Surat Tugas Bimbingan TA</a>
                                                 @endif
                                             </td>
 
@@ -160,11 +255,8 @@
                                                             ->first();
                                                     @endphp
                                                     <div class="mt-2 border p-2 rounded">
-                                                        <small>Dosen Pembimbing utama
-                                                            <b>{{ $dosen_utama->nama .
-                                                                ',
-                                                                                                                                                                                                                                        ' .
-                                                                $dosen_utama->gelar }}</b>
+                                                        <small>
+                                                            <b>{{ $dosen_utama->nama.', '.$dosen_utama->gelar }}</b>
                                                         </small>
                                                         <br>
                                                         @foreach ($mahasiswa->bimbingans as $bimbingan)
@@ -184,11 +276,7 @@
                                                         @endforeach
                                                     </div>
                                                     <div class="mt-2 border p-2 rounded">
-                                                        <small>Dosen Pembimbing Pendamping
-                                                            <b>{{ $dosen_pendamping->nama .
-                                                                ',
-                                                                                                                                                                                                                                        ' .
-                                                                $dosen_pendamping->gelar }}</b>
+                                                        <small><b>{{ $dosen_pendamping->nama.','.$dosen_pendamping->gelar }}</b>
                                                         </small>
                                                         <br>
                                                         @foreach ($mahasiswa->bimbingans as $bimbingan)
@@ -221,13 +309,24 @@
                                 </tbody>
                                 <tfoot>
                                     <tr>
-                                        <th>No</th>
-                                        <th>Mahasiswa</th>
+                                      <th>No</th>
+                                        <th>NIM</th>
+                                        <th>Nama Mahasiswa</th>
                                         <th>Prodi</th>
                                         <th>Judul Tugas Akhir</th>
                                         <th>Status Bimbingan</th>
                                         <th>Terakhir Bimbingan</th>
-                                        <th>Bagian Acc</th>
+                                         <th>Tanggal Pendaftaran TA</th>
+                                        <th>Pembimbing 1</th>
+                                        <th>Pembimbing 2</th>
+                                        <th>Penguji Seminar 1</th>
+                                        <th>Penguji Seminar 2</th>
+                                        <th>Penguji Seminar 3</th>
+                                        <th>Penguji Ujian 1</th>
+                                        <th>Penguji Ujian 2</th>
+                                        <th>Penguji Ujian 3</th>
+                                        <th>Tanggal Ujian Seminar</th>  
+                                        <th>Tanggal Ujian Pendadaran</th>
                                         <th>Aksi</th>
                                     </tr>
                                 </tfoot>

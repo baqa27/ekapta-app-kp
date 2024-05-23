@@ -119,8 +119,9 @@ Route::get('/bimbingan/review-prodi/{id}', [BimbinganController::class, 'reviewP
 Route::get('/bimbingan/review-admin/{id}', [BimbinganController::class, 'reviewAdmin'])->name('bimbingan.review.admin')->middleware('isAdmin');
 Route::get('/bimbingan/rekap-dosen', [BimbinganController::class, 'rekapDosen'])->name('bimbingan.rekap.dosen')->middleware('isProdi');
 Route::get('/bimbingan/input', [BimbinganController::class, 'bimbinganAdminInput'])->name('bimbingan.admin.input')->middleware('isAdmin');
-Route::get('/bimbingan/input/{dosen_id}/{mahasiswa_id}', [BimbinganController::class, 'bimbinganAdminInputCreate'])->name('bimbingan.admin.input.create')->middleware('isAdmin');
-Route::post('/bimbingan/store', [BimbinganController::class, 'bimbinganAdminInputStore'])->name('bimbingan.admin.input.store')->middleware('isAdmin');
+Route::get('/bimbingan/input-prodi', [BimbinganController::class, 'bimbinganAdminInput'])->name('bimbingan.prodi.input')->middleware('isProdi');
+Route::get('/bimbingan/input/{dosen_id}/{mahasiswa_id}', [BimbinganController::class, 'bimbinganAdminInputCreate'])->name('bimbingan.admin.input.create')->middleware('isAdminProdi');
+Route::post('/bimbingan/store', [BimbinganController::class, 'bimbinganAdminInputStore'])->name('bimbingan.admin.input.store')->middleware('isAdminProdi');
 
 Route::group(['middleware' => 'isMahasiswa'], function(){
     // Route for Seminar TA
@@ -136,6 +137,8 @@ Route::group(['middleware' => 'isMahasiswa'], function(){
     Route::post('seminar/delete', [SeminarController::class, 'delete'])->name('seminar.delete');
     Route::get('review/seminar/edit/{id}', [ReviewSeminarController::class, 'edit'])->name('review.seminar.edit');
     Route::post('review/seminar/update', [ReviewSeminarController::class, 'update'])->name('review.seminar.update');
+    Route::get('review/seminar/submit-acc-manual/{id}', [ReviewSeminarController::class, 'submitManual'])->name('review.seminar.submit.acc.manual');
+    Route::put('review/seminar/submit-acc-manual/{id}', [ReviewSeminarController::class, 'submitManualStore'])->name('review.seminar.submit.acc.manual.store');
 
     // Route for Ujian TA
     Route::get('ujian-mahasiswa', [UjianController::class, 'ujianMahasiswa'])->name('ujian.mahasiswa');
@@ -150,6 +153,8 @@ Route::group(['middleware' => 'isMahasiswa'], function(){
     Route::post('review/ujian/update', [ReviewUjianController::class, 'update'])->name('review.ujian.update');
     Route::get('ujian/edit/proposal/{id}', [UjianController::class, 'editProposal'])->name('ujian.edit.proposal');
     Route::put('ujian/update/proposal/{id}', [UjianController::class, 'updateProposal'])->name('ujian.update.proposal');
+    Route::get('review/ujian/submit-acc-manual/{id}', [ReviewUjianController::class, 'submitManual'])->name('review.ujian.submit.acc.manual');
+    Route::put('review/ujian/submit-acc-manual/{id}', [ReviewUjianController::class, 'submitManualStore'])->name('review.ujian.submit.acc.manual.store');
 });
 
 Route::group(['middleware' => 'isAdmin'], function(){
@@ -161,6 +166,7 @@ Route::group(['middleware' => 'isAdmin'], function(){
     Route::post('seminar/cancel-acc', [SeminarController::class, 'cancelAcc'])->name('seminar.cancel.acc');
     Route::post('/seminar/revisi/delete', [SeminarController::class, 'deleteRevisi'])->name('seminar.revisi.delete');
     Route::post('/seminar/set/date-exam', [SeminarController::class, 'setDateExam'])->name('seminar.set.date.exam');
+    Route::get('seminar/rekap', [SeminarController::class,'rekapSeminar'])->name('seminar.rekap');
 
     // Route for Ujian TA
     Route::get('ujian-admin', [UjianController::class,'ujianAdmin'])->name('ujian.admin');
@@ -170,6 +176,7 @@ Route::group(['middleware' => 'isAdmin'], function(){
     Route::post('ujian/cancel-acc', [UjianController::class, 'cancelAcc'])->name('ujian.cancel.acc');
     Route::post('/ujian/revisi/delete', [UjianController::class, 'deleteRevisi'])->name('ujian.revisi.delete');
     Route::post('/ujian/set/date-exam', [UjianController::class, 'setDateExam'])->name('ujian.set.date.exam');
+    Route::get('ujian/rekap', [UjianController::class,'rekapujian'])->name('ujian.rekap');
 
     // Route for Dosen Prodi
     Route::post('/dosen-prodi/import', [DosenProdiController::class, 'import'])->name('dosen.prodi.import');
@@ -208,10 +215,16 @@ Route::group(['middleware' => 'isProdi'], function(){
     // Route for Seminar TA
     Route::get('seminar-prodi', [SeminarController::class, 'seminarProdi'])->name('seminar.prodi');
     Route::get('seminar/detail-prodi/{id}', [SeminarController::class, 'seminarProdiDetail'])->name('seminar.prodi.detail');
+    Route::post('review/seminar/acc-prodi', [ReviewSeminarController::class, 'reviewAcc'])->name('review.seminar.acc.prodi');
+    Route::post('seminar/update-status', [SeminarController::class, 'updateStatus'])->name('seminar.update.status');
+    Route::post('review/seminar/update-nilai', [ReviewSeminarController::class, 'updateNilai'])->name('review.update.nilai');
 
     // Route for Ujian TA
     Route::get('ujian-prodi', [UjianController::class, 'ujianProdi'])->name('ujian.prodi');
     Route::get('ujian/detail-prodi/{id}', [UjianController::class, 'ujianProdiDetail'])->name('ujian.prodi.detail');
+    Route::post('review/ujian/acc-prodi', [ReviewUjianController::class, 'reviewAcc'])->name('review.ujian.acc.prodi');
+    Route::post('ujian/update-status', [UjianController::class, 'updateStatus'])->name('ujian.update.status');
+    Route::post('review/ujian/update-nilai', [ReviewUjianController::class, 'updateNilai'])->name('review.update.nilai.ujian');
 
     // Route for Setting
     Route::get('prodi/account', [ProdiController::class, 'account'])->name('prodi.account');
@@ -261,7 +274,10 @@ Route::post('/dekan/disabled', [DekanController::class, 'disabled'])->name('deka
 Route::get('dashboard-fotokopi',[JilidController::class, 'index'])->name('jilid.index')->middleware('isAdminFotokopi');
 Route::get('jilid/detail/{id}',[JilidController::class, 'detail'])->name('jilid.detail')->middleware('isAdminFotokopi');
 Route::put('jilid/acc/{id}',[JilidController::class, 'acc'])->name('jilid.acc')->middleware('isAdminFotokopi');
-Route::get('jilid/store',[JilidController::class, 'store'])->name('jilid.store')->middleware('isMahasiswa');
+Route::get('jilid/create',[JilidController::class, 'create'])->name('jilid.create')->middleware('isMahasiswa');
+Route::post('jilid/store',[JilidController::class, 'store'])->name('jilid.store')->middleware('isMahasiswa');
+Route::get('jilid/edit/{id}',[JilidController::class, 'edit'])->name('jilid.edit')->middleware('isMahasiswa');
+Route::put('jilid/update/{id}',[JilidController::class, 'update'])->name('jilid.update')->middleware('isMahasiswa');
 
 // Cetak Dokumen
 Route::group(['middleware' => 'isLogin'], function (){
@@ -270,6 +286,7 @@ Route::group(['middleware' => 'isLogin'], function (){
     Route::get('/cetak/surat-tugas-bimbingan', [CetakController::class, 'cetakSuratTugasBimbinganMahasiswa'])->name('cetak.surat.tugas.bimbingan');
     Route::get('/cetak/surat-tugas-bimbingan/{pendaftaran}', [CetakController::class, 'cetakSuratTugasBimbingan']);
     Route::get('/cetak/berita-acara-ujian-proposal/{seminar}', [CetakController::class, 'cetakBeritaAcaraUjianProposal'])->name('cetak.berita.acara.ujian.proposal');
+    Route::get('/cetak/berita-acara-ujian-proposal-blank/{ujian_or_seminar}/{type}', [CetakController::class, 'cetakBeritaAcaraUjianProposalBlank'])->name('cetak.berita.acara.ujian.proposal.blank');
     Route::get('/cetak/berita-acara-ujian-pendadaran/{ujian}', [CetakController::class, 'cetakBeritaAcaraUjianPendadaran'])->name('cetak.berita.acara.ujian.pendadaran');
     Route::get('/cetak/berita-acara-ujian-pendadaran/{ujian}', [CetakController::class, 'cetakBeritaAcaraUjianPendadaran'])->name('cetak.berita.acara.ujian.pendadaran');
     Route::get('/cetak/surat-riwayat-bimbingan-mahasiswa', [CetakController::class, 'cetakRiwayatBimbinganMahasiswa'])->name('cetak.riwayat.bimbingan.mahasiswa');

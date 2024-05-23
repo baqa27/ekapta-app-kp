@@ -13,6 +13,9 @@ class Ujian extends Model
     public const DITERIMA = 1;
     public const REVISI = 2;
 
+    public const VALID = 1;
+    public const NOT_VALID = 0;
+
     protected $fillable = [
         'pengajuan_id',
         'mahasiswa_id',
@@ -29,6 +32,7 @@ class Ujian extends Model
         'tanggal_acc',
         'tanggal_ujian',
         'is_lulus',
+        'lampiran_laporan',
     ];
 
     public function pengajuan()

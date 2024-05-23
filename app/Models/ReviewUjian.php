@@ -27,6 +27,8 @@ class ReviewUjian extends Model
         'dosen_status',
         'lampiran',
         'keterangan',
+        'tanggal_acc_manual',
+        'lampiran_lembar_revisi',
     ];
 
     public function revisis(){

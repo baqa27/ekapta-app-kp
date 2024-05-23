@@ -17,9 +17,9 @@ class IsAdminFotokopi
      */
     public function handle(Request $request, Closure $next)
     {
-        if (!Auth::guard('admin')->user()) {
-            abort(404);
+        if (Auth::guard('admin')->user() || Auth::guard('prodi')->user()) {
+            return $next($request);
         }
-        return $next($request);
+        abort(404);
     }
 }

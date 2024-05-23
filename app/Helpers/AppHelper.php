@@ -10,8 +10,8 @@ use App\Models\Pendaftaran;
 use App\Models\Pengajuan;
 use App\Models\Prodi;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use App\Models\Mail;
 
 class AppHelper
 {
@@ -84,11 +84,11 @@ class AppHelper
     {
         if ($lampiran) {
             // Use when hoting
-            // $lampiranPath = $lampiran->store($path, 'public');
-            // return '/ekapta-app/storage/app/public/'.$lampiranPath;
-
             $lampiranPath = $lampiran->store($path, 'public');
-            return $lampiranPath;
+            return '/ekapta-app/storage/app/public/'.$lampiranPath;
+
+            // $lampiranPath = $lampiran->store($path, 'public');
+            // return $lampiranPath;
         }
     }
 
@@ -96,17 +96,17 @@ class AppHelper
     {
         // Use when hoting
         $target = Str::substr($lampiran,20); //output : /app/public/[files]
-        // if ($target) {
-        //    if (file_exists(storage_path($target))) {
-        //         unlink(storage_path($target));
-        //    }
-        // }
-
-        if ($lampiran) {
-           if (file_exists(public_path($lampiran))) {
-               unlink(public_path($lampiran));
+        if ($target) {
+           if (file_exists(storage_path($target))) {
+                unlink(storage_path($target));
            }
         }
+
+        // if ($lampiran) {
+        //    if (file_exists(public_path($lampiran))) {
+        //        unlink(public_path($lampiran));
+        //    }
+        // }
     }
 
     public function convertImage($base_path)
@@ -130,19 +130,14 @@ class AppHelper
         return $status;
     }
 
-    public function hitung_nilai_seminar($nilai_1, $nilai_2, $nilai_3, $nilai_4)
+    public function hitung_nilai_mean($nilai_1, $nilai_2, $nilai_3, $nilai_4)
     {
         return ($nilai_1 + $nilai_2 + $nilai_3 + $nilai_4) / 4;
     }
 
-    public function hitung_nilai_ujian($nilai_1, $nilai_2, $nilai_3, $nilai_4, $prodi)
+    public function hitung_nilai_total($nilai_1, $nilai_2, $nilai_3, $nilai_4)
     {
-        $prodi = Prodi::findOrFail($prodi);
-        $presentase_nilai = $prodi->presentase_nilai;
-
-        $nilai = ($nilai_1 * $presentase_nilai->presentase_1 / 100) + ($nilai_2 * $presentase_nilai->presentase_2 / 100) + ($nilai_3 * $presentase_nilai->presentase_3 / 100) + ($nilai_4 * $presentase_nilai->presentase_4 / 100);
-
-        return $nilai;
+        return $nilai_1 + $nilai_2 + $nilai_3 + $nilai_4;
     }
 
     public static function parse_date($date){
@@ -153,7 +148,13 @@ class AppHelper
 
     public static function parse_date_short($date){
         $parse_date = Carbon::parse($date);
-        $new_date = $parse_date->isoFormat('dddd, D MMMM YYYY');
+        $new_date = $parse_date->isoFormat('dddd, D MMMM YYYY H:mm A');
+        return $new_date;
+    }
+
+     public static function parse_date_export($date){
+        $parse_date = Carbon::parse($date);
+        $new_date = $parse_date->format('d-m-Y');
         return $new_date;
     }
 
@@ -173,6 +174,57 @@ class AppHelper
             return true;
         }
         return false;
+    }
+
+    public function send_mail($details)
+    {
+        //\Mail::to($details['mail'])->send(new \App\Mail\NotificationMail($details));
+        try {
+            \Mail::to($details['mail'])->send(new \App\Mail\NotificationMail($details));
+        } catch (\Throwable $e) {
+            return back()->with('warning','Email notifikasi gagal terkirim');
+        }
+    }
+
+    public static function hitung_nilai_mahasiswa($ujian_or_seminar)
+    {
+        $reviews = $ujian_or_seminar->reviews;
+        $prodi = Prodi::where('namaprodi', $ujian_or_seminar->mahasiswa->prodi)->first();
+        $presentase_nilai = $prodi->presentase_nilai;
+
+        $nilai_penguji = 0;
+        $nilai_pembimbing = 0;
+        foreach ($reviews as $review) {
+            if($review->dosen_status == 'penguji'){
+                $nilai_penguji += AppHelper::instance()->hitung_nilai_total($review->nilai_1 * $presentase_nilai->presentase_1 / 100,$review->nilai_2 * $presentase_nilai->presentase_2 / 100, $review->nilai_3 * $presentase_nilai->presentase_3 / 100, $review->nilai_4 * $presentase_nilai->presentase_4 / 100);
+            }else if($review->dosen_status == 'pembimbing'){
+                $nilai_pembimbing += AppHelper::instance()->hitung_nilai_total($review->nilai_1 * $presentase_nilai->presentase_1 / 100,$review->nilai_2 * $presentase_nilai->presentase_2 / 100, $review->nilai_3 * $presentase_nilai->presentase_3 / 100, $review->nilai_4 * $presentase_nilai->presentase_4 / 100);
+            }
+        }
+
+        $nilai_dosen_pembimbing = round($nilai_pembimbing / 2, 2);
+        $nilai_dosen_penguji = round($nilai_penguji / count($ujian_or_seminar->reviews()->where('dosen_status', 'penguji')->get()), 2);
+
+        $nilai = round(($presentase_nilai->bobot_pembimbing / 100 * $nilai_dosen_pembimbing) + ($presentase_nilai->bobot_penguji / 100 * $nilai_dosen_penguji), 2);
+
+        $nilai_huruf = null;
+        if ($nilai > 85) {
+            $nilai_huruf = 'A';
+        } else if ($nilai > 69) {
+            $nilai_huruf = 'B';
+        } else if ($nilai > 55) {
+            $nilai_huruf = 'C';
+        } else if ($nilai > 45) {
+            $nilai_huruf = 'D';
+        } else if ($nilai > 0) {
+            $nilai_huruf = 'E';
+        }
+        return [
+            'nilai_huruf' => $nilai_huruf,
+            'nilai' => $nilai,
+            'nilai_penguji' => $nilai_dosen_penguji,
+            'nilai_pembimbing' => $nilai_dosen_pembimbing,
+        ];
     }
 
     public static function instance()

@@ -22,7 +22,7 @@
     <!-- Main content -->
     <div class="content">
         <div class="container">
-
+            
             <!-- Alur Ekapta -->
             <div class="row mb-3">
                 <div class="col-md-12">
@@ -201,7 +201,7 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Timeline Pengajuan Tugas Akhir</h3>
+                            <h3 class="card-title">Timeline Tugas Akhir</h3>
                         </div>
                         <div class="card-body">
                             <div class="timeline-steps aos-init aos-animate" data-aos="fade-up">
@@ -213,8 +213,10 @@
                                         <div class="inner-circle"></div>
                                         <p class="h6 mt-3 mb-1">Pengajuan Judul TA</p>
                                         @if ($mahasiswa->pengajuans()->first())
-                                        @if ($pengajuan_acc)
-                                            <div class="bg-soft-success text-success rounded mt-3">Selesai</div>
+                                            @if ($pengajuan_acc)
+                                                <div class="bg-soft-success text-success rounded mt-3">Selesai</div>
+                                            @else
+                                                <div class="bg-soft-warning text-warning rounded mt-3">Belum Selesai</div>
                                             @endif
                                         @else
                                             <div class="bg-soft-warning text-warning rounded mt-3">Belum Selesai</div>
@@ -229,8 +231,10 @@
                                         <div class="inner-circle"></div>
                                         <p class="h6 mt-3 mb-1">Pendaftaran TA</p>
                                         @if ($pengajuan_acc)
-                                        @if ($pendaftaran_acc)
-                                            <div class="bg-soft-success text-success rounded mt-3">Selesai</div>
+                                            @if ($pendaftaran_acc)
+                                                <div class="bg-soft-success text-success rounded mt-3">Selesai</div>
+                                            @else
+                                                <div class="bg-soft-warning text-warning rounded mt-3">Belum Selesai</div>
                                             @endif
                                         @else
                                             <div class="bg-soft-warning text-warning rounded mt-3">Belum Selesai</div>

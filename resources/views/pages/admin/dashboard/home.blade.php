@@ -126,7 +126,7 @@
 
                         <div class="info-box-content">
                             <span class="info-box-text">Seminar Proposal</span>
-                            <span class="info-box-number">0 Mahasiswa</span>
+                            <span class="info-box-number">{{ count($seminars) }} Mahasiswa</span>
                         </div>
                     </div>
                 </div>
@@ -137,7 +137,7 @@
 
                         <div class="info-box-content">
                             <span class="info-box-text">Ujian Pendadaran</span>
-                            <span class="info-box-number">0 Mahasiswa</span>
+                            <span class="info-box-number">{{ count($ujians)}} Mahasiswa</span>
                         </div>
                     </div>
                 </div>
@@ -259,7 +259,7 @@
                 </div>
             </div>
 
-            <div class="row">
+          <div class="row">
                 <div class="col-md-6">
                     <div class="card" style="min-height: 16rem">
                         <div class="card-header bg-primary">
@@ -269,27 +269,27 @@
 
                             <div class="progress-group">
                                 Seminar Proposal Diterima
-                                <span class="float-right"><b>0</b>/0</span>
+                                <span class="float-right"><b>{{ count($seminars_diterima) }}</b>/{{ count($seminars) }}</span>
                                 <div class="progress progress-sm">
-                                    <div class="progress-bar bg-success" style="width: 0%">
+                                    <div class="progress-bar bg-success" style="width: {{ count($seminars_diterima) != 0 ? (count($seminars_diterima) / count($seminars)) * 100 : 0 }}%">
                                     </div>
                                 </div>
                             </div>
 
                             <div class="progress-group">
                                 Seminar Proposal Review
-                                <span class="float-right"><b>0</b>/0</span>
+                                <span class="float-right"><b>{{ count($seminars_review) }}</b>/{{ count($seminars) }}</span>
                                 <div class="progress progress-sm">
-                                    <div class="progress-bar bg-secondary" style="width: 0%">
+                                    <div class="progress-bar bg-secondary" style="width: {{ count($seminars_review) != 0 ? (count($seminars_review) / count($seminars)) * 100 : 0 }}%">
                                     </div>
                                 </div>
                             </div>
 
                             <div class="progress-group">
                                 Seminar Proposal Revisi
-                                <span class="float-right"><b>0</b>/0</span>
+                                <span class="float-right"><b>{{ count($seminars_revisi) }}</b>/{{ count($seminars) }}</span>
                                 <div class="progress progress-sm">
-                                    <div class="progress-bar bg-warning" style="width: 0%">
+                                    <div class="progress-bar bg-warning" style="width: {{ count($seminars_revisi) != 0 ? (count($seminars_revisi) / count($seminars)) * 100 : 0 }}%">
                                     </div>
                                 </div>
                             </div>
@@ -307,27 +307,27 @@
 
                             <div class="progress-group">
                                 Ujian Pendadaran Diterima
-                                <span class="float-right"><b>0</b>/0</span>
+                                <span class="float-right"><b>{{ count($ujians_diterima) }}</b>/{{ count($ujians) }}</span>
                                 <div class="progress progress-sm">
-                                    <div class="progress-bar bg-success" style="width: 0%">
+                                    <div class="progress-bar bg-success" style="width: {{ count($ujians_diterima) != 0 ? (count($ujians_diterima) / count($ujians)) * 100 : 0 }}%">
                                     </div>
                                 </div>
                             </div>
 
                             <div class="progress-group">
                                 Ujian Pendadaran Review
-                                <span class="float-right"><b>0</b>/0</span>
+                                <span class="float-right"><b>{{ count($ujians_review) }}</b>/{{ count($ujians) }}</span>
                                 <div class="progress progress-sm">
-                                    <div class="progress-bar bg-secondary" style="width: 0%">
+                                    <div class="progress-bar bg-secondary" style="width: {{ count($ujians_review) != 0 ? (count($ujians_review) / count($ujians)) * 100 : 0 }}%">
                                     </div>
                                 </div>
                             </div>
 
                             <div class="progress-group">
                                 Ujian Pendadaran Revisi
-                                <span class="float-right"><b>0</b>/0</span>
+                                <span class="float-right"><b>{{ count($ujians_revisi) }}</b>/{{ count($ujians) }}</span>
                                 <div class="progress progress-sm">
-                                    <div class="progress-bar bg-warning" style="width: 0%">
+                                    <div class="progress-bar bg-warning" style="width: {{ count($ujians_revisi) != 0 ? (count($ujians_revisi) / count($ujians)) * 100 : 0 }}%">
                                     </div>
                                 </div>
                             </div>
@@ -336,7 +336,6 @@
                     </div>
                 </div>
             </div>
-
-        </div>
+            </div>
     </section>
 @endsection

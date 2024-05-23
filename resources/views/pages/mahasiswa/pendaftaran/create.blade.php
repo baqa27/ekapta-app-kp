@@ -184,9 +184,9 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="exampleInputEmail1">Nomor Pembayaran (Opsional)<br> <small>(PBXXXX) yang
+                                    <label for="exampleInputEmail1">Nomor Pembayaran<br> <small>(PBXXXX) yang
                                             tertera pada Bukti Bayar FASTIKOM (BUKAN NOMOR TRANSFER DARI
-                                            BANK)</small></label>
+                                            BANK). Silahkan konfirmasi ke mas Harri (Telegram: <a href="tg://resolve?domain=harrrrrrrrrrr" target="_blank">@harrrrrrrrrrr</a> / WA: <a href="https://wa.me/6285643647643" target="_blank">085643647643</a> ).</small></label>
                                     <input type="text"
                                         class="form-control @error('nomor_pembayaran') is-invalid @enderror"
                                         placeholder="Masukkan Nomor Pembayaran.." value="{{ old('nomor_pembayaran') }}"

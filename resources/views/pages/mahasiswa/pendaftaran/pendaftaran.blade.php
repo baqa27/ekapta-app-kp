@@ -122,7 +122,7 @@
                                             @elseif ($pendaftaran->status =='revisi')
                                                 <a href="{{ url('pendaftaran/edit/'.$pendaftaran->id) }}"
                                                    class="btn btn-primary btn-sm"><i class="fa fa-upload mr-1"></i>
-                                                    Submit</a>
+                                                    Submit Revisi</a>
 
                                             @elseif ($pendaftaran->status =='review')
                                                 <a href="{{ url('pendaftaran/detail/'.$pendaftaran->id) }}"

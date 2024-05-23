@@ -169,10 +169,10 @@
             </td>
         </tr>
         <tr>
-            <td>
+            <td style="vertical-align: top !important;">
                 <p class="margin-left">Judul Tugas Akhir</p>
             </td>
-            <td>
+            <td style="vertical-align: top !important;">
                 <p class="titik-dua">:</p>
             </td>
             <td>

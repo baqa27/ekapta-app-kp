@@ -41,7 +41,7 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="index3.html" class="brand-link">
-        <img src="{{ asset('ekapta') }}/adminLTE/dist/img/AdminLTELogo.png" alt="AdminLTE Logo"
+        <img src="https://unsiq.ac.id/img/UNSIQ-bunder.ico" alt="AdminLTE Logo"
              class="brand-image img-circle elevation-3" style="opacity: .8">
         <span class="brand-text font-weight-light">Panel Prodi</span>
     </a>
@@ -75,11 +75,11 @@
                 </li>
 
                 <li class="nav-item
-                    @if($active == 'pengajuan' || $active == 'bimbingan' || $active == 'seminar' || $active == 'ujian')
+                    @if($active == 'pengajuan' || $active == 'bimbingan' || $active == 'seminar' || $active == 'ujian' || $active == 'bimbingan-input')
                     menu-open
                     @endif">
                     <a href="#" class="nav-link
-                    @if($active == 'pengajuan' || $active == 'bimbingan' || $active == 'seminar' || $active == 'ujian')
+                    @if($active == 'pengajuan' || $active == 'bimbingan' || $active == 'seminar' || $active == 'ujian' || $active == 'bimbingan-input')
                     active
                     @endif">
                         <i class="nav-icon fas fa-th"></i>
@@ -99,7 +99,15 @@
                                 </p>
                             </a>
                         </li>
-
+                        <li class="nav-item">
+                            <a href="{{ route('bimbingan.prodi.input') }}"
+                               class="nav-link {{ $active == 'bimbingan-input' ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>
+                                    Input Bimbingan TA
+                                </p>
+                            </a>
+                        </li>
                         <li class="nav-item">
                             <a href="{{ route('bimbingan.prodi') }}"
                                class="nav-link {{ $active=='bimbingan' ? 'active' : '' }}">

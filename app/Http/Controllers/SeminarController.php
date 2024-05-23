@@ -22,9 +22,17 @@ class SeminarController extends Controller
     public function seminarMahasiswa()
     {
         $mahasiswa = Mahasiswa::findOrFail(Auth::guard('mahasiswa')->user()->id);
+        if($mahasiswa->email == '-'){
+            return redirect()->route('profile');
+        }
         $prodi = Prodi::where('namaprodi', $mahasiswa->prodi)->first();
         $bagians_is_seminar = $prodi->bagians()->where('is_seminar', 1)->get();
         $bagians_is_ujian = $prodi->bagians()->where('is_pendadaran', 1)->get();
+
+        $bagians = [];
+        foreach($bagians_is_seminar as $b){
+            array_push($bagians, $b->bagian);
+        }
 
         $bimbingans_is_acc = $mahasiswa->bimbingans()->where('status', Bimbingan::DITERIMA)->get();
         $pendaftaran_acc = Pendaftaran::orderBy('created_at', 'desc')->where('mahasiswa_id', $mahasiswa->id)->where('status', 'diterima')->first();
@@ -37,7 +45,7 @@ class SeminarController extends Controller
         $dosen_pendamping = $mahasiswa->dosens()->where('status', 'pendamping')->first();
 
         if (count($bimbingans_is_acc) - count($bagians_is_seminar) < count($bagians_is_seminar)) {
-            return redirect('bimbingan-mahasiswa')->with('warning', 'Selesaikan bimbingan anda sampai dengan BAB ' . count($bagians_is_seminar));
+            return redirect('bimbingan-mahasiswa')->with('warning', 'Selesaikan bimbingan: ' . implode(',', $bagians));
         }
 
         $seminar = $mahasiswa->seminar;
@@ -85,7 +93,6 @@ class SeminarController extends Controller
     public function seminarDosen()
     {
         $dosen = Dosen::findOrFail(Auth::guard('dosen')->user()->id);
-
         $data = [
             'title' => 'Review Seminar TA',
             'active' => 'seminar',
@@ -162,7 +169,9 @@ class SeminarController extends Controller
         $validatedData = $request->validate([
             'lampiran_1' => ['required', 'mimes:jpg,png,jpeg,pdf', 'max:5000'],
             'lampiran_2' => ['required', 'mimes:jpg,png,jpeg,pdf', 'max:5000'],
-//            'lampiran_3' => ['required', 'mimes:jpg,png,jpeg,pdf', 'max:5000'],
+            'nomor_pembayaran' => ['required'],
+            'jumlah_bayar' => ['required'],
+           'lampiran_3' => ['required', 'mimes:jpg,png,jpeg,pdf', 'max:5000'],
 //            'lampiran_4' => ['required', 'mimes:jpg,png,jpeg,pdf', 'max:5000'],
 //            'lampiran_5' => ['required', 'mimes:jpg,png,jpeg,pdf', 'max:5000'],
         ]);
@@ -188,6 +197,14 @@ class SeminarController extends Controller
         $mahasiswa = $seminar->mahasiswa;
 
         $pendaftaran_acc = Pendaftaran::orderBy('created_at', 'desc')->where('mahasiswa_id', $mahasiswa->id)->where('status', 'diterima')->first();
+
+        if ($pendaftaran_acc->mahasiswa_id != Auth::guard('mahasiswa')->user()->id) {
+            abort(404);
+        }
+
+        if ($seminar->is_valid == Seminar::REVIEW) {
+            return redirect('seminar-mahasiswa');
+        }
 
         if (!$pendaftaran_acc) {
             return redirect('pendaftaran-mahasiswa');
@@ -230,15 +247,17 @@ class SeminarController extends Controller
                 }),
                 'mimes:pdf,png,jpg,jpeg', 'max:5000'
             ],
-//            'lampiran_3' => [
-//                Rule::requiredIf(function () {
-//                    if (empty($this->request->lampiran_3)) {
-//                        return false;
-//                    }
-//                    return true;
-//                }),
-//                'mimes:pdf,png,jpg,jpeg', 'max:5000'
-//            ],
+            'nomor_pembayaran' => ['required'],
+            'jumlah_bayar' => ['required'],
+           'lampiran_3' => [
+               Rule::requiredIf(function () {
+                   if (empty($this->request->lampiran_3)) {
+                       return false;
+                   }
+                   return true;
+               }),
+               'mimes:pdf,png,jpg,jpeg', 'max:5000'
+           ],
 //            'lampiran_4' => [
 //                Rule::requiredIf(function () {
 //                    if (empty($this->request->lampiran_4)) {
@@ -267,10 +286,10 @@ class SeminarController extends Controller
             AppHelper::instance()->deleteLampiran($seminar->lampiran_2);
             $validatedData['lampiran_2'] = AppHelper::instance()->uploadLampiran($request->lampiran_2, 'lampirans');
         }
-//        if ($request->file('lampiran_3')) {
-//            AppHelper::instance()->deleteLampiran($seminar->lampiran_3);
-//            $validatedData['lampiran_3'] = AppHelper::instance()->uploadLampiran($request->lampiran_3, 'lampirans');
-//        }
+       if ($request->file('lampiran_3')) {
+           AppHelper::instance()->deleteLampiran($seminar->lampiran_3);
+           $validatedData['lampiran_3'] = AppHelper::instance()->uploadLampiran($request->lampiran_3, 'lampirans');
+       }
 //        if ($request->file('lampiran_4')) {
 //            AppHelper::instance()->deleteLampiran($seminar->lampiran_4);
 //            $validatedData['lampiran_4'] = AppHelper::instance()->uploadLampiran($request->lampiran_4, 'lampirans');
@@ -325,7 +344,14 @@ class SeminarController extends Controller
             'is_valid' => 1,
             'tanggal_acc' => now(),
         ]);
-
+        if ($seminar->mahasiswa->email != '-') {
+            AppHelper::instance()->send_mail([
+                'mail' => $seminar->mahasiswa->email,
+                'subject' => 'Pendaftaran Seminar Tugas Ahir',
+                'title' => 'EKAPTA',
+                'message' => 'Selamat Pendaftaran Seminar Tugas Akhir Anda Berstatus DITERIMA.',
+            ]);
+        }
         return back()->with('success', 'Pendaftaran Seminar TA berhasil di Acc.');
     }
 
@@ -415,6 +441,14 @@ class SeminarController extends Controller
                 'is_valid' => Seminar::REVISI,
             ]);
             $seminar->revisis()->save($revisi);
+            if ($seminar->mahasiswa->email != '-') {
+                AppHelper::instance()->send_mail([
+                    'mail' => $seminar->mahasiswa->email,
+                    'subject' => 'Pendaftaran Seminar Tugas Ahir',
+                    'title' => 'EKAPTA',
+                    'message' => 'Pendaftaran Seminar Tugas Akhir Anda Berstatus REVISI. Silahkan perbaiki kemudian lakukan submit ulang!.<br><br>Catatan revisi: '.$request->catatan,
+                ]);
+            }
             return redirect('seminar-admin')->with('success', 'Seminar TA berhasil direvisi');
         } elseif ($seminar->is_valid == Seminar::REVISI) {
             $seminar->revisis()->save($revisi);
@@ -436,6 +470,10 @@ class SeminarController extends Controller
         $mahasiswa = $seminar->mahasiswa;
 
         $pendaftaran_acc = Pendaftaran::orderBy('created_at', 'desc')->where('mahasiswa_id', $mahasiswa->id)->where('status', 'diterima')->first();
+
+        if ($seminar->mahasiswa_id != Auth::guard('mahasiswa')->user()->id) {
+            abort(404);
+        }
 
         if (!$pendaftaran_acc) {
             return redirect('pendaftaran-mahasiswa');
@@ -490,35 +528,23 @@ class SeminarController extends Controller
         $validatedData = $request->validate([
             'tanggal_ujian' => 'required',
         ]);
+        $validatedData['tanggal_ujian'] = Carbon::parse($request->tanggal_ujian);
         $seminar->update($validatedData);
         return back();
     }
 
     public function seminarProdiDetail($id)
     {
-        $seminar = Seminar::findOrFail($id);
+        $seminar = Seminar::with(['mahasiswa','reviews'])->where('id', $id)->first();
 
         $prodi = Prodi::where('namaprodi', $seminar->mahasiswa->prodi)->first();
         $presentase_nilai = $prodi->presentase_nilai;
 
-        if (count($seminar->reviews) != 5 || !$presentase_nilai) {
+        if (count($seminar->reviews) < 4 || !$presentase_nilai) {
             return back();
         }
 
-        $reviews_penguji = $seminar->reviews()->where('dosen_status', ReviewSeminar::DOSEN_PENGUJI)->get();
-        $reviews_pembimbing = $seminar->reviews()->where('dosen_status', ReviewSeminar::DOSEN_PEMBIMBING)->get();
-
-        $nilai_dosen_penguji_1 = AppHelper::instance()->hitung_nilai_seminar($reviews_penguji[0]->nilai_1, $reviews_penguji[0]->nilai_2, $reviews_penguji[0]->nilai_3, $reviews_penguji[0]->nilai_4);
-        $nilai_dosen_penguji_2 = AppHelper::instance()->hitung_nilai_seminar($reviews_penguji[1]->nilai_1, $reviews_penguji[1]->nilai_2, $reviews_penguji[1]->nilai_3, $reviews_penguji[1]->nilai_4);
-        $nilai_dosen_penguji_3 = AppHelper::instance()->hitung_nilai_seminar($reviews_penguji[2]->nilai_1, $reviews_penguji[2]->nilai_2, $reviews_penguji[2]->nilai_3, $reviews_penguji[2]->nilai_4);
-
-        $nilai_dosen_pembimbing_1 = AppHelper::instance()->hitung_nilai_seminar($reviews_pembimbing[0]->nilai_1, $reviews_pembimbing[0]->nilai_2, $reviews_pembimbing[0]->nilai_3, $reviews_pembimbing[0]->nilai_4);
-        $nilai_dosen_pembimbing_2 = AppHelper::instance()->hitung_nilai_seminar($reviews_pembimbing[1]->nilai_1, $reviews_pembimbing[1]->nilai_2, $reviews_pembimbing[1]->nilai_3, $reviews_pembimbing[1]->nilai_4);
-
-        $nilai_dosen_pembimbing = ($nilai_dosen_pembimbing_1 + $nilai_dosen_pembimbing_2) / 2;
-        $nilai_dosen_penguji = ($nilai_dosen_penguji_1 + $nilai_dosen_penguji_2 + $nilai_dosen_penguji_3) / 3;
-
-        $nilai = ($presentase_nilai->bobot_pembimbing / 100 * $nilai_dosen_pembimbing) + ($presentase_nilai->bobot_penguji / 100 * $nilai_dosen_penguji);
+        $nilai = AppHelper::hitung_nilai_mahasiswa($seminar);
 
         $data = [
             'title' => 'Detail Seminar Mahasiswa',
@@ -526,11 +552,35 @@ class SeminarController extends Controller
             'sidebar' => 'partials.sidebarProdi',
             'seminar' => $seminar,
             'revisis' => $seminar->revisis()->paginate(5),
-            'nilai' => $nilai,
-            'nilai_dosen_penguji' => $nilai_dosen_penguji,
-            'nilai_dosen_pembimbing' => $nilai_dosen_pembimbing,
+            'nilai' => $nilai['nilai'],
+            'nilai_dosen_penguji' => $nilai['nilai_penguji'],
+            'nilai_dosen_pembimbing' => $nilai['nilai_pembimbing'],
         ];
 
         return view('pages.prodi.seminar.detail', $data);
+    }
+
+    public function rekapSeminar(){
+        $seminars = Seminar::where('is_valid', Seminar::VALID)
+            ->where('tanggal_ujian', null)
+            ->get();
+        return view('pages.admin.seminar.rekap',[
+            'title' => 'Rekap Pendaftaran Seminar Mahasiswa',
+            'sidebar' => 'partials.sidebarAdmin',
+            'active' => 'seminar',
+            'seminars' => $seminars,
+        ]);
+    }
+
+    public function updateStatus(Request $request)
+    {
+        $seminar = Seminar::findOrFail($request->seminar_id);
+        if ($seminar->is_valid == 0) {
+            return back();
+        }
+        $seminar->update([
+            'is_lulus' => $request->is_lulus,
+        ]);
+        return response()->json(['message' => 'Status seminar berhasil disimpan']);
     }
 }

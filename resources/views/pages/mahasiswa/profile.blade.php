@@ -22,13 +22,16 @@
     <!-- Main content -->
     <div class="content">
         <div class="container">
-
-            <!-- Alur Ekapta -->
+            @if(Auth::guard('mahasiswa')->user()->email == '-')
+                <div class="alert alert-warning mb-2" style="text-transform: uppercase;">
+                    Silahkan update Email anda dengan email aktif untuk mendapatkan notifikasi!
+                </div>
+            @endif
             <div class="row mb-3">
                 <div class="col-md-12">
                     <div class="card card-primary card-outline">
                         <div class="card-header">
-                            <h3 class="card-title">{{ $title }}</h3>
+                            <h3 class="card-title">Kontak Mahasiswa</h3>
                         </div>
                         <div class="card-body">
                             <form action="{{ route('profile.update') }}" method="post">
@@ -37,91 +40,7 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label for="exampleInputEmail1">NIM</label>
-                                            <input type="text" class="form-control" value="{{ $mahasiswa->nim }}"
-                                                disabled>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="exampleInputEmail1">Nama Lengkap</label>
-                                            <input type="text" class="form-control" value="{{ $mahasiswa->nama }}"
-                                                disabled>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="exampleInputEmail1">Tahun Masuk</label>
-                                            <input type="text" class="form-control" value="{{ $mahasiswa->thmasuk }}"
-                                                disabled>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="exampleInputEmail1">Prodi</label>
-                                            <input type="text" class="form-control" value="{{ $mahasiswa->prodi }}"
-                                                disabled>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="exampleInputEmail1">Tempat Lahir</label>
-                                            <input type="text" class="form-control" value="{{ $mahasiswa->tptlahir }}"
-                                                disabled>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="exampleInputEmail1">Tanggal Lahir</label>
-                                            <input type="text" class="form-control" value="{{ $mahasiswa->tgllahir }}"
-                                                disabled>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="exampleInputEmail1">Jenis Kelamin</label>
-                                            <input type="text" class="form-control"
-                                                value="{{ $mahasiswa->jeniskelamin }}" disabled>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="exampleInputEmail1">Dosen Wali</label>
-                                             @php
-                                                $dosen_wali = \App\Helpers\AppHelper::instance()->getDosen($mahasiswa->kodedosenwali) ? \App\Helpers\AppHelper::instance()->getDosen($mahasiswa->kodedosenwali) : null
-                                            @endphp
-                                            <input type="text" class="form-control"
-                                                value="{{ $dosen_wali ? $dosen_wali->nama.', '.$dosen_wali->gelar : '' }}"
-                                                disabled>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="exampleInputEmail1">NIK</label>
-                                            <input type="text" class="form-control" value="{{ $mahasiswa->nik }}"
-                                                disabled>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="exampleInputEmail1">Kelas</label>
-                                            <input type="text" class="form-control" value="{{ $mahasiswa->kelas }}"
-                                                disabled>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="exampleInputEmail1">Email</label>
+                                            <label for="exampleInputEmail1">Email (Hapus tanda - )</label>
                                             <input type="email" class="form-control @error('email') is-invalid @enderror"
                                                 value="{{ $mahasiswa->email }}" name="email" required>
                                             @error('email')
@@ -131,30 +50,12 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label for="exampleInputEmail1">No. Hp</label>
+                                            <label for="exampleInputEmail1">No. Hp (Hapus tanda - )</label>
                                             <input type="text" class="form-control @error('hp') is-invalid @enderror"
                                                 value="{{ $mahasiswa->hp }}" name="hp" required>
                                             @error('hp')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="exampleInputEmail1">Semester</label>
-                                            <input type="text" class="form-control"
-                                                value="{{ \App\Helpers\AppHelper::instance()->getMahasiswaDetail($mahasiswa->nim) != null ? \App\Helpers\AppHelper::instance()->getMahasiswaDetail($mahasiswa->nim)->semester : '' }}"
-                                                disabled>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="exampleInputEmail1">Status</label>
-                                            <input type="text" class="form-control"
-                                                value="{{ \App\Helpers\AppHelper::instance()->getMahasiswaDetail($mahasiswa->nim) != null ? \App\Helpers\AppHelper::instance()->getMahasiswaDetail($mahasiswa->nim)->status : '' }}"
-                                                disabled>
                                         </div>
                                     </div>
                                 </div>
@@ -182,6 +83,121 @@
                 </div>
             </div>
 
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <div class="card card-primary card-outline">
+                        <div class="card-header">
+                            <h3 class="card-title">{{ $title }}</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">NIM</label>
+                                        <input type="text" class="form-control" value="{{ $mahasiswa->nim }}"
+                                            disabled>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Nama Lengkap</label>
+                                        <input type="text" class="form-control" value="{{ $mahasiswa->nama }}"
+                                            disabled>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Tahun Masuk</label>
+                                        <input type="text" class="form-control" value="{{ $mahasiswa->thmasuk }}"
+                                            disabled>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Prodi</label>
+                                        <input type="text" class="form-control" value="{{ $mahasiswa->prodi }}"
+                                            disabled>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Tempat Lahir</label>
+                                        <input type="text" class="form-control" value="{{ $mahasiswa->tptlahir }}"
+                                            disabled>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Tanggal Lahir</label>
+                                        <input type="text" class="form-control" value="{{ $mahasiswa->tgllahir }}"
+                                            disabled>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Jenis Kelamin</label>
+                                        <input type="text" class="form-control"
+                                            value="{{ $mahasiswa->jeniskelamin }}" disabled>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Dosen Wali</label>
+                                            @php
+                                            $dosen_wali = \App\Helpers\AppHelper::instance()->getDosen($mahasiswa->kodedosenwali) ? \App\Helpers\AppHelper::instance()->getDosen($mahasiswa->kodedosenwali) : null
+                                        @endphp
+                                        <input type="text" class="form-control"
+                                            value="{{ $dosen_wali ? $dosen_wali->nama.', '.$dosen_wali->gelar : '' }}"
+                                            disabled>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">NIK</label>
+                                        <input type="text" class="form-control" value="{{ $mahasiswa->nik }}"
+                                            disabled>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Kelas</label>
+                                        <input type="text" class="form-control" value="{{ $mahasiswa->kelas }}"
+                                            disabled>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Semester</label>
+                                        <input type="text" class="form-control"
+                                            value="{{ \App\Helpers\AppHelper::instance()->getMahasiswaDetail($mahasiswa->nim) != null ? \App\Helpers\AppHelper::instance()->getMahasiswaDetail($mahasiswa->nim)->semester : '' }}"
+                                            disabled>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Status</label>
+                                        <input type="text" class="form-control"
+                                            value="{{ \App\Helpers\AppHelper::instance()->getMahasiswaDetail($mahasiswa->nim) != null ? \App\Helpers\AppHelper::instance()->getMahasiswaDetail($mahasiswa->nim)->status : '' }}"
+                                            disabled>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+            </div>
         </div>
     </div>
     <!-- /.content -->

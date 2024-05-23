@@ -39,6 +39,7 @@
                                     <th>Prodi</th>
                                     <th>Judul</th>
                                     <th>Tanggal Pendaftaran</th>
+                                    <th>Tanggal Ujian</th>
                                     <th>Aksi</th>
                                 </tr>
                                 </thead>
@@ -58,6 +59,9 @@
                                         <td>{{ $seminar->pengajuan->judul }}</td>
                                         <td>
                                             {{ date('d M Y H:i', strtotime($seminar->created_at)) }}
+                                        </td>
+                                        <td>
+                                            {{ \App\Helpers\AppHelper::parse_date_short($seminar->tanggal_ujian) }}
                                         </td>
                                         <td>
                                             <a href="{{ route('seminar.prodi.detail' , $seminar->id) }}"

@@ -48,21 +48,56 @@
                                     </tr>
                                 </table>
                             </div>
-                            <div class="mt-3">
-                                @foreach ($mahasiswa->bimbingans()->where('pembimbing', 'utama')->get() as $bimbingan)
-                                    <a href="{{ asset($bimbingan->lampiran) }}" class="btn btn-primary mb-3"
-                                        target="_blank"><i class="fas fa-download"></i> {{ $bimbingan->bagian->bagian }}</a>
-                                @endforeach
-                            </div>
+
+                            @if ($jilid->status == 1)
+                                <div class="mt-3">
+                                    <a href="{{ asset($jilid->laporan_pdf) }}" class="btn btn-primary mb-3"
+                                        target="_blank"><i class="fas fa-download"></i> LAPORAN PDF</a>
+                                    <a href="{{ asset($jilid->laporan_word) }}" class="btn btn-primary mb-3"
+                                        target="_blank"><i class="fas fa-download"></i> LAPORAN WORD</a>
+                                    <a href="{{ asset($jilid->lembar_pengesahan) }}" class="btn btn-primary mb-3"
+                                        target="_blank"><i class="fas fa-download"></i> LEMBAR PENGESAHAN</a>
+                                    <a href="{{ asset($jilid->link_project) }}" class="btn btn-secondary mb-3"
+                                        target="_blank"><i class="fas fa-download"></i> LINK PROJECT</a>
+                                </div>
+                            @elseif ($jilid->status == 3)
+                                <a href="{{ asset($jilid->laporan_pdf) }}" class="btn btn-primary mb-3 mt-4" target="_blank"><i
+                                        class="fas fa-download"></i> LAPORAN PDF</a>
+                            @endif
+
                             <form action="{{ route('jilid.acc', $jilid->id) }}" method="post">
                                 @method('put')
                                 @csrf
+                                @if ($jilid->status == 3)
+                                    <input type="hidden" name="status" value="4">
+                                    <div class="mt-4">
+                                        <label>JUMLAH PEMBAYARAN</label>
+                                        <input type="number" name="total_pembayaran" class="form-control"
+                                            placeholder="Nominal pembayaran penjilidan"
+                                            value="{{ $jilid->total_pembayaran }}" required>
+                                    </div>
+                                @elseif ($jilid->status == 1)
+                                    <div class="form-group">
+                                        <label for="">Status</label>
+                                        <select name="status" class="form-control" required>
+                                            <option value="">--pilih--</option>
+                                            <option value="3">ACC</option>
+                                            <option value="2">REVISI</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">Catatan</label>
+                                        <textarea name="catatan" class="form-control"></textarea>
+                                    </div>
+                                @endif
                                 <div class="mt-4">
-                                    <label>JUMLAH PEMBAYARAN</label>
-                                    <input type="number" name="total_pembayaran" class="form-control" placeholder="Nominal pembayaran penjilidan" value="{{ $jilid->total_pembayaran }}" required>
-                                </div>
-                                <div class="mt-4">
-                                    <button type="submit" class="btn btn-success"><i class="fas fa-check"></i> SIMPAN</button>
+                                    <button type="submit" class="btn btn-success"><i class="fas fa-check"></i>
+                                        @if ($jilid->status == 1)
+                                            SIMPAN
+                                        @elseif ($jilid->status == 3)
+                                            SELESAI
+                                        @endif
+                                    </button>
                                 </div>
                             </form>
                         </div>

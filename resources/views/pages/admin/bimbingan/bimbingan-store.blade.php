@@ -28,7 +28,9 @@
 
                     <div class="card card-primary card-outline mt-3">
                         <div class="card-header">
-                            <h3 class="card-title">{{ $title }}</h3>
+                            <a href="{{ route($route) }}" class="btn btn-secondary btn-sm shadow">
+                                <i class="bi bi-chevron-left"></i> Kembali
+                            </a>
                         </div>
                         <div class="card-body">
                             <div class="row">
@@ -50,11 +52,11 @@
                                         class="form-control @error('lampiran')
                                     is-invalid
                                     @enderror"
-                                        accept=".pdf" required>
-                                        @if ($dosen_mahasiswa->lampiran)
-                                        <a href="{{ asset($dosen_mahasiswa->lampiran) }}"
-                                            target="_blank"><i class="fas fa-paperclip ml-1"></i> Lampiran Lembar Bimbingan</a>
-                                        @endif
+                                        accept=".pdf">
+                                    @if ($dosen_mahasiswa->lampiran)
+                                        <a href="{{ asset($dosen_mahasiswa->lampiran) }}" target="_blank"><i
+                                                class="fas fa-paperclip ml-1"></i> Lampiran Lembar Bimbingan</a>
+                                    @endif
                                     @error('lampiran')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -70,14 +72,17 @@
                                         <input type="hidden" name="ids[]" value="{{ $bimbingan->id }}">
                                         <div class="border p-3 d-flex">
                                             <span class="flex-grow-1">
-                                                <b>{{ $bimbingan->bagian->bagian }}</b>
+                                                <b class="text-{{ $bimbingan->tanggal_acc ? 'success' : 'secondary'}}">{{ $bimbingan->bagian->bagian }}</b>
                                                 @if ($bimbingan->lampiran)
-                                                    <br> <a href="{{ asset($bimbingan->lampiran) }}"
-                                                        target="_blank"><i class="fas fa-paperclip ml-1"></i> Lampiran</a>
+                                                    <br> <a href="{{ asset($bimbingan->lampiran) }}" target="_blank"><i
+                                                            class="fas fa-paperclip ml-1"></i> Lampiran</a>
+                                                @else
+                                                <br><span class="text-secondary">Belum Upload File Bimbingan</span>
                                                 @endif
                                             </span>
                                             <div class="flex-shrink-0">
-                                                <input type="date" name="dates[]" class="form-control" required>
+                                                <input type="date" name="dates[]" class="form-control"
+                                                    @if ($bimbingan->status == null) disabled @endif>
                                                 @if ($bimbingan->tanggal_acc)
                                                     <span
                                                         class="text-success">{{ \App\Helpers\AppHelper::parse_date_short($bimbingan->tanggal_acc) }}</span>

@@ -43,7 +43,7 @@ class ReviewSeminarController extends Controller
         $validatedData['status'] = ReviewSeminar::REVIEW;
 
         if ($review_seminar->lampiran){
-            AppHelper::instance()->deleteLampiran($review_seminar->lampiran);
+            //AppHelper::instance()->deleteLampiran($review_seminar->lampiran);
         }
 
         $validatedData['lampiran'] = AppHelper::instance()->uploadLampiran($request->lampiran,'lampirans');
@@ -60,8 +60,10 @@ class ReviewSeminarController extends Controller
         $is_dosen_penguji_utama = $review_seminar->seminar->reviews()->where('dosen_status', ReviewSeminar::DOSEN_PENGUJI)->first();
 
         $form_status = false;
-        if ($is_dosen_penguji_utama->id == $review_seminar->id){
-            $form_status = true;
+        if ($is_dosen_penguji_utama){
+            if ($is_dosen_penguji_utama->id == $review_seminar->id){
+                $form_status = true;
+            }
         }
 
         $data = [
@@ -94,14 +96,23 @@ class ReviewSeminarController extends Controller
         ]);
 
         if ($request->file('lampiran')) {
-            $revisi->lampiran = AppHelper::instance()->uploadLampiran($request->lampiran, 'lampirans');
+            //$revisi->lampiran = AppHelper::instance()->uploadLampiran($request->lampiran, 'lampirans');
         }
+        $revisi->lampiran = $review_seminar->lampiran ? $review_seminar->lampiran : $review_seminar->seminar->lampiran_3;
 
         if ($review_seminar->status == ReviewSeminar::REVIEW) {
             $review_seminar->update([
                 'status' => ReviewSeminar::REVISI,
             ]);
             $review_seminar->revisis()->save($revisi);
+            if ($review_seminar->seminar->mahasiswa->email != '-') {
+                AppHelper::instance()->send_mail([
+                    'mail' => $review_seminar->seminar->mahasiswa->email,
+                    'subject' => 'Seminar Tugas Ahir',
+                    'title' => 'EKAPTA',
+                    'message' => 'Seminar Tugas Akhir Anda Berstatus REVISI. Silahkan perbaiki kemudian lakukan submit ulang!. <br><br>Catatan revisi: '.$request->catatan,
+                ]);
+            }
             return back()->with('success', 'Revisi berhasil ditambahkan.');
         } elseif ($review_seminar->status == ReviewSeminar::REVISI) {
             $review_seminar->revisis()->save($revisi);
@@ -112,7 +123,7 @@ class ReviewSeminarController extends Controller
     public function revisiDelete(Request $request)
     {
         $revisi = RevisiReviewSeminar::findOrFail($request->id);
-        AppHelper::instance()->deleteLampiran($revisi->lampiran);
+        //AppHelper::instance()->deleteLampiran($revisi->lampiran);
         $revisi->delete();
         return back()->with('success', 'Revisi berhasil dihapus');
     }
@@ -121,11 +132,22 @@ class ReviewSeminarController extends Controller
     {
         $review_seminar = ReviewSeminar::findOrFail($request->id);
 
+        $revisi = new RevisiReviewSeminar();
+        $revisi->catatan = $request->catatan;
+        $revisi->lampiran = $review_seminar->lampiran ? $review_seminar->lampiran : $review_seminar->seminar->lampiran_3;
         $review_seminar->update([
             'status' => ReviewSeminar::DITERIMA,
-            'tanggal_acc' => now(),
+            'tanggal_acc' => $request->type ? $review_seminar->tanggal_acc_manual: now(),
         ]);
-
+        $review_seminar->revisis()->save($revisi);
+        if ($review_seminar->seminar->mahasiswa->email != '-') {
+            AppHelper::instance()->send_mail([
+                'mail' => $review_seminar->seminar->mahasiswa->email,
+                'subject' => 'Seminar Tugas Ahir',
+                'title' => 'EKAPTA',
+                'message' => 'Selamat Seminar Tugas Akhir Anda Berstatus DITERIMA.',
+            ]);
+        }
         return back()->with('success','Seminar TA berhasil di Acc.');
     }
 
@@ -160,5 +182,66 @@ class ReviewSeminarController extends Controller
         ]);
 
         return back()->with('success','Nilai Seminar TA berhasil disimpan');
+    }
+
+    public function submitManual($id)
+    {
+        $review_seminar = ReviewSeminar::findOrFail($id);
+        if ($review_seminar->status == 'revisi' || $review_seminar->status == 'diterima'){
+            return back();
+        }
+
+        $data = [
+            'title' => 'Submit Acc Manual',
+            'active' => 'seminar',
+            'review' => $review_seminar,
+        ];
+
+        return view('pages.mahasiswa.seminar.submit-acc-manual', $data);
+    }
+
+    public function submitManualStore(Request $request, $id)
+    {
+        $review_seminar = ReviewSeminar::findOrFail($id);
+        if ($review_seminar->status == 'revisi' || $review_seminar->status == 'diterima'){
+            return back();
+        }
+
+        $validatedData = $request->validate([
+            'lampiran_lembar_revisi' => ['required', 'mimes:pdf, jpg,jpeg,png', 'max:5000'],
+            'tanggal_acc_manual' => 'required',
+         ]);
+         $validatedData['lampiran_lembar_revisi'] = AppHelper::instance()->uploadLampiran($request->lampiran_lembar_revisi,'lampirans');
+        $review_seminar->update($validatedData);
+
+        return redirect()->route('seminar.reviews', $review_seminar->seminar->id);
+    }
+
+    public function updateNilai(Request $request)
+    {
+        $request->validate([
+            'review_id' => 'required|integer',
+            'field_name' => 'required|string',
+            'field_value' => 'required|integer',
+        ]);
+
+        $review = ReviewSeminar::find($request->review_id);
+        if ($review) {
+            $fieldName = $request->field_name;
+            $review->$fieldName = $request->field_value;
+            $review->status = 'diterima';
+            $review->save();
+
+            $nilai_akhir = AppHelper::instance()->hitung_nilai_mean(
+                $review->nilai_1,
+                $review->nilai_2,
+                $review->nilai_3,
+                $review->nilai_4
+            );
+
+            return response()->json(['message' => 'Nilai berhasil diperbarui', 'nilai_akhir' => $nilai_akhir]);
+        } else {
+            return response()->json(['message' => 'Review tidak ditemukan'], 404);
+        }
     }
 }

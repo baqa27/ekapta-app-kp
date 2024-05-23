@@ -36,6 +36,7 @@
                                     <tr>
                                         <th>No</th>
                                         <th>NIM / NAMA MAHASISWA</th>
+                                        <th>PRODI</th>
                                         <th>DOSEN PEMBIMBING</th>
                                         <th>AKSI</th>
                                     </tr>
@@ -50,6 +51,9 @@
                                                 <td>{{ $no++ }}</td>
                                                 <td>
                                                     {{ $mahasiswa->nim.'/'.$mahasiswa->nama }}
+                                                </td>
+                                                <td>
+                                                    {{ $mahasiswa->prodi }}
                                                 </td>
                                                 <td>
                                                     {{ $dosen->nama . ', ' . $dosen->gelar }}
@@ -68,6 +72,7 @@
                                     <tr>
                                         <th>No</th>
                                         <th>NIM / NAMA MAHASISWA</th>
+                                        <th>PRODI</th>
                                         <th>DOSEN PEMBIMBING</th>
                                         <th>AKSI</th>
                                     </tr>

@@ -51,18 +51,18 @@
 
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Pembimbing Utama (1) Tugas Akhir</label>
-                                    <input type="text" class="form-control" value="{{ $dosen_utama->nama }}" disabled>
+                                    <input type="text" class="form-control" value="{{ $dosen_utama->nama.', '.$dosen_utama->gelar }}" disabled>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Pembimbing Pendamping (2) Tugas Akhir</label>
-                                    <input type="text" class="form-control" value="{{ $dosen_pendamping->nama }}"
+                                    <input type="text" class="form-control" value="{{ $dosen_pendamping->nama.', '.$dosen_pendamping->gelar }}"
                                         disabled>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Judul Tugas Akhir</label>
-                                    <input type="text" class="form-control" value="{{ $pendaftaran->judul }}" disabled>
+                                    <input type="text" class="form-control" value="{{ $pendaftaran->pengajuan->judul }}" disabled>
                                 </div>
 
                                 <div class="form-group">
@@ -190,8 +190,7 @@
 
                                 <div class="form-group">
                                     <label for="exampleInputFile">Bukti Pembayaran Tugas Akhir <br>
-                                        <small>Pembayaran Tugas Akhir (TA) ke Juru bayar FASTIKOM. ( Mas
-                                            Harri)</small> </label>
+                                        <small>Pembayaran Tugas Akhir (TA) ke Juru bayar FASTIKOM (Mas Harri) di kantor FASTIKOM atau bisa transfer melalui Bank BRI No. <b>011201103039505</b> a.n. Harri Kurniawan R.</small> </label>
                                     <div class="input-group mb-3">
                                         <div class="custom-file">
                                             <input type="file"
@@ -221,7 +220,7 @@
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Nomor Pembayaran <br> <small>(PBXXXX) yang
                                             tertera pada Bukti Bayar FASTIKOM (BUKAN NOMOR TRANSFER DARI
-                                            BANK)</small></label>
+                                            BANK). Silahkan konfirmasi ke mas Harri (Telegram: <a href="tg://resolve?domain=harrrrrrrrrrr" target="_blank">@harrrrrrrrrrr</a> / WA: <a href="https://wa.me/6285643647643" target="_blank">085643647643</a> )</small></label>
                                     <input type="text"
                                         class="form-control @error('nomor_pembayaran') is-invalid @enderror"
                                         placeholder="Masukkan Nomor Pembayaran.."

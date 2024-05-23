@@ -62,11 +62,14 @@ class PlotingController extends Controller
         }
 
         for($i = 0; $i < count($request->dosen_penguji); $i++){
-           ReviewSeminar::create([
-               'seminar_id' => $seminar->id,
-               'dosen_id' => $request->dosen_penguji[$i],
-               'dosen_status' => ReviewSeminar::DOSEN_PENGUJI,
-           ]);
+           if ($request->dosen_penguji[$i] != null) {
+                ReviewSeminar::create([
+                    'seminar_id' => $seminar->id,
+                    'dosen_id' => $request->dosen_penguji[$i],
+                    'dosen_status' => ReviewSeminar::DOSEN_PENGUJI,
+                    'status' => ReviewSeminar::REVIEW,
+                ]);
+           }
         }
 
         return back()->with('success', 'Ploting dosen penguji berhasil.');
@@ -95,6 +98,7 @@ class PlotingController extends Controller
                 'ujian_id' => $ujian->id,
                 'dosen_id' => $request->dosen_penguji[$i],
                 'dosen_status' => ReviewUjian::DOSEN_PENGUJI,
+                'status' => ReviewUjian::REVIEW,
             ]);
         }
 
