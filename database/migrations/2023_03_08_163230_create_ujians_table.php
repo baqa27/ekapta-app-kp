@@ -24,8 +24,8 @@ class CreateUjiansTable extends Migration
             $table->string('lampiran_7');
             $table->string('lampiran_8');
             $table->string('lampiran_proposal')->nullable();
-            $table->boolean('is_valid')->default(0);
-            $table->tinyInteger('is_lulus')->nullable();
+            $table->boolean('is_valid')->default(3);
+            $table->tinyInteger('is_lulus')->default(3);
             $table->timestamp('tanggal_acc')->nullable();
             $table->timestamp('tanggal_ujian')->nullable();
             $table->timestamps();

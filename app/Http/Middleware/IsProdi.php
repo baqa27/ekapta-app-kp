@@ -17,9 +17,9 @@ class IsProdi
      */
     public function handle(Request $request, Closure $next)
     {
-        if (!Auth::guard('prodi')->user()) {
-            abort(404);
+        if (Auth::guard('prodi')->user()) {
+            return $next($request);
         }
-        return $next($request);
+        return redirect()->route('login.prodi');
     }
 }

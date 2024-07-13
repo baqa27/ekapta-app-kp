@@ -76,11 +76,11 @@
                 </li>
 
                 <li class="nav-item
-                    @if($active == 'pengajuan' || $active == 'pendaftaran' || $active == 'bimbingan' || $active == 'seminar' || $active == 'ujian' || $active == 'bimbingan-input')
+                    @if($active == 'pengajuan' || $active == 'pendaftaran' || $active == 'bimbingan' || $active == 'seminar' || $active == 'ujian' || $active == 'bimbingan-input' || $active == 'jilid')
                     menu-open
                     @endif">
                     <a href="#" class="nav-link
-                    @if($active == 'pengajuan' || $active == 'pendaftaran' || $active == 'bimbingan' || $active == 'seminar' || $active == 'ujian' || $active == 'bimbingan-input')
+                    @if($active == 'pengajuan' || $active == 'pendaftaran' || $active == 'bimbingan' || $active == 'seminar' || $active == 'ujian' || $active == 'bimbingan-input' || $active == 'jilid')
                     active
                     @endif">
                         <i class="nav-icon fas fa-th"></i>
@@ -146,7 +146,7 @@
                         </li>
                         <li class="nav-item">
                             <a href="{{ route('jilid.index') }}"
-                               class="nav-link" target="_blank">
+                               class="nav-link {{ $active == 'jilid' ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>
                                     Validasi Jilid TA

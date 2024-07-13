@@ -109,6 +109,7 @@
                                                 <th>Judul</th>
                                                 <th>Tanggal Pendaftaran</th>
                                                 <th>Tanggal Ujian</th>
+                                                <th>Tempat Ujian</th>
                                                 <th>Aksi</th>
                                             </tr>
                                         </thead>
@@ -130,8 +131,9 @@
                                                         {{ date('d M Y H:i', strtotime($ujian->created_at)) }}
                                                     </td>
                                                     <td>
-                                                        {{ \App\Helpers\AppHelper::parse_date_short($ujian->tanggal_ujian) }}
+                                                        {{ $ujian->tanggal_ujian ? \App\Helpers\AppHelper::parse_date_short($ujian->tanggal_ujian) : null}}
                                                     </td>
+                                                    <td>{{ $ujian->tempat_ujian }}</td>
                                                     <td>
                                                         <div class="d-flex">
                                                             <a href="{{ route('ujian.review.admin', $ujian->id) }}"
@@ -164,6 +166,7 @@
                                                 <th>Judul</th>
                                                 <th>Tanggal Pendaftaran</th>
                                                 <th>Tanggal Ujian</th>
+                                                <th>Tempat Ujian</th>
                                                 <th>Aksi</th>
                                             </tr>
                                         </tfoot>

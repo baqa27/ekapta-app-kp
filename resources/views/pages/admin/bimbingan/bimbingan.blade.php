@@ -46,6 +46,7 @@
                                         <th>No</th>
                                         <th>NIM</th>
                                         <th>Nama Mahasiswa</th>
+                                        <th>Kontak</th>
                                         <th>Prodi</th>
                                         <th>Judul Tugas Akhir</th>
                                         <th>Status Bimbingan</th>
@@ -82,6 +83,11 @@
                                              <td>
                                                 {{ $mahasiswa->nama }}
                                             </td>
+                                             <td>
+                                                @if(substr($mahasiswa->hp, 0, 2) === "62")
+                                                    <a href="https://api.whatsapp.com/send?phone={{ $mahasiswa->hp}}" class="btn btn-success btn-sm rounded-pill" target="_blank"><i class="fab fa-whatsapp"></i></a>
+                                                @endif
+                                            </td>
                                             <td>
                                                 {{ $mahasiswa->prodi }}
                                             </td>
@@ -96,20 +102,20 @@
                                                 @if (count($mahasiswa->bimbingans) != 0)
                                                     @if($pendaftaran_acc)
                                                         @if($is_expired)
-                                                            <span class="badge bg-danger">TIDAK AKTIF</span>
+                                                            {{--<span class="badge bg-danger">TIDAK AKTIF</span>--}}
                                                         @else
                                                             <span class="badge bg-success">AKTIF</span>
                                                         @endif
                                                     @else
-                                                        <span class="badge bg-danger">TIDAK AKTIF</span>
+                                                        {{--<span class="badge bg-danger">TIDAK AKTIF</span>--}}
                                                     @endif
                                                 @else
-                                                    <span class="badge bg-danger">TIDAK AKTIF</span>
+                                                    {{--<span class="badge bg-danger">TIDAK AKTIF</span>--}}
                                                 @endif
                                             </td>
                                             <td>
                                                 @if ($mahasiswa->bimbingans()->orderBy('created_at', 'desc')->whereIn('status', ['revisi', 'review', 'diterima'])->first())
-                                                    {{ \App\Helpers\AppHelper::parse_date_export($mahasiswa->bimbingans()->orderBy('created_at', 'desc')->first()->tanggal_bimbingan) }}
+                                                    {{ \App\Helpers\AppHelper::parse_date_export($mahasiswa->bimbingans()->orderBy('tanggal_bimbingan', 'desc')->first()->tanggal_bimbingan) }}
                                                 @endif
                                             </td>
 
@@ -312,6 +318,7 @@
                                       <th>No</th>
                                         <th>NIM</th>
                                         <th>Nama Mahasiswa</th>
+                                        <th>Kontak</th>
                                         <th>Prodi</th>
                                         <th>Judul Tugas Akhir</th>
                                         <th>Status Bimbingan</th>

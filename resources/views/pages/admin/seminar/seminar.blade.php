@@ -109,6 +109,7 @@
                                                 <th>Judul</th>
                                                 <th>Tanggal Pendaftaran</th>
                                                 <th>Tanggal Ujian</th>
+                                                <th>Tempat Ujian</th>
                                                 <th>Aksi</th>
                                             </tr>
                                         </thead>
@@ -130,8 +131,9 @@
                                                         {{ date('d M Y H:i', strtotime($seminar->created_at)) }}
                                                     </td>
                                                     <td>
-                                                        {{ \App\Helpers\AppHelper::parse_date_short($seminar->tanggal_ujian) }}
+                                                        {{ $seminar->tanggal_ujian ? \App\Helpers\AppHelper::parse_date_short($seminar->tanggal_ujian) : null }}
                                                     </td>
+                                                    <td>{{ $seminar->tempat_ujian }}</td>
                                                     <td>
                                                         <div class="d-flex">
                                                             <a href="{{ url('/seminar/review/' . $seminar->id) }}"
@@ -164,6 +166,7 @@
                                                 <th>Judul</th>
                                                 <th>Tanggal Pendaftaran</th>
                                                 <th>Tanggal Ujian</th>
+                                                <th>Tempat Ujian</th>
                                                 <th>Aksi</th>
                                             </tr>
                                         </tfoot>

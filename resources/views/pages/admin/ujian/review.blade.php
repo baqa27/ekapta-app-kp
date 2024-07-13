@@ -28,17 +28,17 @@
                         <div class="ribbon-wrapper ribbon-lg">
                             <div
                                 class="ribbon
-                            @if ($ujian->is_valid == 0) bg-secondary
-                            @elseif ($ujian->is_valid == 2)
+                            @if ($ujian->is_valid == \App\Models\Ujian::REVIEW) bg-secondary
+                            @elseif ($ujian->is_valid == \App\Models\Ujian::NOT_VALID_LULUS)
                             bg-warning
-                            @elseif ($ujian->is_valid == 1)
+                            @elseif ($ujian->is_valid == \App\Models\Ujian::VALID_LULUS)
                             bg-success @endif
                             ">
-                                @if ($ujian->is_valid == 0)
+                                @if ($ujian->is_valid == \App\Models\Ujian::REVIEW)
                                     review
-                                @elseif ($ujian->is_valid == 1)
+                                @elseif ($ujian->is_valid == \App\Models\Ujian::DITERIMA)
                                     diterima
-                                @elseif ($ujian->is_valid == 2)
+                                @elseif ($ujian->is_valid == \App\Models\Ujian::REVISI)
                                     revisi
                                 @endif
                             </div>
@@ -205,9 +205,13 @@
                                     Laporan Skripsi
                                 </div>
                                 <div class="col-md-7">
-                                    <a href="{{ asset($ujian->lampiran_laporan) }}" target="_blank"><i
-                                            class="fas fa-paperclip"></i>
-                                        {{ Str::substr($ujian->lampiran_laporan, 40) }}</a>
+                                    @if($ujian->lampiran_laporan)
+                                        <a href="{{ asset($ujian->lampiran_laporan) }}" target="_blank"><i
+                                                class="fas fa-paperclip"></i>
+                                            {{ Str::substr($ujian->lampiran_laporan, 40) }}</a>
+                                    @else
+                                        <span class="text-danger">Belum Upload Laporan Skripsi</span>
+                                    @endif
                                 </div>
                             </div>
                             <hr>
@@ -247,11 +251,21 @@
                                             class="text-danger">{{ $tanggal_ujian }}</b>
                                     </div>
                                 </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        Tempat Ujian
+                                    </div>
+                                    <div class="col-md-7">
+                                        <b
+                                            class="text-danger">{{ $ujian->tempat_ujian }}</b>
+                                    </div>
+                                </div>
                             @endif
 
                         </div>
 
-                        @if ($ujian->is_valid == 0)
+                        @if ($ujian->is_valid == \App\Models\Ujian::REVIEW && Auth::guard('admin')->user())
                             <div class="card-footer">
                                 <div class="d-flex">
                                     <button type="button" class="btn btn-primary mr-2" data-toggle="modal"
@@ -274,7 +288,7 @@
                                     </button>
                                 </div>
                             </div>
-                        @elseif ($ujian->is_valid == 1)
+                        @elseif ($ujian->is_valid == \App\Models\Ujian::VALID_LULUS)
                             <div class="card-footer">
                                 <div class="d-flex">
                                     <button type="button" class="btn btn-primary mr-2" data-toggle="modal"
@@ -286,7 +300,7 @@
                                     </button>
                                     <button type="button" class="btn btn-warning mr-2" data-toggle="modal"
                                         data-target="#modal-set-date-exam">
-                                        <i class="bi bi-calendar mr-2"></i> Tentukan Tanggal Ujian
+                                        <i class="bi bi-calendar mr-2"></i> Tentukan Tanggal dan Tempat Ujian
                                     </button>
                                     <a href="{{ route('cetak.berita.acara.ujian.pendadaran', $ujian->id) }}"
                                         class="btn btn-success mr-2" target="_blank">
@@ -309,7 +323,7 @@
                                     {{ count($ujian->revisis) }}
                                 </span>
                             </h3>
-                            @if ($ujian->is_valid == 2)
+                            @if ($ujian->is_valid == \App\Models\Ujian::NOT_VALID_LULUS)
                                 <div class="float-right">
                                     <button type="button" class="btn btn-primary mr-2" data-toggle="modal"
                                         data-target="#modal-revisi">
@@ -364,7 +378,7 @@
     </div>
     <!-- /.content -->
 
-    @if ($ujian->is_valid == 0 || $ujian->is_valid == 2)
+    @if ($ujian->is_valid == \App\Models\Ujian::REVIEW || $ujian->is_valid == \App\Models\Ujian::NOT_VALID_LULUS)
         <!-- Modal Revisi -->
         <div class="modal fade" id="modal-revisi">
             <div class="modal-dialog">
@@ -488,7 +502,7 @@
                             </div>
                         @endif
 
-                        @if ($reviews_check)
+                        @if (count($reviews_check) == 0)
                             <form action="{{ route('ploting.penguji.ujian') }}" method="post">
                                 @csrf
 
@@ -547,7 +561,7 @@
                 <div class="modal-content">
 
                     <div class="modal-header">
-                        <h4 class="modal-title">Tentukan Tanggal Ujian Peserta</h4>
+                        <h4 class="modal-title">Tentukan Tanggal dan Tempat Ujian Peserta</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -558,7 +572,11 @@
                             <input type="hidden" value="{{ $ujian->id }}" name="ujian_id" />
                             <div class="form-group mb-3">
                                 <label for="" class="form-label">Tanggal Ujian</label>
-                                <input type="datetime-local" class="form-control" name="tanggal_ujian" required>
+                                <input type="datetime-local" class="form-control" name="tanggal_ujian" value="{{ $ujian->tanggal_ujian }}" required>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="" class="form-label">Tempat Ujian</label>
+                                <input type="text" class="form-control" name="tempat_ujian" value="{{ $ujian->tempat_ujian }}" required>
                             </div>
                             <button type="submit" class="btn btn-success">Simpan</button>
                         </form>

@@ -23,14 +23,14 @@
     <div class="content">
         <div class="container">
 
-            @if($is_ujian === true)
+            @if ($is_ujian)
                 <div class="mb-3 bg-success rounded p-2">
                     Selamat anda sudah bisa melakukan pendaftaran Ujian Pendadaran TA. Silahkan lakukan pendaftaran
                     <a href="{{ route('ujian.create') }}"><b><u>Ujian Pendadaran TA!</u></b></a>
                 </div>
             @endif
 
-           @if(count($reviews_acc) < 3)
+            @if (count($reviews_acc) < 2)
                 <div class="mb-3 bg-secondary rounded p-2">
                     Silahkan tunggu review dan penilaian dari dosen pembimbing dan penguji!
                 </div>
@@ -44,20 +44,10 @@
                 <a href="{{ route('seminar.create') }}" class="btn btn-primary mb-4"><i class="fas fa-plus mr-2"></i>
                     Pendaftaran Seminar Proposal</a>
             @else
-                @if($seminar->is_valid == 0)
+                @if ($seminar->is_valid == 0)
                     <div class="mb-3 bg-primary rounded p-2">
                         Anda sudah melakukan pendaftaran Seminar TA, silahkan tunggu validasi dari Admin.
                     </div>
-                @elseif($seminar->is_valid == 1)
-                    @foreach($seminar->reviews()->where('dosen_status', 'penguji')->get() as $review)
-                        @if(!$review->lampiran)
-                            <div class="mb-3 bg-primary rounded p-2">
-                                Pendaftaran Seminar TA sudah di ACC oleh Admin, silahkan submit <a
-                                    href="{{ route('seminar.reviews', $seminar->id)  }}"><u><b>Laporan Proposal!</b></u></a>
-                            </div>
-                            @break
-                        @endif
-                    @endforeach
                 @elseif($seminar->is_valid == 2)
                     <div class="mb-3 bg-warning rounded p-2">
                         Silahkan revisi pendaftaran Seminar TA anda sesuai instruksi dari admin, kemudian submit ulang!
@@ -78,25 +68,27 @@
                                     Dosen Pembimbing
                                 </div>
                                 <div class="col-md-10">
-                                    1. <strong>{{ $dosen_utama ? $dosen_utama->nama . ' ,' . $dosen_utama->gelar : '' }}</strong>
+                                    1.
+                                    <strong>{{ $dosen_utama ? $dosen_utama->nama . ' ,' . $dosen_utama->gelar : '' }}</strong>
                                     <br>
-                                    2. <strong>{{ $dosen_pendamping ? $dosen_pendamping->nama . ' ,' . $dosen_pendamping->gelar : '' }}</strong>
+                                    2.
+                                    <strong>{{ $dosen_pendamping ? $dosen_pendamping->nama . ' ,' . $dosen_pendamping->gelar : '' }}</strong>
                                 </div>
                             </div>
 
-                            <div class="row mb-5">
+                            {{-- <div class="row mb-5">
                                 <div class="col-md-2">
                                     Dosen Penguji
                                 </div>
                                 <div class="col-md-10">
-                                    @if(count($dosens_penguji) != 0)
+                                    @if (count($dosens_penguji) != 0)
                                         @php $no = 1; @endphp
-                                        @foreach($dosens_penguji as $dosen)
+                                        @foreach ($dosens_penguji as $dosen)
                                             <span>{{ $no++  }}. <b>{{$dosen->dosen->nama}}, {{$dosen->dosen->gelar}}</b></span><br>
                                         @endforeach
                                     @endif
                                 </div>
-                            </div>
+                            </div> --}}
 
 
                             <table id="example1" class="table table-bordered table-striped">
@@ -105,6 +97,7 @@
                                         <th>No</th>
                                         <th>Pendaftaran</th>
                                         <th>Tanggal Ujian</th>
+                                        <th>Tempat Ujian</th>
                                         <th>Status</th>
                                         <th>Aksi</th>
                                     </tr>
@@ -115,11 +108,13 @@
                                         <tr>
                                             <td>1</td>
                                             <td>
-                                                <a href="{{ route('seminar.detail', $seminar->id) }}">{{ $seminar->pengajuan->judul }}</a>
+                                                <a
+                                                    href="{{ route('seminar.detail', $seminar->id) }}">{{ $seminar->pengajuan->judul }}</a>
                                             </td>
                                             <td>
                                                 {{ $seminar->tanggal_ujian ? \App\Helpers\AppHelper::parse_date_short($seminar->tanggal_ujian) : null }}
                                             </td>
+                                            <td>{{ $seminar->tempat_ujian }}</td>
                                             <td>
                                                 @if ($seminar->is_lulus == 1)
                                                     <span class="badge bg-success">LULUS</span>
@@ -135,52 +130,39 @@
                                             </td>
                                             <td>
                                                 @if ($seminar->is_valid == 0)
-                                                    <a href="{{ route('seminar.detail', $seminar->id) }}" class="btn btn-primary btn-sm">
-                                                        <i class="bi bi-info-circle mr-1"></i> Detail
+                                                    <a href="{{ route('seminar.detail', $seminar->id) }}"
+                                                        class="btn btn-primary btn-sm">
+                                                        <i class="bi bi-info-circle"></i> Detail
                                                     </a>
                                                 @elseif ($seminar->is_valid == 1)
-                                                    @foreach($seminar->reviews()->where('dosen_status', 'penguji')->get() as $review)
-                                                        @if(!$review->lampiran)
-                                                            <a href="{{ route('seminar.reviews', $seminar->id)  }}" class="btn btn-primary btn-sm">
-                                                                <i class="bi bi-upload mr-1"></i>  Submit Laporan Proposal
-                                                            </a>
-                                                            @break
-                                                        @else
-                                                            <a href="{{ route('seminar.reviews', $seminar->id)  }}" class="btn btn-info btn-sm">
-                                                                <i class="bi bi-star mr-1"></i> Lihat Review
-                                                            </a>
-                                                            @break
+                                                    @if ($check_ujian_has_done)
+                                                        <a href="{{ route('seminar.reviews', $seminar->id) }}"
+                                                            class="btn btn-info btn-sm mb-1">
+                                                            <i class="bi bi-star"></i> Lihat Review
+                                                        </a>
+                                                        @if ($reviews_has_acc)
+                                                            {{-- <a href="{{ route('seminar.edit.proposal', $seminar->id) }}"
+                                                                class="btn btn-primary btn-sm mb-1">
+                                                                <i class="bi bi-upload"></i> Submit Laporan Proposal
+                                                            </a> --}}
                                                         @endif
-                                                    @endforeach
-
-                                                    @if(count($reviews_acc) == 3)
-                                                        <a href="{{ route('seminar.edit.proposal', $seminar->id) }}" class="btn btn-primary btn-sm mr-1">
-                                                            <i class="bi bi-upload"></i>  Submit Laporan Proposal
-                                                        </a>
-                                                        {{--<a href="{{ route('cetak.berita.acara.ujian.proposal', $seminar->id) }}" class="btn btn-success btn-sm" target="_blank">
-                                                            <i class="bi bi-download"></i>  Berita Acara Ujian Proposal
-                                                        </a>
-                                                    @elseif(count($reviews_acc) != 0)
-                                                        <a href="{{ route('cetak.berita.acara.ujian.proposal', $seminar->id) }}" class="btn btn-success btn-sm" target="_blank">
-                                                            <i class="bi bi-download"></i>  Berita Acara Ujian Proposal
-                                                        </a>--}}
                                                     @endif
-
                                                 @elseif ($seminar->is_valid == 2)
-                                                    <a href="{{ route('seminar.edit', $seminar->id) }}" class="btn btn-primary btn-sm">
-                                                        <i class="bi bi-upload mr-1"></i> Submit
+                                                    <a href="{{ route('seminar.edit', $seminar->id) }}"
+                                                        class="btn btn-primary btn-sm">
+                                                        <i class="bi bi-upload"></i> Submit
                                                     </a>
                                                 @endif
-
                                             </td>
                                         </tr>
                                     @endif
-
                                 </tbody>
                                 <tfoot>
                                     <tr>
                                         <th>No</th>
                                         <th>Pendaftaran</th>
+                                        <th>Tanggal Ujian</th>
+                                        <th>Tempat Ujian</th>
                                         <th>Status</th>
                                         <th>Aksi</th>
                                     </tr>

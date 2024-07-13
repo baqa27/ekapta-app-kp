@@ -50,6 +50,7 @@ class BagianController extends Controller
 
     public function delete(Request $request)
     {
+        return back();
         $bagian = Bagian::findOrFail($request->id);
 
         // Nonaktifkan jika ingin mengapus bagian tertentu

@@ -49,12 +49,12 @@
                                     @enderror
                                 </div>
                                 <div class="form-group">
-                                    <label for="exampleInputFile">Lampiran</label>
+                                    <label for="exampleInputFile">Lampiran (Format: .pdf, Max: 5Mb)</label>
                                     <div class="input-group mb-3">
                                         <div class="custom-file">
                                             <input type="file"
                                                 class="custom-file-input @error('lampiran')is-invalid @enderror"
-                                                name="lampiran" required>
+                                                name="lampiran" accept=".pdf" required>
                                             <label class="custom-file-label" for="exampleInputFile">Choose
                                                 file</label>
                                         </div>

@@ -45,6 +45,16 @@ class DashboardController extends Controller
         $bimbingans_review = Bimbingan::where('status', 'review')->get();
         $bimbingans_revisi = Bimbingan::where('status', 'revisi')->get();
 
+        $seminars = Seminar::all();
+        $seminars_diterima = Seminar::where('is_valid', '1')->get();
+        $seminars_review = Seminar::where('is_valid', '0')->get();
+        $seminars_revisi = Seminar::where('is_valid', '2')->get();
+
+        $ujians = Ujian::all();
+        $ujians_diterima = Ujian::where('is_valid', '1')->get();
+        $ujians_review = Ujian::where('is_valid', '0')->get();
+        $ujians_revisi = Ujian::where('is_valid', '2')->get();
+
         return view('pages.prodi.dashboard.home', [
             'title' => 'Dashboard',
             'active' => 'dashboard',
@@ -58,6 +68,14 @@ class DashboardController extends Controller
             'bimbingans_diterima' => $bimbingans_diterima,
             'bimbingans_review' => $bimbingans_review,
             'bimbingans_revisi' => $bimbingans_revisi,
+            'seminars' => $seminars,
+            'seminars_diterima' => $seminars_diterima,
+            'seminars_revisi' => $seminars_revisi,
+            'seminars_review' => $seminars_review,
+            'ujians' => $ujians,
+            'ujians_diterima' => $ujians_diterima,
+            'ujians_revisi' => $ujians_revisi,
+            'ujians_review' => $ujians_review,
         ]);
     }
 
@@ -141,6 +159,8 @@ class DashboardController extends Controller
         $mahasiswa = Auth::guard('mahasiswa')->user();
         if($mahasiswa->email == '-'){
             return redirect()->route('profile');
+        }elseif (substr($mahasiswa->hp, 0, 2) !== '62') {
+            return redirect()->route('profile');
         }
         $prodi = Prodi::where('namaprodi', Auth::guard('mahasiswa')->user()->prodi)->first();
         $pengajuan_acc = $mahasiswa->pengajuans()->where('status', Pengajuan::DITERIMA)->first();
@@ -157,14 +177,20 @@ class DashboardController extends Controller
 
         $is_seminar_completed = false;
         if ($mahasiswa->seminar){
-            if (count($seminars_acc) == 5){
+            // if (count($seminars_acc) == 5){
+            //     $is_seminar_completed = true;
+            // }
+            if($mahasiswa->seminar->is_lulus){
                 $is_seminar_completed = true;
             }
         }
 
         $is_ujian_completed = false;
         if ($mahasiswa->ujian){
-            if (count($ujians_acc) == 5){
+            // if (count($ujians_acc) == 5){
+            //     $is_ujian_completed = true;
+            // }
+            if($mahasiswa->ujian->is_lulus){
                 $is_ujian_completed = true;
             }
         }

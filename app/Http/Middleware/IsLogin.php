@@ -20,6 +20,6 @@ class IsLogin
         if (Auth::guard('mahasiswa')->user() || Auth::guard('dosen')->user() || Auth::guard('prodi')->user() || Auth::guard('admin')->user()) {
             return $next($request);
         }
-        abort(404);
+        return redirect()->route('home');
     }
 }

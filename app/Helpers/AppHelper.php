@@ -12,6 +12,8 @@ use App\Models\Prodi;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use App\Models\Mail;
+use App\Models\Ujian;
+use Illuminate\Support\Facades\Auth;
 
 class AppHelper
 {
@@ -148,13 +150,19 @@ class AppHelper
 
     public static function parse_date_short($date){
         $parse_date = Carbon::parse($date);
-        $new_date = $parse_date->isoFormat('dddd, D MMMM YYYY H:mm A');
-        return $new_date;
+        $new_date = $parse_date->isoFormat('dddd, D MMMM YYYY H:mm');
+        return $new_date.' WIB';
     }
 
      public static function parse_date_export($date){
         $parse_date = Carbon::parse($date);
         $new_date = $parse_date->format('d-m-Y');
+        return $new_date;
+    }
+
+    public static function parse_date_short_surat($date){
+        $parse_date = Carbon::parse($date);
+        $new_date = $parse_date->isoFormat('D MMMM YYYY');
         return $new_date;
     }
 
@@ -225,6 +233,19 @@ class AppHelper
             'nilai_penguji' => $nilai_dosen_penguji,
             'nilai_pembimbing' => $nilai_dosen_pembimbing,
         ];
+    }
+
+    public static function check_ujian_has_done()
+    {
+        $user = Mahasiswa::with(['ujians'])->findOrFail(Auth::guard('mahasiswa')->user()->id);
+        $ujian = $user->ujians()->whereNotIn('is_lulus', [Ujian::NOT_VALID_LULUS])->where('tanggal_ujian', '!=', null)->first();
+        if ($ujian) {
+            $date_expired = Carbon::parse($ujian->tanggal_ujian)->addDay();
+            if(now()->gt($date_expired)){
+                return  true;
+            }
+        }
+        return false;
     }
 
     public static function instance()

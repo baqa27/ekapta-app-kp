@@ -16,7 +16,7 @@
         <div class="collapse navbar-collapse order-3" id="navbarCollapse">
             <!-- Left navbar links -->
 
-            @if($active == 'dashboard' || $active == 'pengajuan' || $active == 'pendaftaran' || $active == 'bimbingan' || $active == 'seminar' || $active == 'ujian' || $active == 'profile')
+            @if($active == 'dashboard' || $active == 'pengajuan' || $active == 'pendaftaran' || $active == 'bimbingan' || $active == 'seminar' || $active == 'ujian' || $active == 'profile' || $active == 'jilid')
                 <ul class="navbar-nav">
                     <li class="nav-item">
                         <a href="{{ route('dashboard.mahasiswa.ta') }}"
@@ -44,6 +44,10 @@
                         <a href="{{ route('ujian.mahasiswa') }}"
                            class="nav-link {{ $active == 'ujian' ? 'active' : '' }}">Ujian
                             Pendadaran</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('jilid.mahasiswa') }}"
+                           class="nav-link {{ $active == 'jilid' ? 'active' : '' }}">Jilid TA</a>
                     </li>
                 </ul>
             @endif

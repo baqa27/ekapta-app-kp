@@ -20,6 +20,6 @@ class IsAdminFotokopi
         if (Auth::guard('admin')->user() || Auth::guard('prodi')->user()) {
             return $next($request);
         }
-        abort(404);
+        return redirect()->route('login.admin');
     }
 }

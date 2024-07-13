@@ -137,6 +137,14 @@ $(function() {
 
 });
 $(function() {
+    $("#example4").DataTable({
+        "responsive": true,
+        "lengthChange": false,
+        "autoWidth": false,
+    }).buttons().container().appendTo('#example4_wrapper .col-md-6:eq(0)');
+
+});
+$(function() {
     $("#examplebutton").DataTable({
         "responsive": true,
         "lengthChange": false,

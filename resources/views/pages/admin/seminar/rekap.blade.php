@@ -27,9 +27,10 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header">
-                            <a href="{{ route('seminar.admin') }}" class="btn btn-secondary btn-sm shadow">
+                            {{--<a href="{{ route('seminar.admin') }}" class="btn btn-secondary btn-sm shadow">
                                 <i class="bi bi-chevron-left"></i> Kembali
-                            </a>
+                            </a>--}}
+                            Tabel {{ $title }}
                         </div>
                         <div class="card-body">
 

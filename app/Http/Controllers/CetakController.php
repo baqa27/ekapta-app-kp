@@ -311,4 +311,69 @@ class CetakController extends Controller
         $pdf->setPaper('A4', 'portrait');
         return $pdf->stream('Lembar-Bimbingan-Skripsi.pdf');
     }
+
+    public function cetakLembarPersetujuan($type){
+        $mahasiswa = Mahasiswa::with(['ujians','pengajuans','dosens'])->where('nim', Auth::guard('mahasiswa')->user()->nim)->first();
+        $pengajuan = $mahasiswa->pengajuans()->where('status', Pengajuan::DITERIMA)->first();
+        $pendaftaran = Pendaftaran::where('pengajuan_id', $pengajuan->id)->first();
+        $prodi = Prodi::where('namaprodi', $mahasiswa->prodi)->first();
+        $dosenUtama = $mahasiswa->dosens()->where('status', 'utama')->first();
+        $dosenPendamping = $mahasiswa->dosens()->where('status', 'pendamping')->first();
+        $ujian = $mahasiswa->ujians()->whereNotIn('is_lulus', [Ujian::NOT_VALID_LULUS])->where('is_valid', Ujian::VALID_LULUS)->first();
+        $reviews  = $ujian->reviews()->where('dosen_status', ReviewUjian::DOSEN_PENGUJI)->with(['dosen'])->get();
+        $dosens = [];
+        foreach ($reviews as $review) {
+            $dosens[] = $review->dosen;
+        }
+
+        $data = [
+            'title' => $type == 1 ? 'LEMBAR PERSETUJUAN PEMBIMBING' : 'LEMBAR PERSETUJUAN PENGUJI',
+            'mahasiswa' => $mahasiswa,
+            'pendaftaran' => $pendaftaran,
+            'pengajuan' => $pengajuan,
+            'dosen_utama' => $dosenUtama,
+            'dosen_pendamping' => $dosenPendamping,
+            'prodi' => $prodi,
+            'date' => $ujian ? AppHelper::parse_date_short_surat($ujian->tanggal_ujian) : null,
+            'ttd_dosen_utama' => $dosenUtama->ttd != null ? AppHelper::instance()->convertImage('storage/app/public/' . substr($dosenUtama->ttd, 31)) : null,
+            'ttd_dosen_pendamping' => $dosenPendamping->ttd != null ? AppHelper::instance()->convertImage('storage/app/public/' . substr($dosenPendamping->ttd, 31)) : null,
+            'dosens' => $dosens,
+            'type' => $type,
+        ];
+
+        $pdf = PDF::setOptions(['isHTML5ParserEnabled' => true, 'isRemoteEnabled' => true]);
+        $pdf->loadView('pages.cetak.lembar-persetujuan', $data);
+        $pdf->setPaper('A4', 'portrait');
+        return $pdf->stream($type == 1 ? 'Lembar-Persetujuan-Pembimbing.pdf' : 'Lembar-Persetujuan-Penguji.pdf');
+    }
+
+    public function cetakLembarPengesahan(){
+        $mahasiswa = Mahasiswa::with(['ujians','pengajuans','dosens'])->where('nim', Auth::guard('mahasiswa')->user()->nim)->first();
+        $pengajuan = $mahasiswa->pengajuans()->where('status', Pengajuan::DITERIMA)->first();
+        $pendaftaran = Pendaftaran::where('pengajuan_id', $pengajuan->id)->first();
+        $prodi = Prodi::where('namaprodi', $mahasiswa->prodi)->first();
+        $dekan = $prodi->fakultas->dekans()->where('status', 'active')->first();
+        $dosenUtama = $mahasiswa->dosens()->where('status', 'utama')->first();
+        $dosenPendamping = $mahasiswa->dosens()->where('status', 'pendamping')->first();
+        $ujian = $mahasiswa->ujians()->whereNotIn('is_lulus', [Ujian::NOT_VALID_LULUS])->where('is_valid', Ujian::VALID_LULUS)->first();
+        $data = [
+            'title' => 'LEMBAR PENGESAHAN',
+            'mahasiswa' => $mahasiswa,
+            'pendaftaran' => $pendaftaran,
+            'pengajuan' => $pengajuan,
+            'dosen_utama' => $dosenUtama,
+            'dosen_pendamping' => $dosenPendamping,
+            'prodi' => AppHelper::instance()->getDosen($prodi->kodekaprodi),
+            'date' => $ujian ? AppHelper::parse_date_short_surat($ujian->tanggal_ujian) : null,
+            'ttd_dosen_utama' => $dosenUtama->ttd != null ? AppHelper::instance()->convertImage('storage/app/public/' . substr($dosenUtama->ttd, 31)) : null,
+            'ttd_dosen_pendamping' => $dosenPendamping->ttd != null ? AppHelper::instance()->convertImage('storage/app/public/' . substr($dosenPendamping->ttd, 31)) : null,
+            'dekan' => $dekan,
+            'ttd_dekan' => $dekan->image ? AppHelper::instance()->convertImage('storage/app/public/' . substr($dekan->image,31)): null,
+        ];
+
+        $pdf = PDF::setOptions(['isHTML5ParserEnabled' => true, 'isRemoteEnabled' => true]);
+        $pdf->loadView('pages.cetak.lembar-pengesahan', $data);
+        $pdf->setPaper('A4', 'portrait');
+        return $pdf->stream('Lembar-Pengesahan.pdf');
+    }
 }

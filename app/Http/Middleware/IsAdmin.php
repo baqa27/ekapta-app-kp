@@ -17,9 +17,13 @@ class IsAdmin
      */
     public function handle(Request $request, Closure $next)
     {
-        if (!Auth::guard('admin')->user() || Auth::guard('admin')->user()->type == 2) {
-            abort(404);
+        if (Auth::guard('admin')->user()) {
+            if (Auth::guard('admin')->user()->type == 1) {
+                return $next($request);
+            }else{
+                abort(404);
+            }
         }
-        return $next($request);
+        return redirect()->route('login.admin');
     }
 }

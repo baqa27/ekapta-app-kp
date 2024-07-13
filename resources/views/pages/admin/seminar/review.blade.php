@@ -237,11 +237,21 @@
                                             class="text-danger">{{ $tanggal_ujian }}</b>
                                     </div>
                                 </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        Tempat Ujian
+                                    </div>
+                                    <div class="col-md-7">
+                                        <b
+                                            class="text-danger">{{ $seminar->tempat_ujian }}</b>
+                                    </div>
+                                </div>
                             @endif
 
                         </div>
 
-                        @if ($seminar->is_valid == 0)
+                        @if ($seminar->is_valid == 0 && Auth::guard('admin')->user())
                             <div class="card-footer">
                                 <div class="d-flex">
                                     <button type="button" class="btn btn-primary mr-2" data-toggle="modal"
@@ -273,7 +283,7 @@
                                         </button>
                                         <button type="button" class="btn btn-warning mr-2" data-toggle="modal"
                                             data-target="#modal-set-date-exam">
-                                            <i class="bi bi-calendar mr-2"></i> Tentukan Tanggal Ujian
+                                            <i class="bi bi-calendar mr-2"></i> Tentukan Tanggal dan Tempat Ujian
                                         </button>
                                         <a href="{{ route('cetak.berita.acara.ujian.proposal', $seminar->id) }}"
                                             class="btn btn-success" target="_blank">
@@ -442,7 +452,7 @@
                             </div>
                         @endif
 
-                        @if ($reviews_check)
+                        @if (count($reviews_check) == 0)
                             <form action="{{ route('ploting.penguji') }}" method="post">
                                 @csrf
 
@@ -501,7 +511,7 @@
                 <div class="modal-content">
 
                     <div class="modal-header">
-                        <h4 class="modal-title">Tentukan Tanggal Ujian Peserta</h4>
+                        <h4 class="modal-title">Tentukan Tanggal dan Tempat Ujian Peserta</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -512,7 +522,11 @@
                             <input type="hidden" value="{{ $seminar->id }}" name="seminar_id" />
                             <div class="form-group mb-3">
                                 <label for="" class="form-label">Tanggal Ujian</label>
-                                <input type="datetime-local" class="form-control" name="tanggal_ujian" required>
+                                <input type="datetime-local" class="form-control" name="tanggal_ujian" value="{{ $seminar->tanggal_ujian }}" required>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="" class="form-label">Tempat Ujian</label>
+                                <input type="text" class="form-control" name="tempat_ujian" value="{{ $seminar->tempat_ujian }}" required>
                             </div>
                             <button type="submit" class="btn btn-success">Simpan</button>
                         </form>

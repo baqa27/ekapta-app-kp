@@ -28,17 +28,17 @@
                         <div class="ribbon-wrapper ribbon-lg">
                             <div
                                 class="ribbon
-                            @if ($ujian->is_valid == 0) bg-secondary
-                            @elseif ($ujian->is_valid == 2)
+                            @if ($ujian->is_valid == \App\Models\Ujian::REVIEW) bg-secondary
+                            @elseif ($ujian->is_valid == \App\Models\Ujian::NOT_VALID_LULUS)
                             bg-warning
-                            @elseif ($ujian->is_valid == 1)
+                            @elseif ($ujian->is_valid == \App\Models\Ujian::VALID_LULUS)
                             bg-success @endif
                             ">
-                                @if ($ujian->is_valid == 0)
+                                @if ($ujian->is_valid == \App\Models\Ujian::REVIEW)
                                     TIDAK VALID
-                                @elseif ($ujian->is_valid == 1)
+                                @elseif ($ujian->is_valid == \App\Models\Ujian::VALID_LULUS)
                                     VALID
-                                @elseif ($ujian->is_valid == 2)
+                                @elseif ($ujian->is_valid == \App\Models\Ujian::NOT_VALID_LULUS)
                                     REVISI
                                 @endif
                             </div>
@@ -84,7 +84,7 @@
                             </div>
                             <hr>
 
-                            @if($ujian->lampiran_proposal)
+                            @if ($ujian->lampiran_proposal)
                                 <div class="row">
                                     <div class="col-md-5">
                                         Laporan Skripsi
@@ -96,14 +96,24 @@
                                         </b>
                                     </div>
                                 </div>
+                                <hr>
                             @endif
-
                             <div class="row">
                                 <div class="col-md-5">
                                     Tanggal Ujian
                                 </div>
                                 <div class="col-md-7">
-                                    <b class="text-danger">{{ \App\Helpers\AppHelper::parse_date_short($ujian->tanggal_ujian) }}</b>
+                                    <b
+                                        class="text-danger">{{ \App\Helpers\AppHelper::parse_date_short($ujian->tanggal_ujian) }}</b>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    Tempat Ujian
+                                </div>
+                                <div class="col-md-7">
+                                    <b class="text-danger">{{ $ujian->tempat_ujian }}</b>
                                 </div>
                             </div>
 
@@ -180,7 +190,7 @@
 
             <div class="row mb-3">
                 @php
-                    $no=1;
+                    $no = 1;
                 @endphp
                 @foreach ($ujian->reviews as $review)
                     @if ($review->dosen_status == 'penguji')
@@ -246,7 +256,8 @@
                                                 <div class="modal-content">
                                                     <form action="{{ route('review.ujian.acc.prodi') }}" method="post">
                                                         @csrf
-                                                        <input type="hidden" name="id" value="{{ $review->id }}">
+                                                        <input type="hidden" name="id"
+                                                            value="{{ $review->id }}">
                                                         <input type="hidden" name="type" value="input_manual">
                                                         <div class="modal-header">
                                                             <h4 class="modal-title">Acc Bimbingan</h4>
@@ -292,8 +303,12 @@
                         <label for="exampleInputFile">Status</label>
                         <select class="form-control" name="is_lulus" id="is_lulus">
                             <option value="">-- pilih --</option>
-                            <option value="1" {{ $review->ujian->is_lulus == 1 ? 'selected' : '' }}>Lulus</option>
-                            <option value="2" {{ $review->ujian->is_lulus == 2 ? 'selected' : '' }}>Tidak Lulus
+                            <option value="{{ App\Models\Ujian::VALID_LULUS }}"
+                                {{ $review->ujian->is_lulus == App\Models\Ujian::VALID_LULUS ? 'selected' : '' }}>Lulus
+                            </option>
+                            <option value="{{ App\Models\Ujian::NOT_VALID_LULUS }}"
+                                {{ $review->ujian->is_lulus == App\Models\Ujian::NOT_VALID_LULUS ? 'selected' : '' }}>Tidak
+                                Lulus
                             </option>
                         </select>
                         @error('status')
@@ -320,16 +335,20 @@
                                     <td>{{ $review->dosen_status == \App\Models\Reviewujian::DOSEN_PENGUJI ? 'Penguji' : 'Pembimbing' }}
                                     </td>
                                     <td>
-                                        <input type="number" class="form-control" name="nilai_1" data-review-id="{{ $review->id }}" value="{{ $review->nilai_1 }}">
+                                        <input type="number" class="form-control" name="nilai_1"
+                                            data-review-id="{{ $review->id }}" value="{{ $review->nilai_1 }}">
                                     </td>
                                     <td>
-                                        <input type="number" class="form-control" name="nilai_2" data-review-id="{{ $review->id }}" value="{{ $review->nilai_2 }}">
+                                        <input type="number" class="form-control" name="nilai_2"
+                                            data-review-id="{{ $review->id }}" value="{{ $review->nilai_2 }}">
                                     </td>
                                     <td>
-                                        <input type="number" class="form-control" name="nilai_3" data-review-id="{{ $review->id }}" value="{{ $review->nilai_3 }}">
+                                        <input type="number" class="form-control" name="nilai_3"
+                                            data-review-id="{{ $review->id }}" value="{{ $review->nilai_3 }}">
                                     </td>
                                     <td>
-                                        <input type="number" class="form-control" name="nilai_4" data-review-id="{{ $review->id }}" value="{{ $review->nilai_4 }}">
+                                        <input type="number" class="form-control" name="nilai_4"
+                                            data-review-id="{{ $review->id }}" value="{{ $review->nilai_4 }}">
                                     </td>
                                     <td>{{ round(\App\Helpers\AppHelper::instance()->hitung_nilai_mean($review->nilai_1, $review->nilai_2, $review->nilai_3, $review->nilai_4), 2) }}
                                     </td>
@@ -375,10 +394,22 @@
                         is_lulus: is_lulus
                     },
                     success: function(response) {
-                        alert(response.message);
+                        $(document).Toasts('create', {
+                            class: 'bg-success mt-5 mr-3',
+                            title: 'Success',
+                            autohide: true,
+                            delay: 3000,
+                            body: response.message
+                        })
                     },
                     error: function(xhr, status, error) {
-                        alert('An error occurred: ' + error);
+                        $(document).Toasts('create', {
+                            class: 'bg-danger mt-5 mr-3',
+                            title: 'Error',
+                            autohide: true,
+                            delay: 3000,
+                            body: 'Terjadi kesalahan: '+ error
+                        })
                     }
                 });
             });
@@ -401,15 +432,28 @@
                         field_value: fieldValue
                     },
                     success: function(response) {
-                        alert('Nilai berhasil diperbarui');
+                        // alert('Nilai berhasil diperbarui');
+                        $(document).Toasts('create', {
+                            class: 'bg-success mt-5 mr-3',
+                            title: 'Success',
+                            autohide: true,
+                            delay: 3000,
+                            body: 'Nilai berhasil diperbarui'
+                        })
                         input.closest('tr').find('td:last').text(response.nilai_akhir);
                     },
                     error: function(xhr, status, error) {
-                        alert('Terjadi kesalahan: ' + error);
+                        // alert('Terjadi kesalahan: ' + error);
+                        $(document).Toasts('create', {
+                            class: 'bg-danger mt-5 mr-3',
+                            title: 'Error',
+                            autohide: true,
+                            delay: 3000,
+                            body: 'Terjadi kesalahan: '+ error
+                        })
                     }
                 });
             });
         });
-
     </script>
 @endsection

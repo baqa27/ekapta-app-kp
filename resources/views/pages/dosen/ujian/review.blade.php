@@ -336,7 +336,7 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label for="" class="form-label">Catatan</label>
-                            <textarea class="form-control" name="catatan"></textarea>
+                            <textarea class="form-control" name="catatan" required></textarea>
                             @error('catatan')
                                 <small class="text-danger">{{ $message }}</small>
                             @enderror

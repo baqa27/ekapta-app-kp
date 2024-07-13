@@ -60,9 +60,9 @@ class Mahasiswa extends Authenticatable
         return $this->hasOne(Seminar::class);
     }
 
-    public function ujian()
+    public function ujians()
     {
-        return $this->hasOne(Ujian::class);
+        return $this->hasMany(Ujian::class);
     }
 
     public function jilid()

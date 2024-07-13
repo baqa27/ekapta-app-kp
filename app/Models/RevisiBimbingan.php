@@ -14,6 +14,8 @@ class RevisiBimbingan extends Model
         'dosen_id',
         'catatan',
         'lampiran',
+        'lampiran_revisi',
+        'tanggal_bimbingan',
     ];
 
     public function bimbingan()

@@ -27,6 +27,11 @@
                     Silahkan update Email anda dengan email aktif untuk mendapatkan notifikasi!
                 </div>
             @endif
+            @if(substr(Auth::guard('mahasiswa')->user()->hp,0,2) !== '62')
+                <div class="alert alert-warning mb-2" style="text-transform: uppercase;">
+                    Silahkan update Nomor WhatsApp anda dengan awalan kode negara <b>62</b>!
+                </div>
+            @endif
             <div class="row mb-3">
                 <div class="col-md-12">
                     <div class="card card-primary card-outline">
@@ -50,12 +55,14 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label for="exampleInputEmail1">No. Hp (Hapus tanda - )</label>
-                                            <input type="text" class="form-control @error('hp') is-invalid @enderror"
+                                            <label for="exampleInputEmail1">No. WhatsApp (Inputan diawali 62, contoh: 6281234567890)</label>
+                                            <input type="text" class="form-control @if(substr(Auth::guard('mahasiswa')->user()->hp,0,2) !== '62') is-invalid @endif"
                                                 value="{{ $mahasiswa->hp }}" name="hp" required>
-                                            @error('hp')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
+                                            @if(substr(Auth::guard('mahasiswa')->user()->hp,0,2) !== '62')
+                                                <div class="invalid-feedback">
+                                                        Nomor WhatsApp belum diawali dengan <b>62</b>
+                                                </div>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>

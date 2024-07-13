@@ -22,7 +22,7 @@ class PengajuanController extends Controller
         //$pengajuans_revisi = Pengajuan::where('status', Pengajuan::REVISI)->where('prodi', Auth::guard('prodi')->user()->namaprodi)->orderBy('created_at', 'desc')->get();
         //$pengajuans_ditolak = Pengajuan::where('status', Pengajuan::DITOLAK)->where('prodi', Auth::guard('prodi')->user()->namaprodi)->orderBy('created_at', 'desc')->get();
 
-        $prodi = Auth::guard('prodi')->user();
+        $prodi = Prodi::with(['pengajuans'])->findOrFail(Auth::guard('prodi')->user()->id);
 
         $pengajuans_review = $prodi->pengajuans()->where('status', Pengajuan::REVIEW)->orderBy('created_at', 'desc')->get();
         $pengajuans_acc = $prodi->pengajuans()->where('status', Pengajuan::DITERIMA)->orderBy('tanggal_acc', 'desc')->get();
@@ -188,8 +188,8 @@ class PengajuanController extends Controller
         $validatedData = $request->validate([
             'judul' => ['required', 'min:5'],
             'deskripsi' => ['required', 'min:100'],
-            'lampiran' => [Rule::requiredIf(function () {
-                if (empty($this->request->lampiran)) {
+            'lampiran' => [Rule::requiredIf(function () use($request) {
+                if (empty($request->lampiran)) {
                     return false;
                 }
                 return true;
@@ -271,8 +271,8 @@ class PengajuanController extends Controller
                 $revisi->catatan = $request->catatan;
 
                 $request->validate([
-                    'lampiran' => [Rule::requiredIf(function () {
-                        if (empty($this->request->lampiran)) {
+                    'lampiran' => [Rule::requiredIf(function () use($request) {
+                        if (empty($request->lampiran)) {
                             return false;
                         }
                         return true;
@@ -329,8 +329,8 @@ class PengajuanController extends Controller
                 $revisi->catatan = $request->catatan;
 
                 $request->validate([
-                    'lampiran' => [Rule::requiredIf(function () {
-                        if (empty($this->request->lampiran)) {
+                    'lampiran' => [Rule::requiredIf(function () use($request) {
+                        if (empty($request->lampiran)) {
                             return false;
                         }
                         return true;

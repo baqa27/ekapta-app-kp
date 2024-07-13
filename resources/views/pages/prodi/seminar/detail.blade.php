@@ -95,14 +95,23 @@
                                         </b>
                                     </div>
                                 </div>
+                                <hr>
                             @endif
-
                             <div class="row">
                                 <div class="col-md-5">
                                     Tanggal Ujian
                                 </div>
                                 <div class="col-md-7">
                                     <b class="text-danger">{{ \App\Helpers\AppHelper::parse_date_short($seminar->tanggal_ujian) }}</b>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    Tempat Ujian
+                                </div>
+                                <div class="col-md-7">
+                                    <b class="text-danger">{{ $seminar->tempat_ujian }}</b>
                                 </div>
                             </div>
 
@@ -377,10 +386,24 @@
                         is_lulus: is_lulus
                     },
                     success: function(response) {
-                        alert(response.message);
+                        // alert(response.message);
+                        $(document).Toasts('create', {
+                            class: 'bg-success mt-5 mr-3',
+                            title: 'Success',
+                            autohide: true,
+                            delay: 3000,
+                            body: response.message
+                        })
                     },
                     error: function(xhr, status, error) {
-                        alert('An error occurred: ' + error);
+                        // alert('An error occurred: ' + error);
+                        $(document).Toasts('create', {
+                            class: 'bg-danger mt-5 mr-3',
+                            title: 'Error',
+                            autohide: true,
+                            delay: 3000,
+                            body: 'Terjadi kesalahan: '+ error
+                        })
                     }
                 });
             });
@@ -403,11 +426,25 @@
                         field_value: fieldValue
                     },
                     success: function(response) {
-                        alert('Nilai berhasil diperbarui');
+                        // alert('Nilai berhasil diperbarui');
+                        $(document).Toasts('create', {
+                            class: 'bg-success mt-5 mr-3',
+                            title: 'Success',
+                            autohide: true,
+                            delay: 3000,
+                            body: 'Nilai berhasil diperbarui'
+                        })
                         input.closest('tr').find('td:last').text(response.nilai_akhir);
                     },
                     error: function(xhr, status, error) {
-                        alert('Terjadi kesalahan: ' + error);
+                        // alert('Terjadi kesalahan: ' + error);
+                        $(document).Toasts('create', {
+                            class: 'bg-danger mt-5 mr-3',
+                            title: 'Error',
+                            autohide: true,
+                            delay: 3000,
+                            body: 'Terjadi kesalahan: '+ error
+                        })
                     }
                 });
             });

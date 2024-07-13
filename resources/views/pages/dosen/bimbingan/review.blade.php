@@ -91,7 +91,7 @@
                             <div class="bordered mt-2">
                                 <b>Bagian Bimbingan Tugas Akhir</b>
 
-                                <div class="d-flex mt-2 border p-2 rounded">
+                                <div class="mt-2 border p-2 rounded">
 
                                     @php
                                         $dosenPembimbing = $bimbingan->mahasiswa->dosens()->where('dosen_id', Auth::guard('dosen')->user()->id)->first();
@@ -204,16 +204,29 @@
                                     </div>
                                     <div class="card-body">
                                         {!! nl2br($revisi->catatan) !!}
+                                        @if($revisi->tanggal_bimbingan)
+                                            <div class="mt-4 text-secondary">
+                                                <small><i class="fas fa-calendar mr-2"></i> Tanggal Bimbingan <b>{{ date('d M Y H:m', strtotime($revisi->tanggal_bimbingan)) }}</b></small>
+                                            </div>
+                                        @endif
+                                        @if ($revisi->lampiran_revisi)
+                                            <small>
+                                                Lampiran revisi:
+                                                @if ($revisi->lampiran_revisi)
+                                                    <a href="{{ asset($revisi->lampiran_revisi) }}" class="ml-3" target="_blank"><i
+                                                            class="fas fa-paperclip"></i>
+                                                        {{ Str::substr($revisi->lampiran_revisi, 40) }}</a>
+                                                @endif
+                                            </small>
+                                        @endif
                                     </div>
                                     @if ($revisi->lampiran)
                                     <div class="card-footer">
                                         <small>
                                             Lampiran bimbingan sebelumnya:
-                                            @if ($revisi->lampiran)
                                                 <a href="{{ asset($revisi->lampiran) }}" class="ml-3" target="_blank"><i
                                                         class="fas fa-paperclip"></i>
                                                     {{ Str::substr($revisi->lampiran, 40) }}</a>
-                                            @endif
                                         </small>
                                     </div>
                                     @endif
@@ -253,8 +266,8 @@
                                 <small class="text-danger">{{ $message }}</small>
                             @enderror
                         </div>
-                        {{--<div class="form-group">
-                            <label for="" class="form-label">Lampiran</label>
+                        <div class="form-group">
+                            <label for="" class="form-label">Lampiran (Opsional)</label>
                             <div class="input-group mb-3">
                                 <div class="custom-file">
                                     <input type="file" class="custom-file-input @error('lampiran')is-invalid @enderror"
@@ -270,7 +283,7 @@
                                 <small class="text-danger"
                                     style="position:relative;top:-15px;left:5px">{{ $message }}</small>
                             @enderror
-                        </div>--}}
+                        </div>
                     </div>
                     <div class="modal-footer justify-content-between">
                         <button type="submit" class="btn btn-success">Simpan</button>

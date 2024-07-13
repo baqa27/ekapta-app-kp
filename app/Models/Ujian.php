@@ -9,12 +9,12 @@ class Ujian extends Model
 {
     use HasFactory;
 
-    public const REVIEW = 0;
     public const DITERIMA = 1;
     public const REVISI = 2;
+    public const REVIEW = 3;
 
-    public const VALID = 1;
-    public const NOT_VALID = 0;
+    public const VALID_LULUS = 1;
+    public const NOT_VALID_LULUS = 2;
 
     protected $fillable = [
         'pengajuan_id',
@@ -33,6 +33,7 @@ class Ujian extends Model
         'tanggal_ujian',
         'is_lulus',
         'lampiran_laporan',
+        'tempat_ujian',
     ];
 
     public function pengajuan()

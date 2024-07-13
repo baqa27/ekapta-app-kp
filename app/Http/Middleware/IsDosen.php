@@ -17,9 +17,9 @@ class IsDosen
      */
     public function handle(Request $request, Closure $next)
     {
-        if (!Auth::guard('dosen')->user()) {
-            abort(404);
+        if (Auth::guard('dosen')->user()) {
+            return $next($request);
         }
-        return $next($request);
+        return redirect()->route('login.dosen');
     }
 }

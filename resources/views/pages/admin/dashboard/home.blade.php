@@ -259,7 +259,7 @@
                 </div>
             </div>
 
-          <div class="row">
+            <div class="row">
                 <div class="col-md-6">
                     <div class="card" style="min-height: 16rem">
                         <div class="card-header bg-primary">
@@ -336,6 +336,6 @@
                     </div>
                 </div>
             </div>
-            </div>
+        </div>
     </section>
 @endsection

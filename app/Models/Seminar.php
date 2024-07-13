@@ -29,6 +29,7 @@ class Seminar extends Model
         'is_lulus',
         'tanggal_acc',
         'tanggal_ujian',
+        'tempat_ujian',
     ];
 
     public function revisis()

@@ -141,7 +141,12 @@
                                                     I sampai bab III
                                                 </li>
                                                 <li>
-                                                    Mahasiswa mendaftara seminar dengan mengisi form pendaftaran
+                                                    Mahasiswa mendaftara seminar dengan mengisi form pendaftaran, dokumen yang diupload adalah:
+                                                    <ol>
+                                                        <li>Bukti Lunas Pembayaran SPP Sampai Semester Terakhir</li>
+                                                        <li>Bukti Lunas Pembayaran Seminar Tugas Akhir (TA)</li>
+                                                        <li>File Laporan Proposal</li>
+                                                    </ol>
                                                 </li>
                                             </ul>
                                             <p class="fw-semibold" style="margin-left: 18px;">Setelah Seminar
@@ -174,14 +179,25 @@
                                                 </li>
                                                 <li>
                                                     Mahasiswa mendaftar ujian pendadaran dengan mengisi form
-                                                    pendaftaran
+                                                    pendaftaran, dokumen yang diupload adalah:
+                                                    <ol>
+                                                        <li>Bukti lunas pembayaran SPP sampai semester terakhir</li>
+                                                        <li>Bukti lunas pembayaran Tugas Akhir</li>
+                                                        <li>Scan ijazah terakhir yang asli</li>
+                                                        <li>Scan KTP / Kartu Keluarga</li>
+                                                        <li>Scan Sertifikat TOEFL</li>
+                                                        <li>Scan Sertifikat Tahfidz</li>
+                                                        <li>Scan Sertifikat Komputer</li>
+                                                        <li>Transkrip Nilai Sementara (Tanpa nilai D/E/Kosong, kecuali nilai Tugas Akhir/Skripsi)</li>
+                                                        <li>Laporan Skripsi</li>
+                                                    </ol>
                                                 </li>
                                             </ul>
                                             <p class="fw-semibold" style="margin-left: 18px;">Setelah Ujian
                                                 Pendadaran :</p>
                                             <ul>
                                                 <li>
-                                                    Mahasiswa upload bimbingan revisi seminar proposal ditujukan
+                                                    Mahasiswa upload bimbingan revisi ujian pendadaran ditujukan
                                                     ke dosen penguji
                                                 </li>
                                             </ul>

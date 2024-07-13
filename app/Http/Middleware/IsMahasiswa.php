@@ -17,9 +17,13 @@ class IsMahasiswa
      */
     public function handle(Request $request, Closure $next)
     {
-        if (!Auth::guard('mahasiswa')->user()) {
-            abort(404);
+        // if (!Auth::guard('mahasiswa')->user()) {
+        //     abort(404);
+        // }
+        // return $next($request);
+        if (Auth::guard('mahasiswa')->user()) {
+            return $next($request);
         }
-        return $next($request);
+        return redirect()->route('login.mahasiswa');
     }
 }

@@ -34,7 +34,7 @@
                                 @csrf
 
                                 <div class="mb-3 p-2 bg-primary rounded">
-                                    Harap inputkan dokumen Laporan Seminar Proposal yang sudah di Acc oleh ketiga Dosen Penguji!
+                                    Harap inputkan dokumen Laporan Seminar Proposal yang sudah di Acc oleh semua Dosen Penguji!
                                 </div>
 
                                 <div class="form-group">

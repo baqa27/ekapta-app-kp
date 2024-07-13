@@ -93,15 +93,33 @@
                                             alt="message user image">
                                         <div class="direct-chat-text p-2">
                                             {!! nl2br($revisi->catatan) !!}
-                                            @if ($revisi->lampiran)
+                                            @if($revisi->tanggal_bimbingan)
+                                                <div>
+                                                    <small><i class="fas fa-calendar"></i> Tanggal bimbingan: {{ \Carbon\Carbon::parse($revisi->tanggal_bimbingan)->format('d M Y H:m a') }}</small>
+                                                </div>
+                                            @endif
+                                            @if ($revisi->lampiran || $revisi->lampiran_revisi)
                                                 <div class="p-1 mt-3 bg-light rounded">
-                                                    <small>
-                                                        <span class="text-secondary ml-2"><b>Lampiran bimbingan sebelumnya: </b></span>
-                                                        <a href="{{ asset($revisi->lampiran) }}" target="_blank">
-                                                            <i class="fas fa-paperclip ml-1"></i>
-                                                            {{ Str::substr($revisi->lampiran, 40) }}
-                                                        </a>
-                                                    </small>
+                                                    @if ($revisi->lampiran_revisi)
+                                                        <div>
+                                                            <small>
+                                                                <span class="text-secondary ml-2"><b>Lampiran revisi: </b></span>
+                                                                <a href="{{ asset($revisi->lampiran_revisi) }}" target="_blank">
+                                                                    <i class="fas fa-paperclip ml-1"></i>
+                                                                    {{ Str::substr($revisi->lampiran_revisi, 40) }}
+                                                                </a>
+                                                            </small>
+                                                        </div>
+                                                    @endif
+                                                    @if ($revisi->lampiran)
+                                                        <small>
+                                                            <span class="text-secondary ml-2"><b>Lampiran bimbingan sebelumnya: </b></span>
+                                                            <a href="{{ asset($revisi->lampiran) }}" target="_blank">
+                                                                <i class="fas fa-paperclip ml-1"></i>
+                                                                {{ Str::substr($revisi->lampiran, 40) }}
+                                                            </a>
+                                                        </small>
+                                                    @endif
                                                 </div>
                                             @endif
                                         </div>

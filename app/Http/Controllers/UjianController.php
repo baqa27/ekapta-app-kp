@@ -21,15 +21,18 @@ class UjianController extends Controller
 {
     public function ujianMahasiswa()
     {
-        $mahasiswa = Auth::guard('mahasiswa')->user();
+        $mahasiswa = Mahasiswa::with(['bimbingans','ujians'])->findOrFail(Auth::guard('mahasiswa')->user()->id);
         if($mahasiswa->email == '-'){
             return redirect()->route('profile');
         }
-        $ujian = $mahasiswa->ujian;
+        $ujians = $mahasiswa->ujians()->orderBy('created_at','desc')->get();
         $prodi = Prodi::where('namaprodi', $mahasiswa->prodi)->first();
         $bagians_is_ujian = $prodi->bagians()->where('is_pendadaran', 1)->get();
 
-        $bimbingans_is_acc = $mahasiswa->bimbingans()->where('status', Bimbingan::DITERIMA)->get();
+        $bimbingans_is_acc = $mahasiswa->bimbingans()->where('status', Bimbingan::DITERIMA)
+            ->whereHas('bagian', function($query) {
+                $query->where('is_pendadaran', 1);
+            })->get();
         $pendaftaran_acc = Pendaftaran::orderBy('created_at', 'desc')->where('mahasiswa_id', $mahasiswa->id)->where('status', 'diterima')->first();
 
         $bagians = [];
@@ -48,27 +51,39 @@ class UjianController extends Controller
             return redirect('bimbingan-mahasiswa')->with('warning', 'Selesaikan bimbingan: ' . implode(',', $bagians));
         }
 
-        if (!$ujian) {
+        if (count($ujians) == 0) {
             return redirect('ujian/create');
         }
 
-        $ujians_acc = $ujian->reviews()->where('status', ReviewUjian::DITERIMA)->get();
+        // $ujians_acc = $ujians->reviews()->where('status', ReviewUjian::DITERIMA)->get();
 
-        $ujian_is_completed = false;
-        if (count($ujians_acc) == 5){
-            $ujian_is_completed = true;
+        // $ujian_is_completed = false;
+        // if (count($ujians_acc) == 5){
+        //     $ujian_is_completed = true;
+        // }
+
+        $ujian_not_lulus = $mahasiswa->ujians()->where('is_lulus', Ujian::NOT_VALID_LULUS)->first();
+        $ujian_has_ready = $mahasiswa->ujians()->whereNotIn('is_lulus', [Ujian::NOT_VALID_LULUS])->first();
+        $ujian_has_complete = $mahasiswa->ujians()->where('is_lulus', Ujian::VALID_LULUS)->first();
+        $reviews_has_acc = 0;
+        if($ujian_has_complete){
+            $reviews_has_acc = count($ujian_has_complete->reviews()->where('status', 'diterima')->where('dosen_status', Dosen::PENGUJI)->get());
         }
 
         $data = [
             'title' => 'Ujian Pendadaran TA',
             'active' => 'ujian',
             'mahasiswa' => $mahasiswa,
-            'ujian' => $ujian,
+            'ujians' => $ujians,
             'dosen_utama' => $dosen_utama,
             'dosen_pendamping' => $dosen_pendamping,
-            'dosens_penguji' => $ujian->reviews()->where('dosen_status', ReviewUjian::DOSEN_PENGUJI)->get(),
-            'reviews_acc' => $ujian->reviews()->where('dosen_status', ReviewUjian::DOSEN_PENGUJI)->where('status', ReviewUjian::DITERIMA)->get(),
-            'ujian_is_completed' => $ujian_is_completed,
+            // 'dosens_penguji' => $ujian->reviews()->where('dosen_status', ReviewUjian::DOSEN_PENGUJI)->get(),
+            // 'reviews_acc' => $ujian->reviews()->where('dosen_status', ReviewUjian::DOSEN_PENGUJI)->where('status', ReviewUjian::DITERIMA)->get(),
+            // 'ujian_is_completed' => $ujian_is_completed,
+            'ujian_not_lulus' => $ujian_not_lulus,
+            'ujian_has_ready' => $ujian_has_ready,
+            'check_ujian_has_done' => AppHelper::check_ujian_has_done(),
+            'reviews_has_acc' => $reviews_has_acc == 3 ? true : false,
         ];
 
         return view('pages.mahasiswa.ujian.ujian', $data);
@@ -76,9 +91,11 @@ class UjianController extends Controller
 
     public function ujianAdmin()
     {
-        $ujians_review = Ujian::orderBy('created_at', 'desc')->where('is_valid', Ujian::REVIEW)->get();
-        $ujians_revisi = Ujian::orderBy('created_at', 'desc')->where('is_valid', Ujian::REVISI)->get();
-        $ujians_acc = Ujian::orderBy('created_at', 'desc')->where('is_valid', Ujian::DITERIMA)->get();
+        $ujians_review = Ujian::orderBy('created_at', 'desc')->where('is_valid', Ujian::REVIEW)
+        ->whereNotIn('is_lulus', [Ujian::NOT_VALID_LULUS])->get();
+        $ujians_revisi = Ujian::orderBy('created_at', 'desc')->where('is_valid', Ujian::REVISI)
+        ->whereNotIn('is_lulus', [Ujian::NOT_VALID_LULUS])->get();
+        $ujians_acc = Ujian::orderBy('created_at', 'desc')->where('is_valid', Ujian::DITERIMA)->whereNotIn('is_lulus', [Ujian::NOT_VALID_LULUS])->get();
 
         $data = [
             'title' => 'Validasi Ujian TA',
@@ -94,24 +111,33 @@ class UjianController extends Controller
 
     public function ujianDosen()
     {
-        $dosen = Dosen::findOrFail(Auth::guard('dosen')->user()->id);
-
+        $dosen = Dosen::with(['ujians'])->findOrFail(Auth::guard('dosen')->user()->id);
+        // return $dosen->ujians;
         $data = [
             'title' => 'Review Ujian TA',
             'active' => 'ujian',
             'sidebar' => 'partials.sidebarDosen',
-            'ujians_review' => $dosen->ujians()->where('status', ReviewUjian::REVIEW)->get(),
-            'ujians_acc' => $dosen->ujians()->where('status', ReviewUjian::DITERIMA)->get(),
-            'ujians_revisi' => $dosen->ujians()->where('status', ReviewUjian::REVISI)->get(),
+            'ujians_review' => $dosen->ujians()->where('status', ReviewUjian::REVIEW)
+            ->whereHas('ujian', function($query) {
+                $query->whereNotIn('is_lulus', [Ujian::NOT_VALID_LULUS]);
+            })->get(),
+            'ujians_acc' => $dosen->ujians()->where('status', ReviewUjian::DITERIMA)
+            ->whereHas('ujian', function($query) {
+                $query->whereNotIn('is_lulus', [Ujian::NOT_VALID_LULUS]);
+            })->get(),
+            'ujians_revisi' => $dosen->ujians()->where('status', ReviewUjian::REVISI)
+            ->whereHas('ujian', function($query) {
+                $query->whereNotIn('is_lulus', [Ujian::NOT_VALID_LULUS]);
+            })->get(),
         ];
 
         return view('pages.dosen.ujian.ujian', $data);
     }
 
-    public function ujianProdi()
+public function ujianProdi()
     {
         $prodi = Auth::guard('prodi')->user();
-        $ujians = Ujian::with(['mahasiswa'])->get();
+        $ujians = Ujian::orderBy('created_at', 'desc')->where('is_valid', Ujian::DITERIMA)->with(['mahasiswa'])->whereNotIn('is_lulus', [Ujian::NOT_VALID_LULUS])->get();
 
         $ujians_prodi = [];
         foreach ($ujians as $ujian) {
@@ -132,15 +158,29 @@ class UjianController extends Controller
 
     public function create()
     {
-        $mahasiswa = Mahasiswa::findOrFail(Auth::guard('mahasiswa')->user()->id);
+        $mahasiswa = Mahasiswa::with(['bimbingans','ujians'])->findOrFail(Auth::guard('mahasiswa')->user()->id);
+        $prodi = Prodi::where('namaprodi', $mahasiswa->prodi)->first();
         $pengajuan_acc = $mahasiswa->pengajuans()->where('status', Pengajuan::DITERIMA)->first();
 
         $pendaftaran_acc = Pendaftaran::orderBy('created_at', 'desc')->where('mahasiswa_id', $mahasiswa->id)->where('status', 'diterima')->first();
 
+        $bagians_is_ujian = $prodi->bagians()->where('is_pendadaran', 1)->get();
+        $bimbingans_is_acc = $mahasiswa->bimbingans()->where('status', Bimbingan::DITERIMA)
+            ->whereHas('bagian', function($query) {
+                $query->where('is_pendadaran', 1);
+            })->get();
+
+        $bagians = [];
+        foreach($bagians_is_ujian as $b){
+            array_push($bagians, $b->bagian);
+        }
+
         if (!$pendaftaran_acc) {
             return redirect('pendaftaran-mahasiswa');
-        } else if ($pengajuan_acc->ujian) {
+        } else if ($pengajuan_acc->ujians()->whereNotIn('is_lulus', [Ujian::NOT_VALID_LULUS])->first()) {
             return redirect('ujian-mahasiswa')->with('warning', 'Sudah mendaftar ujian pendadaran TA');
+        } else if (count($bimbingans_is_acc) - count($bagians_is_ujian) < count($bagians_is_ujian)) {
+            return redirect('bimbingan-mahasiswa')->with('warning', 'Selesaikan bimbingan: ' . implode(',', $bagians));
         }
 
         $data = [
@@ -230,8 +270,8 @@ class UjianController extends Controller
 
         $validatedData = $request->validate([
             'lampiran_1' => [
-                Rule::requiredIf(function () {
-                    if (empty($this->request->lampiran_1)) {
+                Rule::requiredIf(function () use($request) {
+                    if (empty($request->lampiran_1)) {
                         return false;
                     }
                     return true;
@@ -239,8 +279,8 @@ class UjianController extends Controller
                 'mimes:pdf,png,jpg,jpeg', 'max:5000'
             ],
             'lampiran_2' => [
-                Rule::requiredIf(function () {
-                    if (empty($this->request->lampiran_2)) {
+                Rule::requiredIf(function () use($request) {
+                    if (empty($request->lampiran_2)) {
                         return false;
                     }
                     return true;
@@ -248,8 +288,8 @@ class UjianController extends Controller
                 'mimes:pdf,png,jpg,jpeg', 'max:5000'
             ],
             'lampiran_3' => [
-                Rule::requiredIf(function () {
-                    if (empty($this->request->lampiran_3)) {
+                Rule::requiredIf(function () use($request) {
+                    if (empty($request->lampiran_3)) {
                         return false;
                     }
                     return true;
@@ -257,8 +297,8 @@ class UjianController extends Controller
                 'mimes:pdf,png,jpg,jpeg', 'max:5000'
             ],
             'lampiran_4' => [
-                Rule::requiredIf(function () {
-                    if (empty($this->request->lampiran_4)) {
+                Rule::requiredIf(function () use($request) {
+                    if (empty($request->lampiran_4)) {
                         return false;
                     }
                     return true;
@@ -266,8 +306,8 @@ class UjianController extends Controller
                 'mimes:pdf,png,jpg,jpeg', 'max:5000'
             ],
             'lampiran_5' => [
-                Rule::requiredIf(function () {
-                    if (empty($this->request->lampiran_5)) {
+                Rule::requiredIf(function () use($request) {
+                    if (empty($request->lampiran_5)) {
                         return false;
                     }
                     return true;
@@ -275,8 +315,8 @@ class UjianController extends Controller
                 'mimes:pdf,png,jpg,jpeg', 'max:5000'
             ],
             'lampiran_6' => [
-                Rule::requiredIf(function () {
-                    if (empty($this->request->lampiran_5)) {
+                Rule::requiredIf(function () use($request) {
+                    if (empty($request->lampiran_5)) {
                         return false;
                     }
                     return true;
@@ -284,8 +324,8 @@ class UjianController extends Controller
                 'mimes:pdf,png,jpg,jpeg', 'max:5000'
             ],
             'lampiran_7' => [
-                Rule::requiredIf(function () {
-                    if (empty($this->request->lampiran_5)) {
+                Rule::requiredIf(function () use($request) {
+                    if (empty($request->lampiran_5)) {
                         return false;
                     }
                     return true;
@@ -293,8 +333,8 @@ class UjianController extends Controller
                 'mimes:pdf,png,jpg,jpeg', 'max:5000'
             ],
             'lampiran_8' => [
-                Rule::requiredIf(function () {
-                    if (empty($this->request->lampiran_5)) {
+                Rule::requiredIf(function () use($request) {
+                    if (empty($request->lampiran_5)) {
                         return false;
                     }
                     return true;
@@ -302,8 +342,8 @@ class UjianController extends Controller
                 'mimes:pdf,png,jpg,jpeg', 'max:5000'
             ],
             'lampiran_laporan' => [
-                Rule::requiredIf(function () {
-                    if (empty($this->request->lampiran_5)) {
+                Rule::requiredIf(function () use($request) {
+                    if (empty($request->lampiran_5)) {
                         return false;
                     }
                     return true;
@@ -349,7 +389,7 @@ class UjianController extends Controller
             $validatedData['lampiran_laporan'] = AppHelper::instance()->uploadLampiran($request->lampiran_laporan, 'lampirans');
         }
 
-        $validatedData['is_valid'] = 0;
+        $validatedData['is_valid'] = Ujian::REVIEW;
 
         $ujian->update($validatedData);
 
@@ -388,6 +428,11 @@ class UjianController extends Controller
 
     public function ujianReviewAdmin($id)
     {
+        if(Auth::guard('prodi')->user()){
+            $sidebar = 'partials.sidebarProdi';
+        }else{
+            $sidebar = 'partials.sidebarAdmin';
+        }
         $ujian = Ujian::findOrFail($id);
         $mahasiswa = $ujian->mahasiswa;
         $prodi = Prodi::where('namaprodi', $mahasiswa->prodi)->first();
@@ -397,12 +442,12 @@ class UjianController extends Controller
         $dosen_utama = $mahasiswa->dosens()->where('status', 'utama')->first();
         $dosen_pendamping = $mahasiswa->dosens()->where('status', 'pendamping')->first();
 
-        $reviews_check = $ujian->reviews()->whereIn('status', [ReviewUjian::DITERIMA, ReviewUjian::REVISI])->get();
+        $reviews_check = $ujian->reviews()->whereIn('status', [ReviewUjian::DITERIMA, ReviewUjian::REVISI])->where('dosen_status','penguji')->get();
 
         $data = [
             'title' => 'Review Pendaftaran Ujian TA',
             'active' => 'ujian',
-            'sidebar' => 'partials.sidebarAdmin',
+            'sidebar' => $sidebar,
             'ujian' => $ujian,
             'dosens' => $dosens,
             'dosen_utama' => $dosen_utama,
@@ -422,8 +467,8 @@ class UjianController extends Controller
         $revisi->catatan = $request->catatan;
         $request->validate([
             'lampiran' => [
-                Rule::requiredIf(function () {
-                    if (empty($this->request->lampiran)) {
+                Rule::requiredIf(function () use($request) {
+                    if (empty($request->lampiran)) {
                         return false;
                     }
                     return true;
@@ -458,7 +503,7 @@ class UjianController extends Controller
     {
         $ujian = Ujian::findOrFail($request->id);
 
-        if ($ujian->is_valid == 1 || count($ujian->reviews) == 5) {
+        if ($ujian->is_valid == Ujian::VALID_LULUS || count($ujian->reviews) == 5) {
             return back();
         }
 
@@ -467,8 +512,11 @@ class UjianController extends Controller
         $dosen_utama = $mahasiswa->dosens()->where('status', 'utama')->first();
         $dosen_pendamping = $mahasiswa->dosens()->where('status', 'pendamping')->first();
 
-        $revisi = new RevisiUjian();
-        $revisi->catatan = $request->catatan;
+        if($request->catatan){
+            $revisi = new RevisiUjian();
+            $revisi->catatan = $request->catatan;
+            $ujian->revisis()->save($revisi);
+        }
 
         ReviewUjian::create([
             'ujian_id' => $ujian->id,
@@ -485,10 +533,10 @@ class UjianController extends Controller
         ]);
 
         $ujian->update([
-            'is_valid' => 1,
+            'is_valid' => Ujian::VALID_LULUS,
             'tanggal_acc' => now(),
         ]);
-        $ujian->revisis()->save($revisi);
+
         if ($ujian->mahasiswa->email != '-') {
             AppHelper::instance()->send_mail([
                 'mail' => $ujian->mahasiswa->email,
@@ -532,10 +580,29 @@ class UjianController extends Controller
         $ujian = Ujian::findOrFail($request->ujian_id);
         $validatedData = $request->validate([
             'tanggal_ujian' => 'required',
+            'tempat_ujian' => 'required',
         ]);
         $validatedData['tanggal_ujian'] = Carbon::parse($request->tanggal_ujian);
         $ujian->update($validatedData);
-        return back();
+        if ($ujian->mahasiswa->email != '-') {
+            AppHelper::instance()->send_mail([
+                'mail' => $ujian->mahasiswa->email,
+                'subject' => 'Ujian Tugas Ahir',
+                'title' => 'EKAPTA',
+                'message' => 'Selamat ujian Tugas Akhir anda sudah dijadwalkan. Berikut detail ujian Tugas Akhir Anda: <br>Tanggal ujian: <b>'.AppHelper::parse_date($request->tanggal_ujian).'</b><br>Tempat ujian: <b>'.$request->tempat_ujian.'</b>',
+            ]);
+        }
+        foreach($ujian->reviews()->where('dosen_status', 'penguji')->with(['dosen'])->get() as $review){
+            if ($review->dosen->email) {
+                AppHelper::instance()->send_mail([
+                    'mail' => $review->dosen->email,
+                    'subject' => 'Penguji Ujian Tugas Ahir',
+                    'title' => 'EKAPTA',
+                    'message' => 'Kepada Yth Bapak/Ibu <b>'.$review->dosen->nama.', '.$review->dosen->gelar.'</b> anda di tunjuk sebagai penguji untuk ujian Tugas Akhir. Berikut detail dan jadwal ujian Tugas Akhir: <br>NIM/Nama Mahasiswa: <b>'.$ujian->mahasiswa->nim.'/'.$ujian->mahasiswa->nama.'</b><br>Judul Skripsi: <b>'.$ujian->pengajuan->judul.'</b><br>Tanggal ujian: <b>'.AppHelper::parse_date($request->tanggal_ujian).'</b><br>Tempat ujian: <b>'.$request->tempat_ujian.'</b>',
+                ]);
+            }
+        }
+        return back()->with('success', 'Jadwal dan Tempat Ujian Tugas Akhir berhasil disimpan');
     }
 
     public function ujianReviews($id)
@@ -556,7 +623,7 @@ class UjianController extends Controller
         $ujian = Ujian::findOrFail($id);
 
         $data = [
-            'title' => 'Submit Laporan Ujian Proposal',
+            'title' => 'Submit Laporan Ujian Pendadaran',
             'active' => 'ujian',
             'ujian' => $ujian,
         ];
@@ -608,12 +675,17 @@ class UjianController extends Controller
     }
 
     public function rekapUjian(){
-        $ujians = Ujian::where('is_valid', Ujian::VALID)
+        if(Auth::guard('prodi')->user()){
+            $sidebar = 'partials.sidebarProdi';
+        }else{
+            $sidebar = 'partials.sidebarAdmin';
+        }
+        $ujians = Ujian::where('is_valid', Ujian::VALID_LULUS)
             ->where('tanggal_ujian', null)
             ->get();
         return view('pages.admin.ujian.rekap',[
             'title' => 'Rekap Pendaftaran Ujian Pendadaran Mahasiswa',
-            'sidebar' => 'partials.sidebarAdmin',
+            'sidebar' => $sidebar,
             'active' => 'ujian',
             'ujians' => $ujians,
         ]);
@@ -622,12 +694,12 @@ class UjianController extends Controller
     public function updateStatus(Request $request)
     {
         $ujian = Ujian::findOrFail($request->ujian_id);
-        if ($ujian->is_valid == 0) {
+        if ($ujian->is_valid == Ujian::NOT_VALID_LULUS) {
             return back();
         }
         $ujian->update([
             'is_lulus' => $request->is_lulus,
         ]);
-        return response()->json(['message' => 'Status seminar berhasil disimpan']);
+        return response()->json(['message' => 'Status ujian berhasil disimpan']);
     }
 }

@@ -61,7 +61,7 @@ class ReviewUjianController extends Controller
         $is_dosen_penguji_utama = $review_ujian->ujian->reviews()->where('dosen_status', ReviewUjian::DOSEN_PENGUJI)->first();
 
         $form_status = false;
-        if ($is_dosen_penguji_utama){
+        if ($is_dosen_penguji_utama) {
             if ($is_dosen_penguji_utama->id == $review_ujian->id) {
                 $form_status = true;
             }
@@ -83,11 +83,10 @@ class ReviewUjianController extends Controller
         $review_ujian = ReviewUjian::findOrFail($request->id);
 
         $revisi = new RevisiReviewUjian();
-        $revisi->catatan = $request->catatan;
         $request->validate([
             'lampiran' => [
-                Rule::requiredIf(function () {
-                    if (empty($this->request->lampiran)) {
+                Rule::requiredIf(function () use ($request) {
+                    if (empty($request->lampiran)) {
                         return false;
                     }
                     return true;
@@ -95,6 +94,7 @@ class ReviewUjianController extends Controller
                 'mimes:pdf,docx', 'max:5000'
             ]
         ]);
+        $revisi->catatan = $request->catatan;
 
         if ($request->file('lampiran')) {
             //$revisi->lampiran = AppHelper::instance()->uploadLampiran($request->lampiran, 'lampirans');
@@ -111,7 +111,7 @@ class ReviewUjianController extends Controller
                     'mail' => $review_ujian->ujian->mahasiswa->email,
                     'subject' => 'Ujian Tugas Ahir',
                     'title' => 'EKAPTA',
-                    'message' => 'Ujian Tugas Akhir Anda Berstatus REVISI. Silahkan perbaiki kemudian lakukan submit ulang!. <br><br>Catatan revisi: '.$request->catatan,
+                    'message' => 'Ujian Tugas Akhir Anda Berstatus REVISI. Silahkan perbaiki kemudian lakukan submit ulang!. <br><br>Catatan revisi: ' . $request->catatan,
                 ]);
             }
             return back()->with('success', 'Revisi berhasil ditambahkan.');
@@ -138,7 +138,7 @@ class ReviewUjianController extends Controller
         $revisi->lampiran = $review_ujian->lampiran ? $review_ujian->lampiran : $review_ujian->ujian->lampiran_laporan;
         $review_ujian->update([
             'status' => ReviewUjian::DITERIMA,
-            'tanggal_acc' => $request->type ? $review_ujian->tanggal_acc_manual: now(),
+            'tanggal_acc' => $request->type ? $review_ujian->tanggal_acc_manual : now(),
         ]);
         $review_ujian->revisis()->save($revisi);
         if ($review_ujian->ujian->mahasiswa->email != '-') {
@@ -188,7 +188,7 @@ class ReviewUjianController extends Controller
     public function submitManual($id)
     {
         $review_ujian = ReviewUjian::findOrFail($id);
-        if ($review_ujian->status == 'revisi' || $review_ujian->status == 'diterima'){
+        if ($review_ujian->status == 'revisi' || $review_ujian->status == 'diterima') {
             return back();
         }
 
@@ -204,15 +204,15 @@ class ReviewUjianController extends Controller
     public function submitManualStore(Request $request, $id)
     {
         $review_ujian = ReviewUjian::findOrFail($id);
-        if ($review_ujian->status == 'revisi' || $review_ujian->status == 'diterima'){
+        if ($review_ujian->status == 'revisi' || $review_ujian->status == 'diterima') {
             return back();
         }
 
         $validatedData = $request->validate([
             'lampiran_lembar_revisi' => ['required', 'mimes:pdf, jpg,jpeg,png', 'max:5000'],
             'tanggal_acc_manual' => 'required',
-         ]);
-         $validatedData['lampiran_lembar_revisi'] = AppHelper::instance()->uploadLampiran($request->lampiran_lembar_revisi,'lampirans');
+        ]);
+        $validatedData['lampiran_lembar_revisi'] = AppHelper::instance()->uploadLampiran($request->lampiran_lembar_revisi, 'lampirans');
         $review_ujian->update($validatedData);
 
         return redirect()->route('ujian.reviews', $review_ujian->ujian->id);
