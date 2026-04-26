@@ -97,15 +97,42 @@ class DosenController extends Controller
     public function accountUpdate(Request $request, $id){
         $dosen = Dosen::findOrFail($id);
 
-        $request->validate([
-            'password' => ['required','string' ,'min:6'],
+        if (Auth::guard('dosen')->user()->id != $dosen->id) {
+            abort(403);
+        }
+
+        $validatedData = $request->validate([
+            'nama' => ['required', 'string', 'max:255'],
+            'email' => ['nullable', 'email', 'max:255', Rule::unique('dosens', 'email')->ignore($dosen->id)],
+            'password' => ['nullable', 'string', 'min:6', 'confirmed'],
+            'ttd' => ['nullable', 'mimes:png,jpg,jpeg', 'max:1024'],
         ]);
 
-        $dosen->update([
-            'password' => Hash::make($request->password),
-        ]);
+        $updateData = [
+            'nama' => $validatedData['nama'],
+            'email' => $validatedData['email'] ?: '-',
+        ];
 
-        return back()->with('success', 'Password berhasil diubah');
+        if (!empty($validatedData['password'])) {
+            $updateData['password'] = Hash::make($validatedData['password']);
+        }
+
+        $oldTtd = null;
+        if ($request->file('ttd')) {
+            $newTtd = AppHelper::instance()->uploadLampiran($request->file('ttd'), 'images');
+            if ($newTtd) {
+                $oldTtd = $dosen->ttd;
+                $updateData['ttd'] = $newTtd;
+            }
+        }
+
+        $dosen->update($updateData);
+
+        if ($oldTtd && !empty($updateData['ttd']) && $oldTtd !== $updateData['ttd']) {
+            AppHelper::instance()->deleteLampiran($oldTtd);
+        }
+
+        return back()->with('success', 'Akun dosen berhasil diperbarui');
     }
 
     public function resetPassword($id){
@@ -118,10 +145,11 @@ class DosenController extends Controller
 
     public function changeManual($id){
         $dosen = Dosen::findOrFail($id);
+        $isManual = $dosen->is_manual == 1 ? 0 : 1;
         $dosen->update([
-            'is_manual' => $dosen->is_manual == 1 ? 0 : 1,
+            'is_manual' => $isManual,
         ]);
-        return back()->with('success', 'Password berhasil di'.$dosen->is_manual == 1 ? 'enable' : 'disable');
+        return back()->with('success', 'Password berhasil di' . ($isManual == 1 ? 'enable' : 'disable'));
     }
 
 }

@@ -25,13 +25,13 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-4 mb-3">
-                            <a href="{{ route('dashboard.mahasiswa.kp') }}" class="btn btn-info col-md-12 p-3 btn-lg">📙 MENU KERJA PRAKTEK</a>
+                            <a href="{{ route('kp.dashboard.mahasiswa') }}" class="btn btn-info col-md-12 p-3 btn-lg">📙 MENU KERJA PRAKTEK</a>
                         </div>
                         <div class="col-md-4 mb-3">
                             <a href="{{ route('dashboard.mahasiswa.ta') }}" class="btn btn-primary col-md-12 p-3 btn-lg">📕 MENU TUGAS AKHIR</a>
                         </div>
                         <div class="col-md-4 mb-3">
-                            <a href="{{ route('dashboard.mahasiswa.jilid') }}" class="btn btn-secondary col-md-12 p-3 btn-lg">🖨 MENU PENJILIDAN</a>
+                            <a href="{{ route('kp.pengumpulan-akhir.mahasiswa') }}" class="btn btn-secondary col-md-12 p-3 btn-lg">🖨 MENU PENJILIDAN</a>
                         </div>
                     </div>
                 </div>

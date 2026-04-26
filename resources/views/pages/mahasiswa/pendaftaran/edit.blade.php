@@ -90,7 +90,7 @@
                                     <div class="rounded bg-light">
                                         <small>
                                             <span class="ml-3">Lampiran sebelumnya : </span>
-                                            <a href="{{ asset($pendaftaran->lampiran_1) }}" class="text-primary"
+                                            <a href="{{ storage_url($pendaftaran->lampiran_1) }}" class="text-primary"
                                                 target="_blank"><i class="fas fa-paperclip ml-2"></i>
                                                 {{ Str::substr($pendaftaran->lampiran_1, 21) }}</a>
                                         </small>
@@ -121,7 +121,7 @@
                                     <div class="rounded bg-light">
                                         <small>
                                             <span class="ml-3">Lampiran sebelumnya : </span>
-                                            <a href="{{ asset($pendaftaran->lampiran_2) }}" class="text-primary"
+                                            <a href="{{ storage_url($pendaftaran->lampiran_2) }}" class="text-primary"
                                                 target="_blank"><i class="fas fa-paperclip ml-2"></i>
                                                 {{ Str::substr($pendaftaran->lampiran_2, 21) }}</a>
                                         </small>
@@ -152,7 +152,7 @@
                                     <div class="rounded bg-light">
                                         <small>
                                             <span class="ml-3">Lampiran sebelumnya : </span>
-                                            <a href="{{ asset($pendaftaran->lampiran_3) }}" class="text-primary"
+                                            <a href="{{ storage_url($pendaftaran->lampiran_3) }}" class="text-primary"
                                                 target="_blank"><i class="fas fa-paperclip ml-2"></i>
                                                 {{ Str::substr($pendaftaran->lampiran_3, 21) }}</a>
                                         </small>
@@ -181,7 +181,7 @@
                                     <div class="rounded bg-light">
                                         <small>
                                             <span class="ml-3">Lampiran sebelumnya : </span>
-                                            <a href="{{ asset($pendaftaran->lampiran_4) }}" class="text-primary"
+                                            <a href="{{ storage_url($pendaftaran->lampiran_4) }}" class="text-primary"
                                                 target="_blank"><i class="fas fa-paperclip ml-2"></i>
                                                 {{ Str::substr($pendaftaran->lampiran_4, 21) }}</a>
                                         </small>
@@ -210,7 +210,7 @@
                                     <div class="rounded bg-light">
                                         <small>
                                             <span class="ml-3">Lampiran sebelumnya : </span>
-                                            <a href="{{ asset($pendaftaran->lampiran_5) }}" class="text-primary"
+                                            <a href="{{ storage_url($pendaftaran->lampiran_5) }}" class="text-primary"
                                                 target="_blank"><i class="fas fa-paperclip ml-2"></i>
                                                 {{ Str::substr($pendaftaran->lampiran_5, 21) }}</a>
                                         </small>
@@ -248,27 +248,11 @@
                                     </label>
                                     <div class="form-check mb-2">
                                         <input class="form-check-input @error('biaya') is-invalid @enderror"
-                                            type="radio" name="biaya" value="750000"
-                                            @if ($pendaftaran->biaya == 750000) checked @endif>
-                                        <label class="form-check-label" style="top: -1px; position:relative;">Program
-                                            Sarjana Kelas A
-                                            (Reguler) : Rp. 750.000,-</label>
-                                    </div>
-                                    <div class="form-check mb-2">
-                                        <input class="form-check-input @error('biaya') is-invalid @enderror"
-                                            type="radio" name="biaya" value="375000"
-                                            @if ($pendaftaran->biaya == 375000) checked @endif>
-                                        <label class="form-check-label" style="top: -1px; position:relative;">Perpanjang
-                                            Program Sarjana
-                                            Kelas A (Reguler) : Rp. 375.000,-</label>
-                                    </div>
-                                    <div class="form-check mb-2">
-                                        <input class="form-check-input @error('biaya') is-invalid @enderror"
                                             type="radio" name="biaya" value="850000"
                                             @if ($pendaftaran->biaya == 850000) checked @endif>
                                         <label class="form-check-label" style="top: -1px; position:relative;">Program
-                                            Sarjana Kelas B
-                                            (Ekstensi) : Rp. 850.000,-</label>
+                                            Sarjana Kelas A
+                                            (Reguler) : Rp. 850.000,-</label>
                                     </div>
                                     <div class="form-check mb-2">
                                         <input class="form-check-input @error('biaya') is-invalid @enderror"
@@ -276,23 +260,39 @@
                                             @if ($pendaftaran->biaya == 425000) checked @endif>
                                         <label class="form-check-label" style="top: -1px; position:relative;">Perpanjang
                                             Program Sarjana
-                                            Kelas B (Ekstensi) : Rp. 425.000,-</label>
+                                            Kelas A (Reguler) : Rp. 425.000,-</label>
                                     </div>
                                     <div class="form-check mb-2">
                                         <input class="form-check-input @error('biaya') is-invalid @enderror"
-                                            type="radio" name="biaya" value="650000"
-                                            @if ($pendaftaran->biaya == 650000) checked @endif>
+                                            type="radio" name="biaya" value="950000"
+                                            @if ($pendaftaran->biaya == 950000) checked @endif>
+                                        <label class="form-check-label" style="top: -1px; position:relative;">Program
+                                            Sarjana Kelas B
+                                            (Ekstensi) : Rp. 950.000,-</label>
+                                    </div>
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input @error('biaya') is-invalid @enderror"
+                                            type="radio" name="biaya" value="475000"
+                                            @if ($pendaftaran->biaya == 475000) checked @endif>
+                                        <label class="form-check-label" style="top: -1px; position:relative;">Perpanjang
+                                            Program Sarjana
+                                            Kelas B (Ekstensi) : Rp. 475.000,-</label>
+                                    </div>
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input @error('biaya') is-invalid @enderror"
+                                            type="radio" name="biaya" value="750000"
+                                            @if ($pendaftaran->biaya == 750000) checked @endif>
                                         <label class="form-check-label" style="top: -1px; position:relative;">Program
                                             Diploma Kelas A
-                                            (Reguler) : Rp. 650.000,-</label>
+                                            (Reguler) : Rp. 750.000,-</label>
                                     </div>
                                     <div class="form-check mb-2">
                                         <input class="form-check-input @error('biaya') is-invalid @enderror"
-                                            type="radio" name="biaya" value="325000"
-                                            @if ($pendaftaran->biaya == 325000) checked @endif>
+                                            type="radio" name="biaya" value="375000"
+                                            @if ($pendaftaran->biaya == 375000) checked @endif>
                                         <label class="form-check-label" style="top: -1px; position:relative;">Perpanjang
                                             Program Diploma
-                                            Kelas A (Reguler) : Rp. 325.000,-</label>
+                                            Kelas A (Reguler) : Rp. 375.000,-</label>
                                     </div>
                                     @error('biaya')
                                         <div class="invalid-feedback">{{ $message }}</div>
@@ -300,7 +300,8 @@
                                 </div>
 
                                 <div class="form-group mt-4">
-                                    <button type="submit" class="btn btn-success">Submit</button>
+                                    <button type="submit" class="btn btn-success"
+                                        onclick="this.disabled=true;this.innerHTML='Memproses...';this.form.submit();">Submit</button>
                                 </div>
                             </form>
                         </div>

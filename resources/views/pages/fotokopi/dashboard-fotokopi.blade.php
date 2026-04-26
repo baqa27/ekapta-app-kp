@@ -41,14 +41,14 @@
                                     <li class="nav-item"><a class="nav-link active" href="#tab_1" data-toggle="tab">Jilid
                                             Review</a>
                                     </li>
-                                    <li class="nav-item"><a class="nav-link" href="#tab_2" data-toggle="tab">Jilid
-                                            Selesai</a>
-                                    </li>
                                     <li class="nav-item"><a class="nav-link" href="#tab_3" data-toggle="tab">Jilid
                                             Revisi</a>
                                     </li>
                                     <li class="nav-item"><a class="nav-link" href="#tab_4" data-toggle="tab">Jilid
                                             Valid</a>
+                                    </li>
+                                     <li class="nav-item"><a class="nav-link" href="#tab_2" data-toggle="tab">Jilid
+                                            Selesai</a>
                                     </li>
                                 @endif
                             </ul>
@@ -157,12 +157,14 @@
                                                                 @endif
                                                             </td>
                                                             <td class="text-center">
+                                                                <a href="{{ route('jilid.detail', $jilid->id) }}"
+                                                                    class="btn btn-info btn-sm"><i
+                                                                        class="fas fa-info-circle"></i> Detail</a>
                                                                 @if (!$jilid->is_completed)
                                                                     <a href="{{ route('jilid.confirm.completed', $jilid->id) }}"
-                                                                        class="btn btn-primary btn-sm"
-                                                                        onclick="return confirm('Yakin ingin konfirmasi?')"><i
-                                                                            class="fas fa-check-circle"></i> Konfirmasi
-                                                                        Sudah Setor ke Perpus</a>
+                                                                        class="btn btn-success btn-sm"
+                                                                        onclick="return confirm('Yakin ingin konfirmasi bahwa mahasiswa sudah setor ke perpustakaan?')"><i
+                                                                            class="fas fa-check-circle"></i> Konfirmasi Setor</a>
                                                                 @endif
                                                             </td>
                                                         </tr>
@@ -206,7 +208,11 @@
                                                             <td>
                                                                 <span class="badge bg-warning">REVISI</span>
                                                             </td>
-                                                            <td></td>
+                                                            <td>
+                                                                <a href="{{ route('jilid.detail', $jilid->id) }}"
+                                                                    class="btn btn-info btn-sm"><i
+                                                                        class="fas fa-info-circle"></i> Detail</a>
+                                                            </td>
                                                         </tr>
                                                     @endif
                                                 @endforeach
@@ -248,7 +254,11 @@
                                                             <td>
                                                                 <span class="badge bg-primary">VALID</span>
                                                             </td>
-                                                            <td></td>
+                                                            <td>
+                                                                <a href="{{ route('jilid.detail', $jilid->id) }}"
+                                                                    class="btn btn-info btn-sm"><i
+                                                                        class="fas fa-info-circle"></i> Detail</a>
+                                                            </td>
                                                         </tr>
                                                     @endif
                                                 @endforeach

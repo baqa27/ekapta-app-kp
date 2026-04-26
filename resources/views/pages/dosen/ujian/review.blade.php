@@ -91,7 +91,7 @@
 
                             <div class="shadow-lg p-2 rounded">
                                 <b>Laporan Skripsi : </b>
-                                <a href="{{ asset($review_ujian->lampiran ? $review_ujian->lampiran : $review_ujian->ujian->lampiran_laporan) }}"
+                                <a href="{{ storage_url($review_ujian->lampiran ? $review_ujian->lampiran : $review_ujian->ujian->lampiran_laporan) }}"
                                     class="ml-3 text-primary" target="_blank"><i
                                         class="fas fa-paperclip mr-2"></i>
                                     {{ Str::substr($review_ujian->lampiran ? $review_ujian->lampiran : $review_ujian->ujian->lampiran_laporan, 40) }}</a>
@@ -246,7 +246,7 @@
                                         <small>
                                             Lampiran :
                                             @if ($revisi->lampiran)
-                                                <a href="{{ asset($revisi->lampiran) }}" class="ml-3" target="_blank"><i
+                                                <a href="{{ storage_url($revisi->lampiran) }}" class="ml-3" target="_blank"><i
                                                         class="fas fa-paperclip"></i>
                                                     {{ Str::substr($revisi->lampiran, 40) }}</a>
                                             @endif

@@ -37,6 +37,7 @@
                                     <th>No</th>
                                     <th>Mahasiswa</th>
                                     <th>Prodi</th>
+                                    <th>Kelas</th>
                                     <th>Judul</th>
                                     <th>Status</th>
                                     <th>Aksi</th>
@@ -55,6 +56,9 @@
                                     <td>
                                         {{ $pengajuan->prodi->namaprodi }}
                                     </td>
+                                    <td>
+                                        {{ \App\Helpers\AppHelper::format_kelas_mahasiswa($pengajuan->mahasiswa->kelas ?? null) }}
+                                    </td>
                                     <td>{{ $pengajuan->judul }}</td>
                                     <td>
                                         @if ($pengajuan->status == 'review')
@@ -65,6 +69,8 @@
                                         <span class="badge bg-success">Diterima</span>
                                         @elseif ($pengajuan->status == 'ditolak')
                                         <span class="badge bg-danger">Ditolak</span>
+                                        @else
+                                        <span class="badge bg-danger">Dibatalkan</span>
                                         @endif
                                     </td>
                                     <td>
@@ -82,6 +88,7 @@
                                     <th>No</th>
                                     <th>Mahasiswa</th>
                                     <th>Prodi</th>
+                                    <th>Kelas</th>
                                     <th>Judul</th>
                                     <th>Status</th>
                                     <th>Aksi</th>

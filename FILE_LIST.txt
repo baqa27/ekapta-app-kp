@@ -1,0 +1,70 @@
+========================================
+DAFTAR FILE YANG DIUBAH - UPDATE HOSTING
+========================================
+
+Total: 11 File
+
+CONTROLLERS (3 files):
+----------------------
+1. app/Http/Controllers/KP/PendaftaranController.php
+2. app/Http/Controllers/KP/BimbinganController.php
+3. app/Http/Controllers/BimbinganController.php
+
+MODELS (1 file):
+----------------
+4. app/Models/KP/Pendaftaran.php
+
+HELPERS (1 file):
+-----------------
+5. app/Helpers/StorageHelper.php
+
+VIEWS - PENDAFTARAN MAHASISWA (3 files):
+-----------------------------------------
+6. resources/views/kp/pages/mahasiswa/pendaftaran/create.blade.php
+7. resources/views/kp/pages/mahasiswa/pendaftaran/edit.blade.php
+8. resources/views/kp/pages/mahasiswa/pendaftaran/detail.blade.php
+
+VIEWS - ADMIN (1 file):
+-----------------------
+9. resources/views/kp/pages/admin/pendaftaran/review.blade.php
+
+VIEWS - PRODI (1 file):
+-----------------------
+10. resources/views/kp/pages/prodi/pengajuan/review.blade.php
+
+LAYOUTS (1 file):
+-----------------
+11. resources/views/kp/layouts/dashboard.blade.php
+
+========================================
+CARA UPLOAD:
+========================================
+
+1. Jalankan: copy-files-for-upload.bat
+2. Compress folder yang dibuat menjadi ZIP
+3. Upload ZIP ke hosting
+4. Extract di hosting
+5. Jalankan di terminal hosting:
+   php artisan config:clear
+   php artisan cache:clear
+   php artisan view:clear
+
+========================================
+BACKUP FILES (sudah ada di local):
+========================================
+
+- app/Http/Controllers/KP/PendaftaranController.php.backup
+- resources/views/kp/pages/mahasiswa/pendaftaran/create.blade.php.backup
+- resources/views/kp/pages/mahasiswa/pendaftaran/edit.blade.php.backup
+
+========================================
+DATABASE (OPSIONAL):
+========================================
+
+Jika field 'kelas' belum ada, jalankan SQL:
+
+ALTER TABLE `pendaftaran_kps` 
+ADD COLUMN `kelas` VARCHAR(50) NULL DEFAULT 'reguler' 
+AFTER `jenis_mahasiswa`;
+
+========================================

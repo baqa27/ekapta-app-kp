@@ -537,7 +537,7 @@
 
                     <div class="d-flex justify-content-center mt-2">
                         @if ($dekanActive)
-                            <img src="{{ asset($dekanActive->image != null ? $dekanActive->image : 'ekapta/assets/img/not-found.png') }}"
+                                        <img src="{{ asset($dekanActive->image != null ? $dekanActive->image : 'ekapta/assets/img/not-found.png') }}"
                                 alt="TTD Dekan" height="150">
                         @endif
                     </div>

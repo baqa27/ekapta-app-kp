@@ -9,6 +9,8 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 class BagiansImport implements ToModel, WithHeadingRow
 {
 
+    public $prodi;
+
     public function __construct($prodi)
     {
         $this->prodi = $prodi;
@@ -24,6 +26,7 @@ class BagiansImport implements ToModel, WithHeadingRow
         return new Bagian([
             'prodi_id' => $this->prodi,
             'bagian' => $row['bagian'],
+            'tahun_masuk' => $row['tahun_masuk'],
         ]);
     }
 }

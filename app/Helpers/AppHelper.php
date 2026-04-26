@@ -3,17 +3,22 @@
 namespace App\Helpers;
 
 use App\Models\Bimbingan;
+use App\Models\KP\Bimbingan as BimbinganKP;
 use App\Models\Dosen;
 use App\Models\Mahasiswa;
 use App\Models\MahasiswaDetail;
 use App\Models\Pendaftaran;
 use App\Models\Pengajuan;
 use App\Models\Prodi;
+use App\Services\GoogleDriveLampiranService;
 use Carbon\Carbon;
-use Illuminate\Support\Str;
-use App\Models\Mail;
 use App\Models\Ujian;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Throwable;
 
 class AppHelper
 {
@@ -31,6 +36,33 @@ class AppHelper
         if ($mahasiswaDetail) {
             return $mahasiswaDetail;
         }
+    }
+
+    /**
+     * Hitung semester berdasarkan tahun masuk.
+     * Semester 1 dimulai Agustus tahun masuk.
+     * Tiap 6 bulan naik 1 (Agustus = ganjil, Februari = genap).
+     */
+    public static function hitungSemester($thmasuk)
+    {
+        $now = Carbon::now();
+        $tahun = (int) $thmasuk;
+
+        // Semester 1 mulai Agustus tahun masuk
+        $startSemester = Carbon::create($tahun, 8, 1);
+
+        if ($now->lt($startSemester)) {
+            return 1;
+        }
+
+        // Hitung selisih bulan dari Agustus tahun masuk
+        $diffMonths = $startSemester->diffInMonths($now);
+
+        // Setiap 6 bulan = 1 semester
+        $semester = (int) floor($diffMonths / 6) + 1;
+
+        // Batas maksimal semester 14
+        return min($semester, 14);
     }
 
     public function getDosen($nidn)
@@ -82,54 +114,292 @@ class AppHelper
         }
     }
 
+    public function cekBagianIsAccKP($id)
+    {
+        $bimbingan = BimbinganKP::where('id', $id)->where('status', 'diterima')->first();
+        if ($bimbingan) {
+            return true;
+        }
+    }
+
     public function uploadLampiran($lampiran, $path)
     {
         if ($lampiran) {
-            // Use when hoting
+            $path = $this->normalizeLampiranStoragePath($path);
             $lampiranPath = $lampiran->store($path, 'public');
-            return '/ekapta-app/storage/app/public/'.$lampiranPath;
+            $uploadedToGoogleDrive = $this->syncLampiranToGoogleDrive($lampiranPath);
 
-            // $lampiranPath = $lampiran->store($path, 'public');
-            // return $lampiranPath;
+            if (
+                $uploadedToGoogleDrive &&
+                !(bool) config('services.google_drive_lampiran.keep_local_copy', true)
+            ) {
+                Storage::disk('public')->delete($lampiranPath);
+            }
+
+            if (Str::startsWith($path, 'lampirans/')) {
+                return $lampiranPath;
+            }
+
+            // Use when hosting
+            return '/ekapta-app-new/storage/app/public/' . $lampiranPath;
         }
     }
 
     public function deleteLampiran($lampiran)
     {
-        // Use when hoting
-        $target = Str::substr($lampiran,20); //output : /app/public/[files]
-        if ($target) {
-           if (file_exists(storage_path($target))) {
+        if (!$lampiran) return;
+
+        $relativePath = $this->extractLampiranRelativePath($lampiran);
+
+        // Use when hoting - support both old (/ekapta-app/) and new (/ekapta-app-new/) paths
+        if (Str::startsWith($lampiran, '/ekapta-app-new/')) {
+            $target = Str::substr($lampiran, 24); //output : /app/public/[files]
+            if (file_exists(storage_path($target))) {
                 unlink(storage_path($target));
-           }
+            }
+        } elseif (Str::startsWith($lampiran, '/ekapta-app/')) {
+            $target = Str::substr($lampiran, 20); //output : /app/public/[files]
+            if (file_exists(storage_path($target))) {
+                unlink(storage_path($target));
+            }
+        } else {
+            $publicPath = ltrim($this->normalizeLampiranUrlPath($lampiran), '/');
+            if (file_exists(public_path($publicPath))) {
+                unlink(public_path($publicPath));
+            } else {
+                $storagePath = storage_path('app/public/' . $publicPath);
+                if (file_exists($storagePath)) {
+                    unlink($storagePath);
+                }
+            }
         }
 
-        // if ($lampiran) {
-        //    if (file_exists(public_path($lampiran))) {
-        //        unlink(public_path($lampiran));
-        //    }
-        // }
+        if ($relativePath) {
+            $this->deleteLampiranFromGoogleDrive($relativePath);
+        }
     }
 
     public function convertImage($base_path)
     {
         $path = base_path($base_path);
+
+        if (!file_exists($path)) {
+            return null;
+        }
+
         $type = pathinfo($path, PATHINFO_EXTENSION);
         $data = file_get_contents($path);
         $image = 'data:image/' . $type . ';base64,' . base64_encode($data);
         return $image;
     }
 
-    public function is_expired_in_one_year($date)
+    /**
+     * Convert stored image path (from uploadLampiran) to base64
+     * Stored path format: /ekapta-app/storage/app/public/images/xxx.jpg
+     * Hosting path: /home/unsiq/domains/fastikom-unsiq.ac.id/public_html/ekapta/ekapta-app-new/
+     */
+    public function convertStorageImage($storedPath)
     {
-        $status = null;
+        if (!$storedPath) return null;
 
-        $date_expired = Carbon::parse($date)->addMonthsNoOverflow(12);
-        if(now()->gt($date_expired)){
-            $status = true;
+        // Extract relative path (e.g. "images/xxx.jpg") from stored path
+        $relativePath = null;
+        $needle = 'storage/app/public/';
+        $pos = strpos($storedPath, $needle);
+        if ($pos !== false) {
+            $relativePath = substr($storedPath, $pos + strlen($needle));
         }
 
-        return $status;
+        $tried = [];
+
+        if ($relativePath) {
+            // Strategy 1: storage_path (paling reliable di hosting)
+            $absPath = storage_path('app/public/' . $relativePath);
+            $exists = @file_exists($absPath);
+            $tried[] = '[S1] storage_path: ' . $absPath . ' => ' . ($exists ? 'EXISTS' : 'NOT FOUND');
+            if ($exists) {
+                $data = @file_get_contents($absPath);
+                if ($data !== false) {
+                    $type = pathinfo($absPath, PATHINFO_EXTENSION);
+                    return 'data:image/' . $type . ';base64,' . base64_encode($data);
+                }
+            }
+
+            // Strategy 2: public_path via symlink (public/images -> storage/app/public/images)
+            $pubPath = public_path($relativePath);
+            $exists = @file_exists($pubPath);
+            $tried[] = '[S2] public_path: ' . $pubPath . ' => ' . ($exists ? 'EXISTS' : 'NOT FOUND');
+            if ($exists) {
+                $data = @file_get_contents($pubPath);
+                if ($data !== false) {
+                    $type = pathinfo($pubPath, PATHINFO_EXTENSION);
+                    return 'data:image/' . $type . ';base64,' . base64_encode($data);
+                }
+            }
+
+            // Strategy 3: base_path + storage
+            $basePath = base_path('storage/app/public/' . $relativePath);
+            $exists = @file_exists($basePath);
+            $tried[] = '[S3] base_path: ' . $basePath . ' => ' . ($exists ? 'EXISTS' : 'NOT FOUND');
+            if ($exists) {
+                $data = @file_get_contents($basePath);
+                if ($data !== false) {
+                    $type = pathinfo($basePath, PATHINFO_EXTENSION);
+                    return 'data:image/' . $type . ';base64,' . base64_encode($data);
+                }
+            }
+        }
+
+        // Strategy 4: substr(20) sama seperti deleteLampiran lalu pakai storage_path
+        if (strlen($storedPath) > 20) {
+            $target = substr($storedPath, 20);
+            $absPath = storage_path(ltrim($target, '/'));
+            $exists = @file_exists($absPath);
+            $tried[] = '[S4] deleteLampiran-style: ' . $absPath . ' => ' . ($exists ? 'EXISTS' : 'NOT FOUND');
+            if ($exists) {
+                $data = @file_get_contents($absPath);
+                if ($data !== false) {
+                    $type = pathinfo($absPath, PATHINFO_EXTENSION);
+                    return 'data:image/' . $type . ';base64,' . base64_encode($data);
+                }
+            }
+        }
+
+        // Strategy 5: Cek di folder app lama (ekapta-app) jika app baru (ekapta-app-new)
+        // File mungkin masih di folder lama karena belum di-upload ulang
+        if ($relativePath) {
+            $currentBase = base_path();
+            // Jika base path mengandung 'ekapta-app-new', cek juga di 'ekapta-app'
+            if (strpos($currentBase, 'ekapta-app-new') !== false) {
+                $oldBase = str_replace('ekapta-app-new', 'ekapta-app', $currentBase);
+                $oldPath = $oldBase . '/storage/app/public/' . $relativePath;
+                $exists = @file_exists($oldPath);
+                $tried[] = '[S5] old-app-path: ' . $oldPath . ' => ' . ($exists ? 'EXISTS' : 'NOT FOUND');
+                if ($exists) {
+                    $data = @file_get_contents($oldPath);
+                    if ($data !== false) {
+                        $type = pathinfo($oldPath, PATHINFO_EXTENSION);
+                        return 'data:image/' . $type . ';base64,' . base64_encode($data);
+                    }
+                }
+            }
+        }
+
+        // Log semua yang dicoba untuk debugging
+        \Illuminate\Support\Facades\Log::warning('convertStorageImage FAILED - storedPath: ' . $storedPath . ' | relativePath: ' . ($relativePath ?? 'null') . ' | base_path: ' . base_path() . ' | storage_path: ' . storage_path() . ' | Tried: ' . implode(' | ', $tried));
+
+        return null;
+    }
+
+    public function is_expired_in_one_year($date)
+    {
+        $date_expired = self::parseFlexibleDate($date);
+
+        if (!$date_expired) {
+            return null;
+        }
+
+        return now()->gt($date_expired->copy()->addMonthsNoOverflow(12)->endOfDay());
+    }
+
+    public static function parseFlexibleDate($date)
+    {
+        if ($date instanceof Carbon) {
+            return $date->copy();
+        }
+
+        if ($date instanceof \DateTimeInterface) {
+            return Carbon::instance($date);
+        }
+
+        if (blank($date)) {
+            return null;
+        }
+
+        $value = trim((string) $date);
+        $formats = [
+            'Y-m-d H:i:s',
+            'Y-m-d',
+            'd-m-Y',
+            'd/m/Y',
+            'j-n-Y',
+            'j/n/Y',
+            'j F Y',
+        ];
+
+        foreach ($formats as $format) {
+            try {
+                return Carbon::createFromFormat($format, $value);
+            } catch (\Throwable $th) {
+            }
+        }
+
+        $normalized = Str::lower(preg_replace('/\s+/', ' ', $value));
+        $monthMap = [
+            'januari' => 'january',
+            'februari' => 'february',
+            'maret' => 'march',
+            'april' => 'april',
+            'mei' => 'may',
+            'juni' => 'june',
+            'juli' => 'july',
+            'agustus' => 'august',
+            'september' => 'september',
+            'oktober' => 'october',
+            'november' => 'november',
+            'desember' => 'december',
+        ];
+
+        foreach ($monthMap as $indo => $english) {
+            $normalized = preg_replace('/\b' . preg_quote($indo, '/') . '\b/u', $english, $normalized);
+        }
+
+        try {
+            return Carbon::parse($normalized);
+        } catch (\Throwable $th) {
+            return null;
+        }
+    }
+
+    public static function getBimbinganStartDateFromPendaftaran($pendaftaran)
+    {
+        if (!$pendaftaran) {
+            return null;
+        }
+
+        $paymentDate = self::parseFlexibleDate(data_get($pendaftaran, 'tanggal_pembayaran'));
+        if ($paymentDate) {
+            return $paymentDate->startOfDay();
+        }
+
+        $acceptedDate = self::parseFlexibleDate(data_get($pendaftaran, 'tanggal_acc'));
+        if ($acceptedDate) {
+            return $acceptedDate->copy();
+        }
+
+        return self::parseFlexibleDate(data_get($pendaftaran, 'created_at'));
+    }
+
+    public static function getBimbinganExpiredDateFromPendaftaran($pendaftaran, $durationMonths = 12)
+    {
+        $startDate = self::getBimbinganStartDateFromPendaftaran($pendaftaran);
+
+        if (!$startDate) {
+            return null;
+        }
+
+        return $startDate->copy()->addMonthsNoOverflow($durationMonths);
+    }
+
+    public static function isBimbinganExpiredFromPendaftaran($pendaftaran, $durationMonths = 12)
+    {
+        $expiredDate = self::getBimbinganExpiredDateFromPendaftaran($pendaftaran, $durationMonths);
+
+        if (!$expiredDate) {
+            return null;
+        }
+
+        return now()->gt($expiredDate->copy()->endOfDay());
     }
 
     public function hitung_nilai_mean($nilai_1, $nilai_2, $nilai_3, $nilai_4)
@@ -154,10 +424,29 @@ class AppHelper
         return $new_date.' WIB';
     }
 
-     public static function parse_date_export($date){
+    public static function parse_date_export($date){
         $parse_date = Carbon::parse($date);
         $new_date = $parse_date->format('d-m-Y');
         return $new_date;
+    }
+
+    public static function format_kelas_mahasiswa($kelas)
+    {
+        if (blank($kelas)) {
+            return '-';
+        }
+
+        $normalized = Str::lower(trim((string) $kelas));
+
+        if (in_array($normalized, ['a', 'reguler', 'regular', 'reguler_s1', 'reguler_d3'], true)) {
+            return 'Reguler (A)';
+        }
+
+        if (in_array($normalized, ['b', 'karyawan'], true)) {
+            return 'Karyawan (B)';
+        }
+
+        return (string) $kelas;
     }
 
     public static function parse_date_short_surat($date){
@@ -168,9 +457,11 @@ class AppHelper
 
     public static function count_mahasiswa_bimbingan_dosen($dosen, $is_utama = true){
         if ($is_utama) {
-            $mahasiswas = $dosen->mahasiswas()->wherePivot('status', 'utama')->get();
+            $mahasiswas = $dosen->mahasiswas()->wherePivot('status', 'utama')->whereDoesntHave('jilid')->get();
+            // $mahasiswas = $dosen->mahasiswas()->wherePivot('status', 'utama')->get();
         }else{
-            $mahasiswas = $dosen->mahasiswas()->wherePivot('status', 'pendamping')->get();
+            $mahasiswas = $dosen->mahasiswas()->wherePivot('status', 'pendamping')->whereDoesntHave('jilid')->get();
+            // $mahasiswas = $dosen->mahasiswas()->wherePivot('status', 'pendamping')->get();
         }
         return count($mahasiswas);
     }
@@ -178,7 +469,88 @@ class AppHelper
     public static function check_bimbingan_is_complete($mahasiswa){
         $bimbingans_acc = $mahasiswa->bimbingans()->where('status', Bimbingan::DITERIMA)->get();
         $prodi = Prodi::where('namaprodi', $mahasiswa->prodi)->first();
-        if (count($bimbingans_acc ) - count($prodi->bagians) == count($prodi->bagians)){
+        $bagians = $prodi->bagians()->where("tahun_masuk", "LIKE", "%" . $mahasiswa->thmasuk . "%")->get();
+
+        if (count($bimbingans_acc ) - count($bagians) == count($bagians)){
+            return true;
+        }
+        return false;
+    }
+
+    public static function check_bimbingan_kp_is_complete($mahasiswa){
+        // KP: Semua bagian harus sudah di-ACC
+        $bimbingans_acc = $mahasiswa->bimbingansKP()->where('status', 'diterima')->get();
+
+        // Cari prodi (handle backward compatibility: kode vs nama)
+        $prodi = Prodi::where('namaprodi', $mahasiswa->prodi)
+            ->orWhere('kode', $mahasiswa->prodi)
+            ->first();
+
+        if (!$prodi) return false;
+
+        // Ambil bagian KP yang sesuai tahun masuk
+        $bagians = $prodi->bagiansKP()
+            ->where(function($query) use ($mahasiswa) {
+                 $query->where("tahun_masuk", "LIKE", "%" . $mahasiswa->thmasuk . "%")
+                       ->orWhereNull("tahun_masuk")
+                       ->orWhere("tahun_masuk", "");
+            })
+            ->get();
+
+        if (count($bagians) == 0) return false;
+
+        // Cek jumlah bimbingan acc >= jumlah bagian
+        if (count($bimbingans_acc) >= count($bagians)){
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Alias untuk check_bimbingan_kp_is_complete
+     * Digunakan oleh SeminarController
+     */
+    public static function canAccessSeminar($mahasiswa)
+    {
+        return self::check_bimbingan_kp_is_complete($mahasiswa);
+    }
+
+    /**
+     * Cek apakah mahasiswa bisa akses Pengumpulan Akhir KP
+     *
+     * Reguler: Seminar KP harus lulus (is_lulus = 1)
+     * Karyawan: Langsung setelah semua bimbingan ACC (tanpa seminar)
+     */
+    public static function canAccessPengumpulanAkhir($mahasiswa)
+    {
+        // Cek pendaftaran KP untuk mengetahui jenis mahasiswa
+        $pendaftaran = $mahasiswa->pendaftaransKP()
+            ->where('status', \App\Models\KP\Pendaftaran::DITERIMA)
+            ->first();
+
+        // Jika kelas karyawan: cukup semua bimbingan ACC (tanpa seminar)
+        if ($pendaftaran && $pendaftaran->jenis_mahasiswa === \App\Models\KP\Pendaftaran::JENIS_KARYAWAN) {
+            // Cek apakah semua bimbingan sudah ACC
+            return self::check_bimbingan_kp_is_complete($mahasiswa);
+        }
+
+        // Reguler: harus lulus seminar dulu
+        if ($mahasiswa->seminarKP && $mahasiswa->seminarKP->is_lulus == 1) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Cek apakah mahasiswa adalah kelas karyawan berdasarkan pendaftaran KP
+     */
+    public static function isKaryawanKP($mahasiswa)
+    {
+        $pendaftaran = $mahasiswa->pendaftaransKP()
+            ->where('status', \App\Models\KP\Pendaftaran::DITERIMA)
+            ->first();
+
+        if ($pendaftaran && $pendaftaran->jenis_mahasiswa === \App\Models\KP\Pendaftaran::JENIS_KARYAWAN) {
             return true;
         }
         return false;
@@ -188,7 +560,7 @@ class AppHelper
     {
         //\Mail::to($details['mail'])->send(new \App\Mail\NotificationMail($details));
         try {
-            \Mail::to($details['mail'])->send(new \App\Mail\NotificationMail($details));
+            Mail::to($details['mail'])->send(new \App\Mail\NotificationMail($details));
         } catch (\Throwable $e) {
             return back()->with('warning','Email notifikasi gagal terkirim');
         }
@@ -251,5 +623,164 @@ class AppHelper
     public static function instance()
     {
         return new AppHelper();
+    }
+
+    /**
+     * Generate proper storage URL for file paths
+     * Handles both old format (/ekapta-app/storage/...) and new format (storage/...)
+     */
+    public function storageUrl($path)
+    {
+        if (!$path) {
+            return null;
+        }
+
+        // Jika path sudah lengkap dengan http
+        if (Str::startsWith($path, 'http://') || Str::startsWith($path, 'https://')) {
+            return $path;
+        }
+
+        // Jika path lama masih pakai /ekapta-app(-new)/storage/app/public/,
+        // ubah ke path relatif agar tetap bisa lewat storage controller.
+        if (Str::startsWith($path, '/ekapta-app-new/storage/app/public/') || Str::startsWith($path, '/ekapta-app/storage/app/public/')) {
+            $path = Str::after($path, 'storage/app/public/');
+        }
+
+        if (Str::startsWith($path, 'storage/app/public/')) {
+            $path = Str::after($path, 'storage/app/public/');
+        }
+
+        $path = $this->normalizeLampiranUrlPath($path);
+
+        // Jika path dimulai dengan storage/
+        if (Str::startsWith($path, 'storage/')) {
+            return '/' . ltrim($path, '/');
+        }
+
+        // Lampiran: URL langsung nama file saja.
+        // Contoh: /abc123random.pdf — route catch-all di web.php akan handle.
+        if (
+            Str::startsWith($path, 'lampirans/') ||
+            Str::startsWith($path, '/lampirans/')
+        ) {
+            return url(basename($path));
+        }
+
+        // Jika path dimulai dengan images/ atau /images/
+        if (
+            Str::startsWith($path, 'images/') ||
+            Str::startsWith($path, '/images/')
+        ) {
+            return asset(ltrim($path, '/'));
+        }
+
+        // Jika path dimulai dengan public/
+        if (Str::startsWith($path, 'public/')) {
+            return asset(Str::after($path, 'public/'));
+        }
+
+        // Default: anggap path relatif, gunakan asset()
+        return asset(ltrim($path, '/'));
+    }
+
+    private function normalizeLampiranStoragePath($path)
+    {
+        $path = ltrim($path, '/');
+
+        if ($path === 'lampiran' || $path === 'lampirans' || $path === 'lampiran/ta') {
+            return 'lampirans/ta';
+        }
+
+        if ($path === 'lampiran/kp') {
+            return 'lampirans/kp';
+        }
+
+        return $path;
+    }
+
+    private function normalizeLampiranUrlPath($path)
+    {
+        if (!$path) {
+            return $path;
+        }
+
+        $hasLeadingSlash = Str::startsWith($path, '/');
+        $normalizedPath = ltrim($path, '/');
+
+        if (Str::startsWith($normalizedPath, 'lampiran/')) {
+            $normalizedPath = 'lampirans/' . Str::after($normalizedPath, 'lampiran/');
+        } elseif ($normalizedPath === 'lampiran') {
+            $normalizedPath = 'lampirans';
+        }
+
+        return $hasLeadingSlash ? '/' . $normalizedPath : $normalizedPath;
+    }
+
+    private function syncLampiranToGoogleDrive($relativePath)
+    {
+        $relativePath = $this->extractLampiranRelativePath($relativePath);
+
+        if (!$relativePath) {
+            return false;
+        }
+
+        $absolutePath = storage_path('app/public/' . ltrim($relativePath, '/'));
+        if (!file_exists($absolutePath)) {
+            return false;
+        }
+
+        try {
+            $googleDrive = app(GoogleDriveLampiranService::class);
+            if (!$googleDrive->enabled()) {
+                return false;
+            }
+
+            $googleDrive->uploadStoredFile($relativePath, $absolutePath);
+
+            return true;
+        } catch (Throwable $throwable) {
+            Log::warning('Google Drive upload lampiran gagal.', [
+                'path' => $relativePath,
+                'message' => $throwable->getMessage(),
+            ]);
+
+            return false;
+        }
+    }
+
+    private function deleteLampiranFromGoogleDrive($relativePath)
+    {
+        try {
+            $googleDrive = app(GoogleDriveLampiranService::class);
+            if ($googleDrive->enabled()) {
+                $googleDrive->deleteFile($relativePath);
+            }
+        } catch (Throwable $throwable) {
+            Log::warning('Google Drive delete lampiran gagal.', [
+                'path' => $relativePath,
+                'message' => $throwable->getMessage(),
+            ]);
+        }
+    }
+
+    private function extractLampiranRelativePath($path)
+    {
+        if (!$path) {
+            return null;
+        }
+
+        $path = str_replace('\\', '/', trim((string) $path));
+
+        if (Str::contains($path, 'storage/app/public/')) {
+            return ltrim(Str::after($path, 'storage/app/public/'), '/');
+        }
+
+        $path = ltrim($this->normalizeLampiranUrlPath($path), '/');
+
+        if (Str::startsWith($path, 'public/')) {
+            $path = Str::after($path, 'public/');
+        }
+
+        return $path !== '' ? $path : null;
     }
 }

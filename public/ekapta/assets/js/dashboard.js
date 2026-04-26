@@ -137,20 +137,21 @@ $(function() {
 
 });
 $(function() {
-    $("#example4").DataTable({
-        "responsive": true,
-        "lengthChange": false,
-        "autoWidth": false,
-    }).buttons().container().appendTo('#example4_wrapper .col-md-6:eq(0)');
-
-});
-$(function() {
     $("#examplebutton").DataTable({
         "responsive": true,
         "lengthChange": false,
         "autoWidth": false,
         "buttons": ["copy", "csv", "excel", "pdf", "print"]
     }).buttons().container().appendTo('#examplebutton_wrapper .col-md-6:eq(0)');
+
+});
+$(function() {
+    $("#examplebutton2").DataTable({
+        "responsive": true,
+        "lengthChange": false,
+        "autoWidth": false,
+        "buttons": ["copy", "csv", "excel", "pdf", "print"]
+    }).buttons().container().appendTo('#examplebutton2_wrapper .col-md-6:eq(0)');
 
 });
 

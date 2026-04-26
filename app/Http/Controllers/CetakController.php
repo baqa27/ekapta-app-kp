@@ -71,7 +71,11 @@ class CetakController extends Controller
         $tanggal_acc = Carbon::parse($pendaftaran->tanggal_acc);
         $dateLocale = $tanggal_acc->day.' '.$tanggal_acc->monthName.' '.$tanggal_acc->year;
 
-        $dateExpired = Carbon::parse($pendaftaran->tanggal_acc)->addMonthsNoOverflow(12);
+        $dateExpired = AppHelper::getBimbinganExpiredDateFromPendaftaran($pendaftaran);
+        $tanggalPembayaran = AppHelper::parseFlexibleDate($pendaftaran->tanggal_pembayaran);
+        $tanggalPembayaranLocale = $tanggalPembayaran
+            ? $tanggalPembayaran->locale('id')->isoFormat('D MMMM Y')
+            : $pendaftaran->tanggal_pembayaran;
 
         $dekan = $prodi->fakultas->dekans()->where('status', 'active')->first();
 
@@ -96,11 +100,12 @@ class CetakController extends Controller
             'prodi' => $prodi,
             'date' =>  $tanggal_acc,
             'dateLocale' => $dateLocale,
+            'tanggal_pembayaran_locale' => $tanggalPembayaranLocale,
             'qr_code' => $qrcode,
             'date_expired' => $dateExpired->day.' '.$dateExpired->monthName.' '.$dateExpired->year,
             'dekan' => $dekan,
-            'stempel' => $prodi->fakultas->image ? AppHelper::instance()->convertImage('storage/app/public/' . substr($prodi->fakultas->image,31)) : null,
-            'ttd_dekan' => $dekan->image ? AppHelper::instance()->convertImage('storage/app/public/' . substr($dekan->image,31)): null,
+            'stempel' => $prodi->fakultas->image ? AppHelper::instance()->convertStorageImage($prodi->fakultas->image) : null,
+            'ttd_dekan' => $dekan->image ? AppHelper::instance()->convertStorageImage($dekan->image) : null,
             'no_urut' => $no_urut,
              'pengajuan' => $pengajuan,
              'qr_code_bimbingan' => $qrcode_bimbingan,
@@ -127,7 +132,11 @@ class CetakController extends Controller
         $tanggal_acc = Carbon::parse($pendaftaran->tanggal_acc);
         $dateLocale = $tanggal_acc->day.' '.$tanggal_acc->monthName.' '.$tanggal_acc->year;
 
-        $dateExpired = Carbon::parse($pendaftaran->tanggal_acc)->addMonthsNoOverflow(12);
+        $dateExpired = AppHelper::getBimbinganExpiredDateFromPendaftaran($pendaftaran);
+        $tanggalPembayaran = AppHelper::parseFlexibleDate($pendaftaran->tanggal_pembayaran);
+        $tanggalPembayaranLocale = $tanggalPembayaran
+            ? $tanggalPembayaran->locale('id')->isoFormat('D MMMM Y')
+            : $pendaftaran->tanggal_pembayaran;
 
         $dekan = $prodi->fakultas->dekans()->where('status', 'active')->first();
 
@@ -152,11 +161,12 @@ class CetakController extends Controller
             'prodi' => $prodi,
             'date' => $tanggal_acc,
             'dateLocale' => $dateLocale,
+            'tanggal_pembayaran_locale' => $tanggalPembayaranLocale,
             'qr_code' => $qrcode,
             'date_expired' => $dateExpired->day.' '.$dateExpired->monthName.' '.$dateExpired->year,
             'dekan' => $dekan,
-            'stempel' => $prodi->fakultas->image != null ? AppHelper::instance()->convertImage('storage/app/public/' . substr($prodi->fakultas->image, 31)) : null,
-            'ttd_dekan' => $dekan->image != null ? AppHelper::instance()->convertImage('storage/app/public/' . substr($dekan->image, 31)) : null,
+            'stempel' => $prodi->fakultas->image != null ? AppHelper::instance()->convertStorageImage($prodi->fakultas->image) : null,
+            'ttd_dekan' => $dekan->image != null ? AppHelper::instance()->convertStorageImage($dekan->image) : null,
             'no_urut' => $no_urut,
             'pengajuan' => $pengajuan,
             'qr_code_bimbingan' => $qrcode_bimbingan,
@@ -270,7 +280,7 @@ class CetakController extends Controller
 
         $dateLocale = Carbon::parse(now())->day.' '.Carbon::parse(now())->monthName.' '.Carbon::parse(now())->year;
 
-        $dateExpired = Carbon::parse($pendaftaran->tanggal_acc)->addMonthsNoOverflow(12);
+        $dateExpired = AppHelper::getBimbinganExpiredDateFromPendaftaran($pendaftaran);
 
         $bimbingan_dosen_utama = $dosenUtama->bimbingans()->with(['revisis','bagian'])->where('mahasiswa_id', $mahasiswa->id)->get();
         $bimbingan_dosen_pendamping = $dosenPendamping->bimbingans()->with(['revisis','bagian'])->where('mahasiswa_id', $mahasiswa->id)->get();
@@ -299,8 +309,8 @@ class CetakController extends Controller
             'dateLocale' => $dateLocale,
             'qr_code' => $qrcode,
             'date_expired' => $dateExpired->day.' '.$dateExpired->monthName.' '.$dateExpired->year,
-            'ttd_dosen_utama' => $dosenUtama->ttd != null ? AppHelper::instance()->convertImage('storage/app/public/' . substr($dosenUtama->ttd, 31)) : null,
-            'ttd_dosen_pendamping' => $dosenPendamping->ttd != null ? AppHelper::instance()->convertImage('storage/app/public/' . substr($dosenPendamping->ttd, 31)) : null,
+            'ttd_dosen_utama' => $dosenUtama->ttd != null ? AppHelper::instance()->convertStorageImage($dosenUtama->ttd) : null,
+            'ttd_dosen_pendamping' => $dosenPendamping->ttd != null ? AppHelper::instance()->convertStorageImage($dosenPendamping->ttd) : null,
             'bimbingan_dosen_utama' => $bimbingan_dosen_utama,
             'bimbingan_dosen_pendamping' => $bimbingan_dosen_pendamping,
             'no_urut' => $no_urut,
@@ -335,8 +345,8 @@ class CetakController extends Controller
             'dosen_pendamping' => $dosenPendamping,
             'prodi' => $prodi,
             'date' => $ujian ? AppHelper::parse_date_short_surat($ujian->tanggal_ujian) : null,
-            'ttd_dosen_utama' => $dosenUtama->ttd != null ? AppHelper::instance()->convertImage('storage/app/public/' . substr($dosenUtama->ttd, 31)) : null,
-            'ttd_dosen_pendamping' => $dosenPendamping->ttd != null ? AppHelper::instance()->convertImage('storage/app/public/' . substr($dosenPendamping->ttd, 31)) : null,
+            'ttd_dosen_utama' => $dosenUtama->ttd != null ? AppHelper::instance()->convertStorageImage($dosenUtama->ttd) : null,
+            'ttd_dosen_pendamping' => $dosenPendamping->ttd != null ? AppHelper::instance()->convertStorageImage($dosenPendamping->ttd) : null,
             'dosens' => $dosens,
             'type' => $type,
         ];
@@ -351,7 +361,7 @@ class CetakController extends Controller
         $mahasiswa = Mahasiswa::with(['ujians','pengajuans','dosens'])->where('nim', Auth::guard('mahasiswa')->user()->nim)->first();
         $pengajuan = $mahasiswa->pengajuans()->where('status', Pengajuan::DITERIMA)->first();
         $pendaftaran = Pendaftaran::where('pengajuan_id', $pengajuan->id)->first();
-        $prodi = Prodi::where('namaprodi', $mahasiswa->prodi)->first();
+        $prodi = Prodi::with(['fakultas', 'fakultas.dekans'])->where('namaprodi', $mahasiswa->prodi)->first();
         $dekan = $prodi->fakultas->dekans()->where('status', 'active')->first();
         $dosenUtama = $mahasiswa->dosens()->where('status', 'utama')->first();
         $dosenPendamping = $mahasiswa->dosens()->where('status', 'pendamping')->first();
@@ -365,10 +375,11 @@ class CetakController extends Controller
             'dosen_pendamping' => $dosenPendamping,
             'prodi' => AppHelper::instance()->getDosen($prodi->kodekaprodi),
             'date' => $ujian ? AppHelper::parse_date_short_surat($ujian->tanggal_ujian) : null,
-            'ttd_dosen_utama' => $dosenUtama->ttd != null ? AppHelper::instance()->convertImage('storage/app/public/' . substr($dosenUtama->ttd, 31)) : null,
-            'ttd_dosen_pendamping' => $dosenPendamping->ttd != null ? AppHelper::instance()->convertImage('storage/app/public/' . substr($dosenPendamping->ttd, 31)) : null,
+            'ttd_dosen_utama' => $dosenUtama->ttd != null ? AppHelper::instance()->convertStorageImage($dosenUtama->ttd) : null,
+            'ttd_dosen_pendamping' => $dosenPendamping->ttd != null ? AppHelper::instance()->convertStorageImage($dosenPendamping->ttd) : null,
             'dekan' => $dekan,
-            'ttd_dekan' => $dekan->image ? AppHelper::instance()->convertImage('storage/app/public/' . substr($dekan->image,31)): null,
+            'ttd_dekan' => $dekan->image ? AppHelper::instance()->convertStorageImage($dekan->image) : null,
+            'stempel' => $prodi->fakultas->image ? AppHelper::instance()->convertStorageImage($prodi->fakultas->image) : null,
         ];
 
         $pdf = PDF::setOptions(['isHTML5ParserEnabled' => true, 'isRemoteEnabled' => true]);

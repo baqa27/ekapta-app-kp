@@ -18,12 +18,13 @@ class CreateSeminarsTable extends Migration
             $table->string('lampiran_1');
             $table->string('lampiran_2');
             $table->string('lampiran_3')->nullable();
-            $table->string('lampiran_4')->nullable();
-            $table->string('lampiran_5')->nullable();
+            $table->string('jumlah_bayar')->nullable();
+            $table->string('nomor_pembayaran')->nullable();
             $table->string('lampiran_proposal')->nullable();
             $table->boolean('is_valid')->default(0);
             $table->timestamp('tanggal_acc')->nullable();
             $table->timestamp('tanggal_ujian')->nullable();
+            $table->string('tempat_ujian')->nullable();
             $table->tinyInteger('is_lulus')->nullable();
             $table->timestamps();
             $table->foreignId('pengajuan_id')->constrained();

@@ -27,7 +27,7 @@ class UjianController extends Controller
         }
         $ujians = $mahasiswa->ujians()->orderBy('created_at','desc')->get();
         $prodi = Prodi::where('namaprodi', $mahasiswa->prodi)->first();
-        $bagians_is_ujian = $prodi->bagians()->where('is_pendadaran', 1)->get();
+        $bagians_is_ujian = $prodi->bagians()->where("tahun_masuk", "LIKE", "%" . $mahasiswa->thmasuk . "%")->where('is_pendadaran', 1)->get();
 
         $bimbingans_is_acc = $mahasiswa->bimbingans()->where('status', Bimbingan::DITERIMA)
             ->whereHas('bagian', function($query) {
@@ -164,7 +164,7 @@ public function ujianProdi()
 
         $pendaftaran_acc = Pendaftaran::orderBy('created_at', 'desc')->where('mahasiswa_id', $mahasiswa->id)->where('status', 'diterima')->first();
 
-        $bagians_is_ujian = $prodi->bagians()->where('is_pendadaran', 1)->get();
+        $bagians_is_ujian = $prodi->bagians()->where("tahun_masuk", "LIKE", "%" . $mahasiswa->thmasuk . "%")->where('is_pendadaran', 1)->get();
         $bimbingans_is_acc = $mahasiswa->bimbingans()->where('status', Bimbingan::DITERIMA)
             ->whereHas('bagian', function($query) {
                 $query->where('is_pendadaran', 1);
@@ -199,7 +199,7 @@ public function ujianProdi()
 
         $pendaftaran_acc = Pendaftaran::orderBy('created_at', 'desc')->where('mahasiswa_id', $pengajuan->mahasiswa->id)->where('status', 'diterima')->first();
 
-        if (AppHelper::instance()->is_expired_in_one_year($pendaftaran_acc->tanggal_acc)) {
+        if (AppHelper::isBimbinganExpiredFromPendaftaran($pendaftaran_acc) && !AppHelper::check_bimbingan_is_complete($pengajuan->mahasiswa)) {
             return redirect('pedaftaran-mahasiswa');
         } else if ($pengajuan->ujian) {
             return redirect('ujian-mahasiswa')->with('warning', 'Sudah mendaftar ujian pendadaran');

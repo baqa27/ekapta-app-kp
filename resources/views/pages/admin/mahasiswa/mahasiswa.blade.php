@@ -48,7 +48,9 @@
                                         <th>NIM</th>
                                         <th>Nama Mahasiswa</th>
                                         <th>Prodi</th>
+                                        <th>Tahun Masuk</th>
                                         <th>Semester</th>
+                                        <th>Email</th>
                                         <th>Status</th>
                                         <th>Aksi</th>
                                     </tr>
@@ -63,8 +65,12 @@
                                             <td>{{ $mahasiswa->nim }}</td>
                                             <td>{{ $mahasiswa->nama }}</td>
                                             <td>{{ $mahasiswa->prodi }}</td>
+                                            <td>{{ $mahasiswa->thmasuk }}</td>
                                             <td>
                                                 {{ \App\Helpers\AppHelper::instance()->getMahasiswaDetail($mahasiswa->nim) != null ? \App\Helpers\AppHelper::instance()->getMahasiswaDetail($mahasiswa->nim)->semester : '' }}
+                                            </td>
+                                            <td>
+                                                {{  $mahasiswa->email }}
                                             </td>
                                             <td>
                                                 {{ \App\Helpers\AppHelper::instance()->getMahasiswaDetail($mahasiswa->nim) != null ? \App\Helpers\AppHelper::instance()->getMahasiswaDetail($mahasiswa->nim)->status : '' }}
@@ -85,7 +91,9 @@
                                         <th>NIM</th>
                                         <th>Nama Mahasiswa</th>
                                         <th>Prodi</th>
+                                        <th>Tahun Masuk</th>
                                         <th>Semester</th>
+                                        <th>Email</th>
                                         <th>Status</th>
                                         <th>Aksi</th>
                                     </tr>

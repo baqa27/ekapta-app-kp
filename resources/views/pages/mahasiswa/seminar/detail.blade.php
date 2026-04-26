@@ -109,7 +109,7 @@
                                     Bukti Lunas Pembayaran SPP Sampai Semester Terakhir
                                 </div>
                                 <div class="col-md-7">
-                                    <a href="{{ asset($seminar->lampiran_1) }}" target="_blank"><i
+                                    <a href="{{ storage_url($seminar->lampiran_1) }}" target="_blank"><i
                                             class="fas fa-paperclip"></i>
                                         {{ Str::substr($seminar->lampiran_1, 40) }}</a>
                                 </div>
@@ -121,7 +121,7 @@
                                     Bukti Lunas Pembayaran Seminar Tugas Akhir (TA)
                                 </div>
                                 <div class="col-md-7">
-                                    <a href="{{ asset($seminar->lampiran_2) }}" target="_blank"><i
+                                    <a href="{{ storage_url($seminar->lampiran_2) }}" target="_blank"><i
                                             class="fas fa-paperclip"></i>
                                         {{ Str::substr($seminar->lampiran_2, 40) }}</a>
                                 </div>
@@ -134,7 +134,7 @@
                                 </div>
                                 <div class="col-md-7">
                                     @if ($seminar->lampiran_3)
-                                        <a href="{{ asset($seminar->lampiran_3) }}" target="_blank"><i
+                                        <a href="{{ storage_url($seminar->lampiran_3) }}" target="_blank"><i
                                                 class="fas fa-paperclip"></i>
                                             {{ Str::substr($seminar->lampiran_3, 40) }}</a>
                                     @else
@@ -170,7 +170,7 @@
                             {{--                                    Berkas File Tugas Akhir Lengkap --}}
                             {{--                                </div> --}}
                             {{--                                <div class="col-md-7"> --}}
-                            {{--                                    <a href="{{ asset($seminar->lampiran_3) }}" target="_blank"><i --}}
+                            {{--                                    <a href="{{ storage_url($seminar->lampiran_3) }}" target="_blank"><i --}}
                             {{--                                            class="fas fa-paperclip"></i> --}}
                             {{--                                        {{ Str::substr($seminar->lampiran_3, 40) }}</a> --}}
                             {{--                                </div> --}}
@@ -182,7 +182,7 @@
                             {{--                                    Scan Lembar Bimbingan TA Yang Telah di Acc --}}
                             {{--                                </div> --}}
                             {{--                                <div class="col-md-7"> --}}
-                            {{--                                    <a href="{{ asset($seminar->lampiran_4) }}" target="_blank"><i --}}
+                            {{--                                    <a href="{{ storage_url($seminar->lampiran_4) }}" target="_blank"><i --}}
                             {{--                                            class="fas fa-paperclip"></i> --}}
                             {{--                                        {{ Str::substr($seminar->lampiran_4, 40) }}</a> --}}
                             {{--                                </div> --}}
@@ -194,7 +194,7 @@
                             {{--                                    Scan Lembar Persetujuan --}}
                             {{--                                </div> --}}
                             {{--                                <div class="col-md-7"> --}}
-                            {{--                                    <a href="{{ asset($seminar->lampiran_5) }}" target="_blank"><i --}}
+                            {{--                                    <a href="{{ storage_url($seminar->lampiran_5) }}" target="_blank"><i --}}
                             {{--                                            class="fas fa-paperclip"></i> --}}
                             {{--                                        {{ Str::substr($seminar->lampiran_5, 40) }}</a> --}}
                             {{--                                </div> --}}
@@ -262,7 +262,7 @@
                                                 <div class="p-1 mt-3 bg-light rounded">
                                                     <small>
                                                         <span class="text-secondary ml-2"><b>Lampiran : </b></span>
-                                                        <a href="{{ asset($revisi->lampiran) }}" target="_blank">
+                                                        <a href="{{ storage_url($revisi->lampiran) }}" target="_blank">
                                                             <i class="fas fa-paperclip ml-1"></i>
                                                             {{ Str::substr($revisi->lampiran, 16) }}
                                                         </a>

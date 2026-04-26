@@ -80,7 +80,7 @@
                                     <div class="rounded bg-light">
                                         <small>
                                             <span class="ml-3">Lampiran sebelumnya : </span>
-                                            <a href="{{ asset($ujian->lampiran_1) }}" class="text-primary"
+                                            <a href="{{ storage_url($ujian->lampiran_1) }}" class="text-primary"
                                                 target="_blank"><i class="fas fa-paperclip ml-2"></i>
                                                 {{ Str::substr($ujian->lampiran_1, 21) }}</a>
                                         </small>
@@ -108,7 +108,7 @@
                                     <div class="rounded bg-light">
                                         <small>
                                             <span class="ml-3">Lampiran sebelumnya : </span>
-                                            <a href="{{ asset($ujian->lampiran_2) }}" class="text-primary"
+                                            <a href="{{ storage_url($ujian->lampiran_2) }}" class="text-primary"
                                                 target="_blank"><i class="fas fa-paperclip ml-2"></i>
                                                 {{ Str::substr($ujian->lampiran_2, 21) }}</a>
                                         </small>
@@ -135,7 +135,7 @@
                                     <div class="rounded bg-light">
                                         <small>
                                             <span class="ml-3">Lampiran sebelumnya : </span>
-                                            <a href="{{ asset($ujian->lampiran_3) }}" class="text-primary"
+                                            <a href="{{ storage_url($ujian->lampiran_3) }}" class="text-primary"
                                                target="_blank"><i class="fas fa-paperclip ml-2"></i>
                                                 {{ Str::substr($ujian->lampiran_3, 21) }}</a>
                                         </small>
@@ -162,7 +162,7 @@
                                     <div class="rounded bg-light">
                                         <small>
                                             <span class="ml-3">Lampiran sebelumnya : </span>
-                                            <a href="{{ asset($ujian->lampiran_4) }}" class="text-primary"
+                                            <a href="{{ storage_url($ujian->lampiran_4) }}" class="text-primary"
                                                target="_blank"><i class="fas fa-paperclip ml-2"></i>
                                                 {{ Str::substr($ujian->lampiran_4, 21) }}</a>
                                         </small>
@@ -189,7 +189,7 @@
                                     <div class="rounded bg-light">
                                         <small>
                                             <span class="ml-3">Lampiran sebelumnya : </span>
-                                            <a href="{{ asset($ujian->lampiran_5) }}" class="text-primary"
+                                            <a href="{{ storage_url($ujian->lampiran_5) }}" class="text-primary"
                                                target="_blank"><i class="fas fa-paperclip ml-2"></i>
                                                 {{ Str::substr($ujian->lampiran_5, 21) }}</a>
                                         </small>
@@ -216,7 +216,7 @@
                                     <div class="rounded bg-light">
                                         <small>
                                             <span class="ml-3">Lampiran sebelumnya : </span>
-                                            <a href="{{ asset($ujian->lampiran_6) }}" class="text-primary"
+                                            <a href="{{ storage_url($ujian->lampiran_6) }}" class="text-primary"
                                                target="_blank"><i class="fas fa-paperclip ml-2"></i>
                                                 {{ Str::substr($ujian->lampiran_6, 21) }}</a>
                                         </small>
@@ -243,7 +243,7 @@
                                     <div class="rounded bg-light">
                                         <small>
                                             <span class="ml-3">Lampiran sebelumnya : </span>
-                                            <a href="{{ asset($ujian->lampiran_7) }}" class="text-primary"
+                                            <a href="{{ storage_url($ujian->lampiran_7) }}" class="text-primary"
                                                target="_blank"><i class="fas fa-paperclip ml-2"></i>
                                                 {{ Str::substr($ujian->lampiran_7, 21) }}</a>
                                         </small>
@@ -270,7 +270,7 @@
                                     <div class="rounded bg-light">
                                         <small>
                                             <span class="ml-3">Lampiran sebelumnya : </span>
-                                            <a href="{{ asset($ujian->lampiran_8) }}" class="text-primary"
+                                            <a href="{{ storage_url($ujian->lampiran_8) }}" class="text-primary"
                                                target="_blank"><i class="fas fa-paperclip ml-2"></i>
                                                 {{ Str::substr($ujian->lampiran_8, 21) }}</a>
                                         </small>
@@ -297,7 +297,7 @@
                                     <div class="rounded bg-light">
                                         <small>
                                             <span class="ml-3">Lampiran sebelumnya : </span>
-                                            <a href="{{ asset($ujian->lampiran_laporan) }}" class="text-primary"
+                                            <a href="{{ storage_url($ujian->lampiran_laporan) }}" class="text-primary"
                                                target="_blank"><i class="fas fa-paperclip ml-2"></i>
                                                 {{ Str::substr($ujian->lampiran_laporan, 21) }}</a>
                                         </small>

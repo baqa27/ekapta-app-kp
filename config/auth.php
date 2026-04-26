@@ -60,6 +60,11 @@ return [
             'driver' => 'session',
             'provider' => 'admins',
         ],
+
+        'himpunan' => [
+            'driver' => 'session',
+            'provider' => 'himpunans',
+        ],
     ],
 
     /*
@@ -103,6 +108,11 @@ return [
         'admins' => [
             'driver' => 'eloquent',
             'model' => App\Models\Admin::class,
+        ],
+
+        'himpunans' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\KP\Himpunan::class,
         ],
 
         // 'users' => [

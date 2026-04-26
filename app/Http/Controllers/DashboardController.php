@@ -22,7 +22,7 @@ class DashboardController extends Controller
     public function dashboardMahasiswa()
     {
         $mahasiswa = Auth::guard('mahasiswa')->user();
-        
+
         $data = [
             'title' => config('app.name'),
             'mahasiswa' => $mahasiswa,
@@ -34,6 +34,7 @@ class DashboardController extends Controller
 
     public function dashboardProdi()
     {
+        // TA Data
         $pengajuans = Pengajuan::all();
         $pengajuans_diterima = Pengajuan::where('status', 'diterima')->get();
         $pengajuans_revisi = Pengajuan::where('status', 'revisi')->get();
@@ -52,8 +53,30 @@ class DashboardController extends Controller
 
         $ujians = Ujian::all();
         $ujians_diterima = Ujian::where('is_valid', '1')->get();
-        $ujians_review = Ujian::where('is_valid', '0')->get();
+        $ujians_review = Ujian::where('is_valid', '3')->get();
         $ujians_revisi = Ujian::where('is_valid', '2')->get();
+
+        // KP Data - using KP models
+        $kp_pengajuans = \App\Models\KP\Pengajuan::all();
+        $kp_pengajuans_diterima = \App\Models\KP\Pengajuan::where('status', 'diterima')->get();
+        $kp_pengajuans_revisi = \App\Models\KP\Pengajuan::where('status', 'revisi')->get();
+        $kp_pengajuans_review = \App\Models\KP\Pengajuan::where('status', 'review')->get();
+        $kp_pengajuans_ditolak = \App\Models\KP\Pengajuan::where('status', 'ditolak')->get();
+
+        $kp_bimbingans = \App\Models\KP\Bimbingan::all();
+        $kp_bimbingans_diterima = \App\Models\KP\Bimbingan::where('status', 'diterima')->get();
+        $kp_bimbingans_review = \App\Models\KP\Bimbingan::where('status', 'review')->get();
+        $kp_bimbingans_revisi = \App\Models\KP\Bimbingan::where('status', 'revisi')->get();
+
+        $kp_seminars = \App\Models\KP\Seminar::all();
+        $kp_seminars_diterima = \App\Models\KP\Seminar::where('is_valid', '1')->get();
+        $kp_seminars_review = \App\Models\KP\Seminar::where('is_valid', '0')->get();
+        $kp_seminars_revisi = \App\Models\KP\Seminar::where('is_valid', '2')->get();
+
+        $kp_pengumpulan_akhir = \App\Models\KP\Jilid::all();
+        $kp_pengumpulan_akhir_diterima = \App\Models\KP\Jilid::where('status', 'terkumpul')->orWhere('status', 'selesai')->get();
+        $kp_pengumpulan_akhir_review = \App\Models\KP\Jilid::where('status', 'review')->get();
+        $kp_pengumpulan_akhir_revisi = \App\Models\KP\Jilid::where('status', 'revisi')->get();
 
         return view('pages.prodi.dashboard.home', [
             'title' => 'Dashboard',
@@ -76,6 +99,47 @@ class DashboardController extends Controller
             'ujians_diterima' => $ujians_diterima,
             'ujians_revisi' => $ujians_revisi,
             'ujians_review' => $ujians_review,
+            // Context info (default values for TA dashboard)
+            'currentContext' => null,
+            'isTA' => false,
+            'isKP' => false,
+            'contextLabel' => '',
+            // Alias untuk view yang menggunakan prefix ta_
+            'ta_pengajuans' => $pengajuans,
+            'ta_pengajuans_diterima' => $pengajuans_diterima,
+            'ta_pengajuans_review' => $pengajuans_review,
+            'ta_pengajuans_revisi' => $pengajuans_revisi,
+            'ta_pengajuans_ditolak' => $pengajuans_ditolak,
+            'ta_bimbingans' => $bimbingans,
+            'ta_bimbingans_diterima' => $bimbingans_diterima,
+            'ta_bimbingans_review' => $bimbingans_review,
+            'ta_bimbingans_revisi' => $bimbingans_revisi,
+            'ta_seminars' => $seminars,
+            'ta_seminars_diterima' => $seminars_diterima,
+            'ta_seminars_review' => $seminars_review,
+            'ta_seminars_revisi' => $seminars_revisi,
+            'ta_ujians' => $ujians,
+            'ta_ujians_diterima' => $ujians_diterima,
+            'ta_ujians_review' => $ujians_review,
+            'ta_ujians_revisi' => $ujians_revisi,
+            // KP Data
+            'kp_pengajuans' => $kp_pengajuans,
+            'kp_pengajuans_diterima' => $kp_pengajuans_diterima,
+            'kp_pengajuans_review' => $kp_pengajuans_review,
+            'kp_pengajuans_revisi' => $kp_pengajuans_revisi,
+            'kp_pengajuans_ditolak' => $kp_pengajuans_ditolak,
+            'kp_bimbingans' => $kp_bimbingans,
+            'kp_bimbingans_diterima' => $kp_bimbingans_diterima,
+            'kp_bimbingans_review' => $kp_bimbingans_review,
+            'kp_bimbingans_revisi' => $kp_bimbingans_revisi,
+            'kp_seminars' => $kp_seminars,
+            'kp_seminars_diterima' => $kp_seminars_diterima,
+            'kp_seminars_review' => $kp_seminars_review,
+            'kp_seminars_revisi' => $kp_seminars_revisi,
+            'kp_pengumpulan_akhir' => $kp_pengumpulan_akhir,
+            'kp_pengumpulan_akhir_diterima' => $kp_pengumpulan_akhir_diterima,
+            'kp_pengumpulan_akhir_review' => $kp_pengumpulan_akhir_review,
+            'kp_pengumpulan_akhir_revisi' => $kp_pengumpulan_akhir_revisi,
         ]);
     }
 
@@ -99,7 +163,7 @@ class DashboardController extends Controller
 
         $ujians = Ujian::all();
         $ujians_diterima = Ujian::where('is_valid', '1')->get();
-        $ujians_review = Ujian::where('is_valid', '0')->get();
+        $ujians_review = Ujian::where('is_valid', '3')->get();
         $ujians_revisi = Ujian::where('is_valid', '2')->get();
 
         $mahasiswas = Mahasiswa::all();
@@ -107,10 +171,38 @@ class DashboardController extends Controller
         $dosens = Dosen::all();
         $fakultas = Fakultas::all();
 
+        // KP Data - using KP models
+        $kp_pengajuans = \App\Models\KP\Pengajuan::all();
+        $kp_pengajuans_diterima = \App\Models\KP\Pengajuan::where('status', 'diterima')->get();
+        $kp_pengajuans_revisi = \App\Models\KP\Pengajuan::where('status', 'revisi')->get();
+        $kp_pengajuans_review = \App\Models\KP\Pengajuan::where('status', 'review')->get();
+        $kp_pengajuans_ditolak = \App\Models\KP\Pengajuan::where('status', 'ditolak')->get();
+
+        $kp_pendaftarans = \App\Models\KP\Pendaftaran::all();
+        $kp_pendaftarans_diterima = \App\Models\KP\Pendaftaran::where('status', 'diterima')->get();
+        $kp_pendaftarans_review = \App\Models\KP\Pendaftaran::where('status', 'review')->get();
+        $kp_pendaftarans_revisi = \App\Models\KP\Pendaftaran::where('status', 'revisi')->get();
+
+        $kp_bimbingans = \App\Models\KP\Bimbingan::all();
+        $kp_bimbingans_diterima = \App\Models\KP\Bimbingan::where('status', 'diterima')->get();
+        $kp_bimbingans_review = \App\Models\KP\Bimbingan::where('status', 'review')->get();
+        $kp_bimbingans_revisi = \App\Models\KP\Bimbingan::where('status', 'revisi')->get();
+
+        $kp_seminars = \App\Models\KP\Seminar::all();
+        $kp_seminars_diterima = \App\Models\KP\Seminar::where('is_valid', '1')->get();
+        $kp_seminars_review = \App\Models\KP\Seminar::where('is_valid', '0')->get();
+        $kp_seminars_revisi = \App\Models\KP\Seminar::where('is_valid', '2')->get();
+
+        $kp_pengumpulan_akhir = \App\Models\KP\Jilid::all();
+        $kp_pengumpulan_akhir_diterima = \App\Models\KP\Jilid::where('status', 'terkumpul')->orWhere('status', 'selesai')->get();
+        $kp_pengumpulan_akhir_review = \App\Models\KP\Jilid::where('status', 'review')->get();
+        $kp_pengumpulan_akhir_revisi = \App\Models\KP\Jilid::where('status', 'revisi')->get();
+
         return view('pages.admin.dashboard.home', [
             'title' => 'Dashboard',
             'active' => 'dashboard',
-            'sidebar' => 'partials.sidebarAdmin',
+            'sidebar' => 'kp.partials.sidebarAdmin',
+            'module' => '',
             'pengajuans' => $pengajuans,
             'pengajuans_diterima' => $pengajuans_diterima,
             'pengajuans_review' => $pengajuans_review,
@@ -132,6 +224,51 @@ class DashboardController extends Controller
             'ujians_diterima' => $ujians_diterima,
             'ujians_revisi' => $ujians_revisi,
             'ujians_review' => $ujians_review,
+            // Context info
+            'currentContext' => null,
+            'isTA' => false,
+            'isKP' => false,
+            'contextLabel' => '',
+            // Alias untuk view yang menggunakan prefix ta_
+            'ta_pengajuans' => $pengajuans,
+            'ta_pengajuans_diterima' => $pengajuans_diterima,
+            'ta_pengajuans_review' => $pengajuans_review,
+            'ta_pengajuans_revisi' => $pengajuans_revisi,
+            'ta_pengajuans_ditolak' => $pengajuans_ditolak,
+            'ta_pendaftarans' => $pendaftarans,
+            'ta_pendaftarans_diterima' => $pendaftarans_diterima,
+            'ta_pendaftarans_review' => $pendaftarans_review,
+            'ta_pendaftarans_revisi' => $pendaftarans_revisi,
+            'ta_seminars' => $seminars,
+            'ta_seminars_diterima' => $seminars_diterima,
+            'ta_seminars_review' => $seminars_review,
+            'ta_seminars_revisi' => $seminars_revisi,
+            'ta_ujians' => $ujians,
+            'ta_ujians_diterima' => $ujians_diterima,
+            'ta_ujians_review' => $ujians_review,
+            'ta_ujians_revisi' => $ujians_revisi,
+            // KP Data
+            'kp_pengajuans' => $kp_pengajuans,
+            'kp_pengajuans_diterima' => $kp_pengajuans_diterima,
+            'kp_pengajuans_review' => $kp_pengajuans_review,
+            'kp_pengajuans_revisi' => $kp_pengajuans_revisi,
+            'kp_pengajuans_ditolak' => $kp_pengajuans_ditolak,
+            'kp_pendaftarans' => $kp_pendaftarans,
+            'kp_pendaftarans_diterima' => $kp_pendaftarans_diterima,
+            'kp_pendaftarans_review' => $kp_pendaftarans_review,
+            'kp_pendaftarans_revisi' => $kp_pendaftarans_revisi,
+            'kp_bimbingans' => $kp_bimbingans,
+            'kp_bimbingans_diterima' => $kp_bimbingans_diterima,
+            'kp_bimbingans_review' => $kp_bimbingans_review,
+            'kp_bimbingans_revisi' => $kp_bimbingans_revisi,
+            'kp_seminars' => $kp_seminars,
+            'kp_seminars_diterima' => $kp_seminars_diterima,
+            'kp_seminars_review' => $kp_seminars_review,
+            'kp_seminars_revisi' => $kp_seminars_revisi,
+            'kp_pengumpulan_akhir' => $kp_pengumpulan_akhir,
+            'kp_pengumpulan_akhir_diterima' => $kp_pengumpulan_akhir_diterima,
+            'kp_pengumpulan_akhir_review' => $kp_pengumpulan_akhir_review,
+            'kp_pengumpulan_akhir_revisi' => $kp_pengumpulan_akhir_revisi,
         ]);
     }
 
@@ -143,20 +280,54 @@ class DashboardController extends Controller
         $bimbingans_review = $dosen->bimbingans()->where('status', 'review')->get();
         $bimbingans_revisi = $dosen->bimbingans()->where('status', 'revisi')->get();
 
+        // Ambil bimbingan KP (dari tabel bimbingan_kps)
+        $kp_bimbingans = collect(); // Empty collection jika belum ada data KP
+        $kp_bimbingans_diterima = collect();
+        $kp_bimbingans_review = collect();
+        $kp_bimbingans_revisi = collect();
+        
+        // Cek apakah tabel bimbingan_kps ada (migration KP sudah dijalankan)
+        if (\Schema::hasTable('bimbingan_kps')) {
+            // Ambil bimbingan KP dari relasi (jika model sudah ada)
+            try {
+                $kp_bimbingans = $dosen->bimbingansKP ?? collect();
+                $kp_bimbingans_diterima = $dosen->bimbingansKP()->where('status', 'diterima')->get() ?? collect();
+                $kp_bimbingans_review = $dosen->bimbingansKP()->where('status', 'review')->get() ?? collect();
+                $kp_bimbingans_revisi = $dosen->bimbingansKP()->where('status', 'revisi')->get() ?? collect();
+            } catch (\Exception $e) {
+                // Jika relasi belum ada, gunakan empty collection
+                $kp_bimbingans = collect();
+                $kp_bimbingans_diterima = collect();
+                $kp_bimbingans_review = collect();
+                $kp_bimbingans_revisi = collect();
+            }
+        }
+
         return view('pages.dosen.dashboard.home', [
             'title' => 'Dashboard',
             'active' => 'dashboard',
             'sidebar' => 'partials.sidebarDosen',
+            // Variabel TA tanpa prefix (untuk backward compatibility)
             'bimbingans' => $bimbingans,
             'bimbingans_diterima' => $bimbingans_diterima,
             'bimbingans_review' => $bimbingans_review,
             'bimbingans_revisi' => $bimbingans_revisi,
+            // Variabel TA dengan prefix ta_
+            'ta_bimbingans' => $bimbingans,
+            'ta_bimbingans_diterima' => $bimbingans_diterima,
+            'ta_bimbingans_review' => $bimbingans_review,
+            'ta_bimbingans_revisi' => $bimbingans_revisi,
+            // Variabel KP dengan prefix kp_
+            'kp_bimbingans' => $kp_bimbingans,
+            'kp_bimbingans_diterima' => $kp_bimbingans_diterima,
+            'kp_bimbingans_review' => $kp_bimbingans_review,
+            'kp_bimbingans_revisi' => $kp_bimbingans_revisi,
         ]);
     }
 
     public function dashboardMahasiswaTA()
     {
-        $mahasiswa = Auth::guard('mahasiswa')->user();
+        $mahasiswa = Mahasiswa::with(['bimbingans','pengajuans','pendaftarans','seminar','ujians'])->findOrFail(Auth::guard('mahasiswa')->user()->id);
         if($mahasiswa->email == '-'){
             return redirect()->route('profile');
         }elseif (substr($mahasiswa->hp, 0, 2) !== '62') {
@@ -171,7 +342,7 @@ class DashboardController extends Controller
         $ujians_acc = $mahasiswa->ujian ?$mahasiswa->ujian->reviews()->where('status', ReviewUjian::DITERIMA)->get() : null;
 
         $is_bimbingan_completed = false;
-        if (count($bimbingans_acc ) - count($prodi->bagians) == count($prodi->bagians)){
+        if (count($bimbingans_acc ) - count($prodi->bagians()->where("tahun_masuk", "LIKE", "%" . $mahasiswa->thmasuk . "%")->get()) == count($prodi->bagians()->where("tahun_masuk", "LIKE", "%" . $mahasiswa->thmasuk . "%")->get())){
             $is_bimbingan_completed = true;
         }
 
@@ -198,6 +369,7 @@ class DashboardController extends Controller
         return view('pages.mahasiswa.dashboard.home-ta', [
             'title' => 'Dashboard',
             'active' => 'dashboard',
+            'module' => 'ta',
             'mahasiswa' => $mahasiswa,
             'pengajuan_acc' => $pengajuan_acc,
             'pendaftaran_acc' => $pendaftaran_acc,

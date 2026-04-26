@@ -33,7 +33,7 @@
                             bg-warning
                             @elseif ($pengajuan->status == 'diterima')
                             bg-success
-                            @elseif ($pengajuan->status == 'ditolak')
+                            @elseif ($pengajuan->status == 'ditolak' || $pengajuan->status == 'dibatalkan')
                             bg-danger @endif
                             ">
                                 {{ $pengajuan->status }}
@@ -54,6 +54,10 @@
                                     <td>{{ $pengajuan->prodi->namaprodi }}</td>
                                 </tr>
                                 <tr>
+                                    <td><b class="mr-3">Kelas</b></td>
+                                    <td>{{ \App\Helpers\AppHelper::format_kelas_mahasiswa($pengajuan->mahasiswa->kelas ?? null) }}</td>
+                                </tr>
+                                <tr>
                                     <td><b class="mr-3">Judul TA</b></td>
                                     <td>{{ $pengajuan->judul }}</td>
                                 </tr>
@@ -71,7 +75,7 @@
                                 </div>
                             @endif
                             <hr>
-                            <p class="mt-3"><b>Lampiran : </b> <a href="{{ asset($pengajuan->lampiran) }}" class="ml-3"
+                            <p class="mt-3"><b>Lampiran : </b> <a href="{{ storage_url($pengajuan->lampiran) }}" class="ml-3"
                                     target="_blank"><i class="fas fa-paperclip"></i>
                                     {{ Str::substr($pengajuan->lampiran, 40) }}</a></p>
                         </div>
@@ -100,7 +104,7 @@
                                         <small>
                                             Lampiran :
                                             @if ($revisi->lampiran)
-                                                <a href="{{ asset($revisi->lampiran) }}" class="ml-3" target="_blank"><i
+                                                <a href="{{ storage_url($revisi->lampiran) }}" class="ml-3" target="_blank"><i
                                                         class="fas fa-paperclip"></i>
                                                     {{ Str::substr($revisi->lampiran, 40) }}</a>
                                             @endif

@@ -212,45 +212,45 @@
                                     </label>
                                     <div class="form-check mb-2">
                                         <input class="form-check-input @error('biaya') is-invalid @enderror"
-                                            type="radio" name="biaya" value="750000">
-                                        <label class="form-check-label" style="top: -1px; position:relative;">Program
-                                            Sarjana Kelas A
-                                            (Reguler) : Rp. 750.000,-</label>
-                                    </div>
-                                    <div class="form-check mb-2">
-                                        <input class="form-check-input @error('biaya') is-invalid @enderror"
-                                            type="radio" name="biaya" value="375000">
-                                        <label class="form-check-label" style="top: -1px; position:relative;">Perpanjang
-                                            Program Sarjana
-                                            Kelas A (Reguler) : Rp. 375.000,-</label>
-                                    </div>
-                                    <div class="form-check mb-2">
-                                        <input class="form-check-input @error('biaya') is-invalid @enderror"
                                             type="radio" name="biaya" value="850000">
                                         <label class="form-check-label" style="top: -1px; position:relative;">Program
-                                            Sarjana Kelas B
-                                            (Ekstensi) : Rp. 850.000,-</label>
+                                            Sarjana Kelas A
+                                            (Reguler) : Rp. 850.000,-</label>
                                     </div>
                                     <div class="form-check mb-2">
                                         <input class="form-check-input @error('biaya') is-invalid @enderror"
                                             type="radio" name="biaya" value="425000">
                                         <label class="form-check-label" style="top: -1px; position:relative;">Perpanjang
                                             Program Sarjana
-                                            Kelas B (Ekstensi) : Rp. 425.000,-</label>
+                                            Kelas A (Reguler) : Rp. 425.000,-</label>
                                     </div>
                                     <div class="form-check mb-2">
                                         <input class="form-check-input @error('biaya') is-invalid @enderror"
-                                            type="radio" name="biaya" value="650000">
+                                            type="radio" name="biaya" value="950000">
+                                        <label class="form-check-label" style="top: -1px; position:relative;">Program
+                                            Sarjana Kelas B
+                                            (Ekstensi) : Rp. 950.000,-</label>
+                                    </div>
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input @error('biaya') is-invalid @enderror"
+                                            type="radio" name="biaya" value="475000">
+                                        <label class="form-check-label" style="top: -1px; position:relative;">Perpanjang
+                                            Program Sarjana
+                                            Kelas B (Ekstensi) : Rp. 475.000,-</label>
+                                    </div>
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input @error('biaya') is-invalid @enderror"
+                                            type="radio" name="biaya" value="750000">
                                         <label class="form-check-label" style="top: -1px; position:relative;">Program
                                             Diploma Kelas A
-                                            (Reguler) : Rp. 650.000,-</label>
+                                            (Reguler) : Rp. 750.000,-</label>
                                     </div>
                                     <div class="form-check mb-2">
                                         <input class="form-check-input @error('biaya') is-invalid @enderror"
-                                            type="radio" name="biaya" value="325000">
+                                            type="radio" name="biaya" value="375000">
                                         <label class="form-check-label" style="top: -1px; position:relative;">Perpanjang
                                             Program Diploma
-                                            Kelas A (Reguler) : Rp. 325.000,-</label>
+                                            Kelas A (Reguler) : Rp. 375.000,-</label>
                                     </div>
                                     @error('biaya')
                                         <div class="invalid-feedback">{{ $message }}</div>
@@ -258,7 +258,8 @@
                                 </div>
 
                                 <div class="form-group mt-4">
-                                    <button type="submit" class="btn btn-success">Submit</button>
+                                    <button type="submit" class="btn btn-success" id="btn-submit"
+                                        onclick="this.disabled=true;this.innerHTML='Memproses...';this.form.submit();">Submit</button>
                                 </div>
                             </form>
                         </div>

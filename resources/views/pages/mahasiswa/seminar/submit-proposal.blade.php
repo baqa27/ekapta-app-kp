@@ -61,7 +61,7 @@
                                         <div class="bg-light p-2 rounded">
                                             <small>
                                                 <b>Loporan di Upload : </b>
-                                                <a href="{{ asset($seminar->lampiran_proposal) }}" class="ml-3 text-primary"
+                                                <a href="{{ storage_url($seminar->lampiran_proposal) }}" class="ml-3 text-primary"
                                                    target="_blank"><i class="fas fa-paperclip mr-2"></i>
                                                     {{ Str::substr($seminar->lampiran_proposal, 19) }}</a>
                                             </small>

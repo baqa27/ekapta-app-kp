@@ -70,6 +70,16 @@
 
                             <div class="row">
                                 <div class="col-md-5">
+                                    Tahun Masuk
+                                </div>
+                                <div class="col-md-7">
+                                    <b>{{  $pendaftaran->mahasiswa->thmasuk }}</b>
+                                </div>
+                            </div>
+                            <hr>
+
+                            <div class="row">
+                                <div class="col-md-5">
                                     Pembimbing Utama (1) Tugas Akhir
                                 </div>
                                 <div class="col-md-7">
@@ -133,7 +143,7 @@
                                     Dokumen Acc. Kaprodi
                                 </div>
                                 <div class="col-md-7">
-                                    <a href="{{ asset($pendaftaran->lampiran_1) }}" target="_blank"><i
+                                    <a href="{{ storage_url($pendaftaran->lampiran_1) }}" target="_blank"><i
                                             class="fas fa-paperclip"></i>
                                         {{ Str::substr($pendaftaran->lampiran_1, 40) }}</a>
                                 </div>
@@ -145,7 +155,7 @@
                                     Bukti Lembar Pernyataan Keaslian Hasil Tugas Akhir
                                 </div>
                                 <div class="col-md-7">
-                                    <a href="{{ asset($pendaftaran->lampiran_2) }}" target="_blank"><i
+                                    <a href="{{ storage_url($pendaftaran->lampiran_2) }}" target="_blank"><i
                                             class="fas fa-paperclip"></i>
                                         {{ Str::substr($pendaftaran->lampiran_2, 40) }}</a>
                                 </div>
@@ -157,7 +167,7 @@
                                     Bukti Transkrip Nilai
                                 </div>
                                 <div class="col-md-7">
-                                    <a href="{{ asset($pendaftaran->lampiran_3) }}" target="_blank"><i
+                                    <a href="{{ storage_url($pendaftaran->lampiran_3) }}" target="_blank"><i
                                             class="fas fa-paperclip"></i>
                                         {{ Str::substr($pendaftaran->lampiran_3, 40) }}</a>
                                 </div>
@@ -169,7 +179,7 @@
                                     Bukti Pengumpulan KP
                                 </div>
                                 <div class="col-md-7">
-                                    <a href="{{ asset($pendaftaran->lampiran_4) }}" target="_blank"><i
+                                    <a href="{{ storage_url($pendaftaran->lampiran_4) }}" target="_blank"><i
                                             class="fas fa-paperclip"></i>
                                         {{ Str::substr($pendaftaran->lampiran_4, 40) }}</a>
                                 </div>
@@ -181,19 +191,9 @@
                                     Bukti Pembayaran Tugas Akhir
                                 </div>
                                 <div class="col-md-7">
-                                    <a href="{{ asset($pendaftaran->lampiran_5) }}" target="_blank"><i
+                                    <a href="{{ storage_url($pendaftaran->lampiran_5) }}" target="_blank"><i
                                             class="fas fa-paperclip"></i>
                                         {{ Str::substr($pendaftaran->lampiran_5, 40) }}</a>
-                                </div>
-                            </div>
-                            <hr>
-
-                            <div class="row">
-                                <div class="col-md-5">
-                                    Nomor Pembayaran
-                                </div>
-                                <div class="col-md-7">
-                                    <b>{{ $pendaftaran->nomor_pembayaran }}</b>
                                 </div>
                             </div>
                             <hr>
@@ -266,7 +266,7 @@
                                         <i class="bi bi-pencil-square mr-2"></i> Revisi Pendaftaran
                                     </button>
 
-                                    <div onclick="confirmAcc()">
+                                    {{--<div onclick="confirmAcc()">
                                         <form action="{{ route('pendaftaran.acc') }}" method="post">
                                             @csrf
                                             <input type="hidden" name="id" value="{{ $pendaftaran->id }}">
@@ -274,7 +274,74 @@
                                                 <i class="fas fa-check mr-2"></i> Acc Pendaftaran
                                             </button>
                                         </form>
+                                    </div>--}}
+
+                                    <!-- Modal Confirm Acc -->
+                                    <button type="button" class="btn btn-success"
+                                        data-toggle="modal" data-target="#modal-confirm-acc">
+                                        <i class="fas fa-check mr-2"></i> Acc Pendaftaran
+                                    </button>
+
+                                    <div class="modal fade" id="modal-confirm-acc">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <form action="{{ route('pendaftaran.acc') }}" method="post">
+                                                    @csrf
+
+                                                    <input type="hidden" name="id" value="{{ $pendaftaran->id }}">
+
+                                                    <div class="modal-header">
+                                                        <h4 class="modal-title">Konfirmasi Acc Pendaftaran Tugas Akhir</h4>
+                                                        <button type="button" class="close" data-dismiss="modal"
+                                                            aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="row">
+                                                            <div class="col-md-5">
+                                                                NIM
+                                                            </div>
+                                                            <div class="col-md-7">
+                                                                <b>{{ $pendaftaran->mahasiswa->nim }}</b>
+                                                            </div>
+                                                        </div>
+                                                        <hr>
+
+                                                        <div class="row">
+                                                            <div class="col-md-5">
+                                                                Nama Lengkap
+                                                            </div>
+                                                            <div class="col-md-7">
+                                                                <b>{{ $pendaftaran->mahasiswa->nama }}</b>
+                                                            </div>
+                                                        </div>
+                                                        <hr>
+
+                                                        <div class="row">
+                                                            <div class="col-md-5">
+                                                                Prodi
+                                                            </div>
+                                                            <div class="col-md-7">
+                                                                <b>{{ $pendaftaran->mahasiswa->prodi }}</b>
+                                                            </div>
+                                                        </div>
+                                                        <hr>
+                                                        <div class="form-group">
+                                                            <label for="" class="form-label text-danger">Mahasiswa akan tergabung pada bimbingan dengan tahun masuk:</label>
+                                                            <input type="text" name="tahun_masuk" value="{{ $pendaftaran->mahasiswa->thmasuk }}" class="form-control" required>
+                                                        </div>
+                                                        <br>
+                                                        <span class="text-danger">* Jika ingin mengubah tahun masuk bimbingan, maka ubah data tahun masuk mahasiswa!</span>
+                                                    </div>
+                                                    <div class="modal-footer justify-content-between">
+                                                        <button type="submit" class="btn btn-success">Konfirmasi</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
                                     </div>
+                                    <!-- End Modal -->
                                 @endif
                             </div>
                         </div>
@@ -321,7 +388,7 @@
                                     <div class="card-footer">
                                         Lampiran :
                                         @if ($revisi->lampiran)
-                                            <a href="{{ asset($revisi->lampiran) }}" class="ml-3" target="_blank"><i
+                                            <a href="{{ storage_url($revisi->lampiran) }}" class="ml-3" target="_blank"><i
                                                     class="fas fa-paperclip"></i>
                                                 {{ Str::substr($revisi->lampiran, 40) }}</a>
                                         @endif

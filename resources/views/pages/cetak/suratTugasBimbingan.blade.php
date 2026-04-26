@@ -221,7 +221,7 @@ $bulan = 'XII';
                 <p class="titik-dua">:</p>
             </td>
             <td>
-                <p>{{ $pendaftaran->tanggal_pembayaran }}</p>
+                <p>{{ $tanggal_pembayaran_locale }}</p>
             </td>
         </tr>
         <tr>
@@ -278,7 +278,7 @@ $bulan = 'XII';
                         <div id="detail-dekan">
                             <b><u>{{ $dekan->namadekan . ', ' . $dekan->gelar }}</u>
                             </b><br>
-                            <b>NPU. {{ $dekan->nidn }}</b>
+                            <b>NIDN. {{ $dekan->nidn }}</b>
                         </div>
                     </span>
                 </center>

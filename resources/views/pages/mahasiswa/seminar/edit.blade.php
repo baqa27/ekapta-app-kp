@@ -80,7 +80,7 @@
                                     <div class="rounded bg-light">
                                         <small>
                                             <span class="ml-3">Lampiran sebelumnya : </span>
-                                            <a href="{{ asset($seminar->lampiran_1) }}" class="text-primary"
+                                            <a href="{{ storage_url($seminar->lampiran_1) }}" class="text-primary"
                                                 target="_blank"><i class="fas fa-paperclip ml-2"></i>
                                                 {{ Str::substr($seminar->lampiran_1, 21) }}</a>
                                         </small>
@@ -114,7 +114,7 @@
                                     <div class="rounded bg-light">
                                         <small>
                                             <span class="ml-3">Lampiran sebelumnya : </span>
-                                            <a href="{{ asset($seminar->lampiran_2) }}" class="text-primary"
+                                            <a href="{{ storage_url($seminar->lampiran_2) }}" class="text-primary"
                                                 target="_blank"><i class="fas fa-paperclip ml-2"></i>
                                                 {{ Str::substr($seminar->lampiran_2, 21) }}</a>
                                         </small>
@@ -143,7 +143,7 @@
                                         <small>
                                             @if ($seminar->lampiran_3)
                                             <span class="ml-3">Lampiran sebelumnya : </span>
-                                            <a href="{{ asset($seminar->lampiran_3) }}" class="text-primary"
+                                            <a href="{{ storage_url($seminar->lampiran_3) }}" class="text-primary"
                                                 target="_blank"><i class="fas fa-paperclip ml-2"></i>
                                                 {{ Str::substr($seminar->lampiran_3, 21) }}</a>
                                             @else
@@ -200,7 +200,7 @@
                                 {{--                                    <div class="rounded bg-light"> --}}
                                 {{--                                        <small> --}}
                                 {{--                                            <span class="ml-3">Lampiran sebelumnya : </span> --}}
-                                {{--                                            <a href="{{ asset($seminar->lampiran_4) }}" class="text-primary" --}}
+                                {{--                                            <a href="{{ storage_url($seminar->lampiran_4) }}" class="text-primary" --}}
                                 {{--                                                target="_blank"><i class="fas fa-paperclip ml-2"></i> --}}
                                 {{--                                                {{ Str::substr($seminar->lampiran_4, 21) }}</a> --}}
                                 {{--                                        </small> --}}
@@ -228,7 +228,7 @@
                                 {{--                                    <div class="rounded bg-light"> --}}
                                 {{--                                        <small> --}}
                                 {{--                                            <span class="ml-3">Lampiran sebelumnya : </span> --}}
-                                {{--                                            <a href="{{ asset($seminar->lampiran_5) }}" class="text-primary" --}}
+                                {{--                                            <a href="{{ storage_url($seminar->lampiran_5) }}" class="text-primary" --}}
                                 {{--                                                target="_blank"><i class="fas fa-paperclip ml-2"></i> --}}
                                 {{--                                                {{ Str::substr($seminar->lampiran_5, 21) }}</a> --}}
                                 {{--                                        </small> --}}

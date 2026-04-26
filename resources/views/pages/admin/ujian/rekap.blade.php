@@ -41,6 +41,7 @@
                                         <th>NIM</th>
                                         <th>NAMA MAHASISWA</th>
                                         <th>PRODI</th>
+                                        <th>EMAIL</th>
                                         <th>PEMBIMBING 1</th>
                                         <th>PEMBIMBING 2</th>
                                         <th>JUDUL SKRIPSI</th>
@@ -60,6 +61,7 @@
                                             <td>{{ $ujian->mahasiswa->nim }}</td>
                                             <td>{{ $ujian->mahasiswa->nama }}</td>
                                             <td>{{ $ujian->mahasiswa->prodi }}</td>
+                                            <td>{{ $ujian->mahasiswa->email }}</td>
                                             <td>{{ $dosen_utama ? $dosen_utama->nama.', '.$dosen_utama->gelar : null }}</td>
                                             <td>{{ $dosen_pendamping ? $dosen_pendamping->nama.', '.$dosen_pendamping->gelar : null }}</td>
                                             <td>{{ $ujian->pengajuan->judul }}</td>
@@ -73,6 +75,7 @@
                                         <th>NIM</th>
                                         <th>NAMA MAHASISWA</th>
                                         <th>PRODI</th>
+                                        <th>EMAIL</th>
                                         <th>PEMBIMBING 1</th>
                                         <th>PEMBIMBING 2</th>
                                         <th>JUDUL SKRIPSI</th>

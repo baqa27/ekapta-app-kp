@@ -81,7 +81,7 @@ class PengajuanController extends Controller
 
     public function pengajuanDetail($id)
     {
-        $pengajuan = Pengajuan::findOrFail($id);
+        $pengajuan = Pengajuan::with(['revisis','bimbingan_canceleds'])->findOrFail($id);
         if ($pengajuan->mahasiswa->nim != Auth::guard('mahasiswa')->user()->nim) {
             return back()->with('warning', 'Pengajuan tidak ditemukan');
         }
@@ -107,7 +107,7 @@ class PengajuanController extends Controller
         if ($pengajuan->prodi->namaprodi != $prodi->namaprodi){
             abort(404);
         }
-
+        // return $mahasiswa->bimbingans()->whereNotIn('status', ['dibatalkan'])->get();
         $data = [
             'title' => 'Review pengajuan',
             'active' => 'pengajuan',
@@ -230,6 +230,9 @@ class PengajuanController extends Controller
             return back()->with('error', 'Pengajuan tidak bisa diedit');
         } else {
             if ($pengajuan->status == Pengajuan::REVIEW) {
+                $revisi = new RevisiPengajuan;
+                $revisi->catatan = $request->catatan;
+
                 $pengajuan->update([
                     'status' => Pengajuan::DITERIMA,
                     'tanggal_acc' => now(),
@@ -242,6 +245,9 @@ class PengajuanController extends Controller
                         'message' => 'Selamat Pengajuan Tugas Akhir Anda Berstatus DITERIMA. Silahkan tunggu ploting dosen pembimbing dan segera lakukan pendaftaran tugas akhir.',
                     ]);
                 }
+
+                $pengajuan->revisis()->save($revisi);
+
                 return back()->with('success', 'Pengajuan berhasil diacc');
             }
         }

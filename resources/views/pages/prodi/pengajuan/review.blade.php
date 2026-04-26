@@ -32,7 +32,7 @@
                             bg-warning
                             @elseif ($pengajuan->status == 'diterima')
                             bg-success
-                            @elseif ($pengajuan->status == 'ditolak')
+                            @elseif ($pengajuan->status == 'ditolak' || $pengajuan->status == 'dibatalkan')
                             bg-danger @endif
                             ">
                                 {{ $pengajuan->status }}
@@ -53,9 +53,13 @@
                                     <td>{{ $pengajuan->prodi->namaprodi }}</td>
                                 </tr>
                                 <tr>
+                                    <td><b class="mr-3">Kelas</b></td>
+                                    <td>{{ \App\Helpers\AppHelper::format_kelas_mahasiswa($pengajuan->mahasiswa->kelas ?? null) }}</td>
+                                </tr>
+                                <tr>
                                     <td><b class="mr-3">Judul TA</b></td>
                                     <td>
-                                        @if ($pengajuan->status == 'diterima')
+                                        {{--@if ($pengajuan->status == 'diterima')
                                             {{ $pengajuan->judul }}
                                         @else
                                             <span
@@ -64,7 +68,11 @@
                                             <a type="button" class="ml-2" data-toggle="modal" data-target="#modal-cek">
                                                 <i class="bi bi-check-circle mr-1"></i> Check Plagiarism
                                             </a>
-                                        @endif
+                                        @endif--}}
+                                        <span class="text-{{ count($pengajuanCekIsPlagiat) <= 1 ? 'success' : 'warning' }}">{{ $pengajuan->judul }}</span>
+                                        <a type="button" class="ml-2" data-toggle="modal" data-target="#modal-cek">
+                                            <i class="bi bi-check-circle mr-1"></i> Check Plagiarism
+                                        </a>
                                     </td>
                                 </tr>
 
@@ -81,7 +89,7 @@
                                 </div>
                             @endif
                             <hr>
-                            <p class="mt-3"><b>Lampiran : </b> <a href="{{ asset($pengajuan->lampiran) }}" class="ml-3"
+                            <p class="mt-3"><b>Lampiran : </b> <a href="{{ storage_url($pengajuan->lampiran) }}" class="ml-3"
                                     target="_blank"><i class="fas fa-paperclip"></i>
                                     {{ Str::substr($pengajuan->lampiran, 40) }}</a></p>
                         </div>
@@ -96,7 +104,7 @@
                                         <i class="bi bi-pencil-square mr-2"></i> Revisi Pengajuan
                                     </button>
 
-                                    <div onclick="confirmAcc()">
+                                    {{--<div onclick="confirmAcc()">
                                         <form action="{{ route('pengajuan.acc') }}" method="post">
                                             @csrf
                                             <input type="hidden" name="id" value="{{ $pengajuan->id }}">
@@ -104,7 +112,11 @@
                                                 <i class="fas fa-check mr-2"></i> Acc Pengajuan
                                             </button>
                                         </form>
-                                    </div>
+                                    </div>--}}
+                                    <button type="button" class="btn btn-success mr-2" data-toggle="modal"
+                                        data-target="#modal-acc">
+                                        <i class="bi bi-check-circle mr-2"></i> Acc Pengajuan
+                                    </button>
 
                                     <button type="button" class="btn btn-danger mr-2" data-toggle="modal"
                                         data-target="#modal-tolak">
@@ -171,7 +183,7 @@
                                         <small>
                                             Lampiran :
                                             @if ($revisi->lampiran)
-                                                <a href="{{ asset($revisi->lampiran) }}" class="ml-3"
+                                                <a href="{{ storage_url($revisi->lampiran) }}" class="ml-3"
                                                     target="_blank"><i class="fas fa-paperclip"></i>
                                                     {{ Str::substr($revisi->lampiran, 40) }}</a>
                                             @endif
@@ -341,6 +353,34 @@
             </div>
             <!-- /.modal-dialog -->
         </div>
+
+        <div class="modal fade" id="modal-acc">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form action="{{ route('pengajuan.acc') }}" method="post" enctype="multipart/form-data">
+                        @csrf
+                        <input type="hidden" name="id" value="{{ $pengajuan->id }}">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Acc Pengajuan</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="" class="form-label">Catatan</label>
+                                <textarea class="form-control" name="catatan" required></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer justify-content-between">
+                            <button type="submit" class="btn btn-success">Konfirmasi</button>
+                        </div>
+                    </form>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
     @endif
 
     @if ($pengajuan->status == 'diterima')
@@ -425,12 +465,12 @@
                             <div class="form-group">
                                 <label for="" class="form-label">Dosen Pembimbing Utama </label>
                                 <input type="text" class="form-control"
-                                    value="{{ $dosen_utama->nama . ', ' . $dosen_utama->gelar }}" disabled>
+                                    value="{{ $dosen_utama ? $dosen_utama->nama . ', ' . $dosen_utama->gelar : '-' }}" disabled>
                             </div>
                             <div class="form-group">
                                 <label for="" class="form-label">Dosen Pembimbing Pendamping </label>
                                 <input type="text" class="form-control"
-                                    value="{{ $dosen_pendamping->nama . ', ' . $dosen_pendamping->gelar }}" disabled>
+                                    value="{{ $dosen_pendamping ? $dosen_pendamping->nama . ', ' . $dosen_pendamping->gelar : '-' }}" disabled>
                             </div>
                         </div>
 

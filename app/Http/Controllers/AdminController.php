@@ -23,17 +23,25 @@ class AdminController extends Controller
     }
 
     function accountUpdate(Request $request, $id){
-        $admin = Admin::findOrFail($id);
+        $admin = Auth::guard('admin')->user();
 
-        $request->validate([
-            'nama' => ['required', 'string'],
-            'password' => ['required','string' ,'min:6'],
+        abort_unless($admin && (int) $admin->id === (int) $id, 403);
+
+        $validatedData = $request->validate([
+            'nama' => ['required', 'string', 'max:255'],
+            'password' => ['nullable', 'string', 'min:6', 'confirmed'],
         ]);
 
-        $admin->update([
-            'nama' => $request->nama,
-            'password' => Hash::make($request->password),
-        ]);
+        $updateData = [
+            'nama' => $validatedData['nama'],
+        ];
+
+        if (!empty($validatedData['password'])) {
+            $updateData['password'] = Hash::make($validatedData['password']);
+        }
+
+        $admin->forceFill($updateData)->save();
+        Auth::guard('admin')->setUser($admin->fresh());
 
         return back()->with('success', 'Akun berhasil diubah');
     }

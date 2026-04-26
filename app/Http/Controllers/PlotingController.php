@@ -40,6 +40,8 @@ class PlotingController extends Controller
                 ]);
             }
             return back()->with('success', 'Ploting dosen pembimbing berhasil');
+        }else{
+            return back();
         }
     }
 
@@ -47,7 +49,7 @@ class PlotingController extends Controller
     {
         $seminar = Seminar::findOrFail($request->seminar_id);
 
-        $reviews_check = $seminar->reviews()->whereIn('status', [ReviewSeminar::DITERIMA, ReviewSeminar::REVISI])->get();
+        $reviews_check = $seminar->reviews()->whereIn('status', [ReviewSeminar::DITERIMA, ReviewSeminar::REVISI])->where('dosen_status','penguji')->get();
 
         if (count($reviews_check) != 0){
             return back()->with('warning', 'Dosen penguji sudah di ploting');
@@ -79,7 +81,7 @@ class PlotingController extends Controller
     {
         $ujian = Ujian::findOrFail($request->ujian_id);
 
-        $reviews_check = $ujian->reviews()->whereIn('status', [ReviewUjian::DITERIMA, ReviewUjian::REVISI])->get();
+        $reviews_check = $ujian->reviews()->whereIn('status', [ReviewUjian::DITERIMA, ReviewUjian::REVISI])->where('dosen_status','penguji')->get();
 
         if (count($reviews_check) != 0){
             return back()->with('warning', 'Dosen penguji sudah di ploting');

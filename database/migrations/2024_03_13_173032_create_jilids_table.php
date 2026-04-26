@@ -13,6 +13,12 @@ class CreateJilidsTable extends Migration
      */
     public function up()
     {
+        // Skip jika tabel sudah ada (untuk database hosting yang sudah punya tabel ini)
+        if (Schema::hasTable('jilids')) {
+            echo "Table 'jilids' already exists. Skipping creation.\n";
+            return;
+        }
+        
         Schema::create('jilids', function (Blueprint $table) {
             $table->id();
             $table->integer('total_pembayaran')->nullable();
@@ -28,6 +34,8 @@ class CreateJilidsTable extends Migration
             $table->string('berita_acara')->nullable();
             $table->string('link_project')->nullable();
             $table->string('artikel')->nullable();
+            $table->string('panduan')->nullable();
+            $table->string('lampiran')->nullable();
             $table->boolean('is_completed')->default(0);
             $table->text('catatan')->nullable();
             $table->timestamps();

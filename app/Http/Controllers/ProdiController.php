@@ -106,15 +106,19 @@ class ProdiController extends Controller
     }
 
     function accountUpdate(Request $request, $id){
-        $prodi = Prodi::findOrFail($id);
+        $prodi = Auth::guard('prodi')->user();
 
-        $request->validate([
-            'password' => ['required','string' ,'min:6'],
+        abort_unless($prodi && (int) $prodi->id === (int) $id, 403);
+
+        $validatedData = $request->validate([
+            'password' => ['required', 'string', 'min:6', 'confirmed'],
         ]);
 
-        $prodi->update([
-            'password' => Hash::make($request->password),
-        ]);
+        $prodi->forceFill([
+            'password' => Hash::make($validatedData['password']),
+        ])->save();
+
+        Auth::guard('prodi')->setUser($prodi->fresh());
 
         return back()->with('success', 'Password berhasil diubah');
     }

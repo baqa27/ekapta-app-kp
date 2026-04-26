@@ -42,10 +42,18 @@
 
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">New Password</label>
-                                    <input type="text" class="form-control @error('password')is-invalid @enderror" name="password" required>
+                                    <input type="password" class="form-control @error('password')is-invalid @enderror" name="password" autocomplete="new-password" required>
+                                    <small class="text-muted d-block mt-2">
+                                        Yang berubah hanya password. Username untuk login tetap menggunakan NIM.
+                                    </small>
                                     @error('password')
                                     <div class="invalid-feedback">{{$message}}</div>
                                     @enderror
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="password_confirmation">Konfirmasi Password Baru</label>
+                                    <input type="password" class="form-control" name="password_confirmation" autocomplete="new-password" required>
                                 </div>
 
                                 <div class="mt-3">

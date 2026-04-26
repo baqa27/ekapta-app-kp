@@ -40,6 +40,7 @@
                                         <th>PEMBIMBING 1</th>
                                         <th>PEMBIMBING 2</th>
                                         <th>JUMLAH</th>
+                                        <th>AKSI</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -52,8 +53,40 @@
                                             <td>{{ $dosen->nidn }}</td>
                                             <td>{{ $dosen->nama . ', ' . $dosen->gelar }}</td>
                                             <td>{{ \App\Helpers\AppHelper::count_mahasiswa_bimbingan_dosen($dosen) }}</td>
-                                            <td>{{ \App\Helpers\AppHelper::count_mahasiswa_bimbingan_dosen($dosen, false) }}</td>
-                                            <td>{{ \App\Helpers\AppHelper::count_mahasiswa_bimbingan_dosen($dosen) + \App\Helpers\AppHelper::count_mahasiswa_bimbingan_dosen($dosen, false)  }}</td>
+                                            <td>{{ \App\Helpers\AppHelper::count_mahasiswa_bimbingan_dosen($dosen, false) }}
+                                            </td>
+                                            <td>{{ \App\Helpers\AppHelper::count_mahasiswa_bimbingan_dosen($dosen) + \App\Helpers\AppHelper::count_mahasiswa_bimbingan_dosen($dosen, false) }}
+                                            </td>
+                                            <td>
+                                                @if (count($dosen->mahasiswas) != 0)
+                                                    <button type="button" class="btn btn-primary btn-sm"
+                                                        data-toggle="modal"
+                                                        data-target="#modal-default-{{ $dosen->id }}">
+                                                        <i class="fas fa-users"></i> List Mahasiswa
+                                                    </button>
+                                                    <div class="modal fade" id="modal-default-{{ $dosen->id }}">
+                                                        <div class="modal-dialog" style="max-width: 100%; height: 100%; margin: 0; padding: 0;">
+                                                            <div class="modal-content" style="height: 100%; border-radius: 0;">
+                                                                <div class="modal-header">
+                                                                    <h4 class="modal-title">List Mahasiswa</h4>
+                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                        <span aria-hidden="true">&times;</span>
+                                                                    </button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <div class="row">
+                                                                        @foreach ($dosen->mahasiswas()->whereDoesntHave('jilid')->get() as $mahasiswa)
+                                                                            <div class="p-2 border m-1 border-dark">
+                                                                                {{ $mahasiswa->nama . '/' . $mahasiswa->nim }}
+                                                                            </div>
+                                                                        @endforeach
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                @endif
+                                            </td>
                                         </tr>
                                     @endforeach
 
@@ -66,6 +99,7 @@
                                         <th>PEMBIMBING 1</th>
                                         <th>PEMBIMBING 2</th>
                                         <th>JUMLAH</th>
+                                        <th>AKSI</th>
                                     </tr>
                                 </tfoot>
                             </table>

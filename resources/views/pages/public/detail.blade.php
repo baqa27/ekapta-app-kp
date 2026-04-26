@@ -73,7 +73,7 @@
                                                     <span class="badge bg-danger">TIDAK AKTIF</span>
                                                 @else
                                                     <span class="bg-primary rounded badge bg-primary countdown"
-                                                        data-expire="{{ \Carbon\Carbon::parse($date_expired)->format('Y/m/d h:i:s') }}">
+                                                        data-expire="{{ \Carbon\Carbon::parse($date_expired)->endOfDay()->format('Y/m/d H:i:s') }}">
                                                     </span>
                                                 @endif
                                             @else
@@ -107,7 +107,7 @@
                                                         <span class="badge bg-danger">TIDAK AKTIF</span>
                                                     @else
                                                         <span class="d-flex justify-content-center bg-primary rounded badge bg-primary countdown"
-                                                            data-expire="{{ \Carbon\Carbon::parse($date_expired)->format('Y/m/d h:i:s') }}">
+                                                            data-expire="{{ \Carbon\Carbon::parse($date_expired)->endOfDay()->format('Y/m/d H:i:s') }}">
                                                         </span>
                                                     @endif
                                                 @else

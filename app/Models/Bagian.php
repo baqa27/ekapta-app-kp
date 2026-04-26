@@ -14,6 +14,7 @@ class Bagian extends Model
         'bagian',
         'is_seminar',
         'is_pendadaran',
+        'tahun_masuk',
     ];
 
     public function prodi()

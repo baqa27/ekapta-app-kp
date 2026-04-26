@@ -35,6 +35,26 @@
     <link rel="stylesheet"
         href="{{ asset('ekapta') }}/adminLTE/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
     <link rel="shortcut icon" href="https://unsiq.ac.id/img/UNSIQ-bunder.ico" type="image/x-icon">
+
+     {{-- Tags --}}
+     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.css" rel="stylesheet"/>
+     <style type="text/css">
+         .bootstrap-tagsinput .tag {
+             margin-right: 2px;
+             color: white !important;
+             background-color: #0d6efd;
+             padding: 2px 4px 2px 4px;
+             border-radius: 10px;
+         }
+     </style>
+     {{-- Fix sidebar di Android desktop mode --}}
+     <style>
+         @media (max-width: 991.98px) {
+             body:not(.sidebar-open) .main-sidebar {
+                 margin-left: -250px;
+             }
+         }
+     </style>
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -177,6 +197,17 @@
     @endif
 
     @include('layouts.js')
+    @include('partials.sidebar-menu-state')
+
+    {{-- Fix: Auto-collapse sidebar di perangkat touch (Android desktop mode) --}}
+    <script>
+    $(function() {
+        var isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+        if (isTouchDevice && $(window).width() < 992) {
+            $('body').addClass('sidebar-collapse');
+        }
+    });
+    </script>
 </body>
 
 </html>

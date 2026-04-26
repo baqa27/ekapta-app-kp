@@ -1,3 +1,7 @@
+@php
+    $active = $active ?? '';
+    $module = $module ?? '';
+@endphp
 <nav class="main-header navbar navbar-expand navbar-white navbar-light sticky-top">
 
     <!-- Left navbar links -->
@@ -40,10 +44,10 @@
 
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="index3.html" class="brand-link">
+    <a href="{{ route('dashboard.prodi') }}" class="brand-link">
         <img src="https://unsiq.ac.id/img/UNSIQ-bunder.ico" alt="AdminLTE Logo"
              class="brand-image img-circle elevation-3" style="opacity: .8">
-        <span class="brand-text font-weight-light">Panel Prodi</span>
+        <span class="brand-text font-weight-light">EKAPTA Prodi</span>
     </a>
 
     <!-- Sidebar -->
@@ -74,65 +78,104 @@
                     </a>
                 </li>
 
-                <li class="nav-item
-                    @if($active == 'pengajuan' || $active == 'bimbingan' || $active == 'seminar' || $active == 'ujian' || $active == 'bimbingan-input')
-                    menu-open
-                    @endif">
-                    <a href="#" class="nav-link
-                    @if($active == 'pengajuan' || $active == 'bimbingan' || $active == 'seminar' || $active == 'ujian' || $active == 'bimbingan-input')
-                    active
-                    @endif">
-                        <i class="nav-icon fas fa-th"></i>
+                {{-- MENU KERJA PRAKTEK --}}
+                <li class="nav-item has-treeview {{ in_array($active, ['pengajuan-kp', 'bimbingan-kp', 'seminar-kp', 'bimbingan-input-kp']) ? 'menu-open' : '' }}">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-briefcase"></i>
+                        <p>
+                            Menu Kerja Praktek
+                            <i class="fas fa-angle-right right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ route('kp.pengajuan.prodi') }}"
+                               class="nav-link {{ $active=='pengajuan-kp' ? 'active' : '' }}">
+                                <i class="nav-icon far fa-circle"></i>
+                                <p>Validasi Pengajuan KP</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('kp.bimbingan.prodi.input') }}"
+                               class="nav-link {{ $active == 'bimbingan-input-kp' ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Validasi Bimbingan KP</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('kp.bimbingan.prodi') }}"
+                               class="nav-link {{ $active=='bimbingan-kp' ? 'active' : '' }}">
+                                <i class="nav-icon far fa-circle"></i>
+                                <p>Bimbingan KP</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('kp.seminar.prodi') }}"
+                               class="nav-link {{ $active=='seminar-kp' ? 'active' : '' }}">
+                                <i class="nav-icon far fa-circle"></i>
+                                <p>Seminar KP</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('kp.pengumpulan-akhir.prodi.index') }}"
+                               class="nav-link {{ $active=='pengumpulan-akhir-kp' ? 'active' : '' }}">
+                                <i class="nav-icon far fa-circle"></i>
+                                <p>Data Jilid KP</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                {{-- MENU TUGAS AKHIR --}}
+                <li class="nav-item has-treeview {{ in_array($active, ['pengajuan', 'bimbingan', 'seminar', 'ujian', 'bimbingan-input-ta', 'bimbingan-input', 'jilid-ta-prodi']) ? 'menu-open' : '' }}">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-graduation-cap"></i>
                         <p>
                             Menu Tugas Akhir
                             <i class="fas fa-angle-right right"></i>
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
-
                         <li class="nav-item">
                             <a href="{{ route('pengajuan.prodi') }}"
                                class="nav-link {{ $active=='pengajuan' ? 'active' : '' }}">
                                 <i class="nav-icon far fa-circle"></i>
-                                <p>
-                                    Validasi Pengajuan TA
-                                </p>
+                                <p>Validasi Pengajuan TA</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="{{ route('bimbingan.prodi.input') }}"
-                               class="nav-link {{ $active == 'bimbingan-input' ? 'active' : '' }}">
+                               class="nav-link {{ in_array($active, ['bimbingan-input-ta', 'bimbingan-input']) ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>
-                                    Input Bimbingan TA
-                                </p>
+                                <p>Validasi Bimbingan TA</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="{{ route('bimbingan.prodi') }}"
                                class="nav-link {{ $active=='bimbingan' ? 'active' : '' }}">
                                 <i class="nav-icon far fa-circle"></i>
-                                <p>
-                                    Bimbingan TA
-                                </p>
+                                <p>Bimbingan TA</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="{{ route('seminar.prodi') }}"
                                class="nav-link {{ $active=='seminar' ? 'active' : '' }}">
                                 <i class="nav-icon far fa-circle"></i>
-                                <p>
-                                    Seminar TA
-                                </p>
+                                <p>Seminar TA</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="{{ route('ujian.prodi') }}"
                                class="nav-link {{ $active=='ujian' ? 'active' : '' }}">
                                 <i class="nav-icon far fa-circle"></i>
-                                <p>
-                                    Ujian Pendadaran TA
-                                </p>
+                                <p>Ujian Pendadaran TA</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('jilid.prodi.index') }}"
+                               class="nav-link {{ $active=='jilid-ta-prodi' ? 'active' : '' }}">
+                                <i class="nav-icon far fa-circle"></i>
+                                <p>Data Jilid TA</p>
                             </a>
                         </li>
                     </ul>

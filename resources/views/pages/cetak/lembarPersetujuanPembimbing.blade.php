@@ -88,7 +88,7 @@
                 <p class="titik-dua">:</p>
             </td>
             <td>
-                <p><b>Bersedia / Tidak Bersedia</b> (coret yang tidak sesuai)</p>
+                <p><b>Menerima / Tidak Menerima</b> (coret yang tidak sesuai)</p>
             </td>
         </tr>
         <tr>
@@ -124,7 +124,7 @@
                 <p class="titik-dua">:</p>
             </td>
             <td>
-                <p><b>Bersedia / Tidak Bersedia</b> (coret yang tidak sesuai)</p>
+                <p><b>Menerima / Tidak Menerima</b> (coret yang tidak sesuai)</p>
             </td>
         </tr>
         <tr>

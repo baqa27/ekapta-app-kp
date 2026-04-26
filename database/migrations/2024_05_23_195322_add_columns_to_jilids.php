@@ -13,12 +13,12 @@ class AddColumnsToJilids extends Migration
      */
     public function up()
     {
-        Schema::table('jilids', function (Blueprint $table) {
-            $table->string('laporan_pdf')->nullable();
-            $table->string('laporan_word')->nullable();
-            $table->string('lembar_pengesahan')->nullable();
-            $table->string('link_project')->nullable();
-        });
+        // Schema::table('jilids', function (Blueprint $table) {
+        //     $table->string('laporan_pdf')->nullable();
+        //     $table->string('laporan_word')->nullable();
+        //     $table->string('lembar_pengesahan')->nullable();
+        //     $table->string('link_project')->nullable();
+        // });
     }
 
     /**

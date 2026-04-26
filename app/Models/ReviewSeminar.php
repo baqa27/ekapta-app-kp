@@ -42,4 +42,13 @@ class ReviewSeminar extends Model
     function dosen(){
         return $this->belongsTo(Dosen::class);
     }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($review_seminar) {
+            $review_seminar->revisis()->delete();
+        });
+    }
 }

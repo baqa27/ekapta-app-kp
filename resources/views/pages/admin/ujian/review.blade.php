@@ -109,7 +109,7 @@
                                     Bukti Lunas Pembayaran SPP Sampai Semester Terakhir
                                 </div>
                                 <div class="col-md-7">
-                                    <a href="{{ asset($ujian->lampiran_1) }}" target="_blank"><i
+                                    <a href="{{ storage_url($ujian->lampiran_1) }}" target="_blank"><i
                                             class="fas fa-paperclip"></i>
                                         {{ Str::substr($ujian->lampiran_1, 40) }}</a>
                                 </div>
@@ -121,7 +121,7 @@
                                     Bukti Lunas Pembayaran Tugas Akhir (TA)
                                 </div>
                                 <div class="col-md-7">
-                                    <a href="{{ asset($ujian->lampiran_2) }}" target="_blank"><i
+                                    <a href="{{ storage_url($ujian->lampiran_2) }}" target="_blank"><i
                                             class="fas fa-paperclip"></i>
                                         {{ Str::substr($ujian->lampiran_2, 40) }}</a>
                                 </div>
@@ -133,7 +133,7 @@
                                     Scan Ijazah Terakhir Yang Asli
                                 </div>
                                 <div class="col-md-7">
-                                    <a href="{{ asset($ujian->lampiran_3) }}" target="_blank"><i
+                                    <a href="{{ storage_url($ujian->lampiran_3) }}" target="_blank"><i
                                             class="fas fa-paperclip"></i>
                                         {{ Str::substr($ujian->lampiran_3, 40) }}</a>
                                 </div>
@@ -145,7 +145,7 @@
                                     Scan KTP / Kartu Keluarga Terbaru
                                 </div>
                                 <div class="col-md-7">
-                                    <a href="{{ asset($ujian->lampiran_4) }}" target="_blank"><i
+                                    <a href="{{ storage_url($ujian->lampiran_4) }}" target="_blank"><i
                                             class="fas fa-paperclip"></i>
                                         {{ Str::substr($ujian->lampiran_4, 40) }}</a>
                                 </div>
@@ -157,7 +157,7 @@
                                     Scan Sertifikat TOEFL
                                 </div>
                                 <div class="col-md-7">
-                                    <a href="{{ asset($ujian->lampiran_5) }}" target="_blank"><i
+                                    <a href="{{ storage_url($ujian->lampiran_5) }}" target="_blank"><i
                                             class="fas fa-paperclip"></i>
                                         {{ Str::substr($ujian->lampiran_5, 40) }}</a>
                                 </div>
@@ -169,7 +169,7 @@
                                     Scan Sertifikat Tahfidz
                                 </div>
                                 <div class="col-md-7">
-                                    <a href="{{ asset($ujian->lampiran_6) }}" target="_blank"><i
+                                    <a href="{{ storage_url($ujian->lampiran_6) }}" target="_blank"><i
                                             class="fas fa-paperclip"></i>
                                         {{ Str::substr($ujian->lampiran_6, 40) }}</a>
                                 </div>
@@ -181,7 +181,7 @@
                                     Scan Sertifikat Komputer
                                 </div>
                                 <div class="col-md-7">
-                                    <a href="{{ asset($ujian->lampiran_7) }}" target="_blank"><i
+                                    <a href="{{ storage_url($ujian->lampiran_7) }}" target="_blank"><i
                                             class="fas fa-paperclip"></i>
                                         {{ Str::substr($ujian->lampiran_7, 40) }}</a>
                                 </div>
@@ -193,7 +193,7 @@
                                     Transkrip Nilai Semenara (Tanpa Nilai D/E/Kosong, kecuali nilai Tugas Akhir/Skripsi)
                                 </div>
                                 <div class="col-md-7">
-                                    <a href="{{ asset($ujian->lampiran_8) }}" target="_blank"><i
+                                    <a href="{{ storage_url($ujian->lampiran_8) }}" target="_blank"><i
                                             class="fas fa-paperclip"></i>
                                         {{ Str::substr($ujian->lampiran_8, 40) }}</a>
                                 </div>
@@ -206,7 +206,7 @@
                                 </div>
                                 <div class="col-md-7">
                                     @if($ujian->lampiran_laporan)
-                                        <a href="{{ asset($ujian->lampiran_laporan) }}" target="_blank"><i
+                                        <a href="{{ storage_url($ujian->lampiran_laporan) }}" target="_blank"><i
                                                 class="fas fa-paperclip"></i>
                                             {{ Str::substr($ujian->lampiran_laporan, 40) }}</a>
                                     @else
@@ -357,7 +357,7 @@
                                         <div class="card-footer">
                                             Lampiran :
                                             @if ($revisi->lampiran)
-                                                <a href="{{ asset($revisi->lampiran) }}" class="ml-3"
+                                                <a href="{{ storage_url($revisi->lampiran) }}" class="ml-3"
                                                     target="_blank"><i class="fas fa-paperclip"></i>
                                                     {{ Str::substr($revisi->lampiran, 40) }}</a>
                                             @endif

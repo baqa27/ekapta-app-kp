@@ -77,7 +77,7 @@
                                                         <div class="p-1 mt-3 bg-light rounded">
                                                             <small>
                                                                 <span class="text-secondary ml-2"><b>Lampiran : </b></span>
-                                                                <a href="{{ asset($revisi->lampiran) }}" target="_blank">
+                                                                <a href="{{ storage_url($revisi->lampiran) }}" target="_blank">
                                                                     <i class="fas fa-paperclip ml-1"></i>
                                                                     {{ Str::substr($revisi->lampiran, 40) }}
                                                                 </a>
@@ -118,7 +118,7 @@
                                             <div class="bg-light p-1 rounded mt-1">
                                                 <small>
                                                     <b>Lampiran : </b>
-                                                    <a href="{{ asset($review->lampiran ? $review->lampiran : $review->ujian->lampiran_laporan) }}"
+                                                    <a href="{{ storage_url($review->lampiran ? $review->lampiran : $review->ujian->lampiran_laporan) }}"
                                                         class="ml-3 text-primary" target="_blank"><i
                                                             class="fas fa-paperclip mr-2"></i>
                                                         {{ Str::substr($review->lampiran ? $review->lampiran : $review->ujian->lampiran_laporan, 40) }}</a>
