@@ -19,6 +19,7 @@ return new class extends Migration
             $table->date('tanggal_pembayaran')->nullable();
             $table->decimal('biaya', 10, 2)->nullable();
             $table->string('jenis_mahasiswa')->nullable();
+            $table->string('kelas')->nullable();
             $table->string('lampiran_1')->nullable();
             $table->string('lampiran_2')->nullable();
             $table->string('lampiran_3')->nullable();

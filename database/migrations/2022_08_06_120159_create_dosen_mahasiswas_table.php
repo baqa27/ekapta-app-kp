@@ -14,6 +14,7 @@ class CreateDosenMahasiswasTable extends Migration
     public function up()
     {
         Schema::create('dosen_mahasiswas', function (Blueprint $table) {
+            $table->increments('ID');
             $table->foreignId('mahasiswa_id');
             $table->foreignId('dosen_id');
             $table->string('status')->nullable();

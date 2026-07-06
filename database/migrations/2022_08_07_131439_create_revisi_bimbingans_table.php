@@ -17,6 +17,8 @@ class CreateRevisiBimbingansTable extends Migration
             $table->id();
             $table->text('catatan')->nullable();
             $table->string('lampiran')->nullable();
+            $table->string('lampiran_revisi')->nullable();
+            $table->timestamp('tanggal_bimbingan')->nullable();
             $table->timestamps();
             $table->foreignId('bimbingan_id')->constrained('bimbingans');
             $table->foreignId('dosen_id')->constrained('dosens');

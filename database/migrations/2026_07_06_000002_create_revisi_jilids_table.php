@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateBagiansTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,15 @@ class CreateBagiansTable extends Migration
      */
     public function up()
     {
-        Schema::create('bagians', function (Blueprint $table) {
+        if (Schema::hasTable('revisi_jilids')) {
+            return;
+        }
+
+        Schema::create('revisi_jilids', function (Blueprint $table) {
             $table->id();
-            $table->string('bagian');
-            $table->string('tahun_masuk')->nullable();
-            $table->tinyInteger('is_seminar')->default(0);
-            $table->tinyInteger('is_pendadaran')->default(0);
+            $table->text('catatan')->nullable();
             $table->timestamps();
-            $table->foreignId('prodi_id')->constrained();
+            $table->foreignId('jilid_id')->constrained('jilids')->onDelete('cascade');
         });
     }
 
@@ -31,6 +32,6 @@ class CreateBagiansTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('bagians');
+        Schema::dropIfExists('revisi_jilids');
     }
-}
+};

@@ -24,6 +24,10 @@ class CreateUjiansTable extends Migration
             $table->string('lampiran_7');
             $table->string('lampiran_8');
             $table->string('lampiran_proposal')->nullable();
+            $table->string('lampiran_syahadah')->nullable();
+            $table->string('tempat_ujian')->nullable();
+            $table->string('artikel')->nullable();
+            $table->string('link_artikel')->nullable();
             $table->boolean('is_valid')->default(3);
             $table->tinyInteger('is_lulus')->default(3);
             $table->timestamp('tanggal_acc')->nullable();
