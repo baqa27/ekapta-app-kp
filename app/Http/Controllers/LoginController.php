@@ -6,6 +6,7 @@ use App\Models\Admin;
 use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class LoginController extends Controller
 {
@@ -20,16 +21,24 @@ class LoginController extends Controller
     public function cekMahasiswa(Request $request)
     {
         $credentials = $request->validate([
-            'nim' => ['required'],
-            'password' => ['required'],
+            'nim' => ['required', 'string'],
+            'password' => ['required', 'string'],
         ]);
 
-        if (Auth::guard('mahasiswa')->attempt($credentials)) {
-            $request->session()->regenerate();
-            return redirect()->intended('dashboard-mahasiswa');
+        $nim = trim($credentials['nim']);
+        $password = $credentials['password'];
+        $mahasiswa = Mahasiswa::where('nim', $nim)->first();
+
+        if (! $mahasiswa || ! $this->passwordMatches($mahasiswa, $password)) {
+            return back()
+                ->withInput($request->only('nim'))
+                ->with('error', 'NIM atau password salah');
         }
 
-        return back()->with('error', 'User tidak ditemukan');
+        Auth::guard('mahasiswa')->login($mahasiswa);
+        $request->session()->regenerate();
+
+        return redirect()->intended('dashboard-mahasiswa');
     }
 
     public function loginProdi()
@@ -99,5 +108,34 @@ class LoginController extends Controller
         }
 
         return back()->with('error', 'User tidak ditemukan');
+    }
+
+    private function passwordMatches(Mahasiswa $mahasiswa, string $plainPassword): bool
+    {
+        $storedPassword = (string) $mahasiswa->password;
+
+        try {
+            if ($storedPassword !== '' && Hash::check($plainPassword, $storedPassword)) {
+                if (Hash::needsRehash($storedPassword)) {
+                    $mahasiswa->forceFill([
+                        'password' => Hash::make($plainPassword),
+                    ])->save();
+                }
+
+                return true;
+            }
+        } catch (\Throwable $exception) {
+            // Lanjut ke fallback data lama jika password di database belum berupa hash valid.
+        }
+
+        if (! hash_equals($storedPassword, $plainPassword)) {
+            return false;
+        }
+
+        $mahasiswa->forceFill([
+            'password' => Hash::make($plainPassword),
+        ])->save();
+
+        return true;
     }
 }

@@ -22,6 +22,9 @@ class Bimbingan extends Model
         'tanggal_bimbingan',
         'tanggal_acc',
         'pembimbing',
+        'lampiran_acc',
+        'tanggal_manual_acc',
+        'catatan',
     ];
 
     public function mahasiswa()
@@ -43,5 +46,14 @@ class Bimbingan extends Model
     {
         return $this->belongsToMany(Dosen::class, 'dosen_bimbingans', 'bimbingan_id', 'dosen_id',)
             ->withTimestamps();
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($bimbingan) {
+            $bimbingan->revisis()->delete();
+        });
     }
 }

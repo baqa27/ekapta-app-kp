@@ -27,12 +27,15 @@ class Ujian extends Model
         'lampiran_6',
         'lampiran_7',
         'lampiran_8',
+        'lampiran_syahadah',
         'lampiran_proposal',
         'is_valid',
         'tanggal_acc',
         'tanggal_ujian',
         'is_lulus',
         'lampiran_laporan',
+        'artikel',
+        'link_artikel',
         'tempat_ujian',
     ];
 

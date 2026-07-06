@@ -33,11 +33,18 @@ class Jilid extends Model
         'catatan',
         'artikel',
         'is_completed',
+        'panduan',
+        'lampiran',
     ];
 
     public function mahasiswa()
     {
         return $this->belongsTo(Mahasiswa::class);
+    }
+
+    public function revisis()
+    {
+        return $this->hasMany(RevisiJilid::class);
     }
 
 }

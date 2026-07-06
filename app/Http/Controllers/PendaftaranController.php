@@ -13,15 +13,17 @@ use App\Models\Pengajuan;
 use App\Models\Prodi;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 class PendaftaranController extends Controller
 {
     public function pendaftaranAdmin()
     {
-        $pendaftarans = Pendaftaran::where('status', Pendaftaran::REVIEW)->orderBy('created_at', 'desc')->get();
-        $pendaftarans_acc = Pendaftaran::where('status', Pendaftaran::DITERIMA)->orderBy('created_at', 'desc')->get();
-        $pendaftarans_revisi = Pendaftaran::where('status', Pendaftaran::REVISI)->orderBy('created_at', 'desc')->get();
+        $pendaftarans = Pendaftaran::with(['mahasiswa', 'pengajuan'])->where('status', Pendaftaran::REVIEW)->orderBy('created_at', 'desc')->get();
+        $pendaftarans_acc = Pendaftaran::with(['mahasiswa', 'pengajuan'])->where('status', Pendaftaran::DITERIMA)->orderBy('created_at', 'desc')->get();
+        $pendaftarans_revisi = Pendaftaran::with(['mahasiswa', 'pengajuan'])->where('status', Pendaftaran::REVISI)->orderBy('created_at', 'desc')->get();
         return view('pages.admin.pendaftaran.pendaftaran', [
             'title' => 'Pendaftaran Tugas Akhir',
             'active' => 'pendaftaran',
@@ -68,7 +70,7 @@ class PendaftaranController extends Controller
         $mahasiswa = Mahasiswa::where('nim', Auth::guard('mahasiswa')->user()->nim)->first();
         $pengajuan = $mahasiswa->pengajuans()->where('status', Pengajuan::DITERIMA)->first();
 
-        $pendaftarans_review_acc = Pendaftaran::where('pengajuan_id', $pengajuan->id)->whereIn('status', [Pendaftaran::DITERIMA, Pendaftaran::REVIEW])->get();
+        $pendaftarans_review_acc = Pendaftaran::where('pengajuan_id', $pengajuan->id)->whereIn('status', [Pendaftaran::DITERIMA, Pendaftaran::REVIEW, Pendaftaran::REVISI])->get();
 
         if (count($pendaftarans_review_acc) != 0) {
             return redirect('pendaftaran-mahasiswa')->with('warning', 'Anda sudah melakukan pendaftaran tugas akhir');
@@ -85,6 +87,7 @@ class PendaftaranController extends Controller
             'dosen_utama' => $dosenUtama,
             'dosen_pendamping' => $dosenPendamping,
             'pengajuan' => $pengajuan,
+            'biayaOptions' => Pendaftaran::getBiayaOptions(),
         ]);
     }
 
@@ -93,21 +96,33 @@ class PendaftaranController extends Controller
         $mahasiswa = Mahasiswa::where('nim', Auth::guard('mahasiswa')->user()->nim)->first();
         $pengajuan = $mahasiswa->pengajuans()->where('status', Pengajuan::DITERIMA)->first();
 
-        $pendaftarans_review_acc = Pendaftaran::where('pengajuan_id', $pengajuan->id)->whereIn('status', [Pendaftaran::DITERIMA, Pendaftaran::REVIEW])->get();
+        $validatedData = $request->validate([
+            'tanggal_pembayaran' => 'required',
+            'biaya' => 'required',
+            'lampiran_1' => ['required', 'mimes:pdf', 'max:5000'],
+            'lampiran_2' => ['required', 'mimes:pdf', 'max:5000'],
+            'lampiran_3' => ['required', 'mimes:pdf', 'max:5000'],
+            'lampiran_4' => ['required', 'mimes:pdf,png,jpg,jpeg', 'max:5000'],
+            'lampiran_5' => ['required', 'mimes:pdf,png,jpg,jpeg', 'max:5000'],
+        ]);
 
-        if (count($pendaftarans_review_acc) != 0) {
-            return redirect('pendaftaran-mahasiswa')->with('warning', 'Anda sudah melakukan pendaftaran');
-        } else {
-            $validatedData = $request->validate([
-                'nomor_pembayaran' => 'required',
-                'tanggal_pembayaran' => 'required',
-                'biaya' => 'required',
-                'lampiran_1' => ['required', 'mimes:pdf', 'max:5000'],
-                'lampiran_2' => ['required', 'mimes:pdf', 'max:5000'],
-                'lampiran_3' => ['required', 'mimes:pdf', 'max:5000'],
-                'lampiran_4' => ['required', 'mimes:pdf,png,jpg,jpeg', 'max:5000'],
-                'lampiran_5' => ['required', 'mimes:pdf,png,jpg,jpeg', 'max:5000'],
+        $statusPendaftaran = Pendaftaran::resolveStatusPendaftaranFromBiaya($validatedData['biaya']);
+
+        if (!$statusPendaftaran) {
+            throw ValidationException::withMessages([
+                'biaya' => 'Biaya tidak sesuai dengan status pendaftaran yang dipilih.',
             ]);
+        }
+
+        return DB::transaction(function () use ($request, $validatedData, $mahasiswa, $pengajuan) {
+            $exists = Pendaftaran::where('pengajuan_id', $pengajuan->id)
+                ->whereIn('status', [Pendaftaran::DITERIMA, Pendaftaran::REVIEW, Pendaftaran::REVISI])
+                ->lockForUpdate()
+                ->exists();
+
+            if ($exists) {
+                return redirect('pendaftaran-mahasiswa')->with('warning', 'Anda sudah melakukan pendaftaran');
+            }
 
             $validatedData['lampiran_1'] = AppHelper::instance()->uploadLampiran($request->file('lampiran_1'), 'lampirans');
             $validatedData['lampiran_2'] = AppHelper::instance()->uploadLampiran($request->file('lampiran_2'), 'lampirans');
@@ -117,6 +132,7 @@ class PendaftaranController extends Controller
 
             $validatedData['mahasiswa_id'] = Auth::guard('mahasiswa')->user()->id;
             $validatedData['pengajuan_id'] = $pengajuan->id;
+            $validatedData['nomor_pembayaran'] = '-';
 
             setlocale(LC_TIME, 'id');
             $tanggal_pembayaran = Carbon::parse($request->tanggal_pembayaran);
@@ -124,7 +140,7 @@ class PendaftaranController extends Controller
 
             Pendaftaran::create($validatedData);
             return redirect('pendaftaran-mahasiswa')->with('success', 'Berhasil melakukan pendaftaran');
-        }
+        });
     }
 
     public function edit($id)
@@ -154,6 +170,7 @@ class PendaftaranController extends Controller
             'dosen_pendamping' => $dosenPendamping,
             'pendaftaran' => $pendaftaran,
             'mahasiswa' => $mahasiswa,
+            'biayaOptions' => Pendaftaran::getBiayaOptions(),
         ]);
     }
 
@@ -206,7 +223,6 @@ class PendaftaranController extends Controller
     {
         $pendaftaran = Pendaftaran::findOrFail($request->id);
         $validatedData = $request->validate([
-            'nomor_pembayaran' => 'required',
             'biaya' => 'required',
             'lampiran_1' => [Rule::requiredIf(function () {
                 if (empty($this->request->lampiran_1)) {
@@ -239,6 +255,14 @@ class PendaftaranController extends Controller
                 return true;
             }), 'mimes:pdf,png,jpg,jpeg', 'max:5000'],
         ]);
+
+        $statusPendaftaran = Pendaftaran::resolveStatusPendaftaranFromBiaya($validatedData['biaya']);
+
+        if (!$statusPendaftaran) {
+            throw ValidationException::withMessages([
+                'biaya' => 'Biaya tidak sesuai dengan status pendaftaran yang dipilih.',
+            ]);
+        }
 
         if ($request->file('lampiran_1')) {
             AppHelper::instance()->deleteLampiran($pendaftaran->lampiran_1);
@@ -295,6 +319,10 @@ class PendaftaranController extends Controller
         $pendaftaran = Pendaftaran::findOrFail($request->id);
 
         $mahasiswa = Mahasiswa::where('id', $pendaftaran->mahasiswa_id)->first();
+        $mahasiswa->update([
+            'thmasuk' => $request->tahun_masuk,
+        ]);
+
         $dosenUtama = $mahasiswa->dosens()->where('status', Dosen::UTAMA)->first();
         $dosenPendamping = $mahasiswa->dosens()->where('status', Dosen::PENDAMPING)->first();
 
@@ -302,8 +330,8 @@ class PendaftaranController extends Controller
 
         $prodi = Prodi::where('namaprodi', $mahasiswa->prodi)->first();
 
-        if (count($prodi->bagians) == 0) {
-            return back()->with('warning', 'Bagian bimbingan untuk prodi' . $mahasiswa->prodi . ' masih kosong');
+        if (count($prodi->bagians()->where("tahun_masuk", "LIKE", "%" . $mahasiswa->thmasuk . "%")->get()) == 0) {
+            return back()->with('warning', 'Bagian bimbingan untuk prodi' . $mahasiswa->prodi . 'dan tahun masuk '.$mahasiswa->thmasuk.' masih kosong');
         } elseif ($pendaftaran->status == Pendaftaran::DITERIMA) {
             return back()->with('warning', 'Pendaftaran sudah diacc');
         } else {
@@ -314,7 +342,7 @@ class PendaftaranController extends Controller
 
             if (!$pendaftaran_disabled) {
                 // Otomatis create bimbingan dengan pembimbing dosen utam
-                foreach ($prodi->bagians as $bagian) {
+                foreach ($prodi->bagians()->where("tahun_masuk", "LIKE", "%" . $mahasiswa->thmasuk . "%")->get() as $bagian) {
                     $bimbingan = Bimbingan::create([
                         'mahasiswa_id' => $mahasiswa->id,
                         'bagian_id' => $bagian->id,
@@ -324,7 +352,7 @@ class PendaftaranController extends Controller
                 }
 
                 // Otomatis create bimbingan dengan pembimbing dosen pendamping
-                foreach ($prodi->bagians as $bagian) {
+                foreach ($prodi->bagians()->where("tahun_masuk", "LIKE", "%" . $mahasiswa->thmasuk . "%")->get() as $bagian) {
                     $bimbingan = Bimbingan::create([
                         'mahasiswa_id' => $mahasiswa->id,
                         'bagian_id' => $bagian->id,

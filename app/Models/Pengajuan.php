@@ -49,4 +49,13 @@ class Pengajuan extends Model
     public function prodi(){
         return $this->belongsTo(Prodi::class);
     }
+
+    public function bimbingan_canceleds(){
+        return $this->hasMany(BimbinganCanceled::class);
+    }
+
+    public function seminar_canceleds()
+    {
+        return $this->hasMany(SeminarCanceled::class);
+    }
 }

@@ -31,8 +31,14 @@ class NotificationMail extends Mailable
      */
     public function build()
     {
-        $mail = $this->details['mail'];
-        return $this->subject($this->details['subject'])
+        $subject = $this->details['subject'] ?? 'Notifikasi EKAPTA';
+        
+        // Pastikan title ada untuk view
+        if (!isset($this->details['title'])) {
+            $this->details['title'] = $subject;
+        }
+        
+        return $this->subject($subject)
             ->view('emails.notification');
     }
 }

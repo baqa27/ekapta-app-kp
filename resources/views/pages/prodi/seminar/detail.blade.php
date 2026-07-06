@@ -89,7 +89,7 @@
                                         Proposal Seminar TA
                                     </div>
                                     <div class="col-md-7">
-                                        <b><a href="{{ asset($seminar->lampiran_proposal) }}" target="_blank"><i
+                                        <b><a href="{{ storage_url($seminar->lampiran_proposal) }}" target="_blank"><i
                                                     class="fas fa-download"></i>
                                                 {{ Str::substr($seminar->lampiran_proposal, 40) }}</a>
                                         </b>
@@ -167,7 +167,7 @@
                                         <div class="card-footer">
                                             Lampiran :
                                             @if ($revisi->lampiran)
-                                                <a href="{{ asset($revisi->lampiran) }}" class="ml-3" target="_blank"><i
+                                                <a href="{{ storage_url($revisi->lampiran) }}" class="ml-3" target="_blank"><i
                                                         class="fas fa-paperclip"></i>
                                                     {{ Str::substr($revisi->lampiran, 40) }}</a>
                                             @endif
@@ -220,7 +220,7 @@
                                     <b>{{ $review->dosen->nama }}, {{ $review->dosen->gelar }}</b>
                                     <p>
                                         Lampiran Proposal:
-                                        <a href="{{ asset($review->lampiran ? $review->lampiran : $review->seminar->lampiran_3) }}"
+                                        <a href="{{ storage_url($review->lampiran ? $review->lampiran : $review->seminar->lampiran_3) }}"
                                             class="ml-3 text-primary" target="_blank"><i class="fas fa-paperclip mr-2"></i>
                                             {{ Str::substr($review->lampiran ? $review->lampiran : $review->seminar->lampiran_3, 40) }}</a>
                                     </p>
@@ -238,7 +238,7 @@
                                         </p>
                                         <p>
                                             Lampiran Lembar Revisi:
-                                            <a href="{{ asset($review->lampiran_lembar_revisi) }}"
+                                            <a href="{{ storage_url($review->lampiran_lembar_revisi) }}"
                                                 class="ml-3 text-primary" target="_blank"><i
                                                     class="fas fa-paperclip mr-2"></i>
                                                 {{ Str::substr($review->lampiran_lembar_revisi, 40) }}</a>

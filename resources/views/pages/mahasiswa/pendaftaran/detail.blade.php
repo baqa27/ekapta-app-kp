@@ -73,7 +73,7 @@
                                     Pembimbing Utama (1) Tugas Akhir
                                 </div>
                                 <div class="col-md-8">
-                                    <b>{{ $dosen_utama->nama . ', ' . $dosen_utama->gelar }}</b>
+                                    <b>{{ $dosen_utama ? $dosen_utama->nama . ', ' . $dosen_utama->gelar : 'Belum ditentukan' }}</b>
                                 </div>
                             </div>
                             <hr>
@@ -83,7 +83,7 @@
                                     Pembimbing Pendamping (2) Tugas Akhir
                                 </div>
                                 <div class="col-md-8">
-                                    <b>{{ $dosen_pendamping->nama . ', ' . $dosen_pendamping->gelar }}</b>
+                                    <b>{{ $dosen_pendamping ? $dosen_pendamping->nama . ', ' . $dosen_pendamping->gelar : 'Belum ditentukan' }}</b>
                                 </div>
                             </div>
                             <hr>
@@ -103,7 +103,7 @@
                                     Dokumen Acc. Kaprodi
                                 </div>
                                 <div class="col-md-8">
-                                    <a href="{{ asset($pendaftaran->lampiran_1) }}" target="_blank"><i
+                                    <a href="{{ storage_url($pendaftaran->lampiran_1) }}" target="_blank"><i
                                             class="fas fa-paperclip"></i> {{ Str::substr($pendaftaran->lampiran_1, 40) }}</a>
                                 </div>
                             </div>
@@ -114,7 +114,7 @@
                                     Bukti Lembar Pernyataan Keaslian Hasil Tugas Akhir
                                 </div>
                                 <div class="col-md-8">
-                                    <a href="{{ asset($pendaftaran->lampiran_2) }}" target="_blank"><i
+                                    <a href="{{ storage_url($pendaftaran->lampiran_2) }}" target="_blank"><i
                                             class="fas fa-paperclip"></i> {{ Str::substr($pendaftaran->lampiran_2, 40) }}</a>
                                 </div>
                             </div>
@@ -125,7 +125,7 @@
                                     Bukti Transkrip Nilai
                                 </div>
                                 <div class="col-md-8">
-                                    <a href="{{ asset($pendaftaran->lampiran_3) }}" target="_blank"><i
+                                    <a href="{{ storage_url($pendaftaran->lampiran_3) }}" target="_blank"><i
                                             class="fas fa-paperclip"></i> {{ Str::substr($pendaftaran->lampiran_3, 40) }}</a>
                                 </div>
                             </div>
@@ -136,7 +136,7 @@
                                     Bukti Pengumpulan KP
                                 </div>
                                 <div class="col-md-8">
-                                    <a href="{{ asset($pendaftaran->lampiran_4) }}" target="_blank"><i
+                                    <a href="{{ storage_url($pendaftaran->lampiran_4) }}" target="_blank"><i
                                             class="fas fa-paperclip"></i> {{ Str::substr($pendaftaran->lampiran_4, 40) }}</a>
                                 </div>
                             </div>
@@ -147,18 +147,8 @@
                                     Bukti Pembayaran Tugas Akhir
                                 </div>
                                 <div class="col-md-8">
-                                    <a href="{{ asset($pendaftaran->lampiran_5) }}" target="_blank"><i
+                                    <a href="{{ storage_url($pendaftaran->lampiran_5) }}" target="_blank"><i
                                             class="fas fa-paperclip"></i> {{ Str::substr($pendaftaran->lampiran_4, 40) }}</a>
-                                </div>
-                            </div>
-                            <hr>
-
-                            <div class="row">
-                                <div class="col-md-4">
-                                    Nomor Pembayaran
-                                </div>
-                                <div class="col-md-8">
-                                    <b>{{ $pendaftaran->nomor_pembayaran }}</b>
                                 </div>
                             </div>
                             <hr>
@@ -178,7 +168,7 @@
                                     Biaya
                                 </div>
                                 <div class="col-md-8">
-                                    <span class="text-success fs-5">Rp, {{ $pendaftaran->biaya }},-</span>
+                                    <span class="text-success fs-5">Rp. {{ number_format((float) $pendaftaran->biaya, 0, ',', '.') }},-</span>
                                 </div>
                             </div>
                             <hr>
@@ -251,7 +241,7 @@
                                                 <div class="p-1 mt-3 bg-light rounded">
                                                     <small>
                                                         <span class="text-secondary ml-2"><b>Lampiran : </b></span>
-                                                        <a href="{{ asset($revisi->lampiran) }}" target="_blank">
+                                                        <a href="{{ storage_url($revisi->lampiran) }}" target="_blank">
                                                             <i class="fas fa-paperclip ml-1"></i>
                                                             {{ Str::substr($revisi->lampiran, 40) }}
                                                         </a>

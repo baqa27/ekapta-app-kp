@@ -80,6 +80,8 @@
                                                     <span class="badge bg-success">Diterima</span>
                                                 @elseif ($pengajuan->status == 'ditolak')
                                                     <span class="badge bg-danger">Ditolak</span>
+                                                @else
+                                                    <span class="badge bg-danger">Dibatalkan</span>
                                                 @endif
                                             </td>
                                             <td>
@@ -124,8 +126,12 @@
                                                         </a>
                                                         @endif
                                                     </div>
-                                                @elseif ($pengajuan->status == 'ditolak')
-                                                    <div onclick="confirmDelete()">
+                                                @elseif ($pengajuan->status == 'ditolak' || $pengajuan->status == 'dibatalkan')
+                                                    <a href="{{ url('/pengajuan/detail/' . $pengajuan->id) }}"
+                                                        class="btn btn-primary btn-sm shadow mr-2">
+                                                        <i class="fas fa-info-circle mr-1"></i> Detail
+                                                    </a>
+                                                    {{--<div onclick="confirmDelete()">
                                                         <form action="{{ route('pengajuan.delete') }}" method="post">
                                                             @csrf
                                                             <input type="hidden" name="id"
@@ -133,7 +139,7 @@
                                                             <button class="btn btn-danger btn-sm shadow" type="submit">
                                                                 <i class="fas fa-trash mr-1"></i>Hapus</button>
                                                         </form>
-                                                    </div>
+                                                    </div>--}}
                                                 @endif
                                             </td>
                                         </tr>

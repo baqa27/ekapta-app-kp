@@ -17,13 +17,17 @@ class IsAdmin
      */
     public function handle(Request $request, Closure $next)
     {
-        if (Auth::guard('admin')->user()) {
-            if (Auth::guard('admin')->user()->type == 1) {
-                return $next($request);
-            }else{
-                abort(404);
-            }
+        // Hanya Super Admin (type = 1) yang boleh akses
+        if (Auth::guard('admin')->check() && Auth::guard('admin')->user()->type == \App\Models\Admin::TYPE_SUPER_ADMIN) {
+            return $next($request);
         }
-        return redirect()->route('login.admin');
+        
+        // Jika sudah login tapi bukan Super Admin
+        if (Auth::guard('admin')->check()) {
+            abort(403, 'Akses ditolak. Halaman ini hanya untuk Super Admin.');
+        }
+        
+        // Jika belum login
+        return redirect()->route('login.admin')->with('error', 'Silakan login terlebih dahulu.');
     }
 }

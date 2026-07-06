@@ -14,7 +14,9 @@ class AddLampiranLaporanToUjians extends Migration
     public function up()
     {
         Schema::table('ujians', function (Blueprint $table) {
-            $table->string('lampiran_laporan')->nullable();
+            if (!Schema::hasColumn('ujians', 'lampiran_laporan')) {
+                $table->string('lampiran_laporan')->nullable();
+            }
         });
     }
 
@@ -26,7 +28,9 @@ class AddLampiranLaporanToUjians extends Migration
     public function down()
     {
         Schema::table('ujians', function (Blueprint $table) {
-            $table->dropColumn('lampiran_laporan');
+            if (Schema::hasColumn('ujians', 'lampiran_laporan')) {
+                $table->dropColumn('lampiran_laporan');
+            }
         });
     }
 }

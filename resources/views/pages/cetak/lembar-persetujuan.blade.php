@@ -33,11 +33,13 @@
             <br><br><br>
             <b class="f-14">LAPORAN TUGAS AKHIR</b>
             <br><br><br>
-            <b style="text-transform: uppercase;">{{ $pengajuan->judul }}</b>
+            <div style="margin: 0px 50px 0px 50px;">
+                <b style="text-transform: uppercase;">{{ $pengajuan->judul }}</b>
+            </div>
             <br><br><br><br>
             <span>Disusun Oleh:</span>
             <br>
-            <b style="text-transform: uppercase;">{{ $mahasiswa->nama }}</b>
+            <b style="text-transform: uppercase;"><u>{{ $mahasiswa->nama }}</u></b>
             <br>
             <b>{{ $mahasiswa->nim }}</b>
             <br><br><br><br><br>
@@ -57,6 +59,7 @@
                             <br>
                             <b>NIDN. {{ $dosen_utama->nidn }}</b>
                         </td>
+                        <td width="50"></td>
                         <td style="text-align:center;">
                             <span>Pembimbing Pendamping</span>
                             <br>

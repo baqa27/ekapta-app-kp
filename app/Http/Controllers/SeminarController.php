@@ -27,8 +27,8 @@ class SeminarController extends Controller
             return redirect()->route('profile');
         }
         $prodi = Prodi::where('namaprodi', $mahasiswa->prodi)->first();
-        $bagians_is_seminar = $prodi->bagians()->where('is_seminar', 1)->get();
-        $bagians_is_ujian = $prodi->bagians()->where('is_pendadaran', 1)->get();
+        $bagians_is_seminar = $prodi->bagians()->where("tahun_masuk", "LIKE", "%" . $mahasiswa->thmasuk . "%")->where('is_seminar', 1)->get();
+        $bagians_is_ujian = $prodi->bagians()->where("tahun_masuk", "LIKE", "%" . $mahasiswa->thmasuk . "%")->where('is_pendadaran', 1)->get();
 
         $bagians = [];
         foreach ($bagians_is_seminar as $b) {
@@ -153,7 +153,7 @@ class SeminarController extends Controller
         $pendaftaran_acc = Pendaftaran::orderBy('created_at', 'desc')->where('mahasiswa_id', $mahasiswa->id)->where('status', 'diterima')->first();
 
         $prodi = Prodi::where('namaprodi', $mahasiswa->prodi)->first();
-        $bagians_is_seminar = $prodi->bagians()->where('is_seminar', 1)->get();
+        $bagians_is_seminar = $prodi->bagians()->where("tahun_masuk", "LIKE", "%" . $mahasiswa->thmasuk . "%")->where('is_seminar', 1)->get();
         $bimbingans_is_acc_seminar = $mahasiswa->bimbingans()->where('status', Bimbingan::DITERIMA)
             ->whereHas('bagian', function ($query) {
                 $query->where('is_seminar', 1);
@@ -190,7 +190,7 @@ class SeminarController extends Controller
 
         $pendaftaran_acc = Pendaftaran::orderBy('created_at', 'desc')->where('mahasiswa_id', $pengajuan->mahasiswa->id)->where('status', 'diterima')->first();
 
-        if (AppHelper::instance()->is_expired_in_one_year($pendaftaran_acc->tanggal_acc)) {
+        if (AppHelper::isBimbinganExpiredFromPendaftaran($pendaftaran_acc)) {
             return redirect('pedaftaran-mahasiswa');
         } else if ($pengajuan->seminar) {
             return redirect('seminar-mahasiswa')->with('warning', 'Sudah mendaftar seminar proposal');
@@ -199,8 +199,6 @@ class SeminarController extends Controller
         $validatedData = $request->validate([
             'lampiran_1' => ['required', 'mimes:jpg,png,jpeg,pdf', 'max:5000'],
             'lampiran_2' => ['required', 'mimes:jpg,png,jpeg,pdf', 'max:5000'],
-            'nomor_pembayaran' => ['required'],
-            'jumlah_bayar' => ['required'],
             'lampiran_3' => ['required', 'mimes:jpg,png,jpeg,pdf', 'max:5000'],
             //            'lampiran_4' => ['required', 'mimes:jpg,png,jpeg,pdf', 'max:5000'],
             //            'lampiran_5' => ['required', 'mimes:jpg,png,jpeg,pdf', 'max:5000'],
@@ -277,8 +275,6 @@ class SeminarController extends Controller
                 }),
                 'mimes:pdf,png,jpg,jpeg', 'max:5000'
             ],
-            'nomor_pembayaran' => ['required'],
-            'jumlah_bayar' => ['required'],
             'lampiran_3' => [
                 Rule::requiredIf(function () use ($request) {
                     if (empty($request->lampiran_3)) {
@@ -420,8 +416,8 @@ class SeminarController extends Controller
 
         $dosen_utama = $mahasiswa->dosens()->where('status', 'utama')->first();
         $dosen_pendamping = $mahasiswa->dosens()->where('status', 'pendamping')->first();
-
-        $reviews_check = $seminar->reviews()->whereIn('status', [ReviewSeminar::DITERIMA, ReviewSeminar::REVISI])->get();
+        // return $seminar->reviews;
+        $reviews_check = $seminar->reviews()->whereIn('status', [ReviewSeminar::DITERIMA, ReviewSeminar::REVISI])->where('dosen_status', 'penguji')->get();
 
         $data = [
             'title' => 'Review Pendaftaran Seminar TA',

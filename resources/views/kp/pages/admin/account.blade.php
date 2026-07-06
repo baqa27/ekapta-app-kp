@@ -1,0 +1,79 @@
+@extends('kp.layouts.dashboard')
+
+@section('content')
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    {{-- <h1 class="m-0"> Hai! {{ Auth::guard('admin')->user()->nama }}</h1> --}}
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="#">Pengaturan</a></li>
+                        <li class="breadcrumb-item active">{{ $title }}</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <div class="content">
+        <div class="container">
+
+            <!-- Alur Ekapta -->
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <div class="card card-primary card-outline">
+                        <div class="card-header">
+                            <h3 class="card-title">{{ $title }}</h3>
+                        </div>
+                        <div class="card-body">
+                            <form action="{{ route('admin.account.update', $admin->id) }}" method="post" onsubmit="return confirm('Yakin ingin mengganti password?')">
+                                @method('PUT')
+                                @csrf
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">Kode Admin</label>
+                                    <input type="text" class="form-control" value="{{ $admin->kode }}" disabled>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">Nama</label>
+                                    <input type="text" class="form-control" name="nama" value="{{ $admin->nama }}" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">New Password</label>
+                                    <input type="password" class="form-control @error('password')is-invalid @enderror" name="password" autocomplete="new-password">
+                                    <small class="text-muted d-block mt-2">Kosongkan jika tidak ingin mengganti password.</small>
+                                    @error('password')
+                                    <div class="invalid-feedback">{{$message}}</div>
+                                    @enderror
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="password_confirmation">Konfirmasi Password Baru</label>
+                                    <input type="password" class="form-control" name="password_confirmation" autocomplete="new-password">
+                                </div>
+
+                                <div class="mt-3">
+                                    <button class="btn btn-success" type="submit" >Simpan</button>
+                                </div>
+                            </form>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- /.content -->
+@endsection
+
+
+
+

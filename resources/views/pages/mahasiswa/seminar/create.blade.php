@@ -81,12 +81,9 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="exampleInputEmail1">Bukti Lunas Pembayaran Seminar Tugas Akhir (TA) <b>Rp
-                                            100.000</b>
+                                    <label for="exampleInputEmail1">Bukti Lunas Pembayaran Seminar Tugas Akhir (TA)
                                         <br>
-                                        <small>Pembayaran Seminar Tugas Akhir (TA) ke Juru bayar FASTIKOM (Mas Harri) di
-                                            kantor FASTIKOM atau bisa transfer melalui Bank BRI No. <b>011201103039505</b>
-                                            a.n. <b>Harri Kurniawan R</b>.</small>
+                                        <small>Pembayaran Seminar Tugas Akhir (TA) melalui SIMA.</small>
                                     </label>
                                     <div class="input-group mb-3">
                                         <div class="custom-file">
@@ -122,32 +119,6 @@
                                     @error('lampiran_3')
                                         <small class="text-danger"
                                             style="position:relative;top:-15px;left:5px">{{ $message }}</small>
-                                    @enderror
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="exampleInputEmail1">Nomor Pembayaran <br> <small>(PBXXXX) yang
-                                            tertera pada Bukti Bayar FASTIKOM (BUKAN NOMOR TRANSFER DARI
-                                            BANK). Silahkan konfirmasi ke mas Harri (Telegram: <a
-                                                href="tg://resolve?domain=harrrrrrrrrrr" target="_blank">@harrrrrrrrrrr</a>
-                                            / WA: <a href="https://wa.me/6285643647643" target="_blank">085643647643</a>
-                                            )</small></label>
-                                    <input type="text"
-                                        class="form-control @error('nomor_pembayaran') is-invalid @enderror"
-                                        placeholder="Masukkan Nomor Pembayaran.." value="{{ old('nomor_pembayaran') }}"
-                                        name="nomor_pembayaran" required>
-                                    @error('nomor_pembayaran')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="exampleInputEmail1">Jumlah Pembayaran</label>
-                                    <input type="number" class="form-control @error('jumlah_bayar') is-invalid @enderror"
-                                        placeholder="Masukkan Jumlah Pembayaran.." value="{{ old('jumlah_bayar') }}"
-                                        name="jumlah_bayar" min="100000" max="100000" required>
-                                    @error('jumlah_bayar')
-                                        <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
 

@@ -58,20 +58,52 @@ class CetakController extends Controller
 
     public function cetakSuratTugasBimbingan($pendaftaran)
     {
-        $pendaftaran = Pendaftaran::findOrFail($pendaftaran);
+        $pendaftaran = Pendaftaran::with(['pengajuan.mahasiswa'])->findOrFail($pendaftaran);
+
+        // Null safety: cek pengajuan dan mahasiswa
+        if (!$pendaftaran->pengajuan) {
+            return back()->with('error', 'Data pengajuan tidak ditemukan untuk pendaftaran ini.');
+        }
+        
         $mahasiswa = $pendaftaran->pengajuan->mahasiswa;
+        if (!$mahasiswa) {
+            return back()->with('error', 'Data mahasiswa tidak ditemukan.');
+        }
+
         $pengajuan = $mahasiswa->pengajuans()->where('status', Pengajuan::DITERIMA)->first();
+        
+        if (!$pengajuan) {
+            return back()->with('error', 'Data pengajuan yang diterima tidak ditemukan untuk mahasiswa ini.');
+        }
         $prodi = Prodi::where('namaprodi', $mahasiswa->prodi)->first();
+
+        if (!$prodi || !$prodi->fakultas) {
+            return back()->with('warning', 'Data prodi atau fakultas belum lengkap.');
+        }
+
         $dosenUtama = $mahasiswa->dosens()->where('status', 'utama')->first();
         $dosenPendamping = $mahasiswa->dosens()->where('status', 'pendamping')->first();
+
+        if (!$dosenUtama || !$dosenPendamping) {
+            return back()->with('warning', 'Dosen pembimbing belum lengkap (pembimbing 1 dan 2 harus terisi).');
+        }
 
         $qrcode = 'data:image/' . ';base64,' . base64_encode(\QrCode::format('svg')->size(400)->errorCorrection('H')->generate(url('cetak/surat-tugas-bimbingan/' . $pendaftaran->id)));
         $qrcode_bimbingan = 'data:image/' . ';base64,' . base64_encode(\QrCode::format('svg')->size(200)->errorCorrection('H')->generate(url('public/riwayat-bimbingan/' . base64_encode($mahasiswa->id))));
 
-        $tanggal_acc = Carbon::parse($pendaftaran->tanggal_acc);
+        $tanggal_acc = Carbon::parse($pendaftaran->tanggal_acc ?? $pendaftaran->created_at);
         $dateLocale = $tanggal_acc->day.' '.$tanggal_acc->monthName.' '.$tanggal_acc->year;
 
-        $dateExpired = Carbon::parse($pendaftaran->tanggal_acc)->addMonthsNoOverflow(12);
+        $dateExpired = AppHelper::getBimbinganExpiredDateFromPendaftaran($pendaftaran);
+        if (!$dateExpired) {
+            // Fallback: gunakan tanggal_acc + 12 bulan jika tidak bisa dihitung
+            $dateExpired = $tanggal_acc->copy()->addMonthsNoOverflow(12);
+        }
+
+        $tanggalPembayaran = AppHelper::parseFlexibleDate($pendaftaran->tanggal_pembayaran);
+        $tanggalPembayaranLocale = $tanggalPembayaran
+            ? $tanggalPembayaran->locale('id')->isoFormat('D MMMM Y')
+            : $pendaftaran->tanggal_pembayaran;
 
         $dekan = $prodi->fakultas->dekans()->where('status', 'active')->first();
 
@@ -96,11 +128,12 @@ class CetakController extends Controller
             'prodi' => $prodi,
             'date' =>  $tanggal_acc,
             'dateLocale' => $dateLocale,
+            'tanggal_pembayaran_locale' => $tanggalPembayaranLocale,
             'qr_code' => $qrcode,
             'date_expired' => $dateExpired->day.' '.$dateExpired->monthName.' '.$dateExpired->year,
             'dekan' => $dekan,
-            'stempel' => $prodi->fakultas->image ? AppHelper::instance()->convertImage('storage/app/public/' . substr($prodi->fakultas->image,31)) : null,
-            'ttd_dekan' => $dekan->image ? AppHelper::instance()->convertImage('storage/app/public/' . substr($dekan->image,31)): null,
+            'stempel' => ($prodi->fakultas && $prodi->fakultas->image) ? AppHelper::instance()->convertStorageImage($prodi->fakultas->image) : null,
+            'ttd_dekan' => ($dekan && $dekan->image) ? AppHelper::instance()->convertStorageImage($dekan->image) : null,
             'no_urut' => $no_urut,
              'pengajuan' => $pengajuan,
              'qr_code_bimbingan' => $qrcode_bimbingan,
@@ -115,11 +148,35 @@ class CetakController extends Controller
     public function cetakSuratTugasBimbinganMahasiswa()
     {
         $mahasiswa = Mahasiswa::where('nim', Auth::guard('mahasiswa')->user()->nim)->first();
+        
+        if (!$mahasiswa) {
+            return back()->with('error', 'Data mahasiswa tidak ditemukan.');
+        }
+        
         $pengajuan = $mahasiswa->pengajuans()->where('status', Pengajuan::DITERIMA)->first();
+        
+        if (!$pengajuan) {
+            return back()->with('error', 'Data pengajuan yang diterima tidak ditemukan.');
+        }
+        
         $pendaftaran = Pendaftaran::where('pengajuan_id', $pengajuan->id)->first();
+        
+        if (!$pendaftaran) {
+            return back()->with('error', 'Data pendaftaran tidak ditemukan.');
+        }
+        
         $prodi = Prodi::where('namaprodi', $mahasiswa->prodi)->first();
+        
+        if (!$prodi || !$prodi->fakultas) {
+            return back()->with('error', 'Data prodi atau fakultas tidak ditemukan.');
+        }
+        
         $dosenUtama = $mahasiswa->dosens()->where('status', 'utama')->first();
         $dosenPendamping = $mahasiswa->dosens()->where('status', 'pendamping')->first();
+        
+        if (!$dosenUtama || !$dosenPendamping) {
+            return back()->with('error', 'Dosen pembimbing belum lengkap (pembimbing 1 dan 2 harus terisi).');
+        }
 
         $qrcode = 'data:image/' . ';base64,' . base64_encode(\QrCode::format('svg')->size(200)->errorCorrection('H')->generate(url('cetak/surat-tugas-bimbingan/' . $pendaftaran->id)));
         $qrcode_bimbingan = 'data:image/' . ';base64,' . base64_encode(\QrCode::format('svg')->size(200)->errorCorrection('H')->generate(url('public/riwayat-bimbingan/' . base64_encode($mahasiswa->id))));
@@ -127,7 +184,11 @@ class CetakController extends Controller
         $tanggal_acc = Carbon::parse($pendaftaran->tanggal_acc);
         $dateLocale = $tanggal_acc->day.' '.$tanggal_acc->monthName.' '.$tanggal_acc->year;
 
-        $dateExpired = Carbon::parse($pendaftaran->tanggal_acc)->addMonthsNoOverflow(12);
+        $dateExpired = AppHelper::getBimbinganExpiredDateFromPendaftaran($pendaftaran);
+        $tanggalPembayaran = AppHelper::parseFlexibleDate($pendaftaran->tanggal_pembayaran);
+        $tanggalPembayaranLocale = $tanggalPembayaran
+            ? $tanggalPembayaran->locale('id')->isoFormat('D MMMM Y')
+            : $pendaftaran->tanggal_pembayaran;
 
         $dekan = $prodi->fakultas->dekans()->where('status', 'active')->first();
 
@@ -152,11 +213,12 @@ class CetakController extends Controller
             'prodi' => $prodi,
             'date' => $tanggal_acc,
             'dateLocale' => $dateLocale,
+            'tanggal_pembayaran_locale' => $tanggalPembayaranLocale,
             'qr_code' => $qrcode,
             'date_expired' => $dateExpired->day.' '.$dateExpired->monthName.' '.$dateExpired->year,
             'dekan' => $dekan,
-            'stempel' => $prodi->fakultas->image != null ? AppHelper::instance()->convertImage('storage/app/public/' . substr($prodi->fakultas->image, 31)) : null,
-            'ttd_dekan' => $dekan->image != null ? AppHelper::instance()->convertImage('storage/app/public/' . substr($dekan->image, 31)) : null,
+            'stempel' => $prodi->fakultas->image != null ? AppHelper::instance()->convertStorageImage($prodi->fakultas->image) : null,
+            'ttd_dekan' => $dekan->image != null ? AppHelper::instance()->convertStorageImage($dekan->image) : null,
             'no_urut' => $no_urut,
             'pengajuan' => $pengajuan,
             'qr_code_bimbingan' => $qrcode_bimbingan,
@@ -260,17 +322,41 @@ class CetakController extends Controller
 
     public function cetakRiwayatBimbinganMahasiswa(){
         $mahasiswa = Mahasiswa::where('nim', Auth::guard('mahasiswa')->user()->nim)->first();
+        
+        if (!$mahasiswa) {
+            return back()->with('error', 'Data mahasiswa tidak ditemukan.');
+        }
+        
         $pengajuan = $mahasiswa->pengajuans()->where('status', Pengajuan::DITERIMA)->first();
+        
+        if (!$pengajuan) {
+            return back()->with('error', 'Data pengajuan yang diterima tidak ditemukan.');
+        }
+        
         $pendaftaran = Pendaftaran::where('pengajuan_id', $pengajuan->id)->first();
+        
+        if (!$pendaftaran) {
+            return back()->with('error', 'Data pendaftaran tidak ditemukan.');
+        }
+        
         $prodi = Prodi::where('namaprodi', $mahasiswa->prodi)->first();
+        
+        if (!$prodi) {
+            return back()->with('error', 'Data prodi tidak ditemukan.');
+        }
+        
         $dosenUtama = $mahasiswa->dosens()->where('status', 'utama')->first();
         $dosenPendamping = $mahasiswa->dosens()->where('status', 'pendamping')->first();
+        
+        if (!$dosenUtama || !$dosenPendamping) {
+            return back()->with('error', 'Dosen pembimbing belum lengkap (pembimbing 1 dan 2 harus terisi).');
+        }
 
         $qrcode = 'data:image/' . ';base64,' . base64_encode(\QrCode::format('svg')->size(200)->errorCorrection('H')->generate(url('public/riwayat-bimbingan/' . base64_encode($mahasiswa->id))));
 
         $dateLocale = Carbon::parse(now())->day.' '.Carbon::parse(now())->monthName.' '.Carbon::parse(now())->year;
 
-        $dateExpired = Carbon::parse($pendaftaran->tanggal_acc)->addMonthsNoOverflow(12);
+        $dateExpired = AppHelper::getBimbinganExpiredDateFromPendaftaran($pendaftaran);
 
         $bimbingan_dosen_utama = $dosenUtama->bimbingans()->with(['revisis','bagian'])->where('mahasiswa_id', $mahasiswa->id)->get();
         $bimbingan_dosen_pendamping = $dosenPendamping->bimbingans()->with(['revisis','bagian'])->where('mahasiswa_id', $mahasiswa->id)->get();
@@ -299,8 +385,8 @@ class CetakController extends Controller
             'dateLocale' => $dateLocale,
             'qr_code' => $qrcode,
             'date_expired' => $dateExpired->day.' '.$dateExpired->monthName.' '.$dateExpired->year,
-            'ttd_dosen_utama' => $dosenUtama->ttd != null ? AppHelper::instance()->convertImage('storage/app/public/' . substr($dosenUtama->ttd, 31)) : null,
-            'ttd_dosen_pendamping' => $dosenPendamping->ttd != null ? AppHelper::instance()->convertImage('storage/app/public/' . substr($dosenPendamping->ttd, 31)) : null,
+            'ttd_dosen_utama' => $dosenUtama->ttd != null ? AppHelper::instance()->convertStorageImage($dosenUtama->ttd) : null,
+            'ttd_dosen_pendamping' => $dosenPendamping->ttd != null ? AppHelper::instance()->convertStorageImage($dosenPendamping->ttd) : null,
             'bimbingan_dosen_utama' => $bimbingan_dosen_utama,
             'bimbingan_dosen_pendamping' => $bimbingan_dosen_pendamping,
             'no_urut' => $no_urut,
@@ -314,12 +400,42 @@ class CetakController extends Controller
 
     public function cetakLembarPersetujuan($type){
         $mahasiswa = Mahasiswa::with(['ujians','pengajuans','dosens'])->where('nim', Auth::guard('mahasiswa')->user()->nim)->first();
+        
+        if (!$mahasiswa) {
+            return back()->with('error', 'Data mahasiswa tidak ditemukan.');
+        }
+        
         $pengajuan = $mahasiswa->pengajuans()->where('status', Pengajuan::DITERIMA)->first();
+        
+        if (!$pengajuan) {
+            return back()->with('error', 'Data pengajuan yang diterima tidak ditemukan.');
+        }
+        
         $pendaftaran = Pendaftaran::where('pengajuan_id', $pengajuan->id)->first();
+        
+        if (!$pendaftaran) {
+            return back()->with('error', 'Data pendaftaran tidak ditemukan.');
+        }
+        
         $prodi = Prodi::where('namaprodi', $mahasiswa->prodi)->first();
+        
+        if (!$prodi) {
+            return back()->with('error', 'Data prodi tidak ditemukan.');
+        }
+        
         $dosenUtama = $mahasiswa->dosens()->where('status', 'utama')->first();
         $dosenPendamping = $mahasiswa->dosens()->where('status', 'pendamping')->first();
+        
+        if (!$dosenUtama || !$dosenPendamping) {
+            return back()->with('error', 'Dosen pembimbing belum lengkap (pembimbing 1 dan 2 harus terisi).');
+        }
+        
         $ujian = $mahasiswa->ujians()->whereNotIn('is_lulus', [Ujian::NOT_VALID_LULUS])->where('is_valid', Ujian::VALID_LULUS)->first();
+        
+        if (!$ujian) {
+            return back()->with('error', 'Data ujian yang valid tidak ditemukan.');
+        }
+        
         $reviews  = $ujian->reviews()->where('dosen_status', ReviewUjian::DOSEN_PENGUJI)->with(['dosen'])->get();
         $dosens = [];
         foreach ($reviews as $review) {
@@ -335,8 +451,8 @@ class CetakController extends Controller
             'dosen_pendamping' => $dosenPendamping,
             'prodi' => $prodi,
             'date' => $ujian ? AppHelper::parse_date_short_surat($ujian->tanggal_ujian) : null,
-            'ttd_dosen_utama' => $dosenUtama->ttd != null ? AppHelper::instance()->convertImage('storage/app/public/' . substr($dosenUtama->ttd, 31)) : null,
-            'ttd_dosen_pendamping' => $dosenPendamping->ttd != null ? AppHelper::instance()->convertImage('storage/app/public/' . substr($dosenPendamping->ttd, 31)) : null,
+            'ttd_dosen_utama' => $dosenUtama->ttd != null ? AppHelper::instance()->convertStorageImage($dosenUtama->ttd) : null,
+            'ttd_dosen_pendamping' => $dosenPendamping->ttd != null ? AppHelper::instance()->convertStorageImage($dosenPendamping->ttd) : null,
             'dosens' => $dosens,
             'type' => $type,
         ];
@@ -349,13 +465,47 @@ class CetakController extends Controller
 
     public function cetakLembarPengesahan(){
         $mahasiswa = Mahasiswa::with(['ujians','pengajuans','dosens'])->where('nim', Auth::guard('mahasiswa')->user()->nim)->first();
+        
+        if (!$mahasiswa) {
+            return back()->with('error', 'Data mahasiswa tidak ditemukan.');
+        }
+        
         $pengajuan = $mahasiswa->pengajuans()->where('status', Pengajuan::DITERIMA)->first();
+        
+        if (!$pengajuan) {
+            return back()->with('error', 'Data pengajuan yang diterima tidak ditemukan.');
+        }
+        
         $pendaftaran = Pendaftaran::where('pengajuan_id', $pengajuan->id)->first();
-        $prodi = Prodi::where('namaprodi', $mahasiswa->prodi)->first();
+        
+        if (!$pendaftaran) {
+            return back()->with('error', 'Data pendaftaran tidak ditemukan.');
+        }
+        
+        $prodi = Prodi::with(['fakultas', 'fakultas.dekans'])->where('namaprodi', $mahasiswa->prodi)->first();
+        
+        if (!$prodi || !$prodi->fakultas) {
+            return back()->with('error', 'Data prodi atau fakultas tidak ditemukan.');
+        }
+        
         $dekan = $prodi->fakultas->dekans()->where('status', 'active')->first();
+        
+        if (!$dekan) {
+            return back()->with('error', 'Data dekan tidak ditemukan.');
+        }
+        
         $dosenUtama = $mahasiswa->dosens()->where('status', 'utama')->first();
         $dosenPendamping = $mahasiswa->dosens()->where('status', 'pendamping')->first();
+        
+        if (!$dosenUtama || !$dosenPendamping) {
+            return back()->with('error', 'Dosen pembimbing belum lengkap (pembimbing 1 dan 2 harus terisi).');
+        }
+        
         $ujian = $mahasiswa->ujians()->whereNotIn('is_lulus', [Ujian::NOT_VALID_LULUS])->where('is_valid', Ujian::VALID_LULUS)->first();
+        
+        if (!$ujian) {
+            return back()->with('error', 'Data ujian yang valid tidak ditemukan.');
+        }
         $data = [
             'title' => 'LEMBAR PENGESAHAN',
             'mahasiswa' => $mahasiswa,
@@ -365,10 +515,11 @@ class CetakController extends Controller
             'dosen_pendamping' => $dosenPendamping,
             'prodi' => AppHelper::instance()->getDosen($prodi->kodekaprodi),
             'date' => $ujian ? AppHelper::parse_date_short_surat($ujian->tanggal_ujian) : null,
-            'ttd_dosen_utama' => $dosenUtama->ttd != null ? AppHelper::instance()->convertImage('storage/app/public/' . substr($dosenUtama->ttd, 31)) : null,
-            'ttd_dosen_pendamping' => $dosenPendamping->ttd != null ? AppHelper::instance()->convertImage('storage/app/public/' . substr($dosenPendamping->ttd, 31)) : null,
+            'ttd_dosen_utama' => $dosenUtama->ttd != null ? AppHelper::instance()->convertStorageImage($dosenUtama->ttd) : null,
+            'ttd_dosen_pendamping' => $dosenPendamping->ttd != null ? AppHelper::instance()->convertStorageImage($dosenPendamping->ttd) : null,
             'dekan' => $dekan,
-            'ttd_dekan' => $dekan->image ? AppHelper::instance()->convertImage('storage/app/public/' . substr($dekan->image,31)): null,
+            'ttd_dekan' => $dekan->image ? AppHelper::instance()->convertStorageImage($dekan->image) : null,
+            'stempel' => $prodi->fakultas->image ? AppHelper::instance()->convertStorageImage($prodi->fakultas->image) : null,
         ];
 
         $pdf = PDF::setOptions(['isHTML5ParserEnabled' => true, 'isRemoteEnabled' => true]);

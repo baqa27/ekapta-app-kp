@@ -54,6 +54,14 @@
                                             class="badge {{ count($bagian->bimbingans) != 0 ? 'badge-success' : 'badge-secondary' }} mr-2">{{ $no++ }}</span>
                                         <span style="position: relative;top:2px;">{{ $bagian->bagian }}</span>
 
+                                        @php
+                                            $tahuns = explode(',', $bagian->tahun_masuk);
+                                        @endphp
+                                        @foreach ($tahuns as $tahun)
+                                            <span style="position: relative;top:2px;"
+                                                class="badge bg-secondary">{{ $tahun }}</span>
+                                        @endforeach
+
                                         @if ($bagian->is_seminar == 1)
                                             <span class="badge bg-success ml-3" style="position: relative;top:2px;">
                                                 <i class="bi bi-check-circle mr-1"></i>
@@ -68,7 +76,7 @@
 
                                         <div class="float-right">
                                             <div class="d-flex">
-                                                @if (count($bagian->bimbingans) == 0)
+                                                {{-- @if (count($bagian->bimbingans) == 0)
                                                     <div onclick="confirmActive()">
                                                         <form action="{{ route('bagian.active') }}" method="post">
                                                             @csrf
@@ -83,7 +91,7 @@
                                                             </button>
                                                         </form>
                                                     </div>
-                                                @endif
+                                                @endif --}}
 
 
                                                 {{-- <a href="{{ route('bagian.up', $bagian->id) }}" class="btn btn-secondary btn-sm">
@@ -110,8 +118,8 @@
                                                     </div>
                                                 @endif
 
-                                                {{--TOMBOL ALTERNATIF DOWNLOAD, UNCOMMENT KODE DIBAWAH JIKA INGIN DIAKTIFKAN--}}
-                                                {{--<div onclick="confirmDelete()">
+                                                {{-- TOMBOL ALTERNATIF DOWNLOAD, UNCOMMENT KODE DIBAWAH JIKA INGIN DIAKTIFKAN --}}
+                                                {{-- <div onclick="confirmDelete()">
                                                     <form action="{{ route('bagian.delete') }}" method="post">
                                                         @csrf
                                                         <input type="hidden" name="id"
@@ -120,7 +128,7 @@
                                                             type="submit">
                                                             <i class="fas fa-trash"></i></button>
                                                     </form>
-                                                </div>--}}
+                                                </div> --}}
                                                 {{-- END --}}
 
                                             </div>
@@ -158,6 +166,14 @@
                             <input type="text" class="form-control @error('bagian') is-invalid @enderror" name="bagian"
                                 placeholder="Nama bagian bimbingan..." required>
                             @error('bagian')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="form-group">
+                            <label for="" class="form-label">Tahun Masuk <br><small>Tekan enter jika ingin input tahun masuk lebih dari 1</small></label>
+                            <input type="text" class="form-control @error('tahun_masuk') is-invalid @enderror"
+                                name="tahun_masuk" data-role="tagsinput" placeholder="Tahun masuk bagian bimbingan..." required>
+                            @error('tahun_masuk')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
@@ -246,6 +262,17 @@
                                 @enderror
                             </div>
 
+                            <div class="form-group">
+                                <label for="" class="form-label">Tahun Masuk <br><small>Tekan enter jika ingin input tahun masuk lebih dari 1</small></label>
+                                {{-- <input type="text" class="form-control @error('tahun_masuk') is-invalid @enderror"
+                                    name="tahun_masuk" value="{{ $bagian->tahun_masuk }}" required> --}}
+                                <input type="text" class="form-control" data-role="tagsinput" name="tahun_masuk"
+                                    value="{{ $bagian->tahun_masuk }}" required>
+                                @error('tahun_masuk')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
                             <div class="form-check">
                                 <input type="checkbox" class="form-check-input" name="is_seminar"
                                     @if ($bagian->is_seminar == 1) checked @endif>
@@ -268,4 +295,34 @@
             <!-- /.modal-dialog -->
         </div>
     @endforeach
+@endsection
+
+@section('script')
+    {{-- Tags Config --}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.min.js"></script>
+    <script>
+        $(function() {
+            $('input')
+                .on('change', function(event) {
+                    var $element = $(event.target);
+                    var $container = $element.closest('.example');
+
+                    if (!$element.data('tagsinput')) return;
+
+                    var val = $element.val();
+                    if (val === null) val = 'null';
+                    var items = $element.tagsinput('items');
+
+                    $('code', $('pre.val', $container)).html(
+                        $.isArray(val) ?
+                        JSON.stringify(val) :
+                        '"' + val.replace('"', '\\"') + '"'
+                    );
+                    $('code', $('pre.items', $container)).html(
+                        JSON.stringify($element.tagsinput('items'))
+                    );
+                })
+                .trigger('change');
+        });
+    </script>
 @endsection

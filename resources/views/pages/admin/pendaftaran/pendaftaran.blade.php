@@ -50,6 +50,7 @@
                                                 <th>Mahasiswa</th>
                                                 <th>Prodi</th>
                                                 <th>Judul</th>
+                                                <th>Status Pendaftaran</th>
                                                 <th>Status</th>
                                                 <th>Aksi</th>
                                             </tr>
@@ -62,12 +63,27 @@
                                                 <tr>
                                                     <td>{{ $no++ }}</td>
                                                     <td>
-                                                        {{  $pendaftaran->mahasiswa->nama }} - {{ $pendaftaran->mahasiswa->nim }}
+                                                        @if($pendaftaran->mahasiswa)
+                                                            {{ $pendaftaran->mahasiswa->nama }} - {{ $pendaftaran->mahasiswa->nim }}
+                                                        @else
+                                                            Mahasiswa tidak ditemukan
+                                                        @endif
                                                     </td>
                                                     <td>
-                                                        {{  $pendaftaran->mahasiswa->prodi }}
+                                                        @if($pendaftaran->mahasiswa)
+                                                            {{ $pendaftaran->mahasiswa->prodi }}
+                                                        @else
+                                                            -
+                                                        @endif
                                                     </td>
-                                                    <td>{{ $pendaftaran->pengajuan->judul }}</td>
+                                                    <td>
+                                                        @if($pendaftaran->pengajuan)
+                                                            {{ $pendaftaran->pengajuan->judul }}
+                                                        @else
+                                                            Judul tidak ditemukan
+                                                        @endif
+                                                    </td>
+                                                    <td>{{ $pendaftaran->status_pendaftaran_label }}</td>
                                                     <td>
                                                         @if ($pendaftaran->status == 'review')
                                                             <span class="badge bg-secondary">Review</span>
@@ -93,6 +109,7 @@
                                                 <th>Mahasiswa</th>
                                                 <th>Prodi</th>
                                                 <th>Judul</th>
+                                                <th>Status Pendaftaran</th>
                                                 <th>Status</th>
                                                 <th>Aksi</th>
                                             </tr>
@@ -110,6 +127,7 @@
                                                 <th>Mahasiswa</th>
                                                 <th>Prodi</th>
                                                 <th>Judul</th>
+                                                <th>Status Pendaftaran</th>
                                                 <th>Status</th>
                                                 <th>Aksi</th>
                                             </tr>
@@ -122,13 +140,27 @@
                                                 <tr>
                                                     <td>{{ $no++ }}</td>
                                                     <td>
-                                                        {{  $pendaftaran->mahasiswa->nama }}
-                                                        {{  $pendaftaran->mahasiswa->nim }}
+                                                        @if($pendaftaran->mahasiswa)
+                                                            {{ $pendaftaran->mahasiswa->nama }} - {{ $pendaftaran->mahasiswa->nim }}
+                                                        @else
+                                                            Mahasiswa tidak ditemukan
+                                                        @endif
                                                     </td>
                                                     <td>
-                                                        {{  $pendaftaran->mahasiswa->prodi }}
+                                                        @if($pendaftaran->mahasiswa)
+                                                            {{ $pendaftaran->mahasiswa->prodi }}
+                                                        @else
+                                                            -
+                                                        @endif
                                                     </td>
-                                                    <td>{{ $pendaftaran->pengajuan->judul }}</td>
+                                                    <td>
+                                                        @if($pendaftaran->pengajuan)
+                                                            {{ $pendaftaran->pengajuan->judul }}
+                                                        @else
+                                                            Judul tidak ditemukan
+                                                        @endif
+                                                    </td>
+                                                    <td>{{ $pendaftaran->status_pendaftaran_label }}</td>
                                                     <td>
                                                         @if ($pendaftaran->status == 'review')
                                                             <span class="badge bg-secondary">Review</span>
@@ -145,25 +177,27 @@
                                                                 <i class="fas fa-info-circle mr-1"></i> Detail
                                                             </a>
 
-                                                            @php
-                                                                $cekBimbinganIsActive = \App\Helpers\AppHelper::instance()
-                                                                    ->getMahasiswa($pendaftaran->mahasiswa->nim)
-                                                                    ->bimbingans()
-                                                                    ->whereIn('status', ['review', 'revisi', 'diterima'])
-                                                                    ->get();
-                                                            @endphp
-                                                            @if (count($cekBimbinganIsActive) == 0)
-                                                                <div onclick="confirmCancel()">
-                                                                    <form action="{{ route('pendaftaran.cancel.acc') }}"
-                                                                        method="post">
-                                                                        @csrf
-                                                                        <input type="hidden" name="id"
-                                                                            value="{{ $pendaftaran->id }}">
-                                                                        <button class="btn btn-danger btn-sm shadow">
-                                                                            <i class="bi bi-x-circle mr-1"></i>Batalkan
-                                                                        </button>
-                                                                    </form>
-                                                                </div>
+                                                            @if($pendaftaran->mahasiswa)
+                                                                @php
+                                                                    $cekBimbinganIsActive = \App\Helpers\AppHelper::instance()
+                                                                        ->getMahasiswa($pendaftaran->mahasiswa->nim)
+                                                                        ->bimbingans()
+                                                                        ->whereIn('status', ['review', 'revisi', 'diterima'])
+                                                                        ->get();
+                                                                @endphp
+                                                                @if (count($cekBimbinganIsActive) == 0)
+                                                                    <div onclick="confirmCancel()">
+                                                                        <form action="{{ route('pendaftaran.cancel.acc') }}"
+                                                                            method="post">
+                                                                            @csrf
+                                                                            <input type="hidden" name="id"
+                                                                                value="{{ $pendaftaran->id }}">
+                                                                            <button class="btn btn-danger btn-sm shadow">
+                                                                                <i class="bi bi-x-circle mr-1"></i>Batalkan
+                                                                            </button>
+                                                                        </form>
+                                                                    </div>
+                                                                @endif
                                                             @endif
                                                         </div>
                                                     </td>
@@ -177,6 +211,7 @@
                                                 <th>Mahasiswa</th>
                                                 <th>Prodi</th>
                                                 <th>Judul</th>
+                                                <th>Status Pendaftaran</th>
                                                 <th>Status</th>
                                                 <th>Aksi</th>
                                             </tr>
@@ -194,6 +229,7 @@
                                                 <th>Mahasiswa</th>
                                                 <th>Prodi</th>
                                                 <th>Judul</th>
+                                                <th>Status Pendaftaran</th>
                                                 <th>Status</th>
                                                 <th>Aksi</th>
                                             </tr>
@@ -206,13 +242,27 @@
                                                 <tr>
                                                     <td>{{ $no++ }}</td>
                                                     <td>
-                                                        {{  $pendaftaran->mahasiswa->nama }} -
-                                                        {{  $pendaftaran->mahasiswa->nim }}
+                                                        @if($pendaftaran->mahasiswa)
+                                                            {{ $pendaftaran->mahasiswa->nama }} - {{ $pendaftaran->mahasiswa->nim }}
+                                                        @else
+                                                            Mahasiswa tidak ditemukan
+                                                        @endif
                                                     </td>
                                                     <td>
-                                                        {{  $pendaftaran->mahasiswa->prodi }}
+                                                        @if($pendaftaran->mahasiswa)
+                                                            {{ $pendaftaran->mahasiswa->prodi }}
+                                                        @else
+                                                            -
+                                                        @endif
                                                     </td>
-                                                    <td>{{ $pendaftaran->pengajuan->judul }}</td>
+                                                    <td>
+                                                        @if($pendaftaran->pengajuan)
+                                                            {{ $pendaftaran->pengajuan->judul }}
+                                                        @else
+                                                            Judul tidak ditemukan
+                                                        @endif
+                                                    </td>
+                                                    <td>{{ $pendaftaran->status_pendaftaran_label }}</td>
                                                     <td>
                                                         @if ($pendaftaran->status == 'review')
                                                             <span class="badge bg-secondary">Review</span>
@@ -238,6 +288,7 @@
                                                 <th>Mahasiswa</th>
                                                 <th>Prodi</th>
                                                 <th>Judul</th>
+                                                <th>Status Pendaftaran</th>
                                                 <th>Status</th>
                                                 <th>Aksi</th>
                                             </tr>

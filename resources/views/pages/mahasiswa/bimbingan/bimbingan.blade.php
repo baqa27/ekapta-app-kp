@@ -25,7 +25,7 @@
             <div class="row">
                 <div class="col-md-10">
                     @if (\App\Helpers\AppHelper::check_bimbingan_is_complete($mahasiswa))
-                        <a href="{{ route('cetak.riwayat.bimbingan.mahasiswa') }}" class="btn btn-warning shadow mb-3"
+                        <a href="{{ route('cetak.riwayat.bimbingan.mahasiswa') }}" class="btn btn-warning mb-3"
                             target="_blank"><i class="fas fa-download"></i> DOWNLOAD LEMBAR BIMBINGAN SKRIPSI</a>
                         {{-- @if ($jilid)
                             @if ($jilid->status == 3)
@@ -50,7 +50,7 @@
                         @endif --}}
                     @endif
 
-                    @if ($is_expired)
+                    @if ($is_expired && !\App\Helpers\AppHelper::check_bimbingan_is_complete($mahasiswa))
                         <div class="mb-3 bg-danger rounded p-2">
                             Masa bimbingan anda sudah habis, silahkan lakukan <a
                                 href="{{ route('pendaftaran.disable', $pendaftaran_acc->id) }}"><u><b>Perpanjangan
@@ -59,7 +59,7 @@
                     @else
                         <div class="alert alert-success alert-dismissible">
                             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                            Tanggal Berakhir Bimbingan : <b>{{ \App\Helpers\AppHelper::parse_date_short($date_expired) }}
+                            Tanggal Berakhir Bimbingan : <b>{{ \Carbon\Carbon::parse($date_expired)->locale('id')->isoFormat('D MMMM Y') }}
                             </b>
                             @if ($is_seminar)
                                 , Selamat anda sudah bisa melakukan
@@ -74,7 +74,7 @@
                         </div>
 
                         <div class="d-flex justify-content-center mb-3 bg-primary rounded p-2 countdown"
-                            data-expire="{{ \Carbon\Carbon::parse($date_expired)->format('Y/m/d h:i:s') }}">
+                            data-expire="{{ \Carbon\Carbon::parse($date_expired)->endOfDay()->format('Y/m/d H:i:s') }}">
                         </div>
                     @endif
 
@@ -124,12 +124,12 @@
                                                             <td>{{ $bimbingan->bagian->bagian }}</td>
                                                             <td>
                                                                 @if ($bimbingan->tanggal_bimbingan)
-                                                                    {{ date('d M Y H:m', strtotime($bimbingan->tanggal_bimbingan)) }}
+                                                                    {{ date('d M Y', strtotime($bimbingan->tanggal_bimbingan)) }}
                                                                 @endif
                                                             </td>
                                                             <td>
                                                                 @if ($bimbingan->tanggal_acc)
-                                                                    {{ date('d M Y H:m', strtotime($bimbingan->tanggal_acc)) }}
+                                                                    {{ date('d M Y', strtotime($bimbingan->tanggal_acc)) }}
                                                                 @endif
                                                             </td>
                                                             <td>
@@ -148,6 +148,14 @@
                                                                             class="btn btn-info btn-sm shadow">
                                                                             <i class="fas fa-info-circle mr-1"></i> Detail
                                                                         </a>
+
+                                                                         @if ($dosen_utama->is_manual)
+                                                                            <a href="{{ route('bimbingan.submit.acc.manual', $bimbingan->id) }}"
+                                                                                class="btn btn-primary btn-sm shadow">
+                                                                                <i class="fas fa-upload"></i> Input Acc
+                                                                                Manual
+                                                                            </a>
+                                                                        @endif
                                                                     @elseif ($bimbingan->status == 'revisi')
                                                                         <a href="{{ url('/bimbingan/detail/' . $bimbingan->id) }}"
                                                                             class="btn btn-info btn-sm shadow">
@@ -232,12 +240,12 @@
                                                             <td>{{ $bimbingan->bagian->bagian }}</td>
                                                             <td>
                                                                 @if ($bimbingan->tanggal_bimbingan)
-                                                                    {{ date('d M Y H:m', strtotime($bimbingan->tanggal_bimbingan)) }}
+                                                                    {{ date('d M Y', strtotime($bimbingan->tanggal_bimbingan)) }}
                                                                 @endif
                                                             </td>
                                                             <td>
                                                                 @if ($bimbingan->tanggal_acc)
-                                                                    {{ date('d M Y H:m', strtotime($bimbingan->tanggal_acc)) }}
+                                                                    {{ date('d M Y', strtotime($bimbingan->tanggal_acc)) }}
                                                                 @endif
                                                             </td>
                                                             <td>
@@ -256,6 +264,14 @@
                                                                             class="btn btn-info btn-sm shadow mr-2">
                                                                             <i class="fas fa-info-circle mr-1"></i> Detail
                                                                         </a>
+
+                                                                         @if ($dosen_pendamping->is_manual)
+                                                                            <a href="{{ route('bimbingan.submit.acc.manual', $bimbingan->id) }}"
+                                                                                class="btn btn-primary btn-sm shadow">
+                                                                                <i class="fas fa-upload"></i> Input Acc
+                                                                                Manual
+                                                                            </a>
+                                                                        @endif
                                                                     @elseif ($bimbingan->status == 'revisi')
                                                                         <a href="{{ url('/bimbingan/detail/' . $bimbingan->id) }}"
                                                                             class="btn btn-info btn-sm shadow">

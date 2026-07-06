@@ -80,7 +80,7 @@
                                     <div class="rounded bg-light">
                                         <small>
                                             <span class="ml-3">Lampiran sebelumnya : </span>
-                                            <a href="{{ asset($seminar->lampiran_1) }}" class="text-primary"
+                                            <a href="{{ storage_url($seminar->lampiran_1) }}" class="text-primary"
                                                 target="_blank"><i class="fas fa-paperclip ml-2"></i>
                                                 {{ Str::substr($seminar->lampiran_1, 21) }}</a>
                                         </small>
@@ -88,12 +88,9 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="exampleInputEmail1">Bukti Lunas Pembayaran Seminar Tugas Akhir (TA) <b>Rp
-                                            100.000</b>
+                                    <label for="exampleInputEmail1">Bukti Lunas Pembayaran Seminar Tugas Akhir (TA)
                                         <br>
-                                        <small>Pembayaran Seminar Tugas Akhir (TA) ke Juru bayar FASTIKOM (Mas Harri) di
-                                            kantor FASTIKOM atau bisa transfer melalui Bank BRI No. <b>011201103039505</b>
-                                            a.n. <b>Harri Kurniawan R</b>.</small>
+                                        <small>Pembayaran Seminar Tugas Akhir (TA) melalui SIMA.</small>
                                     </label>
                                     <div class="input-group mb-3">
                                         <div class="custom-file">
@@ -114,7 +111,7 @@
                                     <div class="rounded bg-light">
                                         <small>
                                             <span class="ml-3">Lampiran sebelumnya : </span>
-                                            <a href="{{ asset($seminar->lampiran_2) }}" class="text-primary"
+                                            <a href="{{ storage_url($seminar->lampiran_2) }}" class="text-primary"
                                                 target="_blank"><i class="fas fa-paperclip ml-2"></i>
                                                 {{ Str::substr($seminar->lampiran_2, 21) }}</a>
                                         </small>
@@ -143,7 +140,7 @@
                                         <small>
                                             @if ($seminar->lampiran_3)
                                             <span class="ml-3">Lampiran sebelumnya : </span>
-                                            <a href="{{ asset($seminar->lampiran_3) }}" class="text-primary"
+                                            <a href="{{ storage_url($seminar->lampiran_3) }}" class="text-primary"
                                                 target="_blank"><i class="fas fa-paperclip ml-2"></i>
                                                 {{ Str::substr($seminar->lampiran_3, 21) }}</a>
                                             @else
@@ -151,32 +148,6 @@
                                             @endif
                                         </small>
                                     </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="exampleInputEmail1">Nomor Pembayaran <br> <small>(PBXXXX) yang
-                                            tertera pada Bukti Bayar FASTIKOM (BUKAN NOMOR TRANSFER DARI
-                                            BANK). Silahkan konfirmasi ke mas Harri (Telegram: <a
-                                                href="tg://resolve?domain=harrrrrrrrrrr" target="_blank">@harrrrrrrrrrr</a>
-                                            / WA: <a href="https://wa.me/6285643647643" target="_blank">085643647643</a>
-                                            )</small></label>
-                                    <input type="text"
-                                        class="form-control @error('nomor_pembayaran') is-invalid @enderror"
-                                        placeholder="Masukkan Nomor Pembayaran.." value="{{ $seminar->nomor_pembayaran }}"
-                                        name="nomor_pembayaran" required>
-                                    @error('nomor_pembayaran')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="exampleInputEmail1">Jumlah Pembayaran</label>
-                                    <input type="number" class="form-control @error('jumlah_bayar') is-invalid @enderror"
-                                        placeholder="Masukkan Jumlah Pembayaran.." value="{{ $seminar->jumlah_bayar }}"
-                                        name="jumlah_bayar" min="100000" max="100000" required>
-                                    @error('jumlah_bayar')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
                                 </div>
 
                                 {{--                                <div class="form-group"> --}}
@@ -200,7 +171,7 @@
                                 {{--                                    <div class="rounded bg-light"> --}}
                                 {{--                                        <small> --}}
                                 {{--                                            <span class="ml-3">Lampiran sebelumnya : </span> --}}
-                                {{--                                            <a href="{{ asset($seminar->lampiran_4) }}" class="text-primary" --}}
+                                {{--                                            <a href="{{ storage_url($seminar->lampiran_4) }}" class="text-primary" --}}
                                 {{--                                                target="_blank"><i class="fas fa-paperclip ml-2"></i> --}}
                                 {{--                                                {{ Str::substr($seminar->lampiran_4, 21) }}</a> --}}
                                 {{--                                        </small> --}}
@@ -228,7 +199,7 @@
                                 {{--                                    <div class="rounded bg-light"> --}}
                                 {{--                                        <small> --}}
                                 {{--                                            <span class="ml-3">Lampiran sebelumnya : </span> --}}
-                                {{--                                            <a href="{{ asset($seminar->lampiran_5) }}" class="text-primary" --}}
+                                {{--                                            <a href="{{ storage_url($seminar->lampiran_5) }}" class="text-primary" --}}
                                 {{--                                                target="_blank"><i class="fas fa-paperclip ml-2"></i> --}}
                                 {{--                                                {{ Str::substr($seminar->lampiran_5, 21) }}</a> --}}
                                 {{--                                        </small> --}}

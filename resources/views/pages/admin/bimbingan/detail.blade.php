@@ -62,7 +62,7 @@
                                     @foreach ($mahasiswa->bimbingans as $bimbingan)
                                         @if ($bimbingan->pembimbing == 'utama')
                                             @if (\App\Helpers\AppHelper::instance()->cekBagianIsAcc($bimbingan->id))
-                                                <a href="{{ asset($bimbingan->lampiran) }}" target="_blank">
+                                    <a href="{{ storage_url($bimbingan->lampiran) }}" target="_blank">
                                                     <span class="badge badge-success">
                                                         <i class="fas fa-check-circle mr-1"></i>
                                                         {{ $bimbingan->bagian->bagian . ' [ Di Acc pada ' . \Carbon\Carbon::parse($bimbingan->tanggal_acc)->formatLocalized('%d %B %Y') }}]
@@ -86,7 +86,7 @@
                                     @foreach ($mahasiswa->bimbingans as $bimbingan)
                                         @if ($bimbingan->pembimbing == 'pendamping')
                                             @if (\App\Helpers\AppHelper::instance()->cekBagianIsAcc($bimbingan->id))
-                                                <a href="{{ asset($bimbingan->lampiran) }}" target="_blank">
+                                            <a href="{{ storage_url($bimbingan->lampiran) }}" target="_blank">
                                                     <span class="badge badge-success">
                                                         <i class="fas fa-check-circle mr-1"></i>
                                                         {{ $bimbingan->bagian->bagian . ' [ Di Acc pada ' . \Carbon\Carbon::parse($bimbingan->tanggal_acc)->formatLocalized('%d %B %Y') }}]

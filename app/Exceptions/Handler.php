@@ -2,6 +2,8 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Http\Exceptions\PostTooLargeException;
+use Illuminate\Http\Request;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 
@@ -36,6 +38,30 @@ class Handler extends ExceptionHandler
     {
         $this->reportable(function (Throwable $e) {
             //
+        });
+
+        $this->renderable(function (PostTooLargeException $e, Request $request) {
+            $message = 'Ukuran total file yang diupload terlalu besar. Silakan kompres file lalu coba lagi.';
+
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'message' => $message,
+                ], 413);
+            }
+
+            return redirect()->back()->withInput($request->except([
+                'lampiran_1',
+                'lampiran_2',
+                'lampiran_3',
+                'lampiran_4',
+                'lampiran_5',
+                'lampiran_6',
+                'lampiran_7',
+                'dokumen_pendukung',
+                'lampiran',
+                'ttd',
+                'image',
+            ]))->with('warning', $message);
         });
     }
 }

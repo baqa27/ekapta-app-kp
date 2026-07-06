@@ -106,7 +106,7 @@
                                                         @foreach ($mahasiswa->bimbingans as $bimbingan)
                                                             @if ($bimbingan->pembimbing == $mahasiswa->pivot->status)
                                                                 @if (\App\Helpers\AppHelper::instance()->cekBagianIsAcc($bimbingan->id))
-                                                                    <a href="{{ asset($bimbingan->lampiran) }}" target="_blank">
+                                    <a href="{{ storage_url($bimbingan->lampiran) }}" target="_blank">
                                                                         <span class="badge badge-success">
                                                                             <i class="fas fa-check-circle mr-1"></i>
                                                                             {{ $bimbingan->bagian->bagian }}

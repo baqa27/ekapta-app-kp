@@ -35,6 +35,7 @@
                         dijilid. Silahkan konfirmasi dan melakukan pembayaran ke Fotocopy fastikom dengan membawa
                         dokumen-dokumen asli yang akan disertakan dalam penjilidan TA seperti lembar keaslian TA, lembar
                         pengesahan, lembar bimbingan, lampiran-lampiran, dll.
+                        <br>Ket: DIBUAT JILID RANGKAP 2
                     </div>
                 @elseif ($jilid->status == 4)
                     <a href="#" class="btn btn-success shadow mb-3"><i class="bi bi-check-circle "></i>
@@ -47,6 +48,9 @@
                     <a href="#" class="btn btn-secondary shadow mb-3"><i class="bi bi-hourglass-bottom "></i> SUDAH
                         PENGAJUAN JILID KE FOTOKOPIAN. SILAHKAN
                         TUNGGU KONFIRMASI DARI ADMIN!</a>
+                    <div class="p-2 rounded border border-warning mb-3" style="background-color: #fff5a6;">
+                        <i class="fas fa-info-circle"></i> PASTIKAN FILE UPLOAD GOOGLE DRIVE AKSES DIBUAT PUBLIC!
+                    </div>
                 @endif
             @else
                 <a href="{{ route('jilid.create') }}" class="btn btn-primary shadow mb-3"><i class="fas fa-book"></i> AJUKAN

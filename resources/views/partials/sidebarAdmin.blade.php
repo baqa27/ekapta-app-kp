@@ -1,3 +1,7 @@
+@php
+    $active = $active ?? '';
+    $module = $module ?? '';
+@endphp
 <nav class="main-header navbar navbar-expand navbar-white navbar-light sticky-top">
 
     <!-- Left navbar links -->
@@ -40,10 +44,10 @@
 
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="#" class="brand-link">
+    <a href="{{ route('dashboard.admin') }}" class="brand-link">
         <img src="https://unsiq.ac.id/img/UNSIQ-bunder.ico" alt="AdminLTE Logo"
              class="brand-image img-circle elevation-3" style="opacity: .8">
-        <span class="brand-text font-weight-light">Panel Admin</span>
+        <span class="brand-text font-weight-light">EKAPTA Admin</span>
     </a>
 
     <!-- Sidebar -->
@@ -75,15 +79,65 @@
                     </a>
                 </li>
 
-                <li class="nav-item
-                    @if($active == 'pengajuan' || $active == 'pendaftaran' || $active == 'bimbingan' || $active == 'seminar' || $active == 'ujian' || $active == 'bimbingan-input' || $active == 'jilid')
-                    menu-open
-                    @endif">
-                    <a href="#" class="nav-link
-                    @if($active == 'pengajuan' || $active == 'pendaftaran' || $active == 'bimbingan' || $active == 'seminar' || $active == 'ujian' || $active == 'bimbingan-input' || $active == 'jilid')
-                    active
-                    @endif">
-                        <i class="nav-icon fas fa-th"></i>
+                {{-- MENU KERJA PRAKTEK --}}
+                <li class="nav-item has-treeview {{ in_array($active, ['pengajuan-kp', 'pendaftaran-kp', 'bimbingan-kp', 'seminar-kp', 'bimbingan-input-kp', 'pengumpulan-akhir-kp']) ? 'menu-open' : '' }}">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-briefcase"></i>
+                        <p>
+                            Menu Kerja Praktek
+                            <i class="fas fa-angle-right right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ route('kp.pengajuan.admin') }}"
+                               class="nav-link {{ $active == 'pengajuan-kp' ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Pengajuan KP</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('kp.pendaftaran.admin') }}"
+                               class="nav-link {{ $active == 'pendaftaran-kp' ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Validasi Pendaftaran KP</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('kp.bimbingan.admin') }}"
+                               class="nav-link {{ $active == 'bimbingan-kp' ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Progres Bimbingan KP</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('kp.bimbingan.admin.input') }}"
+                               class="nav-link {{ $active == 'bimbingan-input-kp' ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Validasi Bimbingan KP</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('kp.seminar.admin') }}"
+                               class="nav-link {{ $active == 'seminar-kp' ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Data Seminar KP</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('kp.pengumpulan-akhir.index') }}"
+                               class="nav-link {{ $active == 'pengumpulan-akhir-kp' ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Jilid KP</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                {{-- MENU TUGAS AKHIR --}}
+                <li class="nav-item has-treeview {{ in_array($active, ['pengajuan', 'pendaftaran', 'bimbingan', 'seminar', 'ujian', 'bimbingan-input', 'jilid']) ? 'menu-open' : '' }}">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-graduation-cap"></i>
                         <p>
                             Menu Tugas Akhir
                             <i class="fas fa-angle-right right"></i>
@@ -94,76 +148,59 @@
                             <a href="{{ route('pengajuan.admin') }}"
                                class="nav-link {{ $active == 'pengajuan' ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>
-                                    Pengajuan TA
-                                </p>
+                                <p>Pengajuan TA</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="{{ route('pendaftaran.admin') }}"
                                class="nav-link {{ $active == 'pendaftaran' ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>
-                                    Validasi Pendaftaran TA
-                                </p>
+                                <p>Validasi Pendaftaran TA</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="{{ route('bimbingan.admin') }}"
                                class="nav-link {{ $active == 'bimbingan' ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>
-                                    Progres Bimbingan TA
-                                </p>
+                                <p>Progres Bimbingan TA</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="{{ route('bimbingan.admin.input') }}"
                                class="nav-link {{ $active == 'bimbingan-input' ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>
-                                    Input Bimbingan TA
-                                </p>
+                                <p>Validasi Bimbingan TA</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="{{ route('seminar.admin') }}"
                                class="nav-link {{ $active == 'seminar' ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>
-                                    Validasi Seminar TA
-                                </p>
+                                <p>Validasi Seminar TA</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="{{ route('ujian.admin') }}"
                                class="nav-link {{ $active == 'ujian' ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>
-                                    Validasi Ujian TA
-                                </p>
+                                <p>Validasi Ujian TA</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="{{ route('jilid.index') }}"
                                class="nav-link {{ $active == 'jilid' ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>
-                                    Validasi Jilid TA
-                                </p>
+                                <p>Validasi Jilid TA</p>
                             </a>
                         </li>
                     </ul>
                 </li>
 
-                <li class="nav-item
-                    @if($active == 'prodi' || $active == 'mahasiswa' || $active == 'dosen' || $active == 'fakultas')
-                    menu-open
-                    @endif">
-                    <a href="#" class="nav-link
-                    @if($active == 'prodi' || $active == 'mahasiswa' || $active == 'dosen' || $active == 'fakultas')
-                    active
-                    @endif">
+                {{-- ============================================== --}}
+                {{-- MASTER DATA --}}
+                {{-- ============================================== --}}
+                <li class="nav-item has-treeview {{ in_array($active, ['prodi', 'mahasiswa', 'dosen', 'fakultas', 'himpunan']) ? 'menu-open' : '' }}">
+                    <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-folder"></i>
                         <p>
                             Master Data
@@ -197,7 +234,13 @@
                                 <p>Fakultas</p>
                             </a>
                         </li>
-
+                        <li class="nav-item">
+                            <a href="{{ route('kp.himpunans') }}"
+                               class="nav-link {{ $active == 'himpunan' ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Himpunan</p>
+                            </a>
+                        </li>
                     </ul>
                 </li>
             </ul>

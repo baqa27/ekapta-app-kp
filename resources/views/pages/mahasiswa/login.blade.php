@@ -21,7 +21,7 @@
                             <span class="input-group-text" id="inputGroup-sizing-default"><i
                                     class="bi bi-person-fill"></i></span>
                             <input type="text" class="form-control" aria-label="Sizing example input"
-                                aria-describedby="inputGroup-sizing-default" name="nim" placeholder="Masukkan nim..."
+                                aria-describedby="inputGroup-sizing-default" name="nim" value="{{ old('nim') }}" placeholder="Masukkan nim..."
                                 required>
                         </div>
                     </div>
@@ -34,6 +34,8 @@
                                 aria-describedby="inputGroup-sizing-default" name="password"
                                 placeholder="Masukkan password..." required>
                         </div>
+                        <small class="text-muted d-block mt-2">
+                        </small>
                     </div>
                     <div class="mt-4 mb-3">
                         <button class="btn btn-primary-me btn-login col-md-12" type="submit">Login</button>

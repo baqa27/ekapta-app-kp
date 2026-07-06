@@ -25,8 +25,9 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="card card-primary card-outline">
-                        <div class="card-header">
-                            <h3 class="card-title">{{ $title }}</h3>
+                        <div class="card-header d-flex">
+                            <h3 class="card-title flex-grow-1">{{ $title }}</h3>
+                            <h3 class="card-title flex-shrink-0">{{ $dosen->nama.', '.$dosen->gelar }}</h3>
                         </div>
                         <div class="card-body">
                             <form action="{{ route('bimbingan.update') }}" method="post" enctype="multipart/form-data">
@@ -72,7 +73,7 @@
                                         <div class="bg-light p-2 rounded">
                                             <small>
                                                 <b>Lampiran sebelumnya : </b>
-                                                <a href="{{ asset($bimbingan->lampiran) }}" class="ml-3 text-primary"
+                                    <a href="{{ storage_url($bimbingan->lampiran) }}" class="ml-3 text-primary"
                                                     target="_blank"><i class="fas fa-paperclip mr-2"></i>
                                                     {{ Str::substr($bimbingan->lampiran, 19) }}</a>
                                             </small>

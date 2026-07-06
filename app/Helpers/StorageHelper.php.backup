@@ -1,0 +1,184 @@
+<?php
+
+namespace App\Helpers;
+
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+
+class StorageHelper
+{
+    /**
+     * Base path untuk lampiran TA (langsung di folder lampirans)
+     */
+    const TA_BASE_PATH = 'lampirans';
+
+    /**
+     * Base path untuk lampiran KP (di folder lampirans/kp)
+     */
+    const KP_BASE_PATH = 'lampirans/kp';
+
+    /**
+     * Get path untuk lampiran pengajuan KP
+     * Format: lampirans/kp/{nim}/pengajuan/
+     *
+     * @param string $nim
+     * @param string|null $filename
+     * @return string
+     */
+    public static function kpPengajuanPath($nim, $filename = null)
+    {
+        $path = self::KP_BASE_PATH . '/' . $nim . '/pengajuan';
+        return $filename ? $path . '/' . $filename : $path;
+    }
+
+    /**
+     * Get path untuk lampiran pendaftaran KP
+     * Format: lampirans/kp/{nim}/pendaftaran/
+     *
+     * @param string $nim
+     * @param string|null $filename
+     * @return string
+     */
+    public static function kpPendaftaranPath($nim, $filename = null)
+    {
+        $path = self::KP_BASE_PATH . '/' . $nim . '/pendaftaran';
+        return $filename ? $path . '/' . $filename : $path;
+    }
+
+    /**
+     * Get path untuk lampiran bimbingan KP
+     * Format: lampirans/kp/{nim}/bimbingan/
+     *
+     * @param string $nim
+     * @param string|null $filename
+     * @return string
+     */
+    public static function kpBimbinganPath($nim, $filename = null)
+    {
+        $path = self::KP_BASE_PATH . '/' . $nim . '/bimbingan';
+        return $filename ? $path . '/' . $filename : $path;
+    }
+
+    /**
+     * Get path untuk lampiran seminar KP
+     * Format: lampirans/kp/{nim}/seminar/
+     *
+     * @param string $nim
+     * @param string|null $filename
+     * @return string
+     */
+    public static function kpSeminarPath($nim, $filename = null)
+    {
+        $path = self::KP_BASE_PATH . '/' . $nim . '/seminar';
+        return $filename ? $path . '/' . $filename : $path;
+    }
+
+    /**
+     * Get path untuk lampiran pengumpulan akhir KP
+     * Format: lampirans/kp/{nim}/pengumpulan_akhir/
+     *
+     * @param string $nim
+     * @param string|null $filename
+     * @return string
+     */
+    public static function kpPengumpulanAkhirPath($nim, $filename = null)
+    {
+        $path = self::KP_BASE_PATH . '/' . $nim . '/pengumpulan_akhir';
+        return $filename ? $path . '/' . $filename : $path;
+    }
+
+    /**
+     * Get path untuk lampiran TA (langsung di folder lampirans)
+     * Format: lampirans/
+     *
+     * @param string|null $filename
+     * @return string
+     */
+    public static function taPath($filename = null)
+    {
+        $path = self::TA_BASE_PATH;
+        return $filename ? $path . '/' . $filename : $path;
+    }
+
+    /**
+     * Store file untuk KP dengan path yang benar
+     *
+     * @param \Illuminate\Http\UploadedFile $file
+     * @param string $nim
+     * @param string $type (pengajuan|pendaftaran|bimbingan|seminar|pengumpulan_akhir)
+     * @return string|false Path file yang disimpan
+     */
+    public static function storeKpFile($file, $nim, $type)
+    {
+        // Convert snake_case to camelCase
+        $typeFormatted = str_replace('_', '', ucwords($type, '_'));
+        $method = 'kp' . $typeFormatted . 'Path';
+
+        if (!method_exists(self::class, $method)) {
+            Log::error('StorageHelper method not found', [
+                'method' => $method,
+                'type' => $type,
+                'typeFormatted' => $typeFormatted
+            ]);
+            return false;
+        }
+
+        $path = self::$method($nim);
+        $stored = $file->store($path, 'public');
+
+        Log::info('File stored', [
+            'path' => $path,
+            'stored' => $stored,
+            'original_name' => $file->getClientOriginalName()
+        ]);
+
+        return $stored;
+    }
+
+    /**
+     * Delete file KP
+     *
+     * @param string $filepath
+     * @return bool
+     */
+    public static function deleteKpFile($filepath)
+    {
+        if (!$filepath) {
+            return false;
+        }
+
+        return Storage::disk('public')->delete($filepath);
+    }
+
+    /**
+     * Get URL untuk file KP
+     *
+     * @param string $filepath
+     * @return string
+     */
+    public static function kpFileUrl($filepath)
+    {
+        if (!$filepath) {
+            return null;
+        }
+
+        // Karena symlink adalah /lampirans bukan /storage
+        // URL format: /lampirans/kp/{nim}/{type}/{filename}
+        return asset($filepath);
+    }
+
+    /**
+     * Check if file exists
+     *
+     * @param string $filepath
+     * @return bool
+     */
+    public static function fileExists($filepath)
+    {
+        if (!$filepath) {
+            return false;
+        }
+
+        return Storage::disk('public')->exists($filepath);
+    }
+}

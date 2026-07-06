@@ -29,6 +29,9 @@
                             <h3 class="card-title">{{ $title }}</h3>
                         </div>
                         <div class="card-body">
+                            @php
+                                $selectedBiaya = old('biaya', (string) (int) $pendaftaran->biaya);
+                            @endphp
                             <form action="{{ route('pendaftaran.update') }}" method="post" enctype="multipart/form-data">
                                 @csrf
 
@@ -51,12 +54,12 @@
 
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Pembimbing Utama (1) Tugas Akhir</label>
-                                    <input type="text" class="form-control" value="{{ $dosen_utama->nama.', '.$dosen_utama->gelar }}" disabled>
+                                    <input type="text" class="form-control" value="{{ $dosen_utama ? $dosen_utama->nama.', '.$dosen_utama->gelar : 'Belum ditentukan' }}" disabled>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Pembimbing Pendamping (2) Tugas Akhir</label>
-                                    <input type="text" class="form-control" value="{{ $dosen_pendamping->nama.', '.$dosen_pendamping->gelar }}"
+                                    <input type="text" class="form-control" value="{{ $dosen_pendamping ? $dosen_pendamping->nama.', '.$dosen_pendamping->gelar : 'Belum ditentukan' }}"
                                         disabled>
                                 </div>
 
@@ -90,7 +93,7 @@
                                     <div class="rounded bg-light">
                                         <small>
                                             <span class="ml-3">Lampiran sebelumnya : </span>
-                                            <a href="{{ asset($pendaftaran->lampiran_1) }}" class="text-primary"
+                                            <a href="{{ storage_url($pendaftaran->lampiran_1) }}" class="text-primary"
                                                 target="_blank"><i class="fas fa-paperclip ml-2"></i>
                                                 {{ Str::substr($pendaftaran->lampiran_1, 21) }}</a>
                                         </small>
@@ -121,7 +124,7 @@
                                     <div class="rounded bg-light">
                                         <small>
                                             <span class="ml-3">Lampiran sebelumnya : </span>
-                                            <a href="{{ asset($pendaftaran->lampiran_2) }}" class="text-primary"
+                                            <a href="{{ storage_url($pendaftaran->lampiran_2) }}" class="text-primary"
                                                 target="_blank"><i class="fas fa-paperclip ml-2"></i>
                                                 {{ Str::substr($pendaftaran->lampiran_2, 21) }}</a>
                                         </small>
@@ -152,7 +155,7 @@
                                     <div class="rounded bg-light">
                                         <small>
                                             <span class="ml-3">Lampiran sebelumnya : </span>
-                                            <a href="{{ asset($pendaftaran->lampiran_3) }}" class="text-primary"
+                                            <a href="{{ storage_url($pendaftaran->lampiran_3) }}" class="text-primary"
                                                 target="_blank"><i class="fas fa-paperclip ml-2"></i>
                                                 {{ Str::substr($pendaftaran->lampiran_3, 21) }}</a>
                                         </small>
@@ -181,7 +184,7 @@
                                     <div class="rounded bg-light">
                                         <small>
                                             <span class="ml-3">Lampiran sebelumnya : </span>
-                                            <a href="{{ asset($pendaftaran->lampiran_4) }}" class="text-primary"
+                                            <a href="{{ storage_url($pendaftaran->lampiran_4) }}" class="text-primary"
                                                 target="_blank"><i class="fas fa-paperclip ml-2"></i>
                                                 {{ Str::substr($pendaftaran->lampiran_4, 21) }}</a>
                                         </small>
@@ -190,7 +193,7 @@
 
                                 <div class="form-group">
                                     <label for="exampleInputFile">Bukti Pembayaran Tugas Akhir <br>
-                                        <small>Pembayaran Tugas Akhir (TA) ke Juru bayar FASTIKOM (Mas Harri) di kantor FASTIKOM atau bisa transfer melalui Bank BRI No. <b>011201103039505</b> a.n. Harri Kurniawan R.</small> </label>
+                                        <small>Pembayaran melalui SIMA UNSIQ.</small> </label>
                                     <div class="input-group mb-3">
                                         <div class="custom-file">
                                             <input type="file"
@@ -210,24 +213,11 @@
                                     <div class="rounded bg-light">
                                         <small>
                                             <span class="ml-3">Lampiran sebelumnya : </span>
-                                            <a href="{{ asset($pendaftaran->lampiran_5) }}" class="text-primary"
+                                            <a href="{{ storage_url($pendaftaran->lampiran_5) }}" class="text-primary"
                                                 target="_blank"><i class="fas fa-paperclip ml-2"></i>
                                                 {{ Str::substr($pendaftaran->lampiran_5, 21) }}</a>
                                         </small>
                                     </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="exampleInputEmail1">Nomor Pembayaran <br> <small>(PBXXXX) yang
-                                            tertera pada Bukti Bayar FASTIKOM (BUKAN NOMOR TRANSFER DARI
-                                            BANK). Silahkan konfirmasi ke mas Harri (Telegram: <a href="tg://resolve?domain=harrrrrrrrrrr" target="_blank">@harrrrrrrrrrr</a> / WA: <a href="https://wa.me/6285643647643" target="_blank">085643647643</a> )</small></label>
-                                    <input type="text"
-                                        class="form-control @error('nomor_pembayaran') is-invalid @enderror"
-                                        placeholder="Masukkan Nomor Pembayaran.."
-                                        value="{{ $pendaftaran->nomor_pembayaran }}" name="nomor_pembayaran" required>
-                                    @error('nomor_pembayaran')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
                                 </div>
 
                                 <div class="form-group">
@@ -246,61 +236,24 @@
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">BIAYA TUGAS AKHIR (TA) / SKRIPSI
                                     </label>
-                                    <div class="form-check mb-2">
-                                        <input class="form-check-input @error('biaya') is-invalid @enderror"
-                                            type="radio" name="biaya" value="750000"
-                                            @if ($pendaftaran->biaya == 750000) checked @endif>
-                                        <label class="form-check-label" style="top: -1px; position:relative;">Program
-                                            Sarjana Kelas A
-                                            (Reguler) : Rp. 750.000,-</label>
-                                    </div>
-                                    <div class="form-check mb-2">
-                                        <input class="form-check-input @error('biaya') is-invalid @enderror"
-                                            type="radio" name="biaya" value="375000"
-                                            @if ($pendaftaran->biaya == 375000) checked @endif>
-                                        <label class="form-check-label" style="top: -1px; position:relative;">Perpanjang
-                                            Program Sarjana
-                                            Kelas A (Reguler) : Rp. 375.000,-</label>
-                                    </div>
-                                    <div class="form-check mb-2">
-                                        <input class="form-check-input @error('biaya') is-invalid @enderror"
-                                            type="radio" name="biaya" value="850000"
-                                            @if ($pendaftaran->biaya == 850000) checked @endif>
-                                        <label class="form-check-label" style="top: -1px; position:relative;">Program
-                                            Sarjana Kelas B
-                                            (Ekstensi) : Rp. 850.000,-</label>
-                                    </div>
-                                    <div class="form-check mb-2">
-                                        <input class="form-check-input @error('biaya') is-invalid @enderror"
-                                            type="radio" name="biaya" value="425000"
-                                            @if ($pendaftaran->biaya == 425000) checked @endif>
-                                        <label class="form-check-label" style="top: -1px; position:relative;">Perpanjang
-                                            Program Sarjana
-                                            Kelas B (Ekstensi) : Rp. 425.000,-</label>
-                                    </div>
-                                    <div class="form-check mb-2">
-                                        <input class="form-check-input @error('biaya') is-invalid @enderror"
-                                            type="radio" name="biaya" value="650000"
-                                            @if ($pendaftaran->biaya == 650000) checked @endif>
-                                        <label class="form-check-label" style="top: -1px; position:relative;">Program
-                                            Diploma Kelas A
-                                            (Reguler) : Rp. 650.000,-</label>
-                                    </div>
-                                    <div class="form-check mb-2">
-                                        <input class="form-check-input @error('biaya') is-invalid @enderror"
-                                            type="radio" name="biaya" value="325000"
-                                            @if ($pendaftaran->biaya == 325000) checked @endif>
-                                        <label class="form-check-label" style="top: -1px; position:relative;">Perpanjang
-                                            Program Diploma
-                                            Kelas A (Reguler) : Rp. 325.000,-</label>
-                                    </div>
+                                    @foreach ($biayaOptions as $biayaOption)
+                                        <div class="form-check mb-2">
+                                            <input class="form-check-input @error('biaya') is-invalid @enderror"
+                                                type="radio" name="biaya" value="{{ $biayaOption['value'] }}"
+                                                @checked((string) $selectedBiaya === (string) $biayaOption['value'])>
+                                            <label class="form-check-label" style="top: -1px; position:relative;">
+                                                {{ $biayaOption['label'] }}
+                                            </label>
+                                        </div>
+                                    @endforeach
                                     @error('biaya')
-                                        <div class="invalid-feedback">{{ $message }}</div>
+                                        <div class="invalid-feedback d-block">{{ $message }}</div>
                                     @enderror
                                 </div>
 
                                 <div class="form-group mt-4">
-                                    <button type="submit" class="btn btn-success">Submit</button>
+                                    <button type="submit" class="btn btn-success"
+                                        onclick="this.disabled=true;this.innerHTML='Memproses...';this.form.submit();">Submit</button>
                                 </div>
                             </form>
                         </div>

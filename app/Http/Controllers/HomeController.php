@@ -10,7 +10,7 @@ class HomeController extends Controller
     public function index()
     {
         // Artisan::call('route:cache');
-        return view('pages.home.home', [
+        return view('pages.mahasiswa.login', [
             'title' => 'Ekapta',
         ]);
     }

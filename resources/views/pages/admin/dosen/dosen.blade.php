@@ -48,6 +48,7 @@
                                         <th>NIDN</th>
                                         <th>Nama Dosen</th>
                                         <th>Prodi</th>
+                                        <th>Email</th>
                                         <th>TTD</th>
                                         <th>Aksi</th>
                                     </tr>
@@ -68,6 +69,9 @@
                                                 @foreach ($dosen->prodis as $prodi)
                                                     {{ $prodi->namaprodi }},
                                                 @endforeach
+                                            </td>
+                                            <td>
+                                                {{ $dosen->email }}
                                             </td>
                                             <th>
                                                 @if ($dosen->ttd)
@@ -106,6 +110,7 @@
                                         <th>NIDN</th>
                                         <th>Nama Dosen</th>
                                         <th>Prodi</th>
+                                        <th>Email</th>
                                         <th>TTD</th>
                                         <th>Aksi</th>
                                     </tr>

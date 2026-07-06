@@ -9,6 +9,7 @@ use App\Models\Jilid;
 use App\Models\Mahasiswa;
 use App\Models\Pendaftaran;
 use App\Models\Prodi;
+use App\Models\RevisiJilid;
 use App\Models\Ujian;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -76,49 +77,97 @@ class JilidController extends Controller
 
     public function store(Request $request)
     {
-        $mahasiswa = Auth::guard('mahasiswa')->user();
+         $mahasiswa = Auth::guard('mahasiswa')->user();
         if ($mahasiswa->jilid) {
             return back();
         }
         $validatedData = $request->validate([
-            'laporan_pdf' => ['required', 'mimes:pdf', 'max:5000'],
-            'laporan_word' => ['required', 'mimes:docx', 'max:5000'],
+            'laporan_pdf' => [Rule::requiredIf(function() use($request){
+                if (empty($request->laporan_pdf)) {
+                    return false;
+                }
+                return true;
+            }), 'mimes:pdf', 'max:5000'],
+            'laporan_word' => [Rule::requiredIf(function() use($request){
+                if (empty($request->laporan_word)) {
+                    return false;
+                }
+                return true;
+            }), 'mimes:docx', 'max:5000'],
             'lembar_pengesahan' => ['required', 'mimes:pdf', 'max:500'],
             'lembar_keaslian' => ['required', 'mimes:pdf', 'max:500'],
             'lembar_persetujuan_penguji' => ['required', 'mimes:pdf', 'max:500'],
             'lembar_persetujuan_pembimbing' => ['required', 'mimes:pdf', 'max:500'],
             'lembar_bimbingan' => ['required', 'mimes:pdf', 'max:500'],
             'lembar_revisi' => ['required', 'mimes:pdf', 'max:500'],
-            'artikel' => ['required', 'mimes:docx', 'max:5000'],
+            'artikel' => [Rule::requiredIf(function() use($request){
+                if (empty($request->artikel)) {
+                    return false;
+                }
+                return true;
+            }), 'mimes:docx', 'max:5000'],
             'berita_acara' => [Rule::requiredIf(function() use($request){
                 if (empty($request->berita_acara)) {
                     return false;
                 }
                 return true;
             }), 'mimes:pdf', 'max:500'],
+            'lampiran' => [Rule::requiredIf(function() use($request){
+                if (empty($request->lampiran)) {
+                    return false;
+                }
+                return true;
+            }), 'mimes:pdf', 'max:1000'],
+            'panduan' => [Rule::requiredIf(function() use($request){
+                if (empty($request->panduan)) {
+                    return false;
+                }
+                return true;
+            }), 'mimes:docx', 'max:5000'],
         ]);
-        $validatedData['laporan_pdf'] = AppHelper::instance()->uploadLampiran($request->laporan_pdf, 'lampirans');
-        $validatedData['laporan_word'] = AppHelper::instance()->uploadLampiran($request->laporan_word, 'lampirans');
+        // return $request->all();
+        if ($request->laporan_pdf) {
+            $validatedData['laporan_pdf'] = AppHelper::instance()->uploadLampiran($request->laporan_pdf, 'lampirans');
+        }else{
+            $validatedData['laporan_pdf'] = $request->laporan_link_pdf;
+        }
+        if ($request->laporan_word) {
+            $validatedData['laporan_word'] = AppHelper::instance()->uploadLampiran($request->laporan_word, 'lampirans');
+        }else{
+            $validatedData['laporan_word'] = $request->laporan_link;
+        }
         $validatedData['lembar_pengesahan'] = AppHelper::instance()->uploadLampiran($request->lembar_pengesahan, 'lampirans');
         $validatedData['lembar_keaslian'] = AppHelper::instance()->uploadLampiran($request->lembar_keaslian, 'lampirans');
         $validatedData['lembar_persetujuan_penguji'] = AppHelper::instance()->uploadLampiran($request->lembar_persetujuan_penguji, 'lampirans');
         $validatedData['lembar_persetujuan_pembimbing'] = AppHelper::instance()->uploadLampiran($request->lembar_persetujuan_pembimbing, 'lampirans');
         $validatedData['lembar_bimbingan'] = AppHelper::instance()->uploadLampiran($request->lembar_bimbingan, 'lampirans');
         $validatedData['lembar_revisi'] = AppHelper::instance()->uploadLampiran($request->lembar_revisi, 'lampirans');
-        $validatedData['artikel'] = AppHelper::instance()->uploadLampiran($request->artikel, 'lampirans');
+        if ($request->artikel) {
+            $validatedData['artikel'] = AppHelper::instance()->uploadLampiran($request->artikel, 'lampirans');
+        }else{
+            $validatedData['artikel'] = $request->artikel_link;
+        }
         if ($request->berita_acara) {
             $validatedData['berita_acara'] = AppHelper::instance()->uploadLampiran($request->berita_acara, 'lampirans');
+        }
+        if ($request->panduan) {
+            $validatedData['panduan'] = AppHelper::instance()->uploadLampiran($request->panduan, 'lampirans');
+        }else{
+            $validatedData['panduan'] = $request->panduan_link;
+        }
+        if ($request->lampiran) {
+            $validatedData['lampiran'] = AppHelper::instance()->uploadLampiran($request->lampiran, 'lampirans');
         }
         $validatedData['mahasiswa_id'] = $mahasiswa->id;
         $validatedData['status'] = Jilid::JILID_REVIEW;
         $validatedData['link_project'] = $request->link_project;
         Jilid::create($validatedData);
-        return redirect()->route('jilid.mahasiswa')->with('success', 'Pengajuan jilid behasil. Silahkan tunggu vlidasi dari Admin');
+        return redirect()->route('jilid.mahasiswa')->with('success', 'Pengajuan jilid behasil. Silahkan tunggu validasi dari Admin');
     }
 
     public function detail($id)
     {
-        $jilid = Jilid::with(['mahasiswa'])->where('id', $id)->first();
+        $jilid = Jilid::with(['mahasiswa','revisis'])->findOrFail($id);
         $mahasiswa = $jilid->mahasiswa()->with(['bimbingans'])->first();
         $prodi = Prodi::where('namaprodi', $mahasiswa->prodi)->first();
         return view('pages.fotokopi.detail', [
@@ -129,14 +178,18 @@ class JilidController extends Controller
             'mahasiswa' => $mahasiswa,
             'prodi' => $prodi,
             'is_admin' => true,
+            'revisis' => $jilid->revisis()->paginate(5),
         ]);
     }
 
     public function detailMahasiswa($id)
     {
-        $jilid = Jilid::with(['mahasiswa'])->where('id', $id)->first();
+        $jilid = Jilid::with(['mahasiswa','revisis'])->findOrFail($id);
         $mahasiswa = $jilid->mahasiswa()->with(['bimbingans'])->first();
         $prodi = Prodi::where('namaprodi', $mahasiswa->prodi)->first();
+        if(Auth::guard('mahasiswa')->user()->id != $mahasiswa->id){
+            return back();
+        }
         return view('pages.fotokopi.detail', [
             'title' => 'Detail Tugas Akhir',
             'active' => 'jilid',
@@ -144,13 +197,16 @@ class JilidController extends Controller
             'mahasiswa' => $mahasiswa,
             'prodi' => $prodi,
             'is_admin' => false,
+            'revisis' => $jilid->revisis()->paginate(5),
         ]);
     }
 
     public function edit($id)
     {
-        $jilid = Jilid::with(['mahasiswa'])->where('id', $id)->first();
+        $jilid = Jilid::with(['mahasiswa','revisis'])->findOrFail($id);
         if ($jilid->status != Jilid::JILID_REVISI) {
+            return back();
+        }elseif(Auth::guard('mahasiswa')->user()->id != $jilid->mahasiswa->id){
             return back();
         }
         $data = [
@@ -158,6 +214,7 @@ class JilidController extends Controller
             'active' => 'jilid',
             'jilid' => $jilid,
             'pendaftaran' => $jilid->mahasiswa->pendaftarans()->where('status', Pendaftaran::DITERIMA)->first(),
+            'revisis' => $jilid->revisis,
         ];
 
         return view('pages.jilid.submit-jilid-revisi', $data);
@@ -169,8 +226,8 @@ class JilidController extends Controller
         if ($jilid->status != Jilid::JILID_REVISI) {
             return back();
         }
+
         $validatedData = $request->validate([
-            'link_project' => ['required'],
             'laporan_pdf' => [Rule::requiredIf(function () use ($request) {
                 if (empty($request->laporan_pdf)) {
                     return false;
@@ -225,14 +282,38 @@ class JilidController extends Controller
                 }
                 return true;
             }), 'mimes:docx', 'max:5000'],
+            'berita_acara' => [Rule::requiredIf(function() use($request){
+                if (empty($request->berita_acara)) {
+                    return false;
+                }
+                return true;
+            }), 'mimes:pdf', 'max:1000'],
+            'panduan' => [Rule::requiredIf(function() use($request){
+                if (empty($request->panduan)) {
+                    return false;
+                }
+                return true;
+            }), 'mimes:docx', 'max:5000'],
+            'lampiran' => [Rule::requiredIf(function() use($request){
+                if (empty($request->lampiran)) {
+                    return false;
+                }
+                return true;
+            }), 'mimes:pdf', 'max:1000'],
         ]);
         if ($request->laporan_pdf) {
             AppHelper::instance()->deleteLampiran($jilid->laporan_pdf);
             $validatedData['laporan_pdf'] = AppHelper::instance()->uploadLampiran($request->laporan_pdf, 'lampirans');
+        }else if($request->laporan_link_pdf){
+            AppHelper::instance()->deleteLampiran($jilid->laporan_pdf);
+            $validatedData['laporan_pdf'] = $request->laporan_link_pdf;
         }
         if ($request->laporan_word) {
             AppHelper::instance()->deleteLampiran($jilid->laporan_word);
             $validatedData['laporan_word'] = AppHelper::instance()->uploadLampiran($request->laporan_word, 'lampirans');
+        }else if($request->laporan_link){
+            AppHelper::instance()->deleteLampiran($jilid->laporan_word);
+            $validatedData['laporan_word'] = $request->laporan_link;
         }
         if ($request->lembar_pengesahan) {
             AppHelper::instance()->deleteLampiran($jilid->lembar_pengesahan);
@@ -258,22 +339,44 @@ class JilidController extends Controller
             AppHelper::instance()->deleteLampiran($jilid->lembar_revisi);
             $validatedData['lembar_revisi'] = AppHelper::instance()->uploadLampiran($request->lembar_revisi, 'lampirans');
         }
+        if ($request->berita_acara) {
+            AppHelper::instance()->deleteLampiran($jilid->berita_acara);
+            $validatedData['berita_acara'] = AppHelper::instance()->uploadLampiran($request->berita_acara, 'lampirans');
+        }
         if ($request->artikel) {
             AppHelper::instance()->deleteLampiran($jilid->artikel);
             $validatedData['artikel'] = AppHelper::instance()->uploadLampiran($request->artikel, 'lampirans');
+        }elseif($request->artikel_link){
+            AppHelper::instance()->deleteLampiran($jilid->artikel);
+            $validatedData['artikel'] = $request->artikel_link;
+        }
+        if ($request->panduan) {
+            AppHelper::instance()->deleteLampiran($jilid->panduan);
+            $validatedData['panduan'] = AppHelper::instance()->uploadLampiran($request->panduan, 'lampirans');
+        }elseif($request->panduan_link){
+            $validatedData['panduan'] = $request->panduan_link;
+        }
+        if ($request->lampiran) {
+            AppHelper::instance()->deleteLampiran($jilid->lampiran);
+            $validatedData['lampiran'] = AppHelper::instance()->uploadLampiran($request->lampiran, 'lampirans');
         }
         $validatedData['status'] = Jilid::JILID_REVIEW;
         $jilid->update($validatedData);
-        return redirect()->route('jilid.mahasiswa')->with('success', 'Pengajuan jilid behasil. Silahkan tunggu vlidasi dari Admin');
+        return redirect()->route('jilid.mahasiswa')->with('success', 'Pengajuan jilid behasil. Silahkan tunggu validasi dari Admin');
     }
 
     public function acc(Request $request, $id)
     {
         $jilid = Jilid::findOrFail($id);
+        if($request->catatan){
+            $revisi = new RevisiJilid;
+            $revisi->catatan = $request->catatan;
+            $revisi->jilid_id = $jilid->id;
+            $jilid->revisis()->save($revisi);
+        }
         $jilid->update([
             'total_pembayaran' => $request->total_pembayaran,
             'status' => $request->status,
-            'catatan' => $request->catatan,
         ]);
         if ($request->status == Jilid::JILID_SELESAI) {
             AppHelper::instance()->send_mail([
@@ -289,6 +392,13 @@ class JilidController extends Controller
                 'title' => 'EKAPTA',
                 'message' => 'Dokumen Tugas Akhir sudah dikonfirmasi oleh admin dan siap untuk dijilid. Silahkan konfirmasi dan melakukan pembayaran ke Fotocopy fastikom dengan membawa dokumen-dokumen asli yang akan disertakan dalam penjilidan TA seperti lembar keaslian TA, lembar pengesahan, lembar bimbingan, lampiran-lampiran, dll.',
             ]);
+        }else if ($request->status == Jilid::JILID_REVISI) {
+            AppHelper::instance()->send_mail([
+                'mail' => $jilid->mahasiswa->email,
+                'subject' => 'Jilid Tugas Ahir',
+                'title' => 'EKAPTA',
+                'message' => 'Dokumen Tugas Akhir Berstatus REVISI. Silahkan submit ulang! <br>Ket: '. $request->catatan,
+            ]);
         }
         return redirect()->route('jilid.index')->with('success', 'Pengajuan jilid behasil di update');
     }
@@ -303,6 +413,48 @@ class JilidController extends Controller
             'is_completed' => Jilid::JILID_COMPLETED,
         ]);
         return redirect()->route('jilid.index')->with('success', 'Konfirmasi setor jilid ke perpus berhasil disimpan');
+    }
+
+    public function prodiIndex()
+    {
+        $userProdi = Auth::guard('prodi')->user();
+
+        $jilids = Jilid::with('mahasiswa')
+            ->whereHas('mahasiswa', function($q) use ($userProdi) {
+                $q->where('prodi_id', $userProdi->id)
+                  ->orWhere('prodi', $userProdi->kode)
+                  ->orWhere('prodi', $userProdi->namaprodi);
+            })
+            ->orderBy('created_at','desc')
+            ->get();
+
+        return view('pages.jilid.prodi-index', [
+            'sidebar' => 'partials.sidebarProdi',
+            'title' => 'Data Jilid TA',
+            'active' => 'jilid-ta-prodi',
+            'jilids' => $jilids,
+        ]);
+    }
+
+    public function prodiDetail($id)
+    {
+        $jilid = Jilid::with(['mahasiswa','revisis'])->findOrFail($id);
+        $mahasiswa = $jilid->mahasiswa()->with(['bimbingans'])->first();
+        $prodi = \App\Models\Prodi::where('kode', $mahasiswa->prodi)
+            ->orWhere('namaprodi', $mahasiswa->prodi)
+            ->first();
+
+        return view('pages.fotokopi.detail', [
+            'sidebar' => 'partials.sidebarProdi',
+            'title' => 'Detail Jilid TA',
+            'active' => 'jilid-ta-prodi',
+            'jilid' => $jilid,
+            'mahasiswa' => $mahasiswa,
+            'prodi' => $prodi,
+            'is_admin' => false,
+            'is_prodi' => true,
+            'revisis' => $jilid->revisis()->paginate(5),
+        ]);
     }
 
 }

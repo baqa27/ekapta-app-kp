@@ -50,6 +50,7 @@
                                                 <th>No</th>
                                                 <th>Mahasiswa</th>
                                                 <th>Prodi</th>
+                                                <th>Kelas</th>
                                                 <th>Judul</th>
                                                 <th>Status</th>
                                                 <th>Aksi</th>
@@ -67,6 +68,9 @@
                                                     </td>
                                                     <td>
                                                         {{ $pengajuan->prodi->namaprodi }}
+                                                    </td>
+                                                    <td>
+                                                        {{ \App\Helpers\AppHelper::format_kelas_mahasiswa($pengajuan->mahasiswa->kelas ?? null) }}
                                                     </td>
                                                     <td>{{ $pengajuan->judul }}</td>
                                                     <td>
@@ -95,6 +99,7 @@
                                                 <th>No</th>
                                                 <th>Mahasiswa</th>
                                                 <th>Prodi</th>
+                                                <th>Kelas</th>
                                                 <th>Judul</th>
                                                 <th>Status</th>
                                                 <th>Aksi</th>
@@ -111,6 +116,7 @@
                                                 <th>No</th>
                                                 <th>Mahasiswa</th>
                                                 <th>Prodi</th>
+                                                <th>Kelas</th>
                                                 <th>Judul</th>
                                                 <th>Status</th>
                                                 <th>Aksi</th>
@@ -128,6 +134,9 @@
                                                     </td>
                                                     <td>
                                                         {{ $pengajuan->prodi->namaprodi }}
+                                                    </td>
+                                                    <td>
+                                                        {{ \App\Helpers\AppHelper::format_kelas_mahasiswa($pengajuan->mahasiswa->kelas ?? null) }}
                                                     </td>
                                                     <td>{{ $pengajuan->judul }}</td>
                                                     <td>
@@ -175,6 +184,7 @@
                                                 <th>No</th>
                                                 <th>Mahasiswa</th>
                                                 <th>Prodi</th>
+                                                <th>Kelas</th>
                                                 <th>Judul</th>
                                                 <th>Status</th>
                                                 <th>Aksi</th>
@@ -192,6 +202,7 @@
                                                 <th>No</th>
                                                 <th>Mahasiswa</th>
                                                 <th>Prodi</th>
+                                                <th>Kelas</th>
                                                 <th>Judul</th>
                                                 <th>Status</th>
                                                 <th>Aksi</th>
@@ -209,6 +220,9 @@
                                                     </td>
                                                     <td>
                                                         {{ $pengajuan->prodi->namaprodi }}
+                                                    </td>
+                                                    <td>
+                                                        {{ \App\Helpers\AppHelper::format_kelas_mahasiswa($pengajuan->mahasiswa->kelas ?? null) }}
                                                     </td>
                                                     <td>{{ $pengajuan->judul }}</td>
                                                     <td>
@@ -237,6 +251,7 @@
                                                 <th>No</th>
                                                 <th>Mahasiswa</th>
                                                 <th>Prodi</th>
+                                                <th>Kelas</th>
                                                 <th>Judul</th>
                                                 <th>Status</th>
                                                 <th>Aksi</th>
@@ -254,6 +269,7 @@
                                                 <th>No</th>
                                                 <th>Mahasiswa</th>
                                                 <th>Prodi</th>
+                                                <th>Kelas</th>
                                                 <th>Judul</th>
                                                 <th>Status</th>
                                                 <th>Aksi</th>
@@ -271,6 +287,9 @@
                                                     </td>
                                                     <td>
                                                         {{ $pengajuan->prodi->namaprodi }}
+                                                    </td>
+                                                    <td>
+                                                        {{ \App\Helpers\AppHelper::format_kelas_mahasiswa($pengajuan->mahasiswa->kelas ?? null) }}
                                                     </td>
                                                     <td>{{ $pengajuan->judul }}</td>
                                                     <td>
@@ -317,6 +336,7 @@
                                                 <th>No</th>
                                                 <th>Mahasiswa</th>
                                                 <th>Prodi</th>
+                                                <th>Kelas</th>
                                                 <th>Judul</th>
                                                 <th>Status</th>
                                                 <th>Aksi</th>

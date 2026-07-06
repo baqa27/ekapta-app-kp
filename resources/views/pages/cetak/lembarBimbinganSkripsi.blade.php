@@ -199,7 +199,7 @@ $bulan = 'XII';
             @endif
         @endforeach
     </table>
-
+    <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
     <table>
         <tr>
             <td>

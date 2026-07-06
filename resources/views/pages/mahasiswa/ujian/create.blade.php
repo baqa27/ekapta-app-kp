@@ -180,6 +180,26 @@
                                 </div>
 
                                 <div class="form-group">
+                                    <label for="exampleInputEmail1">Syahadah Tahfidz 30 Juz (Jika Ada) <br>
+                                        <small class="text-muted">Opsional</small></label>
+                                    <div class="input-group mb-3">
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input" name="lampiran_syahadah"
+                                                   @error('lampiran_syahadah') is-invalid @enderror>
+                                            <label class="custom-file-label" for="exampleInputFile">Choose
+                                                file</label>
+                                        </div>
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">Dokumen</span>
+                                        </div>
+                                    </div>
+                                    @error('lampiran_syahadah')
+                                    <small class="text-danger"
+                                           style="position:relative;top:-15px;left:5px">{{ $message }}</small>
+                                    @enderror
+                                </div>
+
+                                <div class="form-group">
                                     <label for="exampleInputEmail1">Scan Sertifikat Komputer</label>
                                     <div class="input-group mb-3">
                                         <div class="custom-file">
@@ -218,7 +238,7 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="exampleInputEmail1">Laporan Skripsi (Format: .pdf, max 5Mb )</label>
+                                    <label for="exampleInputEmail1">Laporan Tugas Akhir (Format: .pdf, max 5Mb )</label>
                                     <div class="input-group mb-3">
                                         <div class="custom-file">
                                             <input type="file" class="custom-file-input" name="lampiran_laporan"
@@ -233,6 +253,36 @@
                                     @error('lampiran_laporan')
                                     <small class="text-danger"
                                            style="position:relative;top:-15px;left:5px">{{ $message }}</small>
+                                    @enderror
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">File Artikel (Format: .pdf/.doc/.docx, max 5Mb)</label>
+                                    <div class="input-group mb-3">
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input" name="artikel"
+                                                   @error('artikel') is-invalid @enderror accept=".pdf,.doc,.docx" required>
+                                            <label class="custom-file-label" for="exampleInputFile">Choose
+                                                file</label>
+                                        </div>
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">Dokumen</span>
+                                        </div>
+                                    </div>
+                                    @error('artikel')
+                                    <small class="text-danger"
+                                           style="position:relative;top:-15px;left:5px">{{ $message }}</small>
+                                    @enderror
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">Link Artikel <br>
+                                        <small class="text-muted">Opsional</small></label>
+                                    <input type="url" class="form-control @error('link_artikel') is-invalid @enderror"
+                                           name="link_artikel" value="{{ old('link_artikel') }}"
+                                           placeholder="https://...">
+                                    @error('link_artikel')
+                                    <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
 

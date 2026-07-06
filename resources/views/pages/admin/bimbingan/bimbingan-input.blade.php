@@ -47,23 +47,27 @@
                                     @endphp
                                     @foreach ($dosens as $dosen)
                                         @foreach ($dosen->mahasiswas as $mahasiswa)
-                                            <tr>
-                                                <td>{{ $no++ }}</td>
-                                                <td>
-                                                    {{ $mahasiswa->nim.'/'.$mahasiswa->nama }}
-                                                </td>
-                                                <td>
-                                                    {{ $mahasiswa->prodi }}
-                                                </td>
-                                                <td>
-                                                    {{ $dosen->nama . ', ' . $dosen->gelar }}
-                                                </td>
-                                                <td>
-                                                    <a href="{{ route('bimbingan.admin.input.create', [$dosen->id, $mahasiswa->id]) }}" class="btn btn-primary btn-sm shadow">
-                                                    <i class="fas fa-upload"></i> Input Bimbingan
-                                                    </a>
-                                                </td>
-                                            </tr>
+                                            @if ($mahasiswa->bimbingans()->whereNotNull('lampiran_acc')->where('status', 'review')->whereHas('dosens', function ($query) use ($dosen) {
+                                                        $query->where('dosen_id', $dosen->id);
+                                                    })->first())
+                                                <tr>
+                                                    <td>{{ $no++ }}</td>
+                                                    <td>
+                                                        {{ $mahasiswa->nim.'/'.$mahasiswa->nama }}
+                                                    </td>
+                                                    <td>
+                                                        {{ $mahasiswa->prodi }}
+                                                    </td>
+                                                    <td>
+                                                        {{ $dosen->nama . ', ' . $dosen->gelar }}
+                                                    </td>
+                                                    <td>
+                                                        <a href="{{ route($createRoute ?? 'bimbingan.admin.input.create', [$dosen->id, $mahasiswa->id]) }}" class="btn btn-primary btn-sm shadow">
+                                                        <i class="fas fa-upload"></i> Input Bimbingan
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            @endif
                                         @endforeach
                                     @endforeach
 

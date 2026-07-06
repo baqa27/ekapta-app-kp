@@ -14,8 +14,12 @@ class AddColumnsToReviewUjiansTable extends Migration
     public function up()
     {
         Schema::table('review_ujians', function (Blueprint $table) {
-            $table->date('tanggal_acc_manual')->nullable();
-            $table->string('lampiran_lembar_revisi')->nullable();
+            if (!Schema::hasColumn('review_ujians', 'tanggal_acc_manual')) {
+                $table->date('tanggal_acc_manual')->nullable();
+            }
+            if (!Schema::hasColumn('review_ujians', 'lampiran_lembar_revisi')) {
+                $table->string('lampiran_lembar_revisi')->nullable();
+            }
         });
     }
 
@@ -27,8 +31,12 @@ class AddColumnsToReviewUjiansTable extends Migration
     public function down()
     {
         Schema::table('review_ujians', function (Blueprint $table) {
-            $table->dropColumn('tanggal_acc_manual');
-            $table->dropColumn('lampiran_lembar_revisi');
+            if (Schema::hasColumn('review_ujians', 'lampiran_lembar_revisi')) {
+                $table->dropColumn('lampiran_lembar_revisi');
+            }
+            if (Schema::hasColumn('review_ujians', 'tanggal_acc_manual')) {
+                $table->dropColumn('tanggal_acc_manual');
+            }
         });
     }
 }

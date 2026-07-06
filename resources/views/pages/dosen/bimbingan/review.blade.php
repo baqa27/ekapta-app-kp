@@ -73,17 +73,17 @@
                             </div>
 
                             <div class="mt-4 text-secondary"><i class="fas fa-calendar mr-2"></i>
-                                Tanggal Submit <b>{{ date('d M Y H:m', strtotime($bimbingan->tanggal_bimbingan)) }}</b>
+                                Tanggal Submit <b>{{ date('d M Y', strtotime($bimbingan->tanggal_bimbingan)) }}</b>
                             </div>
 
                             @if ($bimbingan->tanggal_acc)
                                 <div class="text-success"><i class="fas fa-calendar-check mr-2"></i>
-                                    Tanggal Acc <b>{{ date('d M Y H:m', strtotime($bimbingan->tanggal_acc)) }}</b>
+                                    Tanggal Acc <b>{{ date('d M Y', strtotime($bimbingan->tanggal_acc)) }}</b>
                                 </div>
                             @endif
                             <hr>
 
-                            <p class="mt-3"><b>Lampiran : </b> <a href="{{ asset($bimbingan->lampiran) }}" class="ml-3"
+                            <p class="mt-3"><b>Lampiran : </b> <a href="{{ storage_url($bimbingan->lampiran) }}" class="ml-3"
                                     target="_blank"><i class="fas fa-paperclip"></i>
                                     {{ Str::substr($bimbingan->lampiran, 40) }}</a></p>
 
@@ -101,7 +101,7 @@
                                     @if ($dosenPembimbing->pivot->status == 'utama')
                                         @foreach ($mahasiswa->bimbingans()->where('pembimbing', 'utama')->get() as $bimbinganMahasiswa)
                                             @if (\App\Helpers\AppHelper::instance()->cekBagianIsAcc($bimbinganMahasiswa->id))
-                                                <a href="{{ asset($bimbinganMahasiswa->lampiran) }}"
+                                                <a href="{{ storage_url($bimbinganMahasiswa->lampiran) }}"
                                                     class="badge badge-success mr-1" target="_blank">
                                                     <i class="fas fa-check-circle mr-1"></i>
                                                     {{ $bimbinganMahasiswa->bagian->bagian }}
@@ -118,7 +118,7 @@
                                     @elseif ($dosenPembimbing->pivot->status == 'pendamping')
                                         @foreach ($mahasiswa->bimbingans()->where('pembimbing', 'pendamping')->get() as $bimbinganMahasiswa)
                                             @if (\App\Helpers\AppHelper::instance()->cekBagianIsAcc($bimbinganMahasiswa->id))
-                                                <a href="{{ asset($bimbinganMahasiswa->lampiran) }}"
+                                                <a href="{{ storage_url($bimbinganMahasiswa->lampiran) }}"
                                                     class="badge badge-success mr-1" target="_blank">
                                                     <i class="fas fa-check-circle mr-1"></i>
                                                     {{ $bimbinganMahasiswa->bagian->bagian }}
@@ -206,14 +206,14 @@
                                         {!! nl2br($revisi->catatan) !!}
                                         @if($revisi->tanggal_bimbingan)
                                             <div class="mt-4 text-secondary">
-                                                <small><i class="fas fa-calendar mr-2"></i> Tanggal Bimbingan <b>{{ date('d M Y H:m', strtotime($revisi->tanggal_bimbingan)) }}</b></small>
+                                                <small><i class="fas fa-calendar mr-2"></i> Tanggal Bimbingan <b>{{ date('d M Y', strtotime($revisi->tanggal_bimbingan)) }}</b></small>
                                             </div>
                                         @endif
                                         @if ($revisi->lampiran_revisi)
                                             <small>
                                                 Lampiran revisi:
                                                 @if ($revisi->lampiran_revisi)
-                                                    <a href="{{ asset($revisi->lampiran_revisi) }}" class="ml-3" target="_blank"><i
+                                                    <a href="{{ storage_url($revisi->lampiran_revisi) }}" class="ml-3" target="_blank"><i
                                                             class="fas fa-paperclip"></i>
                                                         {{ Str::substr($revisi->lampiran_revisi, 40) }}</a>
                                                 @endif
@@ -224,7 +224,7 @@
                                     <div class="card-footer">
                                         <small>
                                             Lampiran bimbingan sebelumnya:
-                                                <a href="{{ asset($revisi->lampiran) }}" class="ml-3" target="_blank"><i
+                                                <a href="{{ storage_url($revisi->lampiran) }}" class="ml-3" target="_blank"><i
                                                         class="fas fa-paperclip"></i>
                                                     {{ Str::substr($revisi->lampiran, 40) }}</a>
                                         </small>

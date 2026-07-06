@@ -14,7 +14,10 @@ class AddIsManualToDosensTable extends Migration
     public function up()
     {
         Schema::table('dosens', function (Blueprint $table) {
-            $table->boolean('is_manual')->default(0);
+            // Cek apakah kolom sudah ada sebelum menambahkan
+            if (!Schema::hasColumn('dosens', 'is_manual')) {
+                $table->boolean('is_manual')->default(0);
+            }
         });
     }
 
@@ -26,7 +29,9 @@ class AddIsManualToDosensTable extends Migration
     public function down()
     {
         Schema::table('dosens', function (Blueprint $table) {
-            $table->dropColumn('is_manual');
+            if (Schema::hasColumn('dosens', 'is_manual')) {
+                $table->dropColumn('is_manual');
+            }
         });
     }
 }

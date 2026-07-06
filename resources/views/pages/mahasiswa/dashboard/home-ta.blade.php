@@ -186,10 +186,12 @@
                                                         <li>Scan ijazah terakhir yang asli</li>
                                                         <li>Scan KTP / Kartu Keluarga</li>
                                                         <li>Scan Sertifikat TOEFL</li>
-                                                        <li>Scan Sertifikat Tahfidz</li>
+                                                        <li>Syahadah Tahfidz 30 Juz (jika ada) : opsional</li>
                                                         <li>Scan Sertifikat Komputer</li>
                                                         <li>Transkrip Nilai Sementara (Tanpa nilai D/E/Kosong, kecuali nilai Tugas Akhir/Skripsi)</li>
-                                                        <li>Laporan Skripsi</li>
+                                                        <li>Laporan Tugas Akhir</li>
+                                                        <li>File Artikel</li>
+                                                        <li>Link Artikel (opsional)</li>
                                                     </ol>
                                                 </li>
                                             </ul>

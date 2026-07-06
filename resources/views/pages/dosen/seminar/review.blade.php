@@ -85,7 +85,7 @@
 
                             <div class="shadow-lg p-2 rounded">
                                 <b>Laporan Seminar Proposal : </b>
-                                <a href="{{ asset($review_seminar->lampiran ? $review_seminar->lampiran : $review_seminar->seminar->lampiran_3) }}" class="ml-3 text-primary"
+                                <a href="{{ storage_url($review_seminar->lampiran ? $review_seminar->lampiran : $review_seminar->seminar->lampiran_3) }}" class="ml-3 text-primary"
                                    target="_blank"><i class="fas fa-paperclip mr-2"></i>
                                     {{ Str::substr($review_seminar->lampiran ? $review_seminar->lampiran : $review_seminar->seminar->lampiran_3, 40) }}</a>
                             </div>
@@ -239,7 +239,7 @@
                                         <small>
                                             Lampiran sebelumnya:
                                             @if ($revisi->lampiran)
-                                                <a href="{{ asset($revisi->lampiran) }}" class="ml-3" target="_blank"><i
+                                                <a href="{{ storage_url($revisi->lampiran) }}" class="ml-3" target="_blank"><i
                                                         class="fas fa-paperclip"></i>
                                                     {{ Str::substr($revisi->lampiran, 40) }}</a>
                                             @endif

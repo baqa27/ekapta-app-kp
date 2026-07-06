@@ -17,9 +17,15 @@ class IsAdminFotokopi
      */
     public function handle(Request $request, Closure $next)
     {
-        if (Auth::guard('admin')->user() || Auth::guard('prodi')->user()) {
-            return $next($request);
+        // Admin Fotokopi (type = 2) atau Super Admin (type = 1) boleh akses
+        if (Auth::guard('admin')->check()) {
+            $adminType = Auth::guard('admin')->user()->type;
+            if ($adminType == \App\Models\Admin::TYPE_SUPER_ADMIN || $adminType == \App\Models\Admin::TYPE_ADMIN_FOTOCOPY) {
+                return $next($request);
+            }
         }
-        return redirect()->route('login.admin');
+        
+        // Redirect dengan pesan error
+        return redirect()->route('login.admin')->with('error', 'Akses ditolak. Halaman ini hanya untuk Admin Fotokopi atau Super Admin.');
     }
 }

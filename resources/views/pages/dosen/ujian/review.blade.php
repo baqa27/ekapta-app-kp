@@ -90,12 +90,33 @@
                             <hr>
 
                             <div class="shadow-lg p-2 rounded">
-                                <b>Laporan Skripsi : </b>
-                                <a href="{{ asset($review_ujian->lampiran ? $review_ujian->lampiran : $review_ujian->ujian->lampiran_laporan) }}"
+                                <b>Laporan Tugas Akhir : </b>
+                                <a href="{{ storage_url($review_ujian->lampiran ? $review_ujian->lampiran : $review_ujian->ujian->lampiran_laporan) }}"
                                     class="ml-3 text-primary" target="_blank"><i
                                         class="fas fa-paperclip mr-2"></i>
                                     {{ Str::substr($review_ujian->lampiran ? $review_ujian->lampiran : $review_ujian->ujian->lampiran_laporan, 40) }}</a>
                             </div>
+
+                            @if ($review_ujian->ujian->artikel)
+                            <div class="shadow-lg p-2 rounded mt-2">
+                                <b>File Artikel : </b>
+                                <a href="{{ storage_url($review_ujian->ujian->artikel) }}"
+                                    class="ml-3 text-primary" target="_blank"><i
+                                        class="fas fa-paperclip mr-2"></i>
+                                    {{ Str::substr($review_ujian->ujian->artikel, 40) }}</a>
+                            </div>
+                            @endif
+
+                            @if ($review_ujian->ujian->link_artikel)
+                            <div class="shadow-lg p-2 rounded mt-2">
+                                <b>Link Artikel : </b>
+                                <a href="{{ $review_ujian->ujian->link_artikel }}"
+                                    class="ml-3 text-primary" target="_blank"
+                                    rel="noopener noreferrer"><i
+                                        class="fas fa-link mr-2"></i>
+                                    {{ $review_ujian->ujian->link_artikel }}</a>
+                            </div>
+                            @endif
                             @endif
 
                         </div>
@@ -246,7 +267,7 @@
                                         <small>
                                             Lampiran :
                                             @if ($revisi->lampiran)
-                                                <a href="{{ asset($revisi->lampiran) }}" class="ml-3" target="_blank"><i
+                                                <a href="{{ storage_url($revisi->lampiran) }}" class="ml-3" target="_blank"><i
                                                         class="fas fa-paperclip"></i>
                                                     {{ Str::substr($revisi->lampiran, 40) }}</a>
                                             @endif

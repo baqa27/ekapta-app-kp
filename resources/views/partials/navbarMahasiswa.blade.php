@@ -1,6 +1,20 @@
+@php
+    $active = $active ?? '';
+    $module = $module ?? '';
+    $isUtilityPage = request()->routeIs('profile', 'mahasiswa.account', 'kp.profile', 'kp.mahasiswa.account');
+    $showModuleNavigation = ! $isUtilityPage;
+    
+    // Tentukan route dashboard berdasarkan module
+    $dashboardRoute = 'dashboard.mahasiswa'; // Default ke pilih sistem
+    if ($module == 'ta') {
+        $dashboardRoute = 'dashboard.mahasiswa.ta';
+    } elseif ($module == 'kp') {
+        $dashboardRoute = 'kp.dashboard.mahasiswa';
+    }
+@endphp
 <nav class="main-header navbar navbar-expand-md navbar-light navbar-white sticky-top">
     <div class="container">
-        <a href="{{ route('dashboard.mahasiswa') }}" class="navbar-brand">
+        <a href="{{ route($dashboardRoute) }}" class="navbar-brand">
             <img src="https://unsiq.ac.id/img/UNSIQ-bunder.ico" alt="AdminLTE Logo"
                  class="brand-image img-circle elevation-3" style="opacity: .8">
             <span class="brand-text font-weight-light" style="text-transform: uppercase;">
@@ -8,52 +22,87 @@
             </span>
         </a>
 
-        <button class="navbar-toggler order-1" type="button" data-toggle="collapse" data-target="#navbarCollapse"
-                aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+        @if($showModuleNavigation)
+            <button class="navbar-toggler order-1" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+                    aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        @endif
 
-        <div class="collapse navbar-collapse order-3" id="navbarCollapse">
-            <!-- Left navbar links -->
+        @if($showModuleNavigation)
+            <div class="collapse navbar-collapse order-3" id="navbarCollapse">
+                <!-- Left navbar links -->
 
-            @if($active == 'dashboard' || $active == 'pengajuan' || $active == 'pendaftaran' || $active == 'bimbingan' || $active == 'seminar' || $active == 'ujian' || $active == 'profile' || $active == 'jilid')
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a href="{{ route('dashboard.mahasiswa.ta') }}"
-                           class="nav-link {{ $active == 'dashboard' ? 'active' : '' }}">Dashboard</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ route('pengajuan.mahasiswa') }}"
-                           class="nav-link {{ $active == 'pengajuan' ? 'active' : '' }}">Pengajuan
-                            TA</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ route('pendaftaran.mahasiswa') }}"
-                           class="nav-link {{ $active == 'pendaftaran' ? 'active' : '' }}">Pendaftaran TA</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ route('bimbingan.mahasiswa') }}"
-                           class="nav-link {{ $active == 'bimbingan' ? 'active' : '' }}">Bimbingan</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ route('seminar.mahasiswa') }}"
-                           class="nav-link {{ $active == 'seminar' ? 'active' : '' }}">Seminar
-                            Proposal</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ route('ujian.mahasiswa') }}"
-                           class="nav-link {{ $active == 'ujian' ? 'active' : '' }}">Ujian
-                            Pendadaran</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ route('jilid.mahasiswa') }}"
-                           class="nav-link {{ $active == 'jilid' ? 'active' : '' }}">Jilid TA</a>
-                    </li>
-                </ul>
-            @endif
+                {{-- Menu untuk sistem TUGAS AKHIR (default jika module tidak di-set) --}}
+                @if($module == 'ta' || empty($module))
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a href="{{ route('dashboard.mahasiswa.ta') }}"
+                               class="nav-link {{ $active == 'dashboard' ? 'active' : '' }}">Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('pengajuan.mahasiswa') }}"
+                               class="nav-link {{ $active == 'pengajuan' ? 'active' : '' }}">Pengajuan TA</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('pendaftaran.mahasiswa') }}"
+                               class="nav-link {{ $active == 'pendaftaran' ? 'active' : '' }}">Pendaftaran TA</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('bimbingan.mahasiswa') }}"
+                               class="nav-link {{ $active == 'bimbingan' ? 'active' : '' }}">Bimbingan</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('seminar.mahasiswa') }}"
+                               class="nav-link {{ $active == 'seminar' ? 'active' : '' }}">Seminar Proposal</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('ujian.mahasiswa') }}"
+                               class="nav-link {{ $active == 'ujian' ? 'active' : '' }}">Ujian Pendadaran</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('jilid.mahasiswa') }}"
+                               class="nav-link {{ $active == 'jilid' ? 'active' : '' }}">Jilid TA</a>
+                        </li>
+                    </ul>
+                @endif
 
+                {{-- Menu untuk sistem KERJA PRAKTEK --}}
+                @if($module == 'kp')
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a href="{{ route('kp.dashboard.mahasiswa') }}"
+                               class="nav-link {{ $active == 'dashboard' ? 'active' : '' }}">Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('kp.pengajuan.mahasiswa') }}"
+                               class="nav-link {{ $active == 'pengajuan' ? 'active' : '' }}">Pengajuan KP</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('kp.pendaftaran.mahasiswa') }}"
+                               class="nav-link {{ $active == 'pendaftaran' ? 'active' : '' }}">Pendaftaran KP</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('kp.bimbingan.mahasiswa') }}"
+                               class="nav-link {{ $active == 'bimbingan' ? 'active' : '' }}">Bimbingan KP</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('kp.seminar.mahasiswa') }}"
+                               class="nav-link {{ $active == 'seminar' ? 'active' : '' }}">Seminar KP</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('kp.pengumpulan-akhir.mahasiswa') }}"
+                               class="nav-link {{ $active == 'pengumpulan-akhir' ? 'active' : '' }}">Jilid KP</a>
+                        </li>
+                    </ul>
+                @endif
 
-        </div>
+            </div>
+        @elseif(!empty($title))
+            <div class="order-3 d-none d-md-flex align-items-center text-muted small">
+                {{ $title }}
+            </div>
+        @endif
 
         <!-- Right navbar links -->
         <ul class="order-1 order-md-3 navbar-nav navbar-no-expand ml-auto mr-3">
@@ -73,6 +122,10 @@
                     </a>
                     <a href="{{ route('mahasiswa.account') }}" class="dropdown-item">
                         <i class="bi bi-gear mr-2"></i> Pengaturan Akun
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a href="{{ route('dashboard.mahasiswa') }}" class="dropdown-item">
+                        <i class="bi bi-arrow-left-circle mr-2"></i> Kembali ke Pilihan Sistem
                     </a>
                     <div class="dropdown-divider"></div>
                     <a href="{{ route('logout.mahasiswa') }}" class="dropdown-item dropdown-footer bg-danger">Logout <i

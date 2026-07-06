@@ -24,6 +24,12 @@
             .image {
                 margin-top: 0px;
             }
+            #stempel{
+                position: relative;
+                right: -430px;
+                top: -170px;
+                opacity: 50%;
+            }
         </style>
     </head>
 
@@ -33,11 +39,13 @@
             <br><br><br>
             <b class="f-14">LAPORAN TUGAS AKHIR</b>
             <br><br><br>
-            <b style="text-transform: uppercase;">{{ $pengajuan->judul }}</b>
+            <div style="margin: 0px 50px 0px 50px;">
+                <b style="text-transform: uppercase;">{{ $pengajuan->judul }}</b>
+            </div>
             <br><br><br><br>
             <span>Disusun Oleh:</span>
             <br>
-            <b style="text-transform: uppercase;">{{ $mahasiswa->nama }}</b>
+            <b style="text-transform: uppercase;"><u>{{ $mahasiswa->nama }}</u></b>
             <br>
             <b>{{ $mahasiswa->nim }}</b>
             <br><br><br><br><br>
@@ -92,6 +100,7 @@
                 </tr>
             </table>
         </center>
+        <img src="{{ $stempel }}" alt="Stempel Dekan" height="100" id="stempel">
     </body>
 
     </html>

@@ -27,7 +27,7 @@ class UjianController extends Controller
         }
         $ujians = $mahasiswa->ujians()->orderBy('created_at','desc')->get();
         $prodi = Prodi::where('namaprodi', $mahasiswa->prodi)->first();
-        $bagians_is_ujian = $prodi->bagians()->where('is_pendadaran', 1)->get();
+        $bagians_is_ujian = $prodi->bagians()->where("tahun_masuk", "LIKE", "%" . $mahasiswa->thmasuk . "%")->where('is_pendadaran', 1)->get();
 
         $bimbingans_is_acc = $mahasiswa->bimbingans()->where('status', Bimbingan::DITERIMA)
             ->whereHas('bagian', function($query) {
@@ -164,7 +164,7 @@ public function ujianProdi()
 
         $pendaftaran_acc = Pendaftaran::orderBy('created_at', 'desc')->where('mahasiswa_id', $mahasiswa->id)->where('status', 'diterima')->first();
 
-        $bagians_is_ujian = $prodi->bagians()->where('is_pendadaran', 1)->get();
+        $bagians_is_ujian = $prodi->bagians()->where("tahun_masuk", "LIKE", "%" . $mahasiswa->thmasuk . "%")->where('is_pendadaran', 1)->get();
         $bimbingans_is_acc = $mahasiswa->bimbingans()->where('status', Bimbingan::DITERIMA)
             ->whereHas('bagian', function($query) {
                 $query->where('is_pendadaran', 1);
@@ -199,9 +199,9 @@ public function ujianProdi()
 
         $pendaftaran_acc = Pendaftaran::orderBy('created_at', 'desc')->where('mahasiswa_id', $pengajuan->mahasiswa->id)->where('status', 'diterima')->first();
 
-        if (AppHelper::instance()->is_expired_in_one_year($pendaftaran_acc->tanggal_acc)) {
+        if (AppHelper::isBimbinganExpiredFromPendaftaran($pendaftaran_acc) && !AppHelper::check_bimbingan_is_complete($pengajuan->mahasiswa)) {
             return redirect('pedaftaran-mahasiswa');
-        } else if ($pengajuan->ujian) {
+        } else if ($pengajuan->ujians()->whereNotIn('is_lulus', [Ujian::NOT_VALID_LULUS])->exists()) {
             return redirect('ujian-mahasiswa')->with('warning', 'Sudah mendaftar ujian pendadaran');
         }
 
@@ -214,7 +214,10 @@ public function ujianProdi()
             'lampiran_6' => ['required', 'mimes:jpg,png,jpeg,pdf', 'max:5000'],
             'lampiran_7' => ['required', 'mimes:jpg,png,jpeg,pdf', 'max:5000'],
             'lampiran_8' => ['required', 'mimes:jpg,png,jpeg,pdf', 'max:5000'],
+            'lampiran_syahadah' => ['nullable', 'mimes:jpg,png,jpeg,pdf', 'max:5000'],
             'lampiran_laporan' => ['required', 'mimes:jpg,png,jpeg,pdf', 'max:5000'],
+            'artikel' => ['required', 'mimes:pdf,doc,docx', 'max:5000'],
+            'link_artikel' => ['nullable', 'url', 'max:255'],
         ]);
 
         $validatedData['lampiran_1'] = AppHelper::instance()->uploadLampiran($request->file('lampiran_1'), 'lampirans');
@@ -225,7 +228,12 @@ public function ujianProdi()
         $validatedData['lampiran_6'] = AppHelper::instance()->uploadLampiran($request->file('lampiran_6'), 'lampirans');
         $validatedData['lampiran_7'] = AppHelper::instance()->uploadLampiran($request->file('lampiran_7'), 'lampirans');
         $validatedData['lampiran_8'] = AppHelper::instance()->uploadLampiran($request->file('lampiran_8'), 'lampirans');
+        if ($request->file('lampiran_syahadah')) {
+            $validatedData['lampiran_syahadah'] = AppHelper::instance()->uploadLampiran($request->file('lampiran_syahadah'), 'lampirans');
+        }
         $validatedData['lampiran_laporan'] = AppHelper::instance()->uploadLampiran($request->file('lampiran_laporan'), 'lampirans');
+        $validatedData['artikel'] = AppHelper::instance()->uploadLampiran($request->file('artikel'), 'lampirans');
+        $validatedData['link_artikel'] = $request->link_artikel;
 
         $validatedData['mahasiswa_id'] = Auth::guard('mahasiswa')->user()->id;
         $validatedData['pengajuan_id'] = $pengajuan->id;
@@ -267,89 +275,76 @@ public function ujianProdi()
     public function update(Request $request, $id)
     {
         $ujian = Ujian::findOrFail($id);
+        $oldOptionalLampirans = [];
+
+        if ($ujian->mahasiswa_id != Auth::guard('mahasiswa')->user()->id) {
+            abort(404);
+        }
 
         $validatedData = $request->validate([
             'lampiran_1' => [
-                Rule::requiredIf(function () use($request) {
-                    if (empty($request->lampiran_1)) {
-                        return false;
-                    }
-                    return true;
+                Rule::requiredIf(function () use($ujian) {
+                    return empty($ujian->lampiran_1);
                 }),
                 'mimes:pdf,png,jpg,jpeg', 'max:5000'
             ],
             'lampiran_2' => [
-                Rule::requiredIf(function () use($request) {
-                    if (empty($request->lampiran_2)) {
-                        return false;
-                    }
-                    return true;
+                Rule::requiredIf(function () use($ujian) {
+                    return empty($ujian->lampiran_2);
                 }),
                 'mimes:pdf,png,jpg,jpeg', 'max:5000'
             ],
             'lampiran_3' => [
-                Rule::requiredIf(function () use($request) {
-                    if (empty($request->lampiran_3)) {
-                        return false;
-                    }
-                    return true;
+                Rule::requiredIf(function () use($ujian) {
+                    return empty($ujian->lampiran_3);
                 }),
                 'mimes:pdf,png,jpg,jpeg', 'max:5000'
             ],
             'lampiran_4' => [
-                Rule::requiredIf(function () use($request) {
-                    if (empty($request->lampiran_4)) {
-                        return false;
-                    }
-                    return true;
+                Rule::requiredIf(function () use($ujian) {
+                    return empty($ujian->lampiran_4);
                 }),
                 'mimes:pdf,png,jpg,jpeg', 'max:5000'
             ],
             'lampiran_5' => [
-                Rule::requiredIf(function () use($request) {
-                    if (empty($request->lampiran_5)) {
-                        return false;
-                    }
-                    return true;
+                Rule::requiredIf(function () use($ujian) {
+                    return empty($ujian->lampiran_5);
                 }),
                 'mimes:pdf,png,jpg,jpeg', 'max:5000'
             ],
             'lampiran_6' => [
-                Rule::requiredIf(function () use($request) {
-                    if (empty($request->lampiran_5)) {
-                        return false;
-                    }
-                    return true;
+                Rule::requiredIf(function () use($ujian) {
+                    return empty($ujian->lampiran_6);
                 }),
                 'mimes:pdf,png,jpg,jpeg', 'max:5000'
             ],
             'lampiran_7' => [
-                Rule::requiredIf(function () use($request) {
-                    if (empty($request->lampiran_5)) {
-                        return false;
-                    }
-                    return true;
+                Rule::requiredIf(function () use($ujian) {
+                    return empty($ujian->lampiran_7);
                 }),
                 'mimes:pdf,png,jpg,jpeg', 'max:5000'
             ],
             'lampiran_8' => [
-                Rule::requiredIf(function () use($request) {
-                    if (empty($request->lampiran_5)) {
-                        return false;
-                    }
-                    return true;
+                Rule::requiredIf(function () use($ujian) {
+                    return empty($ujian->lampiran_8);
                 }),
                 'mimes:pdf,png,jpg,jpeg', 'max:5000'
             ],
+            'lampiran_syahadah' => ['nullable', 'mimes:pdf,png,jpg,jpeg', 'max:5000'],
             'lampiran_laporan' => [
-                Rule::requiredIf(function () use($request) {
-                    if (empty($request->lampiran_5)) {
-                        return false;
-                    }
-                    return true;
+                Rule::requiredIf(function () use($ujian) {
+                    return empty($ujian->lampiran_laporan);
                 }),
                 'mimes:pdf', 'max:5000'
             ],
+            'artikel' => [
+                Rule::requiredIf(function () use ($ujian) {
+                    return empty($ujian->artikel);
+                }),
+                'mimes:pdf,doc,docx',
+                'max:5000',
+            ],
+            'link_artikel' => ['nullable', 'url', 'max:255'],
         ]);
 
         if ($request->file('lampiran_1')) {
@@ -384,14 +379,35 @@ public function ujianProdi()
             AppHelper::instance()->deleteLampiran($ujian->lampiran_8);
             $validatedData['lampiran_8'] = AppHelper::instance()->uploadLampiran($request->lampiran_8, 'lampirans');
         }
+        if ($request->file('lampiran_syahadah')) {
+            if ($ujian->lampiran_syahadah) {
+                $oldOptionalLampirans[] = $ujian->lampiran_syahadah;
+            }
+            $validatedData['lampiran_syahadah'] = AppHelper::instance()->uploadLampiran($request->lampiran_syahadah, 'lampirans');
+        } else {
+            unset($validatedData['lampiran_syahadah']);
+        }
         if ($request->file('lampiran_laporan')) {
             AppHelper::instance()->deleteLampiran($ujian->lampiran_laporan);
             $validatedData['lampiran_laporan'] = AppHelper::instance()->uploadLampiran($request->lampiran_laporan, 'lampirans');
         }
+        if ($request->file('artikel')) {
+            if ($ujian->artikel) {
+                $oldOptionalLampirans[] = $ujian->artikel;
+            }
+            $validatedData['artikel'] = AppHelper::instance()->uploadLampiran($request->artikel, 'lampirans');
+        } else {
+            unset($validatedData['artikel']);
+        }
+        $validatedData['link_artikel'] = $request->link_artikel;
 
         $validatedData['is_valid'] = Ujian::REVIEW;
 
         $ujian->update($validatedData);
+
+        foreach ($oldOptionalLampirans as $oldLampiran) {
+            AppHelper::instance()->deleteLampiran($oldLampiran);
+        }
 
         return redirect('ujian-mahasiswa')->with('success', 'Pendaftaran Ujian TA berhasil diupdate, silahkan tunggu review dari Admin');
     }

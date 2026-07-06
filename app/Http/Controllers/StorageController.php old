@@ -1,0 +1,55 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Support\Str;
+use Symfony\Component\HttpFoundation\StreamedResponse;
+
+class StorageController extends Controller
+{
+    /**
+     * Serve file from storage/app/public
+     * 
+     * @param string $path
+     * @return StreamedResponse
+     */
+    public function serveFile($path)
+    {
+        // Sanitize path to prevent directory traversal
+        $path = str_replace(['../', '..\\'], '', $path);
+
+        foreach ($this->candidatePaths($path) as $candidatePath) {
+            $fullPath = storage_path('app/public/' . $candidatePath);
+            if (file_exists($fullPath)) {
+                $mimeType = mime_content_type($fullPath);
+
+                return response()->file($fullPath, [
+                    'Content-Type' => $mimeType,
+                ]);
+            }
+
+            $publicPath = public_path($candidatePath);
+            if (file_exists($publicPath)) {
+                $mimeType = mime_content_type($publicPath);
+
+                return response()->file($publicPath, [
+                    'Content-Type' => $mimeType,
+                ]);
+            }
+        }
+
+        abort(404, 'File not found');
+    }
+
+    private function candidatePaths($path)
+    {
+        $path = ltrim($path, '/');
+        $paths = [$path];
+
+        if (str_starts_with($path, 'lampiran/')) {
+            $paths[] = 'lampirans/' . Str::after($path, 'lampiran/');
+        }
+
+        return array_values(array_unique($paths));
+    }
+}

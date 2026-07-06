@@ -56,7 +56,7 @@
                                     <div class="custom-file">
                                         <input type="file"
                                             class="custom-file-input @error('lampiran') is-invalid @enderror"
-                                            name="lampiran" required>
+                                            name="lampiran" accept=".pdf" required>
                                         <label class="custom-file-label" for="exampleInputFile">Choose
                                             file</label>
                                     </div>

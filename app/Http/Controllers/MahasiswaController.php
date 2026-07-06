@@ -16,7 +16,7 @@ class MahasiswaController extends Controller
 
     public function index()
     {
-        $mahasiswas = Mahasiswa::all();
+        $mahasiswas = Mahasiswa::orderBy('thmasuk','desc')->get();
         return view('pages.admin.mahasiswa.mahasiswa', [
             'title' => 'Master Data Mahasiswa',
             'active' => 'mahasiswa',
@@ -80,17 +80,21 @@ class MahasiswaController extends Controller
     }
 
     function accountUpdate(Request $request, $id){
-        $mahasiwa = Mahasiswa::findOrFail($id);
+        $mahasiswa = Auth::guard('mahasiswa')->user();
 
-        $request->validate([
-           'password' => ['required','string' ,'min:6'],
+        abort_unless($mahasiswa && (int) $mahasiswa->id === (int) $id, 403);
+
+        $validatedData = $request->validate([
+           'password' => ['required', 'string', 'min:6', 'confirmed'],
         ]);
 
-        $mahasiwa->update([
-            'password' => Hash::make($request->password),
-        ]);
+        $mahasiswa->forceFill([
+            'password' => Hash::make($validatedData['password']),
+        ])->save();
 
-        return back()->with('success', 'Password berhasil diubah');
+        Auth::guard('mahasiswa')->setUser($mahasiswa->fresh());
+
+        return back()->with('success', 'Password berhasil diubah. Gunakan password baru saat login berikutnya.');
     }
 
     function resetPassword($id){

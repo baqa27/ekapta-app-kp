@@ -46,15 +46,15 @@
                             <p><b>Keterangan</b></p>
                             {!! nl2br($bimbingan->keterangan) !!}
                             <div class="mt-3 text-secondary"><i class="fas fa-calendar mr-2"></i>
-                                {{ date('d M Y H:m', strtotime($bimbingan->tanggal_bimbingan)) }}
+                                {{ date('d M Y', strtotime($bimbingan->tanggal_bimbingan)) }}
                             </div>
                             @if ($bimbingan->tanggal_acc)
                                 <div class="text-success"><i class="fas fa-calendar-check mr-2"></i>
-                                    {{ date('d M Y H:m', strtotime($bimbingan->tanggal_acc)) }}
+                                    {{ date('d M Y', strtotime($bimbingan->tanggal_acc)) }}
                                 </div>
                             @endif
                             <hr>
-                            <p class="mt-3"><b>Lampiran : </b> <a href="{{ asset($bimbingan->lampiran) }}" class="ml-3"
+                            <p class="mt-3"><b>Lampiran : </b> <a href="{{ storage_url($bimbingan->lampiran) }}" class="ml-3"
                                     target="_blank"><i class="fas fa-paperclip"></i> {{ Str::substr($bimbingan->lampiran, 40) }}</a></p>
                         </div>
                         <!-- /.card-body -->
@@ -95,7 +95,7 @@
                                             {!! nl2br($revisi->catatan) !!}
                                             @if($revisi->tanggal_bimbingan)
                                                 <div>
-                                                    <small><i class="fas fa-calendar"></i> Tanggal bimbingan: {{ \Carbon\Carbon::parse($revisi->tanggal_bimbingan)->format('d M Y H:m a') }}</small>
+                                                    <small><i class="fas fa-calendar"></i> Tanggal bimbingan: {{ \Carbon\Carbon::parse($revisi->tanggal_bimbingan)->format('d M Y') }}</small>
                                                 </div>
                                             @endif
                                             @if ($revisi->lampiran || $revisi->lampiran_revisi)
@@ -104,7 +104,7 @@
                                                         <div>
                                                             <small>
                                                                 <span class="text-secondary ml-2"><b>Lampiran revisi: </b></span>
-                                                                <a href="{{ asset($revisi->lampiran_revisi) }}" target="_blank">
+                                            <a href="{{ storage_url($revisi->lampiran_revisi) }}" target="_blank">
                                                                     <i class="fas fa-paperclip ml-1"></i>
                                                                     {{ Str::substr($revisi->lampiran_revisi, 40) }}
                                                                 </a>
@@ -114,7 +114,7 @@
                                                     @if ($revisi->lampiran)
                                                         <small>
                                                             <span class="text-secondary ml-2"><b>Lampiran bimbingan sebelumnya: </b></span>
-                                                            <a href="{{ asset($revisi->lampiran) }}" target="_blank">
+                                            <a href="{{ storage_url($revisi->lampiran) }}" target="_blank">
                                                                 <i class="fas fa-paperclip ml-1"></i>
                                                                 {{ Str::substr($revisi->lampiran, 40) }}
                                                             </a>
