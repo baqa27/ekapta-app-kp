@@ -124,6 +124,10 @@ class JilidController extends Controller
                 }
                 return true;
             }), 'mimes:docx', 'max:5000'],
+            'file_artikel' => ['required', 'mimes:pdf', 'max:5000'],
+            'file_loa' => ['nullable', 'mimes:pdf', 'max:2000'],
+            'status_artikel' => ['nullable', 'in:draft,submit,accept,publish'],
+            'link_artikel' => ['nullable', 'url', 'max:500'],
         ]);
         // return $request->all();
         if ($request->laporan_pdf) {
@@ -158,6 +162,16 @@ class JilidController extends Controller
         if ($request->lampiran) {
             $validatedData['lampiran'] = AppHelper::instance()->uploadLampiran($request->lampiran, 'lampirans');
         }
+        // File artikel (required)
+        $validatedData['file_artikel'] = AppHelper::instance()->uploadLampiran($request->file_artikel, 'lampirans');
+        // File LoA (opsional)
+        if ($request->file_loa) {
+            $validatedData['file_loa'] = AppHelper::instance()->uploadLampiran($request->file_loa, 'lampirans');
+        }
+        // Status artikel (opsional)
+        $validatedData['status_artikel'] = $request->status_artikel ?: null;
+        // Link artikel (opsional)
+        $validatedData['link_artikel'] = $request->link_artikel ?: null;
         $validatedData['mahasiswa_id'] = $mahasiswa->id;
         $validatedData['status'] = Jilid::JILID_REVIEW;
         $validatedData['link_project'] = $request->link_project;
@@ -300,6 +314,13 @@ class JilidController extends Controller
                 }
                 return true;
             }), 'mimes:pdf', 'max:1000'],
+            'file_artikel' => [Rule::requiredIf(function() use ($request, $jilid) {
+                // Wajib jika belum ada file_artikel sebelumnya
+                return empty($jilid->file_artikel);
+            }), 'nullable', 'mimes:pdf', 'max:5000'],
+            'file_loa' => ['nullable', 'mimes:pdf', 'max:2000'],
+            'status_artikel' => ['nullable', 'in:draft,submit,accept,publish'],
+            'link_artikel' => ['nullable', 'url', 'max:500'],
         ]);
         if ($request->laporan_pdf) {
             AppHelper::instance()->deleteLampiran($jilid->laporan_pdf);
@@ -359,6 +380,21 @@ class JilidController extends Controller
         if ($request->lampiran) {
             AppHelper::instance()->deleteLampiran($jilid->lampiran);
             $validatedData['lampiran'] = AppHelper::instance()->uploadLampiran($request->lampiran, 'lampirans');
+        }
+        // File artikel
+        if ($request->file_artikel) {
+            if ($jilid->file_artikel) AppHelper::instance()->deleteLampiran($jilid->file_artikel);
+            $validatedData['file_artikel'] = AppHelper::instance()->uploadLampiran($request->file_artikel, 'lampirans');
+        }
+        // File LoA
+        if ($request->file_loa) {
+            if ($jilid->file_loa) AppHelper::instance()->deleteLampiran($jilid->file_loa);
+            $validatedData['file_loa'] = AppHelper::instance()->uploadLampiran($request->file_loa, 'lampirans');
+        }
+        // Status artikel & link artikel
+        $validatedData['status_artikel'] = $request->status_artikel ?: $jilid->status_artikel;
+        if ($request->filled('link_artikel')) {
+            $validatedData['link_artikel'] = $request->link_artikel;
         }
         $validatedData['status'] = Jilid::JILID_REVIEW;
         $jilid->update($validatedData);

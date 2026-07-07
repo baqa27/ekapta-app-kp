@@ -115,6 +115,23 @@
                                             <a href="{{ $jilid->link_project }}" class="btn btn-secondary mb-3"
                                                 target="_blank"><i class="fas fa-paper-plane"></i> LINK PROJECT</a>
                                         @endif
+                                        @if ($jilid->file_artikel)
+                                            <a href="{{ storage_url($jilid->file_artikel) }}" class="btn btn-info mb-3"
+                                                target="_blank"><i class="fas fa-download"></i> FILE ARTIKEL</a>
+                                        @endif
+                                        @if ($jilid->file_loa)
+                                            <a href="{{ storage_url($jilid->file_loa) }}" class="btn btn-info mb-3"
+                                                target="_blank"><i class="fas fa-download"></i> FILE LOA</a>
+                                        @endif
+                                        @if ($jilid->status_artikel)
+                                            <span class="badge badge-warning mb-3 p-2" style="font-size:0.9rem">
+                                                <i class="fas fa-tag"></i> Status Artikel: {{ ucfirst($jilid->status_artikel) }}
+                                            </span>
+                                        @endif
+                                        @if ($jilid->link_artikel)
+                                            <a href="{{ $jilid->link_artikel }}" class="btn btn-secondary mb-3"
+                                                target="_blank"><i class="fas fa-external-link-alt"></i> LINK ARTIKEL</a>
+                                        @endif
                                     </div>
                                 @else
                                     {{-- ADMIN FOTOKOPI: Hanya PDF --}}
@@ -341,6 +358,51 @@
                                     <div class="col-md-4">Link Project TA</div>
                                     <div class="col-md-8">
                                         <a href="{{ $jilid->link_project }}" target="_blank" class="btn btn-sm btn-outline-success">
+                                            <i class="fas fa-external-link-alt"></i> Buka Link
+                                        </a>
+                                    </div>
+                                </div>
+                                @endif
+
+                                @if($jilid->file_artikel)
+                                <div class="row mb-2">
+                                    <div class="col-md-4">File Artikel</div>
+                                    <div class="col-md-8">
+                                        <a href="{{ storage_url($jilid->file_artikel) }}" target="_blank" class="text-primary">
+                                            <i class="fas fa-paperclip"></i> Buka File
+                                        </a>
+                                    </div>
+                                </div>
+                                <hr>
+                                @endif
+
+                                @if($jilid->file_loa)
+                                <div class="row mb-2">
+                                    <div class="col-md-4">File LoA / Letter of Acceptance</div>
+                                    <div class="col-md-8">
+                                        <a href="{{ storage_url($jilid->file_loa) }}" target="_blank" class="text-primary">
+                                            <i class="fas fa-paperclip"></i> Buka File
+                                        </a>
+                                    </div>
+                                </div>
+                                <hr>
+                                @endif
+
+                                @if($jilid->status_artikel)
+                                <div class="row mb-2">
+                                    <div class="col-md-4">Status Artikel</div>
+                                    <div class="col-md-8">
+                                        <span class="badge badge-warning p-2">{{ ucfirst($jilid->status_artikel) }}</span>
+                                    </div>
+                                </div>
+                                <hr>
+                                @endif
+
+                                @if($jilid->link_artikel)
+                                <div class="row mb-2">
+                                    <div class="col-md-4">Link Artikel</div>
+                                    <div class="col-md-8">
+                                        <a href="{{ $jilid->link_artikel }}" target="_blank" class="btn btn-sm btn-outline-primary">
                                             <i class="fas fa-external-link-alt"></i> Buka Link
                                         </a>
                                     </div>

@@ -376,6 +376,80 @@
                                             style="position:relative;top:-15px;left:5px">{{ $message }}</small>
                                     @enderror
                                 </div>
+                                {{-- File Artikel (Required) --}}
+                                <div class="form-group">
+                                    <label for="file_artikel">File Artikel <span class="text-danger">*</span><br>
+                                        <small>Upload file artikel tugas akhir (PDF, maks 5MB)</small>
+                                    </label>
+                                    <div class="input-group mb-3">
+                                        <div class="custom-file">
+                                            <input type="file"
+                                                class="custom-file-input @error('file_artikel')is-invalid @enderror"
+                                                name="file_artikel" id="file_artikel" accept=".pdf" required>
+                                            <label class="custom-file-label" for="file_artikel">Choose file</label>
+                                        </div>
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">PDF</span>
+                                        </div>
+                                    </div>
+                                    @error('file_artikel')
+                                        <small class="text-danger"
+                                            style="position:relative;top:-15px;left:5px">{{ $message }}</small>
+                                    @enderror
+                                </div>
+
+                                {{-- File LoA (Opsional) --}}
+                                <div class="form-group">
+                                    <label for="file_loa">File LoA / Letter of Acceptance (Opsional)<br>
+                                        <small>Upload surat penerimaan artikel jika sudah ada (PDF, maks 2MB)</small>
+                                    </label>
+                                    <div class="input-group mb-3">
+                                        <div class="custom-file">
+                                            <input type="file"
+                                                class="custom-file-input @error('file_loa')is-invalid @enderror"
+                                                name="file_loa" id="file_loa" accept=".pdf">
+                                            <label class="custom-file-label" for="file_loa">Choose file</label>
+                                        </div>
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">PDF</span>
+                                        </div>
+                                    </div>
+                                    @error('file_loa')
+                                        <small class="text-danger"
+                                            style="position:relative;top:-15px;left:5px">{{ $message }}</small>
+                                    @enderror
+                                </div>
+
+                                {{-- Status Artikel (Opsional) --}}
+                                <div class="form-group">
+                                    <label for="status_artikel">Status Artikel (Opsional)</label>
+                                    <select name="status_artikel" id="status_artikel" class="form-control @error('status_artikel')is-invalid @enderror">
+                                        <option value="">-- Pilih Status Artikel --</option>
+                                        <option value="draft" {{ old('status_artikel') == 'draft' ? 'selected' : '' }}>Draft</option>
+                                        <option value="submit" {{ old('status_artikel') == 'submit' ? 'selected' : '' }}>Submit</option>
+                                        <option value="accept" {{ old('status_artikel') == 'accept' ? 'selected' : '' }}>Accept</option>
+                                        <option value="publish" {{ old('status_artikel') == 'publish' ? 'selected' : '' }}>Publish</option>
+                                    </select>
+                                    @error('status_artikel')
+                                        <small class="text-danger"
+                                            style="position:relative;top:-15px;left:5px">{{ $message }}</small>
+                                    @enderror
+                                </div>
+
+                                {{-- Link Artikel (Opsional) --}}
+                                <div class="form-group">
+                                    <label for="link_artikel">Link Artikel (Opsional)<br>
+                                        <small>Link artikel yang sudah diterbitkan (misal: link jurnal, Google Scholar, dll)</small>
+                                    </label>
+                                    <input type="url" class="form-control @error('link_artikel')is-invalid @enderror"
+                                        name="link_artikel" id="link_artikel"
+                                        placeholder="https://..." value="{{ old('link_artikel') }}">
+                                    @error('link_artikel')
+                                        <small class="text-danger"
+                                            style="position:relative;top:-15px;left:5px">{{ $message }}</small>
+                                    @enderror
+                                </div>
+
                                 <div class="form-group mt-4">
                                     <button type="submit" class="btn btn-success">Submit</button>
                                 </div>

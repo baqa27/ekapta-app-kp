@@ -492,6 +492,98 @@
                                         </div>
                                     @endif
                                 </div>
+                                {{-- File Artikel --}}
+                                <div class="form-group">
+                                    <label for="file_artikel">File Artikel {{ $jilid->file_artikel ? '(Opsional untuk perubahan)' : '' }} <span class="{{ $jilid->file_artikel ? '' : 'text-danger' }}">{{ $jilid->file_artikel ? '' : '*' }}</span><br>
+                                        <small>Upload file artikel tugas akhir (PDF, maks 5MB)</small>
+                                    </label>
+                                    <div class="input-group mb-3">
+                                        <div class="custom-file">
+                                            <input type="file"
+                                                class="custom-file-input @error('file_artikel')is-invalid @enderror"
+                                                name="file_artikel" id="file_artikel" accept=".pdf" {{ $jilid->file_artikel ? '' : 'required' }}>
+                                            <label class="custom-file-label" for="file_artikel">Choose file</label>
+                                        </div>
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">PDF</span>
+                                        </div>
+                                    </div>
+                                    @error('file_artikel')
+                                        <small class="text-danger"
+                                            style="position:relative;top:-15px;left:5px">{{ $message }}</small>
+                                    @enderror
+                                    @if ($jilid->file_artikel)
+                                        <div class="rounded bg-light">
+                                            <small>
+                                                <span>File artikel sebelumnya : </span>
+                                                <a href="{{ storage_url($jilid->file_artikel) }}" class="text-primary"
+                                                    target="_blank"><i class="fas fa-paperclip ml-2"></i> Buka File</a>
+                                            </small>
+                                        </div>
+                                    @endif
+                                </div>
+
+                                {{-- File LoA (Opsional) --}}
+                                <div class="form-group">
+                                    <label for="file_loa">File LoA / Letter of Acceptance (Opsional)<br>
+                                        <small>Upload surat penerimaan artikel jika sudah ada (PDF, maks 2MB)</small>
+                                    </label>
+                                    <div class="input-group mb-3">
+                                        <div class="custom-file">
+                                            <input type="file"
+                                                class="custom-file-input @error('file_loa')is-invalid @enderror"
+                                                name="file_loa" id="file_loa" accept=".pdf">
+                                            <label class="custom-file-label" for="file_loa">Choose file</label>
+                                        </div>
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">PDF</span>
+                                        </div>
+                                    </div>
+                                    @error('file_loa')
+                                        <small class="text-danger"
+                                            style="position:relative;top:-15px;left:5px">{{ $message }}</small>
+                                    @enderror
+                                    @if ($jilid->file_loa)
+                                        <div class="rounded bg-light">
+                                            <small>
+                                                <span>File LoA sebelumnya : </span>
+                                                <a href="{{ storage_url($jilid->file_loa) }}" class="text-primary"
+                                                    target="_blank"><i class="fas fa-paperclip ml-2"></i> Buka File</a>
+                                            </small>
+                                        </div>
+                                    @endif
+                                </div>
+
+                                {{-- Status Artikel (Opsional) --}}
+                                <div class="form-group">
+                                    <label for="status_artikel">Status Artikel (Opsional)</label>
+                                    <select name="status_artikel" id="status_artikel" class="form-control @error('status_artikel')is-invalid @enderror">
+                                        <option value="">-- Pilih Status Artikel --</option>
+                                        <option value="draft" {{ (old('status_artikel', $jilid->status_artikel) == 'draft') ? 'selected' : '' }}>Draft</option>
+                                        <option value="submit" {{ (old('status_artikel', $jilid->status_artikel) == 'submit') ? 'selected' : '' }}>Submit</option>
+                                        <option value="accept" {{ (old('status_artikel', $jilid->status_artikel) == 'accept') ? 'selected' : '' }}>Accept</option>
+                                        <option value="publish" {{ (old('status_artikel', $jilid->status_artikel) == 'publish') ? 'selected' : '' }}>Publish</option>
+                                    </select>
+                                    @error('status_artikel')
+                                        <small class="text-danger"
+                                            style="position:relative;top:-15px;left:5px">{{ $message }}</small>
+                                    @enderror
+                                </div>
+
+                                {{-- Link Artikel (Opsional) --}}
+                                <div class="form-group">
+                                    <label for="link_artikel">Link Artikel (Opsional)<br>
+                                        <small>Link artikel yang sudah diterbitkan (misal: link jurnal, Google Scholar, dll)</small>
+                                    </label>
+                                    <input type="url" class="form-control @error('link_artikel')is-invalid @enderror"
+                                        name="link_artikel" id="link_artikel"
+                                        placeholder="https://..." value="{{ old('link_artikel', $jilid->link_artikel) }}">
+                                    @error('link_artikel')
+                                        <small class="text-danger"
+                                            style="position:relative;top:-15px;left:5px">{{ $message }}</small>
+                                    @enderror
+                                </div>
+
                                 <div class="form-group mt-4">
                                     <button type="submit" class="btn btn-success">Submit</button>
                                 </div>

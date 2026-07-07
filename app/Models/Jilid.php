@@ -16,6 +16,21 @@ class Jilid extends Model
 
     public const JILID_COMPLETED = 1;
 
+    public const STATUS_ARTIKEL_DRAFT = 'draft';
+    public const STATUS_ARTIKEL_SUBMIT = 'submit';
+    public const STATUS_ARTIKEL_ACCEPT = 'accept';
+    public const STATUS_ARTIKEL_PUBLISH = 'publish';
+
+    public static function getStatusArtikelOptions(): array
+    {
+        return [
+            self::STATUS_ARTIKEL_DRAFT   => 'Draft',
+            self::STATUS_ARTIKEL_SUBMIT  => 'Submit',
+            self::STATUS_ARTIKEL_ACCEPT  => 'Accept',
+            self::STATUS_ARTIKEL_PUBLISH => 'Publish',
+        ];
+    }
+
     protected $fillable = [
         'mahasiswa_id',
         'total_pembayaran',
@@ -35,6 +50,10 @@ class Jilid extends Model
         'is_completed',
         'panduan',
         'lampiran',
+        'file_artikel',
+        'file_loa',
+        'status_artikel',
+        'link_artikel',
     ];
 
     public function mahasiswa()
