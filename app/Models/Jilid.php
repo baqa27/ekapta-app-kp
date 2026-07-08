@@ -43,7 +43,6 @@ class Jilid extends Model
         'lembar_persetujuan_pembimbing',
         'lembar_bimbingan',
         'lembar_revisi',
-        'berita_acara',
         'link_project',
         'catatan',
         'artikel',

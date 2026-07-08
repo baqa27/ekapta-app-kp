@@ -99,10 +99,7 @@
                                         <a href="{{ storage_url($jilid->artikel) }}" class="btn btn-primary mb-3"
                                             target="_blank"><i class="fas fa-download"></i> ARTIKEL FORMAT WORD</a>
                                         @endif
-                                        @if ($jilid->berita_acara)
-                                            <a href="{{ storage_url($jilid->berita_acara) }}" class="btn btn-primary mb-3"
-                                                target="_blank"><i class="fas fa-download"></i> BERITA ACARA</a>
-                                        @endif
+
                                         @if ($jilid->panduan)
                                             <a href="{{ storage_url($jilid->panduan) }}" class="btn btn-primary mb-3"
                                                 target="_blank"><i class="fas fa-download"></i> PANDUAN PENGGUNAAN PRODUK TA</a>
@@ -321,17 +318,7 @@
                                 <hr>
                                 @endif
 
-                                @if($jilid->berita_acara)
-                                <div class="row mb-2">
-                                    <div class="col-md-4">Berita Acara</div>
-                                    <div class="col-md-8">
-                                        <a href="{{ storage_url($jilid->berita_acara) }}" target="_blank" class="text-primary">
-                                            <i class="fas fa-paperclip"></i> Buka File
-                                        </a>
-                                    </div>
-                                </div>
-                                <hr>
-                                @endif
+
 
                                 @if($jilid->panduan)
                                 <div class="row mb-2">

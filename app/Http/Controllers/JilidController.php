@@ -106,12 +106,6 @@ class JilidController extends Controller
                 }
                 return true;
             }), 'mimes:docx', 'max:5000'],
-            'berita_acara' => [Rule::requiredIf(function() use($request){
-                if (empty($request->berita_acara)) {
-                    return false;
-                }
-                return true;
-            }), 'mimes:pdf', 'max:500'],
             'lampiran' => [Rule::requiredIf(function() use($request){
                 if (empty($request->lampiran)) {
                     return false;
@@ -152,9 +146,6 @@ class JilidController extends Controller
             $validatedData['artikel'] = AppHelper::instance()->uploadLampiran($request->artikel, 'lampirans');
         }else{
             $validatedData['artikel'] = $request->artikel_link;
-        }
-        if ($request->berita_acara) {
-            $validatedData['berita_acara'] = AppHelper::instance()->uploadLampiran($request->berita_acara, 'lampirans');
         }
         if ($request->panduan) {
             $validatedData['panduan'] = AppHelper::instance()->uploadLampiran($request->panduan, 'lampirans');
@@ -302,12 +293,6 @@ class JilidController extends Controller
                 }
                 return true;
             }), 'mimes:docx', 'max:5000'],
-            'berita_acara' => [Rule::requiredIf(function() use($request){
-                if (empty($request->berita_acara)) {
-                    return false;
-                }
-                return true;
-            }), 'mimes:pdf', 'max:1000'],
             'panduan' => [Rule::requiredIf(function() use($request){
                 if (empty($request->panduan)) {
                     return false;
@@ -367,10 +352,6 @@ class JilidController extends Controller
         if ($request->lembar_revisi) {
             AppHelper::instance()->deleteLampiran($jilid->lembar_revisi);
             $validatedData['lembar_revisi'] = AppHelper::instance()->uploadLampiran($request->lembar_revisi, 'lampirans');
-        }
-        if ($request->berita_acara) {
-            AppHelper::instance()->deleteLampiran($jilid->berita_acara);
-            $validatedData['berita_acara'] = AppHelper::instance()->uploadLampiran($request->berita_acara, 'lampirans');
         }
         if ($request->artikel) {
             AppHelper::instance()->deleteLampiran($jilid->artikel);

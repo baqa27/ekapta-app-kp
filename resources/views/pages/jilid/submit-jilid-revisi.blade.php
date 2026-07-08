@@ -398,35 +398,6 @@
                                         value="{{ $jilid->link_project }}">
                                 </div>
                                 <div class="form-group">
-                                    <label for="exampleInputFile">Berita acara serah terima produk TA (Opsional)</label>
-                                    <div class="input-group mb-3">
-                                        <div class="custom-file">
-                                            <input type="file"
-                                                class="custom-file-input @error('berita_acara')is-invalid @enderror"
-                                                name="berita_acara" accept=".pdf">
-                                            <label class="custom-file-label" for="exampleInputFile">Choose
-                                                file</label>
-                                        </div>
-                                        <div class="input-group-append">
-                                            <span class="input-group-text">Dokumen</span>
-                                        </div>
-                                    </div>
-                                    @error('berita_acara')
-                                        <small class="text-danger"
-                                            style="position:relative;top:-15px;left:5px">{{ $message }}</small>
-                                    @enderror
-                                    @if ($jilid->berita_acara)
-                                        <div class="rounded bg-light">
-                                            <small>
-                                                <span>Lampiran sebelumnya : </span>
-                                                <a href="{{ storage_url($jilid->berita_acara) }}" class="text-primary"
-                                                    target="_blank"><i class="fas fa-paperclip ml-2"></i>
-                                                    Lampiran</a>
-                                            </small>
-                                        </div>
-                                    @endif
-                                </div>
-                                <div class="form-group">
                                     <label for="exampleInputFile">Dokumen Lampiran (Opsional) <br><small>Upload dokumen lampiran pendukung penelitian seperti surat ijin penelitian, data penelitian, dokumen validasi, instrumen penelitian, dll</small></label>
                                     <div class="input-group mb-3">
                                         <div class="custom-file">
