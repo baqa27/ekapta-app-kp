@@ -94,7 +94,7 @@ class JilidController extends Controller
                 }
                 return true;
             }), 'mimes:docx', 'max:5000'],
-            'lembar_pengesahan' => ['nullable', 'mimes:pdf', 'max:500'],
+            'lembar_pengesahan' => ['required', 'mimes:pdf', 'max:500'],
             'lembar_keaslian' => ['required', 'mimes:pdf', 'max:500'],
             'lembar_persetujuan_penguji' => ['required', 'mimes:pdf', 'max:500'],
             'lembar_persetujuan_pembimbing' => ['required', 'mimes:pdf', 'max:500'],
@@ -142,9 +142,7 @@ class JilidController extends Controller
         }else{
             $validatedData['laporan_word'] = $request->laporan_link;
         }
-        if ($request->lembar_pengesahan) {
-            $validatedData['lembar_pengesahan'] = AppHelper::instance()->uploadLampiran($request->lembar_pengesahan, 'lampirans');
-        }
+        $validatedData['lembar_pengesahan'] = AppHelper::instance()->uploadLampiran($request->lembar_pengesahan, 'lampirans');
         $validatedData['lembar_keaslian'] = AppHelper::instance()->uploadLampiran($request->lembar_keaslian, 'lampirans');
         $validatedData['lembar_persetujuan_penguji'] = AppHelper::instance()->uploadLampiran($request->lembar_persetujuan_penguji, 'lampirans');
         $validatedData['lembar_persetujuan_pembimbing'] = AppHelper::instance()->uploadLampiran($request->lembar_persetujuan_pembimbing, 'lampirans');
@@ -262,7 +260,12 @@ class JilidController extends Controller
                 }
                 return true;
             }), 'mimes:docx', 'max:5000'],
-            'lembar_pengesahan' => ['nullable', 'mimes:pdf', 'max:500'],
+            'lembar_pengesahan' => [Rule::requiredIf(function () use ($request) {
+                if (empty($request->lembar_pengesahan)) {
+                    return false;
+                }
+                return true;
+            }), 'mimes:pdf', 'max:500'],
             'lembar_keaslian' => [Rule::requiredIf(function () use ($request) {
                 if (empty($request->lembar_keaslian)) {
                     return false;

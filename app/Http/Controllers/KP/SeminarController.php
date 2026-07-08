@@ -350,7 +350,7 @@ class SeminarController extends \App\Http\Controllers\Controller
         $validatedData = $request->validate([
             'no_wa' => ['required', 'string', 'max:20'],
             'file_laporan' => ['required', 'mimes:pdf', 'max:10240'],
-            'file_pengesahan' => ['required', 'mimes:pdf', 'max:10240'],
+            'file_bimbingan' => ['required', 'mimes:pdf', 'max:10240'],
             'lampiran_1' => ['required', 'mimes:pdf,jpg,jpeg,png', 'max:10240'], // Sertifikat 1
             'lampiran_2' => ['required', 'mimes:pdf,jpg,jpeg,png', 'max:10240'], // Sertifikat 2
             'lampiran_3' => ['required', 'mimes:pdf,jpg,jpeg,png', 'max:10240'], // Sertifikat 3
@@ -358,7 +358,6 @@ class SeminarController extends \App\Http\Controllers\Controller
             'metode_bayar' => ['required', 'string', 'max:255', Rule::in($valid_metode_bayar)],
             'bukti_bayar' => ['required', 'mimes:jpg,png,jpeg,pdf', 'max:10240'],
             'link_akses_produk' => ['nullable', 'url'],
-            'dokumen_penilaian' => ['nullable', 'mimes:pdf,jpg,jpeg,png', 'max:10240'],
         ]);
 
         // Set jumlah bayar dari himpunan (pastikan tidak NULL)
@@ -373,17 +372,12 @@ class SeminarController extends \App\Http\Controllers\Controller
 
         // Upload semua file
         $validatedData['file_laporan'] = StorageHelper::storeKpFile($request->file('file_laporan'), $mahasiswa->nim, 'seminar');
-        $validatedData['file_pengesahan'] = StorageHelper::storeKpFile($request->file('file_pengesahan'), $mahasiswa->nim, 'seminar');
+        $validatedData['file_bimbingan'] = StorageHelper::storeKpFile($request->file('file_bimbingan'), $mahasiswa->nim, 'seminar');
         $validatedData['lampiran_1'] = StorageHelper::storeKpFile($request->file('lampiran_1'), $mahasiswa->nim, 'seminar');
         $validatedData['lampiran_2'] = StorageHelper::storeKpFile($request->file('lampiran_2'), $mahasiswa->nim, 'seminar');
         $validatedData['lampiran_3'] = StorageHelper::storeKpFile($request->file('lampiran_3'), $mahasiswa->nim, 'seminar');
         $validatedData['lampiran_4'] = StorageHelper::storeKpFile($request->file('lampiran_4'), $mahasiswa->nim, 'seminar');
         $validatedData['bukti_bayar'] = StorageHelper::storeKpFile($request->file('bukti_bayar'), $mahasiswa->nim, 'seminar');
-        
-        // Upload dokumen penilaian jika ada
-        if ($request->hasFile('dokumen_penilaian')) {
-            $validatedData['dokumen_penilaian'] = StorageHelper::storeKpFile($request->file('dokumen_penilaian'), $mahasiswa->nim, 'seminar');
-        }
 
         $validatedData['mahasiswa_id'] = $mahasiswa->id;
         $validatedData['pengajuan_id'] = $pengajuan->id;
@@ -464,7 +458,7 @@ class SeminarController extends \App\Http\Controllers\Controller
             'link_akses_produk' => ['required', 'url'],
             'metode_bayar' => ['required', 'string', 'max:255'],
             'file_laporan' => ['nullable', 'mimes:pdf', 'max:10240'],
-            'file_pengesahan' => ['nullable', 'mimes:pdf', 'max:10240'],
+            'file_bimbingan' => ['nullable', 'mimes:pdf', 'max:10240'],
             'lampiran_1' => ['nullable', 'mimes:pdf,jpg,jpeg,png', 'max:10240'],
             'lampiran_2' => ['nullable', 'mimes:pdf,jpg,jpeg,png', 'max:10240'],
             'lampiran_3' => ['nullable', 'mimes:pdf,jpg,jpeg,png', 'max:10240'],
@@ -479,9 +473,9 @@ class SeminarController extends \App\Http\Controllers\Controller
             StorageHelper::deleteKpFile($seminar->file_laporan);
             $validatedData['file_laporan'] = StorageHelper::storeKpFile($request->file_laporan, $mahasiswa->nim, 'seminar');
         }
-        if ($request->file('file_pengesahan')) {
-            StorageHelper::deleteKpFile($seminar->file_pengesahan);
-            $validatedData['file_pengesahan'] = StorageHelper::storeKpFile($request->file_pengesahan, $mahasiswa->nim, 'seminar');
+        if ($request->file('file_bimbingan')) {
+            StorageHelper::deleteKpFile($seminar->file_bimbingan);
+            $validatedData['file_bimbingan'] = StorageHelper::storeKpFile($request->file_bimbingan, $mahasiswa->nim, 'seminar');
         }
         if ($request->file('lampiran_1')) {
             StorageHelper::deleteKpFile($seminar->lampiran_1);

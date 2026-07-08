@@ -90,11 +90,11 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>Lembar Pengesahan</td>
+                                    <td>Lembar Bimbingan</td>
                                     <td>
-                                        @if($seminar->file_pengesahan)
-                                            <a href="{{ App\Helpers\AppHelper::instance()->storageUrl($seminar->file_pengesahan) }}" target="_blank">
-                                                <i class="fas fa-paperclip"></i> {{ basename($seminar->file_pengesahan) }}
+                                        @if($seminar->file_bimbingan)
+                                            <a href="{{ App\Helpers\AppHelper::instance()->storageUrl($seminar->file_bimbingan) }}" target="_blank">
+                                                <i class="fas fa-paperclip"></i> {{ basename($seminar->file_bimbingan) }}
                                             </a>
                                         @else
                                             <span class="text-muted">-</span>

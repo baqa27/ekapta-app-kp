@@ -107,18 +107,18 @@
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group">
-                                                    <label>Upload Lembar Pengesahan PDF <span class="text-danger">*</span></label>
+                                                    <label>Upload Lembar Bimbingan PDF <span class="text-danger">*</span></label>
                                                     <div class="input-group mb-3">
                                                         <div class="custom-file">
-                                                            <input type="file" class="custom-file-input @error('file_pengesahan') is-invalid @enderror"
-                                                                name="file_pengesahan" accept=".pdf" required>
+                                                            <input type="file" class="custom-file-input @error('file_bimbingan') is-invalid @enderror"
+                                                                name="file_bimbingan" accept=".pdf" required>
                                                             <label class="custom-file-label">Pilih file (maks 10 MB)</label>
                                                         </div>
                                                         <div class="input-group-append">
                                                             <span class="input-group-text">Dokumen</span>
                                                         </div>
                                                     </div>
-                                                    @error('file_pengesahan')
+                                                    @error('file_bimbingan')
                                                         <small class="text-danger">{{ $message }}</small>
                                                     @enderror
                                                 </div>
@@ -210,23 +210,6 @@
                                                 value="{{ old('link_akses_produk') }}" required>
                                             <small class="text-muted">Masukkan link untuk mengakses produk KP (Google Drive, GitHub, dll)</small>
                                             @error('link_akses_produk')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                        <div class="form-group">
-                                            <label>Dokumen Penilaian <small class="text-muted">(Opsional)</small></label>
-                                            <div class="input-group mb-3">
-                                                <div class="custom-file">
-                                                    <input type="file" class="custom-file-input @error('dokumen_penilaian') is-invalid @enderror"
-                                                        name="dokumen_penilaian" accept=".pdf,.jpg,.jpeg,.png">
-                                                    <label class="custom-file-label">Pilih file (opsional)</label>
-                                                </div>
-                                                <div class="input-group-append">
-                                                    <span class="input-group-text">Dokumen</span>
-                                                </div>
-                                            </div>
-                                            <small class="text-muted">Upload dokumen penilaian tambahan jika ada</small>
-                                            @error('dokumen_penilaian')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
                                         </div>

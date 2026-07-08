@@ -95,6 +95,27 @@
                                 </div>
 
                                 <div class="form-group">
+                                    <label for="exampleInputFile">Lembar Pengesahan (Dengan TTD)
+                                        {{-- <br> <small><a href="{{ route('cetak.lembar.pengesahan') }}" target="_blank"><i class="fas fa-download"></i> Download Lembar Pengesahan</a></small> --}}</label>
+                                    <div class="input-group mb-3">
+                                        <div class="custom-file">
+                                            <input type="file"
+                                                class="custom-file-input @error('lembar_pengesahan')is-invalid @enderror"
+                                                name="lembar_pengesahan" accept=".pdf" required>
+                                            <label class="custom-file-label" for="exampleInputFile">Choose
+                                                file</label>
+                                        </div>
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">Dokumen</span>
+                                        </div>
+                                    </div>
+                                    @error('lembar_pengesahan')
+                                        <small class="text-danger"
+                                            style="position:relative;top:-15px;left:5px">{{ $message }}</small>
+                                    @enderror
+                                </div>
+
+                                <div class="form-group">
                                     <label for="exampleInputFile">Lembar Bimbingan Pembimbing 1 dan 2 (Dijadikan 1 file)<br>
                                         <small><a href="{{ route('cetak.riwayat.bimbingan.mahasiswa') }}" target="_blank"><i
                                                     class="fas fa-download"></i> Download Lembar

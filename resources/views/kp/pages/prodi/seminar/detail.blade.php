@@ -101,12 +101,12 @@
                             </div>
                             @endif
 
-                            @if($seminar->file_pengesahan)
+                            @if($seminar->file_bimbingan)
                             <div class="row mb-3">
-                                <div class="col-md-4"><strong>Lembar Pengesahan</strong></div>
+                                <div class="col-md-4"><strong>Lembar Bimbingan</strong></div>
                                 <div class="col-md-8">
-                                    <a href="{{ storage_url($seminar->file_pengesahan) }}" target="_blank">
-                                        <i class="fas fa-paperclip"></i> {{ basename($seminar->file_pengesahan) }}
+                                    <a href="{{ storage_url($seminar->file_bimbingan) }}" target="_blank">
+                                        <i class="fas fa-paperclip"></i> {{ basename($seminar->file_bimbingan) }}
                                     </a>
                                 </div>
                             </div>
