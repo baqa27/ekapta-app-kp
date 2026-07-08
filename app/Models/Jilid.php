@@ -17,17 +17,17 @@ class Jilid extends Model
     public const JILID_COMPLETED = 1;
 
     public const STATUS_ARTIKEL_DRAFT = 'draft';
-    public const STATUS_ARTIKEL_SUBMIT = 'submit';
-    public const STATUS_ARTIKEL_ACCEPT = 'accept';
-    public const STATUS_ARTIKEL_PUBLISH = 'publish';
+    public const STATUS_ARTIKEL_SUBMIT = 'submitted';
+    public const STATUS_ARTIKEL_ACCEPT = 'accepted';
+    public const STATUS_ARTIKEL_PUBLISH = 'published';
 
     public static function getStatusArtikelOptions(): array
     {
         return [
             self::STATUS_ARTIKEL_DRAFT   => 'Draft',
-            self::STATUS_ARTIKEL_SUBMIT  => 'Submit',
-            self::STATUS_ARTIKEL_ACCEPT  => 'Accept',
-            self::STATUS_ARTIKEL_PUBLISH => 'Publish',
+            self::STATUS_ARTIKEL_SUBMIT  => 'Submitted',
+            self::STATUS_ARTIKEL_ACCEPT  => 'Accepted',
+            self::STATUS_ARTIKEL_PUBLISH => 'Published',
         ];
     }
 
@@ -54,6 +54,8 @@ class Jilid extends Model
         'file_loa',
         'status_artikel',
         'link_artikel',
+        'nama_jurnal',
+        'kategori_jurnal',
     ];
 
     public function mahasiswa()

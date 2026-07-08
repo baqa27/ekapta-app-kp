@@ -175,7 +175,7 @@
                             <a href="{{ route('jilid.prodi.index') }}"
                                class="nav-link {{ $active=='jilid-ta-prodi' ? 'active' : '' }}">
                                 <i class="nav-icon far fa-circle"></i>
-                                <p>Data Jilid TA</p>
+                                <p>Data Pengumpulan TA</p>
                             </a>
                         </li>
                     </ul>

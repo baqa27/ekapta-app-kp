@@ -62,7 +62,7 @@
                         </li>
                         <li class="nav-item">
                             <a href="{{ route('jilid.mahasiswa') }}"
-                               class="nav-link {{ $active == 'jilid' ? 'active' : '' }}">Jilid TA</a>
+                               class="nav-link {{ $active == 'jilid' ? 'active' : '' }}">Pengumpulan TA</a>
                         </li>
                     </ul>
                 @endif

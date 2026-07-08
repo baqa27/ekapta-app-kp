@@ -20,7 +20,7 @@ class JilidController extends Controller
     public function index()
     {
         return view('pages.fotokopi.dashboard-fotokopi', [
-            'title' => 'Manajemen Jilid Tugas Akhir',
+            'title' => 'Manajemen Pengumpulan Tugas Akhir',
             'active' => 'bimbingan',
             'sidebar' => Auth::guard('admin')->user()->type == \App\Models\Admin::TYPE_SUPER_ADMIN ? 'partials.sidebarAdmin' : null,
             'active' => Auth::guard('admin')->user()->type == \App\Models\Admin::TYPE_SUPER_ADMIN ? 'jilid' : null,
@@ -41,13 +41,13 @@ class JilidController extends Controller
         $check_ujian_has_done = AppHelper::check_ujian_has_done();
 
         if (!$check_ujian_has_done) {
-            return back()->with('warning', 'Menu jilid akftif pada H+1 setelah ujian pendadaran');
+            return back()->with('warning', 'Menu pengumpulan aktif pada H+1 setelah ujian pendadaran');
         } else if (!$mahasiswa->jilid) {
             return redirect()->route('jilid.create');
         }
 
         return view('pages.jilid.jilid', [
-            'title' => 'Pengajuan Jilid Tugas Akhir',
+            'title' => 'Pengajuan Pengumpulan Tugas Akhir',
             'active' => 'jilid',
             'jilids' => [$mahasiswa->jilid],
             'jilid' => $mahasiswa->jilid,
@@ -61,13 +61,13 @@ class JilidController extends Controller
         $pendaftaran = $mahasiswa->pendaftarans()->where('status', Pendaftaran::DITERIMA)->first();
 
         if ($mahasiswa->jilid) {
-            return redirect()->route('jilid.mahasiswa')->with('warning','Sudah melakukan pengajuan jilid tugas akhir. Tunggu validasi oleh Admin');
+            return redirect()->route('jilid.mahasiswa')->with('warning','Sudah melakukan pengajuan pengumpulan tugas akhir. Tunggu validasi oleh Admin');
         }else if (!$check_ujian_has_done) {
-            return back()->with('warning', 'Menu jilid akftif pada H+1 setelah ujian pendadaran');
+            return back()->with('warning', 'Menu pengumpulan aktif pada H+1 setelah ujian pendadaran');
         }
 
         $data = [
-            'title' => 'Submit Jilid Tugas Akhir',
+            'title' => 'Submit Pengumpulan Tugas Akhir',
             'active' => 'jilid',
             'pendaftaran' => $pendaftaran,
         ];
@@ -94,7 +94,7 @@ class JilidController extends Controller
                 }
                 return true;
             }), 'mimes:docx', 'max:5000'],
-            'lembar_pengesahan' => ['required', 'mimes:pdf', 'max:500'],
+            'lembar_pengesahan' => ['nullable', 'mimes:pdf', 'max:500'],
             'lembar_keaslian' => ['required', 'mimes:pdf', 'max:500'],
             'lembar_persetujuan_penguji' => ['required', 'mimes:pdf', 'max:500'],
             'lembar_persetujuan_pembimbing' => ['required', 'mimes:pdf', 'max:500'],
@@ -126,8 +126,10 @@ class JilidController extends Controller
             }), 'mimes:docx', 'max:5000'],
             'file_artikel' => ['required', 'mimes:pdf', 'max:5000'],
             'file_loa' => ['nullable', 'mimes:pdf', 'max:2000'],
-            'status_artikel' => ['nullable', 'in:draft,submit,accept,publish'],
+            'status_artikel' => ['nullable', 'in:draft,submitted,accepted,published'],
             'link_artikel' => ['nullable', 'url', 'max:500'],
+            'nama_jurnal' => ['nullable', 'string', 'max:255'],
+            'kategori_jurnal' => ['nullable', 'in:Jurnal Internasional Bereputasi,Jurnal Internasional,SINTA 1,SINTA 2,SINTA 3,SINTA 4,SINTA 5,SINTA 6,Non-SINTA'],
         ]);
         // return $request->all();
         if ($request->laporan_pdf) {
@@ -140,7 +142,9 @@ class JilidController extends Controller
         }else{
             $validatedData['laporan_word'] = $request->laporan_link;
         }
-        $validatedData['lembar_pengesahan'] = AppHelper::instance()->uploadLampiran($request->lembar_pengesahan, 'lampirans');
+        if ($request->lembar_pengesahan) {
+            $validatedData['lembar_pengesahan'] = AppHelper::instance()->uploadLampiran($request->lembar_pengesahan, 'lampirans');
+        }
         $validatedData['lembar_keaslian'] = AppHelper::instance()->uploadLampiran($request->lembar_keaslian, 'lampirans');
         $validatedData['lembar_persetujuan_penguji'] = AppHelper::instance()->uploadLampiran($request->lembar_persetujuan_penguji, 'lampirans');
         $validatedData['lembar_persetujuan_pembimbing'] = AppHelper::instance()->uploadLampiran($request->lembar_persetujuan_pembimbing, 'lampirans');
@@ -172,11 +176,15 @@ class JilidController extends Controller
         $validatedData['status_artikel'] = $request->status_artikel ?: null;
         // Link artikel (opsional)
         $validatedData['link_artikel'] = $request->link_artikel ?: null;
+        // Nama jurnal (opsional)
+        $validatedData['nama_jurnal'] = $request->nama_jurnal ?: null;
+        // Kategori jurnal (opsional)
+        $validatedData['kategori_jurnal'] = $request->kategori_jurnal ?: null;
         $validatedData['mahasiswa_id'] = $mahasiswa->id;
         $validatedData['status'] = Jilid::JILID_REVIEW;
         $validatedData['link_project'] = $request->link_project;
         Jilid::create($validatedData);
-        return redirect()->route('jilid.mahasiswa')->with('success', 'Pengajuan jilid behasil. Silahkan tunggu validasi dari Admin');
+        return redirect()->route('jilid.mahasiswa')->with('success', 'Pengajuan pengumpulan behasil. Silahkan tunggu validasi dari Admin');
     }
 
     public function detail($id)
@@ -185,7 +193,7 @@ class JilidController extends Controller
         $mahasiswa = $jilid->mahasiswa()->with(['bimbingans'])->first();
         $prodi = Prodi::where('namaprodi', $mahasiswa->prodi)->first();
         return view('pages.fotokopi.detail', [
-            'title' => 'Detail Tugas Akhir',
+            'title' => 'Detail Pengumpulan Tugas Akhir',
             'sidebar' => Auth::guard('admin')->user()->type == \App\Models\Admin::TYPE_SUPER_ADMIN ? 'partials.sidebarAdmin' : null,
             'active' => Auth::guard('admin')->user()->type == \App\Models\Admin::TYPE_SUPER_ADMIN ? 'jilid' : null,
             'jilid' => $jilid,
@@ -205,7 +213,7 @@ class JilidController extends Controller
             return back();
         }
         return view('pages.fotokopi.detail', [
-            'title' => 'Detail Tugas Akhir',
+            'title' => 'Detail Pengumpulan Tugas Akhir',
             'active' => 'jilid',
             'jilid' => $jilid,
             'mahasiswa' => $mahasiswa,
@@ -224,7 +232,7 @@ class JilidController extends Controller
             return back();
         }
         $data = [
-            'title' => 'Revisi Jilid Tugas Akhir',
+            'title' => 'Revisi Pengumpulan Tugas Akhir',
             'active' => 'jilid',
             'jilid' => $jilid,
             'pendaftaran' => $jilid->mahasiswa->pendaftarans()->where('status', Pendaftaran::DITERIMA)->first(),
@@ -254,12 +262,7 @@ class JilidController extends Controller
                 }
                 return true;
             }), 'mimes:docx', 'max:5000'],
-            'lembar_pengesahan' => [Rule::requiredIf(function () use ($request) {
-                if (empty($request->lembar_pengesahan)) {
-                    return false;
-                }
-                return true;
-            }), 'mimes:pdf', 'max:500'],
+            'lembar_pengesahan' => ['nullable', 'mimes:pdf', 'max:500'],
             'lembar_keaslian' => [Rule::requiredIf(function () use ($request) {
                 if (empty($request->lembar_keaslian)) {
                     return false;
@@ -319,8 +322,10 @@ class JilidController extends Controller
                 return empty($jilid->file_artikel);
             }), 'nullable', 'mimes:pdf', 'max:5000'],
             'file_loa' => ['nullable', 'mimes:pdf', 'max:2000'],
-            'status_artikel' => ['nullable', 'in:draft,submit,accept,publish'],
+            'status_artikel' => ['nullable', 'in:draft,submitted,accepted,published'],
             'link_artikel' => ['nullable', 'url', 'max:500'],
+            'nama_jurnal' => ['nullable', 'string', 'max:255'],
+            'kategori_jurnal' => ['nullable', 'in:Jurnal Internasional Bereputasi,Jurnal Internasional,SINTA 1,SINTA 2,SINTA 3,SINTA 4,SINTA 5,SINTA 6,Non-SINTA'],
         ]);
         if ($request->laporan_pdf) {
             AppHelper::instance()->deleteLampiran($jilid->laporan_pdf);
@@ -396,9 +401,11 @@ class JilidController extends Controller
         if ($request->filled('link_artikel')) {
             $validatedData['link_artikel'] = $request->link_artikel;
         }
+        $validatedData['nama_jurnal'] = $request->nama_jurnal ?: $jilid->nama_jurnal;
+        $validatedData['kategori_jurnal'] = $request->kategori_jurnal ?: $jilid->kategori_jurnal;
         $validatedData['status'] = Jilid::JILID_REVIEW;
         $jilid->update($validatedData);
-        return redirect()->route('jilid.mahasiswa')->with('success', 'Pengajuan jilid behasil. Silahkan tunggu validasi dari Admin');
+        return redirect()->route('jilid.mahasiswa')->with('success', 'Pengajuan pengumpulan behasil. Silahkan tunggu validasi dari Admin');
     }
 
     public function acc(Request $request, $id)
@@ -417,21 +424,21 @@ class JilidController extends Controller
         if ($request->status == Jilid::JILID_SELESAI) {
             AppHelper::instance()->send_mail([
                 'mail' => $jilid->mahasiswa->email,
-                'subject' => 'Jilid Tugas Ahir',
+                'subject' => 'Pengumpulan Tugas Akhir',
                 'title' => 'EKAPTA',
-                'message' => 'Jilid Tugas Akhir Anda Berstatus SELESAI. Silahkan ambil di FOTOKOPIAN FASTIKOM dan lakukan pembayaran sebesar Rp ' . number_format($request->total_pembayaran, 0, ',', '.'),
+                'message' => 'Pengumpulan Tugas Akhir Anda Berstatus SELESAI. Silahkan lakukan pembayaran sebesar Rp ' . number_format($request->total_pembayaran, 0, ',', '.'),
             ]);
         }else if ($request->status == Jilid::JILID_VALID) {
             AppHelper::instance()->send_mail([
                 'mail' => $jilid->mahasiswa->email,
-                'subject' => 'Jilid Tugas Ahir',
+                'subject' => 'Pengumpulan Tugas Akhir',
                 'title' => 'EKAPTA',
-                'message' => 'Dokumen Tugas Akhir sudah dikonfirmasi oleh admin dan siap untuk dijilid. Silahkan konfirmasi dan melakukan pembayaran ke Fotocopy fastikom dengan membawa dokumen-dokumen asli yang akan disertakan dalam penjilidan TA seperti lembar keaslian TA, lembar pengesahan, lembar bimbingan, lampiran-lampiran, dll.',
+                'message' => 'Dokumen Tugas Akhir sudah dikonfirmasi oleh admin. Silahkan konfirmasi dengan membawa dokumen-dokumen asli seperti lembar keaslian TA, lembar bimbingan, lampiran-lampiran, dll.',
             ]);
         }else if ($request->status == Jilid::JILID_REVISI) {
             AppHelper::instance()->send_mail([
                 'mail' => $jilid->mahasiswa->email,
-                'subject' => 'Jilid Tugas Ahir',
+                'subject' => 'Pengumpulan Tugas Akhir',
                 'title' => 'EKAPTA',
                 'message' => 'Dokumen Tugas Akhir Berstatus REVISI. Silahkan submit ulang! <br>Ket: '. $request->catatan,
             ]);
@@ -466,7 +473,7 @@ class JilidController extends Controller
 
         return view('pages.jilid.prodi-index', [
             'sidebar' => 'partials.sidebarProdi',
-            'title' => 'Data Jilid TA',
+            'title' => 'Data Pengumpulan TA',
             'active' => 'jilid-ta-prodi',
             'jilids' => $jilids,
         ]);
@@ -482,7 +489,7 @@ class JilidController extends Controller
 
         return view('pages.fotokopi.detail', [
             'sidebar' => 'partials.sidebarProdi',
-            'title' => 'Detail Jilid TA',
+            'title' => 'Detail Pengumpulan TA',
             'active' => 'jilid-ta-prodi',
             'jilid' => $jilid,
             'mahasiswa' => $mahasiswa,

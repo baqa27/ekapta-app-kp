@@ -10,8 +10,8 @@
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="#">{{ $title }}</a></li>
-                        <li class="breadcrumb-item active">Home</li>
+                        <li class="breadcrumb-item"><a href="#">Pengumpulan TA</a></li>
+                        <li class="breadcrumb-item active">{{ $title }}</li>
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -131,6 +131,16 @@
                                         @if ($jilid->link_artikel)
                                             <a href="{{ $jilid->link_artikel }}" class="btn btn-secondary mb-3"
                                                 target="_blank"><i class="fas fa-external-link-alt"></i> LINK ARTIKEL</a>
+                                        @endif
+                                        @if ($jilid->nama_jurnal)
+                                            <span class="badge badge-info mb-3 p-2" style="font-size:0.9rem">
+                                                <i class="fas fa-book-open"></i> Jurnal: {{ $jilid->nama_jurnal }}
+                                            </span>
+                                        @endif
+                                        @if ($jilid->kategori_jurnal)
+                                            <span class="badge badge-secondary mb-3 p-2" style="font-size:0.9rem">
+                                                <i class="fas fa-bookmark"></i> Kategori: {{ $jilid->kategori_jurnal }}
+                                            </span>
                                         @endif
                                     </div>
                                 @else
@@ -405,6 +415,26 @@
                                         <a href="{{ $jilid->link_artikel }}" target="_blank" class="btn btn-sm btn-outline-primary">
                                             <i class="fas fa-external-link-alt"></i> Buka Link
                                         </a>
+                                    </div>
+                                </div>
+                                <hr>
+                                @endif
+
+                                @if($jilid->nama_jurnal)
+                                <div class="row mb-2">
+                                    <div class="col-md-4">Nama Jurnal</div>
+                                    <div class="col-md-8">
+                                        <strong>{{ $jilid->nama_jurnal }}</strong>
+                                    </div>
+                                </div>
+                                <hr>
+                                @endif
+
+                                @if($jilid->kategori_jurnal)
+                                <div class="row mb-2">
+                                    <div class="col-md-4">Kategori Jurnal</div>
+                                    <div class="col-md-8">
+                                        <span class="badge badge-secondary p-2">{{ $jilid->kategori_jurnal }}</span>
                                     </div>
                                 </div>
                                 @endif

@@ -10,7 +10,7 @@
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="#">{{ $title }}</a></li>
+                        <li class="breadcrumb-item"><a href="#">Pengumpulan TA</a></li>
                         <li class="breadcrumb-item active">Home</li>
                     </ol>
                 </div><!-- /.col -->
@@ -25,28 +25,24 @@
 
             @if (count($jilids) == 0)
                 <a href="{{ route('jilid.create') }}" class="btn btn-primary mb-4"><i class="fas fa-plus mr-2"></i>
-                    Ajukan Jilid Tugas Akhir</a>
+                    Ajukan Pengumpulan Tugas Akhir</a>
             @endif
 
             @if ($jilid)
                 @if ($jilid->status == 3)
                     <div class="alert alert-primary">
-                        <i class="fas fa-info-circle"></i> Dokumen Tugas Akhir sudah dikonfirmasi oleh admin dan siap untuk
-                        dijilid. Silahkan konfirmasi dan melakukan pembayaran ke Fotocopy fastikom dengan membawa
-                        dokumen-dokumen asli yang akan disertakan dalam penjilidan TA seperti lembar keaslian TA, lembar
-                        pengesahan, lembar bimbingan, lampiran-lampiran, dll.
-                        <br>Ket: DIBUAT JILID RANGKAP 2
+                        <i class="fas fa-info-circle"></i> Dokumen Tugas Akhir sudah dikonfirmasi oleh admin. Silahkan konfirmasi dengan membawa dokumen-dokumen asli yang akan disertakan dalam pengumpulan TA seperti lembar keaslian TA, lembar bimbingan, lampiran-lampiran, dll.
                     </div>
                 @elseif ($jilid->status == 4)
                     <a href="#" class="btn btn-success shadow mb-3"><i class="bi bi-check-circle "></i>
-                        PENJILIDAN SUDAH SELESAI. SILAHKAN AMBIL KE FOTOKOPIAN DAN BAYAR KE FOTOKOPIAN SEBESAR
+                        PENGUMPULAN SUDAH SELESAI. SILAHKAN AMBIL KONFIRMASI DAN BAYAR BIAYA ADMINISTRASI SEBESAR
                         <b>Rp {{ number_format($jilid->total_pembayaran, 0, ',', '.') }}</b></b></a>
                 @elseif ($jilid->status == 2)
                     <a href="{{ route('jilid.edit', $jilid->id) }}" class="btn btn-primary shadow mb-3"><i
-                            class="bi bi-info-circle"></i> PENJILIDAN BERSTATUS REVISI. SILAHKAN SUBMIT ULANG</b></a>
+                            class="bi bi-info-circle"></i> PENGUMPULAN BERSTATUS REVISI. SILAHKAN SUBMIT ULANG</b></a>
                 @elseif ($jilid->status == 1)
                     <a href="#" class="btn btn-secondary shadow mb-3"><i class="bi bi-hourglass-bottom "></i> SUDAH
-                        PENGAJUAN JILID KE FOTOKOPIAN. SILAHKAN
+                        MELAKUKAN PENGAJUAN PENGUMPULAN. SILAHKAN
                         TUNGGU KONFIRMASI DARI ADMIN!</a>
                     <div class="p-2 rounded border border-warning mb-3" style="background-color: #fff5a6;">
                         <i class="fas fa-info-circle"></i> PASTIKAN FILE UPLOAD GOOGLE DRIVE AKSES DIBUAT PUBLIC!
@@ -54,7 +50,7 @@
                 @endif
             @else
                 <a href="{{ route('jilid.create') }}" class="btn btn-primary shadow mb-3"><i class="fas fa-book"></i> AJUKAN
-                    PENJILIDAN SKRIPSI KE FOTOKOPIAN</a>
+                    PENGUMPULAN SKRIPSI KE SISTEM</a>
             @endif
 
             <div class="row">

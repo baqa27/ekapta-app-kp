@@ -38,17 +38,16 @@
                             <h3 class="card-title p-3">{{ $title }}</h3>
                             <ul class="nav nav-pills ml-auto p-2">
                                 @if (Auth::guard('admin')->user()->type == \App\Models\Admin::TYPE_SUPER_ADMIN)
-                                    <li class="nav-item"><a class="nav-link active" href="#tab_1" data-toggle="tab">Jilid
-                                            Review</a>
+                                    <li class="nav-item"><a class="nav-link active" href="#tab_1" data-toggle="tab">Review
+                                            Pengumpulan</a>
                                     </li>
-                                    <li class="nav-item"><a class="nav-link" href="#tab_3" data-toggle="tab">Jilid
-                                            Revisi</a>
+                                    <li class="nav-item"><a class="nav-link" href="#tab_3" data-toggle="tab">Revisi
+                                            Pengumpulan</a>
                                     </li>
-                                    <li class="nav-item"><a class="nav-link" href="#tab_4" data-toggle="tab">Jilid
+                                    <li class="nav-item"><a class="nav-link" href="#tab_4" data-toggle="tab">Pengumpulan
                                             Valid</a>
                                     </li>
-                                     <li class="nav-item"><a class="nav-link" href="#tab_2" data-toggle="tab">Jilid
-                                            Selesai</a>
+                                     <li class="nav-item"><a class="nav-link" href="#tab_2" data-toggle="tab">Selesai</a>
                                     </li>
                                 @endif
                             </ul>
@@ -98,7 +97,7 @@
                                                                 @elseif ($jilid->status == 3)
                                                                     <a href="{{ route('jilid.detail', $jilid->id) }}"
                                                                         class="btn btn-primary btn-sm"><i
-                                                                            class="fas fa-book"></i> JILID
+                                                                            class="fas fa-book"></i> DETAIL
                                                                         SKRIPSI</a>
                                                                 @endif
                                                             </td>
@@ -309,7 +308,7 @@
                                                 </td>
                                                 <td>
                                                     <a href="{{ route('jilid.detail', $jilid->id) }}"
-                                                        class="btn btn-primary btn-sm"><i class="fas fa-book"></i> JILID
+                                                        class="btn btn-primary btn-sm"><i class="fas fa-book"></i> DETAIL
                                                         SKRIPSI</a>
                                                 </td>
                                             </tr>

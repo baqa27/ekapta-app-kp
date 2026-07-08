@@ -10,7 +10,7 @@
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="#">Jilid TA</a></li>
+                        <li class="breadcrumb-item"><a href="#">Pengumpulan TA</a></li>
                         <li class="breadcrumb-item active">{{ $title }}</li>
                     </ol>
                 </div><!-- /.col -->
@@ -120,33 +120,7 @@
                                         </small>
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <label for="exampleInputFile">Lembar Pengesahan (Dengan TTD) <br> <small><a href="{{ route('cetak.lembar.pengesahan') }}" target="_blank"><i class="fas fa-download"></i> Download Lembar Pengesahan</a></small></label>
-                                    <div class="input-group mb-3">
-                                        <div class="custom-file">
-                                            <input type="file"
-                                                   class="custom-file-input @error('lembar_pengesahan')is-invalid @enderror"
-                                                   name="lembar_pengesahan" accept=".pdf">
-                                            <label class="custom-file-label" for="exampleInputFile">Choose
-                                                file</label>
-                                        </div>
-                                        <div class="input-group-append">
-                                            <span class="input-group-text">Dokumen</span>
-                                        </div>
-                                    </div>
-                                    @error('lembar_pengesahan')
-                                    <small class="text-danger"
-                                           style="position:relative;top:-15px;left:5px">{{ $message }}</small>
-                                    @enderror
-                                    <div class="rounded bg-light">
-                                        <small>
-                                            <span>Lampiran sebelumnya : </span>
-                                            <a href="{{ storage_url($jilid->lembar_pengesahan) }}" class="text-primary"
-                                                target="_blank"><i class="fas fa-paperclip ml-2"></i>
-                                                Lampiran</a>
-                                        </small>
-                                    </div>
-                                </div>
+
                                 <div class="form-group">
                                     <label for="exampleInputFile">Lembar Bimbingan Pembimbing 1 dan 2 (Dijadikan 1 file)<br> <small><a href="{{ route('cetak.riwayat.bimbingan.mahasiswa') }}" target="_blank"><i class="fas fa-download"></i> Download Lembar Bimbingan</a></small></label>
                                     <div class="input-group mb-3">
@@ -560,9 +534,9 @@
                                     <select name="status_artikel" id="status_artikel" class="form-control @error('status_artikel')is-invalid @enderror">
                                         <option value="">-- Pilih Status Artikel --</option>
                                         <option value="draft" {{ (old('status_artikel', $jilid->status_artikel) == 'draft') ? 'selected' : '' }}>Draft</option>
-                                        <option value="submit" {{ (old('status_artikel', $jilid->status_artikel) == 'submit') ? 'selected' : '' }}>Submit</option>
-                                        <option value="accept" {{ (old('status_artikel', $jilid->status_artikel) == 'accept') ? 'selected' : '' }}>Accept</option>
-                                        <option value="publish" {{ (old('status_artikel', $jilid->status_artikel) == 'publish') ? 'selected' : '' }}>Publish</option>
+                                        <option value="submitted" {{ (old('status_artikel', $jilid->status_artikel) == 'submitted') ? 'selected' : '' }}>Submitted</option>
+                                        <option value="accepted" {{ (old('status_artikel', $jilid->status_artikel) == 'accepted') ? 'selected' : '' }}>Accepted</option>
+                                        <option value="published" {{ (old('status_artikel', $jilid->status_artikel) == 'published') ? 'selected' : '' }}>Published</option>
                                     </select>
                                     @error('status_artikel')
                                         <small class="text-danger"
@@ -581,6 +555,41 @@
                                     @error('link_artikel')
                                         <small class="text-danger"
                                             style="position:relative;top:-15px;left:5px">{{ $message }}</small>
+                                    @enderror
+                                </div>
+
+                                {{-- Nama Jurnal (Opsional) --}}
+                                <div class="form-group">
+                                    <label for="nama_jurnal">Nama Jurnal (Opsional)<br>
+                                        <small>Masukkan nama jurnal tempat artikel diterbitkan</small>
+                                    </label>
+                                    <input type="text" class="form-control @error('nama_jurnal')is-invalid @enderror"
+                                        name="nama_jurnal" id="nama_jurnal"
+                                        placeholder="Contoh: Jurnal Teknologi Informasi" value="{{ old('nama_jurnal', $jilid->nama_jurnal) }}">
+                                    @error('nama_jurnal')
+                                        <small class="text-danger"
+                                            style="position:relative;top:-5px;left:5px">{{ $message }}</small>
+                                    @enderror
+                                </div>
+
+                                {{-- Kategori Jurnal (Opsional) --}}
+                                <div class="form-group">
+                                    <label for="kategori_jurnal">Kategori Jurnal (Opsional)</label>
+                                    <select name="kategori_jurnal" id="kategori_jurnal" class="form-control @error('kategori_jurnal')is-invalid @enderror">
+                                        <option value="">-- Pilih Kategori Jurnal --</option>
+                                        <option value="Jurnal Internasional Bereputasi" {{ old('kategori_jurnal', $jilid->kategori_jurnal) == 'Jurnal Internasional Bereputasi' ? 'selected' : '' }}>Jurnal Internasional Bereputasi</option>
+                                        <option value="Jurnal Internasional" {{ old('kategori_jurnal', $jilid->kategori_jurnal) == 'Jurnal Internasional' ? 'selected' : '' }}>Jurnal Internasional</option>
+                                        <option value="SINTA 1" {{ old('kategori_jurnal', $jilid->kategori_jurnal) == 'SINTA 1' ? 'selected' : '' }}>SINTA 1</option>
+                                        <option value="SINTA 2" {{ old('kategori_jurnal', $jilid->kategori_jurnal) == 'SINTA 2' ? 'selected' : '' }}>SINTA 2</option>
+                                        <option value="SINTA 3" {{ old('kategori_jurnal', $jilid->kategori_jurnal) == 'SINTA 3' ? 'selected' : '' }}>SINTA 3</option>
+                                        <option value="SINTA 4" {{ old('kategori_jurnal', $jilid->kategori_jurnal) == 'SINTA 4' ? 'selected' : '' }}>SINTA 4</option>
+                                        <option value="SINTA 5" {{ old('kategori_jurnal', $jilid->kategori_jurnal) == 'SINTA 5' ? 'selected' : '' }}>SINTA 5</option>
+                                        <option value="SINTA 6" {{ old('kategori_jurnal', $jilid->kategori_jurnal) == 'SINTA 6' ? 'selected' : '' }}>SINTA 6</option>
+                                        <option value="Non-SINTA" {{ old('kategori_jurnal', $jilid->kategori_jurnal) == 'Non-SINTA' ? 'selected' : '' }}>Non-SINTA</option>
+                                    </select>
+                                    @error('kategori_jurnal')
+                                        <small class="text-danger"
+                                            style="position:relative;top:-5px;left:5px">{{ $message }}</small>
                                     @enderror
                                 </div>
 

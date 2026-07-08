@@ -10,7 +10,7 @@
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="#">Jilid TA</a></li>
+                        <li class="breadcrumb-item"><a href="#">Pengumpulan TA</a></li>
                         <li class="breadcrumb-item active">Dashboard</li>
                     </ol>
                 </div><!-- /.col -->
@@ -29,7 +29,7 @@
                             <h3 class="card-title p-3">{{ $title }}</h3>
                             <ul class="nav nav-pills ml-auto p-2">
                                 <li class="nav-item">
-                                    <a class="nav-link active" href="#tab_valid" data-toggle="tab">Valid (Menunggu Jilid)</a>
+                                    <a class="nav-link active" href="#tab_valid" data-toggle="tab">Valid (Menunggu Konfirmasi)</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" href="#tab_selesai" data-toggle="tab">Selesai</a>
@@ -59,7 +59,7 @@
                                                         <td>{{ $jilid->mahasiswa->nim }}</td>
                                                         <td>{{ $jilid->mahasiswa->nama }}</td>
                                                         <td>
-                                                            <span class="badge bg-primary">Menunggu Proses Jilid</span>
+                                                            <span class="badge bg-primary">Menunggu Konfirmasi</span>
                                                         </td>
                                                         <td>
                                                             <a href="{{ route('jilid.prodi.detail', $jilid->id) }}" class="btn btn-info btn-sm">

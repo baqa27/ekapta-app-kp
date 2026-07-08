@@ -190,7 +190,7 @@
                             <a href="{{ route('jilid.index') }}"
                                class="nav-link {{ $active == 'jilid' ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>Validasi Jilid TA</p>
+                                <p>Validasi Pengumpulan TA</p>
                             </a>
                         </li>
                     </ul>
