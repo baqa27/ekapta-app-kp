@@ -98,7 +98,7 @@ class BimbinganManualController extends \App\Http\Controllers\Controller
         }
 
         $request->validate([
-            'foto_lembar_bimbingan' => 'required|mimes:pdf,jpg,jpeg,png|max:5000',
+            'foto_lembar_bimbingan' => 'required|mimes:pdf,jpg,jpeg,png|max:2048',
             'tanggal_bimbingan' => 'required|date',
             'status_mahasiswa' => 'required|in:revisi,acc',
             'keterangan' => 'required|string|max:1000',
@@ -505,3 +505,4 @@ class BimbinganManualController extends \App\Http\Controllers\Controller
         return $request->validate($rules);
     }
 }
+

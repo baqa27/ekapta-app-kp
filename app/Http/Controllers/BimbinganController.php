@@ -172,7 +172,7 @@ class BimbinganController extends Controller
             if ($bimbinganIfExists->isEmpty()) {
                 $mahasiswa = Mahasiswa::findOrFail(Auth::guard('mahasiswa')->user()->id);
                 $request->validate([
-                    'lampiran' => ['required', 'mimes:pdf', 'max:5000'],
+                    'lampiran' => ['required', 'mimes:pdf', 'max:2048'],
                     'bagian_id' => 'required',
                 ]);
                 $bimbingan = new Bimbingan;
@@ -289,7 +289,7 @@ class BimbinganController extends Controller
                 return redirect('bimbingan-mahasiswa')->with('warning', 'Bimbingan tidak bisa diedit');
             }
             $validatedData = $request->validate([
-                'lampiran' => ['required', 'mimes:pdf', 'max:5000'],
+                'lampiran' => ['required', 'mimes:pdf', 'max:2048'],
             ]);
             if ($request->file('lampiran')) {
                 //AppHelper::instance()->deleteLampiran($bimbingan->lampiran);
@@ -336,7 +336,7 @@ class BimbinganController extends Controller
                     return false;
                 }
                 return true;
-            }), 'mimes:pdf,docx', 'max:5000']
+            }), 'mimes:pdf,docx', 'max:2048']
         ]);
         $revisi->catatan = $request->catatan;
         //$revisi->lampiran = AppHelper::instance()->uploadLampiran($request->lampiran, 'lampirans');
@@ -374,7 +374,7 @@ class BimbinganController extends Controller
                     return false;
                 }
                 return true;
-            }), 'mimes:pdf,docx', 'max:5000']
+            }), 'mimes:pdf,docx', 'max:2048']
         ]);
 
         if($request->lampiran){
@@ -576,7 +576,7 @@ class BimbinganController extends Controller
                     return false;
                 }
                 return true;
-            }) ,'mimes:pdf', 'max:5000'],
+            }) ,'mimes:pdf', 'max:2048'],
         ]);
         if($request->lampiran){
             $lampiran = AppHelper::instance()->uploadLampiran($request->lampiran, 'lampirans');
@@ -718,7 +718,7 @@ class BimbinganController extends Controller
 
         if ($bimbingan->status == Bimbingan::REVIEW) {
             $validatedData = $request->validate([
-                'lampiran_acc' => ['required', 'mimes:png,jpg,jpeg,pdf', 'max:5000'],
+                'lampiran_acc' => ['required', 'mimes:png,jpg,jpeg,pdf', 'max:2048'],
                 'tanggal_manual_acc' => ['required'],
             ]);
 
@@ -781,3 +781,4 @@ class BimbinganController extends Controller
     }
 
 }
+

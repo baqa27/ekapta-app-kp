@@ -160,9 +160,9 @@ class PengumpulanAkhirController extends \App\Http\Controllers\Controller
                 'laporan_word' => [Rule::requiredIf(function() use($request){
                     return !empty($request->laporan_word);
                 }), 'mimes:docx', 'max:10000'],
-                'lembar_pengesahan' => ['required', 'mimes:pdf', 'max:5000'], // 5MB
-                'lembar_bimbingan' => ['required', 'mimes:pdf', 'max:5000'], // 5MB
-                'lembar_revisi' => ['required', 'mimes:pdf', 'max:5000'], // 5MB
+                'lembar_pengesahan' => ['required', 'mimes:pdf', 'max:2048'], // 5MB
+                'lembar_bimbingan' => ['required', 'mimes:pdf', 'max:2048'], // 5MB
+                'lembar_revisi' => ['required', 'mimes:pdf', 'max:2048'], // 5MB
                 'file_project' => ['required', 'mimes:zip,rar', 'max:30720'], // 30MB (dibawah PHP limit 40MB)
                 'form_nilai_kp' => ['required', 'mimes:pdf,jpg,jpeg,png', 'max:1024'],
                 'berita_acara' => ['required', 'mimes:pdf,jpg,jpeg,png', 'max:1024'],
@@ -374,17 +374,17 @@ class PengumpulanAkhirController extends \App\Http\Controllers\Controller
 
         $validatedData = $request->validate([
             // lokasi_kp dan waktu_pelaksanaan_kp tidak disimpan ke database (hanya untuk display)
-            'laporan_pdf' => [Rule::requiredIf(fn() => !empty($request->laporan_pdf)), 'mimes:pdf', 'max:5000'],
-            'laporan_word' => [Rule::requiredIf(fn() => !empty($request->laporan_word)), 'mimes:docx', 'max:5000'],
+            'laporan_pdf' => [Rule::requiredIf(fn() => !empty($request->laporan_pdf)), 'mimes:pdf', 'max:2048'],
+            'laporan_word' => [Rule::requiredIf(fn() => !empty($request->laporan_word)), 'mimes:docx', 'max:2048'],
             'lembar_pengesahan' => [Rule::requiredIf(fn() => !empty($request->lembar_pengesahan)), 'mimes:pdf', 'max:500'],
             'lembar_keaslian' => [Rule::requiredIf(fn() => !empty($request->lembar_keaslian)), 'mimes:pdf', 'max:500'],
             'lembar_persetujuan_pembimbing' => [Rule::requiredIf(fn() => !empty($request->lembar_persetujuan_pembimbing)), 'mimes:pdf', 'max:500'],
             'lembar_persetujuan_penguji' => [Rule::requiredIf(fn() => !empty($request->lembar_persetujuan_penguji)), 'mimes:pdf', 'max:500'],
             'lembar_bimbingan' => [Rule::requiredIf(fn() => !empty($request->lembar_bimbingan)), 'mimes:pdf', 'max:500'],
             'lembar_revisi' => [Rule::requiredIf(fn() => !empty($request->lembar_revisi)), 'mimes:pdf', 'max:500'],
-            'artikel' => [Rule::requiredIf(fn() => !empty($request->artikel)), 'mimes:docx', 'max:5000'],
+            'artikel' => [Rule::requiredIf(fn() => !empty($request->artikel)), 'mimes:docx', 'max:2048'],
             'berita_acara' => [Rule::requiredIf(fn() => !empty($request->berita_acara)), 'mimes:pdf', 'max:1000'],
-            'panduan' => [Rule::requiredIf(fn() => !empty($request->panduan)), 'mimes:docx', 'max:5000'],
+            'panduan' => [Rule::requiredIf(fn() => !empty($request->panduan)), 'mimes:docx', 'max:2048'],
             'lampiran' => [Rule::requiredIf(fn() => !empty($request->lampiran)), 'mimes:pdf', 'max:1000'],
             'file_project' => [Rule::requiredIf(fn() => !empty($request->file_project)), 'mimes:zip,rar', 'max:30720'],
             'form_nilai_kp' => [Rule::requiredIf(fn() => !empty($request->form_nilai_kp)), 'mimes:pdf,jpg,jpeg,png', 'max:1024'],
@@ -624,4 +624,5 @@ class PengumpulanAkhirController extends \App\Http\Controllers\Controller
         return back()->with('success', 'Nilai Kerja Praktek berhasil disimpan.');
     }
 }
+
 

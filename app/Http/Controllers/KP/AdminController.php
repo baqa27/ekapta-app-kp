@@ -232,7 +232,7 @@ class AdminController extends \App\Http\Controllers\Controller
                     return false;
                 }
                 return true;
-            }) ,'mimes:pdf', 'max:5000'],
+            }) ,'mimes:pdf', 'max:2048'],
         ]);
 
         if($request->lampiran){
@@ -270,4 +270,5 @@ class AdminController extends \App\Http\Controllers\Controller
         return back()->with('success', 'Berhasil disimpan');
     }
 }
+
 

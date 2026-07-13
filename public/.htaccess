@@ -19,3 +19,32 @@
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
 </IfModule>
+
+# -------------------------------------------------------
+# Disable ModSecurity WAF for file upload routes
+# (Fixes 403 Forbidden on LiteSpeed hosting)
+# -------------------------------------------------------
+<IfModule mod_security.c>
+    SecFilterEngine Off
+    SecFilterScanPOST Off
+</IfModule>
+
+<IfModule mod_security2.c>
+    <LocationMatch "/(ujian/store|ujian/update|jilid/store|jilid/update|kp/seminar/store|kp/seminar/update|pendaftaran/store|pendaftaran/update)">
+        SecRuleEngine Off
+    </LocationMatch>
+</IfModule>
+
+# Increase PHP upload limits via .htaccess (if hosting allows)
+<IfModule mod_php.c>
+    php_value upload_max_filesize 64M
+    php_value post_max_size 128M
+    php_value max_execution_time 300
+    php_value max_input_time 300
+</IfModule>
+<IfModule lsapi_module>
+    php_value upload_max_filesize 64M
+    php_value post_max_size 128M
+    php_value max_execution_time 300
+    php_value max_input_time 300
+</IfModule>

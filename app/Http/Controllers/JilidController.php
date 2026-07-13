@@ -87,13 +87,13 @@ class JilidController extends Controller
                     return false;
                 }
                 return true;
-            }), 'mimes:pdf', 'max:5000'],
+            }), 'mimes:pdf', 'max:2048'],
             'laporan_word' => [Rule::requiredIf(function() use($request){
                 if (empty($request->laporan_word)) {
                     return false;
                 }
                 return true;
-            }), 'mimes:docx', 'max:5000'],
+            }), 'mimes:docx', 'max:2048'],
             'lembar_pengesahan' => ['required', 'mimes:pdf', 'max:500'],
             'lembar_keaslian' => ['required', 'mimes:pdf', 'max:500'],
             'lembar_persetujuan_penguji' => ['required', 'mimes:pdf', 'max:500'],
@@ -105,7 +105,7 @@ class JilidController extends Controller
                     return false;
                 }
                 return true;
-            }), 'mimes:docx', 'max:5000'],
+            }), 'mimes:docx', 'max:2048'],
             'lampiran' => [Rule::requiredIf(function() use($request){
                 if (empty($request->lampiran)) {
                     return false;
@@ -117,8 +117,8 @@ class JilidController extends Controller
                     return false;
                 }
                 return true;
-            }), 'mimes:docx', 'max:5000'],
-            'file_artikel' => ['required', 'mimes:pdf', 'max:5000'],
+            }), 'mimes:docx', 'max:2048'],
+            'file_artikel' => ['required', 'mimes:pdf', 'max:2048'],
             'file_loa' => ['nullable', 'mimes:pdf', 'max:2000'],
             'status_artikel' => ['nullable', 'in:draft,submitted,accepted,published'],
             'link_artikel' => ['nullable', 'url', 'max:500'],
@@ -244,13 +244,13 @@ class JilidController extends Controller
                     return false;
                 }
                 return true;
-            }), 'mimes:pdf', 'max:5000'],
+            }), 'mimes:pdf', 'max:2048'],
             'laporan_word' => [Rule::requiredIf(function () use ($request) {
                 if (empty($request->laporan_word)) {
                     return false;
                 }
                 return true;
-            }), 'mimes:docx', 'max:5000'],
+            }), 'mimes:docx', 'max:2048'],
             'lembar_pengesahan' => [Rule::requiredIf(function () use ($request) {
                 if (empty($request->lembar_pengesahan)) {
                     return false;
@@ -292,13 +292,13 @@ class JilidController extends Controller
                     return false;
                 }
                 return true;
-            }), 'mimes:docx', 'max:5000'],
+            }), 'mimes:docx', 'max:2048'],
             'panduan' => [Rule::requiredIf(function() use($request){
                 if (empty($request->panduan)) {
                     return false;
                 }
                 return true;
-            }), 'mimes:docx', 'max:5000'],
+            }), 'mimes:docx', 'max:2048'],
             'lampiran' => [Rule::requiredIf(function() use($request){
                 if (empty($request->lampiran)) {
                     return false;
@@ -308,7 +308,7 @@ class JilidController extends Controller
             'file_artikel' => [Rule::requiredIf(function() use ($request, $jilid) {
                 // Wajib jika belum ada file_artikel sebelumnya
                 return empty($jilid->file_artikel);
-            }), 'nullable', 'mimes:pdf', 'max:5000'],
+            }), 'nullable', 'mimes:pdf', 'max:2048'],
             'file_loa' => ['nullable', 'mimes:pdf', 'max:2000'],
             'status_artikel' => ['nullable', 'in:draft,submitted,accepted,published'],
             'link_artikel' => ['nullable', 'url', 'max:500'],
@@ -485,3 +485,4 @@ class JilidController extends Controller
     }
 
 }
+

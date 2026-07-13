@@ -145,7 +145,7 @@ class PengajuanController extends Controller
             $validatedData = $request->validate([
                 'judul' => ['required', 'min:5'],
                 'deskripsi' => ['required', 'min:100'],
-                'lampiran' => ['required', 'mimes:pdf', 'max:5000'],
+                'lampiran' => ['required', 'mimes:pdf', 'max:2048'],
             ]);
             if ($request->file('lampiran')) {
                 $validatedData['lampiran'] = AppHelper::instance()->uploadLampiran($request->lampiran, 'lampirans');
@@ -193,7 +193,7 @@ class PengajuanController extends Controller
                     return false;
                 }
                 return true;
-            }), 'mimes:pdf', 'max:5000']
+            }), 'mimes:pdf', 'max:2048']
         ]);
 
         if ($request->file('lampiran')) {
@@ -282,7 +282,7 @@ class PengajuanController extends Controller
                             return false;
                         }
                         return true;
-                    }), 'mimes:pdf', 'max:5000']
+                    }), 'mimes:pdf', 'max:2048']
                 ]);
 
                 if ($request->file('lampiran')) {
@@ -340,7 +340,7 @@ class PengajuanController extends Controller
                             return false;
                         }
                         return true;
-                    }), 'mimes:pdf,docx', 'max:5000']
+                    }), 'mimes:pdf,docx', 'max:2048']
                 ]);
 
                 if ($request->file('lampiran')) {
@@ -383,3 +383,4 @@ class PengajuanController extends Controller
         return back()->with('success','Judul tugas akhir berhasil di update.');
     }
 }
+

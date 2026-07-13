@@ -36,7 +36,7 @@ class ReviewSeminarController extends Controller
         }
 
         $validatedData = $request->validate([
-           'lampiran' => ['required', 'mimes:pdf, docx', 'max:5000'],
+           'lampiran' => ['required', 'mimes:pdf, docx', 'max:2048'],
         ]);
 
         $validatedData['keterangan'] = $request->keterangan;
@@ -91,7 +91,7 @@ class ReviewSeminarController extends Controller
                     }
                     return true;
                 }),
-                'mimes:pdf,docx', 'max:5000'
+                'mimes:pdf,docx', 'max:2048'
             ]
         ]);
 
@@ -208,7 +208,7 @@ class ReviewSeminarController extends Controller
         }
 
         $validatedData = $request->validate([
-            'lampiran_lembar_revisi' => ['required', 'mimes:pdf, jpg,jpeg,png', 'max:5000'],
+            'lampiran_lembar_revisi' => ['required', 'mimes:pdf, jpg,jpeg,png', 'max:2048'],
             'tanggal_acc_manual' => 'required',
          ]);
          $validatedData['lampiran_lembar_revisi'] = AppHelper::instance()->uploadLampiran($request->lampiran_lembar_revisi,'lampirans');
@@ -245,3 +245,4 @@ class ReviewSeminarController extends Controller
         }
     }
 }
+
