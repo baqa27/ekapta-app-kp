@@ -255,7 +255,7 @@ class PengajuanController extends \App\Http\Controllers\Controller
                     return false;
                 }
                 return true;
-            }), 'mimes:pdf', 'max:2048'],
+            }), 'mimes:pdf', 'max:10240'],
             'files_pendukung' => ['nullable', 'mimes:pdf,zip,rar', 'max:10000']
         ]);
 
@@ -362,7 +362,7 @@ class PengajuanController extends \App\Http\Controllers\Controller
                             return false;
                         }
                         return true;
-                    }), 'mimes:pdf', 'max:2048']
+                    }), 'mimes:pdf', 'max:10240']
                 ]);
 
                 if ($request->file('lampiran')) {
@@ -431,7 +431,7 @@ class PengajuanController extends \App\Http\Controllers\Controller
                             return false;
                         }
                         return true;
-                    }), 'mimes:pdf,docx', 'max:2048']
+                    }), 'mimes:pdf,docx', 'max:10240']
                 ]);
 
                 if ($request->file('lampiran')) {
@@ -460,7 +460,7 @@ class PengajuanController extends \App\Http\Controllers\Controller
     {
         $request->validate([
             'catatan' => ['required', 'string'],
-            'lampiran' => ['nullable', 'mimes:pdf,docx', 'max:2048'],
+            'lampiran' => ['nullable', 'mimes:pdf,docx', 'max:10240'],
         ]);
 
         $pengajuan = Pengajuan::findOrFail($request->id);
@@ -508,5 +508,6 @@ class PengajuanController extends \App\Http\Controllers\Controller
         return back()->with('success','Judul KP berhasil di update.');
     }
 }
+
 
 

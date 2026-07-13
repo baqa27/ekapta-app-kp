@@ -111,13 +111,13 @@ class PendaftaranController extends \App\Http\Controllers\Controller
                 'nomor_pembayaran' => 'nullable',
                 'tanggal_pembayaran' => 'required',
                 'biaya' => 'required',
-                'lampiran_1' => ['required', 'mimes:pdf', 'max:2048'],
-                'lampiran_2' => ['required', 'mimes:pdf', 'max:2048'],
-                'lampiran_3' => ['required', 'mimes:pdf', 'max:2048'],
-                'lampiran_5' => ['required', 'mimes:pdf,png,jpg,jpeg', 'max:2048'],
-                'lampiran_6' => ['nullable', 'mimes:pdf', 'max:2048'],
-                'lampiran_7' => ['required', 'mimes:pdf', 'max:2048'],
-                'dokumen_pendukung' => ['required', 'mimes:pdf', 'max:2048'],
+                'lampiran_1' => ['required', 'mimes:pdf', 'max:10240'],
+                'lampiran_2' => ['required', 'mimes:pdf', 'max:10240'],
+                'lampiran_3' => ['required', 'mimes:pdf', 'max:10240'],
+                'lampiran_5' => ['required', 'mimes:pdf,png,jpg,jpeg', 'max:10240'],
+                'lampiran_6' => ['nullable', 'mimes:pdf', 'max:10240'],
+                'lampiran_7' => ['required', 'mimes:pdf', 'max:10240'],
+                'dokumen_pendukung' => ['required', 'mimes:pdf', 'max:10240'],
             ]);
 
             $statusPendaftaran = Pendaftaran::resolveStatusPendaftaranFromBiaya($validatedData['biaya']);
@@ -266,31 +266,31 @@ class PendaftaranController extends \App\Http\Controllers\Controller
             'lampiran_1' => [Rule::requiredIf(function () {
                 if (empty($this->request->lampiran_1)) {return false;}
                 return true;
-            }), 'mimes:pdf', 'max:2048'],
+            }), 'mimes:pdf', 'max:10240'],
             'lampiran_2' => [Rule::requiredIf(function () {
                 if (empty($this->request->lampiran_2)) {return false;}
                 return true;
-            }), 'mimes:pdf', 'max:2048'],
+            }), 'mimes:pdf', 'max:10240'],
             'lampiran_3' => [Rule::requiredIf(function () {
                 if (empty($this->request->lampiran_3)) {return false;}
                 return true;
-            }), 'mimes:pdf', 'max:2048'],
+            }), 'mimes:pdf', 'max:10240'],
             'lampiran_5' => [Rule::requiredIf(function () {
                 if (empty($this->request->lampiran_5)) {return false;}
                 return true;
-            }), 'mimes:pdf,png,jpg,jpeg', 'max:2048'],
+            }), 'mimes:pdf,png,jpg,jpeg', 'max:10240'],
             'lampiran_6' => [Rule::requiredIf(function () {
                 if (empty($this->request->lampiran_6)) {return false;}
                 return true;
-            }), 'mimes:pdf', 'max:2048'],
+            }), 'mimes:pdf', 'max:10240'],
             'lampiran_7' => [Rule::requiredIf(function () {
                 if (empty($this->request->lampiran_7)) {return false;}
                 return true;
-            }), 'mimes:pdf', 'max:2048'],
+            }), 'mimes:pdf', 'max:10240'],
             'dokumen_pendukung' => [Rule::requiredIf(function () {
                 if (empty($this->request->dokumen_pendukung)) {return false;}
                 return true;
-            }), 'mimes:pdf', 'max:2048'],
+            }), 'mimes:pdf', 'max:10240'],
         ]);
 
         $statusPendaftaran = Pendaftaran::resolveStatusPendaftaranFromBiaya($validatedData['biaya']);
@@ -453,7 +453,7 @@ class PendaftaranController extends \App\Http\Controllers\Controller
                     return false;
                 }
                 return true;
-            }), 'mimes:pdf,docx', 'max:2048']
+            }), 'mimes:pdf,docx', 'max:10240']
         ]);
         if ($request->file('lampiran')) {
             $revisi->lampiran = StorageHelper::storeKpFile($request->lampiran, $pendaftaran->mahasiswa->nim, 'pendaftaran');
@@ -496,5 +496,6 @@ class PendaftaranController extends \App\Http\Controllers\Controller
         return redirect()->route('kp.pendaftaran.create');
     }
 }
+
 
 

@@ -638,7 +638,7 @@ class SeminarController extends \App\Http\Controllers\Controller
                     }
                     return true;
                 }),
-                'mimes:pdf,docx', 'max:2048'
+                'mimes:pdf,docx', 'max:10240'
             ]
         ]);
         if ($request->file('lampiran')) {
@@ -727,7 +727,7 @@ class SeminarController extends \App\Http\Controllers\Controller
         $seminar = Seminar::findOrFail($id);
 
         $request->validate([
-            'lampiran_proposal' => ['required', 'mimes:pdf, docx', 'max:2048'],
+            'lampiran_proposal' => ['required', 'mimes:pdf, docx', 'max:10240'],
         ]);
 
         $seminar->update([
@@ -943,5 +943,6 @@ class SeminarController extends \App\Http\Controllers\Controller
         return back()->with('success', 'Nilai instansi berhasil diupload. Nilai akhir KP: ' . $seminar->nilai_akhir);
     }
 }
+
 
 

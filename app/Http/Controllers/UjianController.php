@@ -206,17 +206,17 @@ public function ujianProdi()
         }
 
         $validatedData = $request->validate([
-            'lampiran_1' => ['required', 'mimes:jpg,png,jpeg,pdf', 'max:2048'],
-            'lampiran_2' => ['required', 'mimes:jpg,png,jpeg,pdf', 'max:2048'],
-            'lampiran_3' => ['required', 'mimes:jpg,png,jpeg,pdf', 'max:2048'],
-            'lampiran_4' => ['required', 'mimes:jpg,png,jpeg,pdf', 'max:2048'],
-            'lampiran_5' => ['required', 'mimes:jpg,png,jpeg,pdf', 'max:2048'],
-            'lampiran_6' => ['required', 'mimes:jpg,png,jpeg,pdf', 'max:2048'],
-            'lampiran_7' => ['required', 'mimes:jpg,png,jpeg,pdf', 'max:2048'],
-            'lampiran_8' => ['required', 'mimes:jpg,png,jpeg,pdf', 'max:2048'],
-            'lampiran_syahadah' => ['nullable', 'mimes:jpg,png,jpeg,pdf', 'max:2048'],
-            'lampiran_laporan' => ['required', 'mimes:jpg,png,jpeg,pdf', 'max:2048'],
-            'artikel' => ['required', 'mimes:pdf,doc,docx', 'max:2048'],
+            'lampiran_1' => ['required', 'mimes:jpg,png,jpeg,pdf', 'max:10240'],
+            'lampiran_2' => ['required', 'mimes:jpg,png,jpeg,pdf', 'max:10240'],
+            'lampiran_3' => ['required', 'mimes:jpg,png,jpeg,pdf', 'max:10240'],
+            'lampiran_4' => ['required', 'mimes:jpg,png,jpeg,pdf', 'max:10240'],
+            'lampiran_5' => ['required', 'mimes:jpg,png,jpeg,pdf', 'max:10240'],
+            'lampiran_6' => ['required', 'mimes:jpg,png,jpeg,pdf', 'max:10240'],
+            'lampiran_7' => ['required', 'mimes:jpg,png,jpeg,pdf', 'max:10240'],
+            'lampiran_8' => ['required', 'mimes:jpg,png,jpeg,pdf', 'max:10240'],
+            'lampiran_syahadah' => ['nullable', 'mimes:jpg,png,jpeg,pdf', 'max:10240'],
+            'lampiran_laporan' => ['required', 'mimes:jpg,png,jpeg,pdf', 'max:10240'],
+            'artikel' => ['required', 'mimes:pdf,doc,docx', 'max:10240'],
             'link_artikel' => ['nullable', 'url', 'max:255'],
         ]);
 
@@ -286,63 +286,63 @@ public function ujianProdi()
                 Rule::requiredIf(function () use($ujian) {
                     return empty($ujian->lampiran_1);
                 }),
-                'mimes:pdf,png,jpg,jpeg', 'max:2048'
+                'mimes:pdf,png,jpg,jpeg', 'max:10240'
             ],
             'lampiran_2' => [
                 Rule::requiredIf(function () use($ujian) {
                     return empty($ujian->lampiran_2);
                 }),
-                'mimes:pdf,png,jpg,jpeg', 'max:2048'
+                'mimes:pdf,png,jpg,jpeg', 'max:10240'
             ],
             'lampiran_3' => [
                 Rule::requiredIf(function () use($ujian) {
                     return empty($ujian->lampiran_3);
                 }),
-                'mimes:pdf,png,jpg,jpeg', 'max:2048'
+                'mimes:pdf,png,jpg,jpeg', 'max:10240'
             ],
             'lampiran_4' => [
                 Rule::requiredIf(function () use($ujian) {
                     return empty($ujian->lampiran_4);
                 }),
-                'mimes:pdf,png,jpg,jpeg', 'max:2048'
+                'mimes:pdf,png,jpg,jpeg', 'max:10240'
             ],
             'lampiran_5' => [
                 Rule::requiredIf(function () use($ujian) {
                     return empty($ujian->lampiran_5);
                 }),
-                'mimes:pdf,png,jpg,jpeg', 'max:2048'
+                'mimes:pdf,png,jpg,jpeg', 'max:10240'
             ],
             'lampiran_6' => [
                 Rule::requiredIf(function () use($ujian) {
                     return empty($ujian->lampiran_6);
                 }),
-                'mimes:pdf,png,jpg,jpeg', 'max:2048'
+                'mimes:pdf,png,jpg,jpeg', 'max:10240'
             ],
             'lampiran_7' => [
                 Rule::requiredIf(function () use($ujian) {
                     return empty($ujian->lampiran_7);
                 }),
-                'mimes:pdf,png,jpg,jpeg', 'max:2048'
+                'mimes:pdf,png,jpg,jpeg', 'max:10240'
             ],
             'lampiran_8' => [
                 Rule::requiredIf(function () use($ujian) {
                     return empty($ujian->lampiran_8);
                 }),
-                'mimes:pdf,png,jpg,jpeg', 'max:2048'
+                'mimes:pdf,png,jpg,jpeg', 'max:10240'
             ],
-            'lampiran_syahadah' => ['nullable', 'mimes:pdf,png,jpg,jpeg', 'max:2048'],
+            'lampiran_syahadah' => ['nullable', 'mimes:pdf,png,jpg,jpeg', 'max:10240'],
             'lampiran_laporan' => [
                 Rule::requiredIf(function () use($ujian) {
                     return empty($ujian->lampiran_laporan);
                 }),
-                'mimes:pdf', 'max:2048'
+                'mimes:pdf', 'max:10240'
             ],
             'artikel' => [
                 Rule::requiredIf(function () use ($ujian) {
                     return empty($ujian->artikel);
                 }),
                 'mimes:pdf,doc,docx',
-                'max:2048',
+                'max:10240',
             ],
             'link_artikel' => ['nullable', 'url', 'max:255'],
         ]);
@@ -489,7 +489,7 @@ public function ujianProdi()
                     }
                     return true;
                 }),
-                'mimes:pdf,docx', 'max:2048'
+                'mimes:pdf,docx', 'max:10240'
             ]
         ]);
         if ($request->file('lampiran')) {
@@ -652,7 +652,7 @@ public function ujianProdi()
         $ujian = Ujian::findOrFail($id);
 
         $request->validate([
-            'lampiran_proposal' => ['required', 'mimes:pdf, docx', 'max:2048'],
+            'lampiran_proposal' => ['required', 'mimes:pdf, docx', 'max:10240'],
         ]);
 
         $ujian->update([
@@ -719,4 +719,5 @@ public function ujianProdi()
         return response()->json(['message' => 'Status ujian berhasil disimpan']);
     }
 }
+
 
