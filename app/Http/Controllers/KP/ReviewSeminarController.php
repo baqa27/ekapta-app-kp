@@ -40,7 +40,7 @@ class ReviewSeminarController extends \App\Http\Controllers\Controller
         }
 
         $validatedData = $request->validate([
-           'lampiran' => ['required', 'mimes:pdf, docx', 'max:10240'],
+           'lampiran' => ['required', 'mimes:pdf, docx', 'max:5000'],
         ]);
 
         $validatedData['keterangan'] = $request->keterangan;
@@ -94,7 +94,7 @@ class ReviewSeminarController extends \App\Http\Controllers\Controller
                     }
                     return true;
                 }),
-                'mimes:pdf,docx', 'max:10240'
+                'mimes:pdf,docx', 'max:5000'
             ]
         ]);
 
@@ -209,7 +209,7 @@ class ReviewSeminarController extends \App\Http\Controllers\Controller
         }
 
         $validatedData = $request->validate([
-            'lampiran_lembar_revisi' => ['required', 'mimes:pdf, jpg,jpeg,png', 'max:10240'],
+            'lampiran_lembar_revisi' => ['required', 'mimes:pdf, jpg,jpeg,png', 'max:5000'],
             'tanggal_acc_manual' => 'required',
          ]);
          $validatedData['lampiran_lembar_revisi'] = StorageHelper::storeKpFile($request->lampiran_lembar_revisi, $review_seminar->seminar->mahasiswa->nim, 'seminar');
@@ -442,6 +442,7 @@ class ReviewSeminarController extends \App\Http\Controllers\Controller
         }
     }
 }
+
 
 
 

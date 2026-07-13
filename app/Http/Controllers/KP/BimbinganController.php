@@ -257,8 +257,8 @@ class BimbinganController extends \App\Http\Controllers\Controller
         }
 
         $request->validate([
-            'lampiran' => ['required', 'mimes:pdf', 'max:10240'],
-            'bukti_bimbingan_offline' => ['nullable', 'mimes:pdf,jpg,jpeg,png', 'max:10240'],
+            'lampiran' => ['required', 'mimes:pdf', 'max:5000'],
+            'bukti_bimbingan_offline' => ['nullable', 'mimes:pdf,jpg,jpeg,png', 'max:5000'],
             'bagian_id' => 'required',
             'keterangan' => 'nullable|string|max:1000',
         ]);
@@ -355,7 +355,7 @@ class BimbinganController extends \App\Http\Controllers\Controller
         }
 
         $request->validate([
-            'lampiran_acc' => 'required|mimes:pdf,jpg,jpeg,png|max:10240',
+            'lampiran_acc' => 'required|mimes:pdf,jpg,jpeg,png|max:5000',
             'tanggal_acc' => 'required|date',
             'bagian_id' => 'required',
         ]);
@@ -514,7 +514,7 @@ class BimbinganController extends \App\Http\Controllers\Controller
         }
 
         $validatedData = $request->validate([
-            'lampiran' => ['required', 'mimes:pdf', 'max:10240'],
+            'lampiran' => ['required', 'mimes:pdf', 'max:5000'],
             'keterangan' => 'nullable|string|max:1000',
         ]);
         if ($request->file('lampiran')) {
@@ -550,7 +550,7 @@ class BimbinganController extends \App\Http\Controllers\Controller
                     return false;
                 }
                 return true;
-            }), 'mimes:pdf,docx', 'max:10240']
+            }), 'mimes:pdf,docx', 'max:5000']
         ]);
         $revisi->catatan = $request->catatan;
         $revisi->lampiran = $bimbingan->lampiran;
@@ -586,7 +586,7 @@ class BimbinganController extends \App\Http\Controllers\Controller
                     return false;
                 }
                 return true;
-            }), 'mimes:pdf,docx', 'max:10240']
+            }), 'mimes:pdf,docx', 'max:5000']
         ]);
 
         if($request->lampiran){
@@ -878,7 +878,7 @@ class BimbinganController extends \App\Http\Controllers\Controller
                     return false;
                 }
                 return true;
-            }) ,'mimes:pdf', 'max:10240'],
+            }) ,'mimes:pdf', 'max:5000'],
         ]);
         if($request->lampiran){
             $mahasiswa = Mahasiswa::findOrFail($request->mahasiswa_id);
@@ -963,7 +963,7 @@ class BimbinganController extends \App\Http\Controllers\Controller
         $request->validate([
             'tanggal_bimbingan' => 'required|date',
             'keterangan' => 'required',
-            'bukti_bimbingan_offline' => 'required|mimes:pdf,jpg,jpeg,png|max:10240',
+            'bukti_bimbingan_offline' => 'required|mimes:pdf,jpg,jpeg,png|max:5000',
         ]);
 
         $bimbingan = new Bimbingan;
@@ -1068,7 +1068,7 @@ class BimbinganController extends \App\Http\Controllers\Controller
         }
 
         $request->validate([
-            'lampiran_acc' => 'required|mimes:pdf,jpg,jpeg,png|max:10240',
+            'lampiran_acc' => 'required|mimes:pdf,jpg,jpeg,png|max:5000',
             'tanggal_manual_acc' => 'required|date',
         ]);
 
@@ -1250,5 +1250,6 @@ class BimbinganController extends \App\Http\Controllers\Controller
     }
 
 }
+
 
 

@@ -349,14 +349,14 @@ class SeminarController extends \App\Http\Controllers\Controller
 
         $validatedData = $request->validate([
             'no_wa' => ['required', 'string', 'max:20'],
-            'file_laporan' => ['required', 'mimes:pdf', 'max:10240'],
-            'file_bimbingan' => ['required', 'mimes:pdf', 'max:10240'],
-            'lampiran_1' => ['required', 'mimes:pdf,jpg,jpeg,png', 'max:10240'], // Sertifikat 1
-            'lampiran_2' => ['required', 'mimes:pdf,jpg,jpeg,png', 'max:10240'], // Sertifikat 2
-            'lampiran_3' => ['required', 'mimes:pdf,jpg,jpeg,png', 'max:10240'], // Sertifikat 3
-            'lampiran_4' => ['required', 'mimes:pdf,jpg,jpeg,png', 'max:10240'], // Sertifikat 4
+            'file_laporan' => ['required', 'mimes:pdf', 'max:5000'],
+            'file_bimbingan' => ['required', 'mimes:pdf', 'max:5000'],
+            'lampiran_1' => ['required', 'mimes:pdf,jpg,jpeg,png', 'max:5000'], // Sertifikat 1
+            'lampiran_2' => ['required', 'mimes:pdf,jpg,jpeg,png', 'max:5000'], // Sertifikat 2
+            'lampiran_3' => ['required', 'mimes:pdf,jpg,jpeg,png', 'max:5000'], // Sertifikat 3
+            'lampiran_4' => ['required', 'mimes:pdf,jpg,jpeg,png', 'max:5000'], // Sertifikat 4
             'metode_bayar' => ['required', 'string', 'max:255', Rule::in($valid_metode_bayar)],
-            'bukti_bayar' => ['required', 'mimes:jpg,png,jpeg,pdf', 'max:10240'],
+            'bukti_bayar' => ['required', 'mimes:jpg,png,jpeg,pdf', 'max:5000'],
             'link_akses_produk' => ['nullable', 'url'],
         ]);
 
@@ -457,13 +457,13 @@ class SeminarController extends \App\Http\Controllers\Controller
             'no_wa' => ['required', 'string', 'max:20'],
             'link_akses_produk' => ['required', 'url'],
             'metode_bayar' => ['required', 'string', 'max:255'],
-            'file_laporan' => ['nullable', 'mimes:pdf', 'max:10240'],
-            'file_bimbingan' => ['nullable', 'mimes:pdf', 'max:10240'],
-            'lampiran_1' => ['nullable', 'mimes:pdf,jpg,jpeg,png', 'max:10240'],
-            'lampiran_2' => ['nullable', 'mimes:pdf,jpg,jpeg,png', 'max:10240'],
-            'lampiran_3' => ['nullable', 'mimes:pdf,jpg,jpeg,png', 'max:10240'],
-            'lampiran_4' => ['nullable', 'mimes:pdf,jpg,jpeg,png', 'max:10240'],
-            'bukti_bayar' => ['nullable', 'mimes:jpg,png,jpeg,pdf', 'max:10240'],
+            'file_laporan' => ['nullable', 'mimes:pdf', 'max:5000'],
+            'file_bimbingan' => ['nullable', 'mimes:pdf', 'max:5000'],
+            'lampiran_1' => ['nullable', 'mimes:pdf,jpg,jpeg,png', 'max:5000'],
+            'lampiran_2' => ['nullable', 'mimes:pdf,jpg,jpeg,png', 'max:5000'],
+            'lampiran_3' => ['nullable', 'mimes:pdf,jpg,jpeg,png', 'max:5000'],
+            'lampiran_4' => ['nullable', 'mimes:pdf,jpg,jpeg,png', 'max:5000'],
+            'bukti_bayar' => ['nullable', 'mimes:jpg,png,jpeg,pdf', 'max:5000'],
         ]);
 
         $mahasiswa = $seminar->mahasiswa;
@@ -638,7 +638,7 @@ class SeminarController extends \App\Http\Controllers\Controller
                     }
                     return true;
                 }),
-                'mimes:pdf,docx', 'max:10240'
+                'mimes:pdf,docx', 'max:5000'
             ]
         ]);
         if ($request->file('lampiran')) {
@@ -727,7 +727,7 @@ class SeminarController extends \App\Http\Controllers\Controller
         $seminar = Seminar::findOrFail($id);
 
         $request->validate([
-            'lampiran_proposal' => ['required', 'mimes:pdf, docx', 'max:10240'],
+            'lampiran_proposal' => ['required', 'mimes:pdf, docx', 'max:5000'],
         ]);
 
         $seminar->update([
@@ -924,7 +924,7 @@ class SeminarController extends \App\Http\Controllers\Controller
 
         $request->validate([
             'nilai_instansi' => ['required', 'numeric', 'min:0', 'max:100'],
-            'file_nilai_instansi' => ['required', 'mimes:pdf,jpg,jpeg,png', 'max:10240'],
+            'file_nilai_instansi' => ['required', 'mimes:pdf,jpg,jpeg,png', 'max:5000'],
         ]);
 
         $mahasiswa = $seminar->mahasiswa;
@@ -943,6 +943,7 @@ class SeminarController extends \App\Http\Controllers\Controller
         return back()->with('success', 'Nilai instansi berhasil diupload. Nilai akhir KP: ' . $seminar->nilai_akhir);
     }
 }
+
 
 
 
