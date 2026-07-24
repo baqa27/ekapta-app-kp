@@ -17,3 +17,11 @@ yarn-error.log
 /storage/framework/cache/*
 /storage/framework/sessions/*
 /storage/framework/testing/*
+
+# Backup / draft files - tidak perlu di-track
+*.old
+*.old2
+*.bak
+*.php.old
+*.blade.php.old
+*.blade.php.old2

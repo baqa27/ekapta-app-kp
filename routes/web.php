@@ -177,14 +177,15 @@ Route::get('/lampirans/{path}', function($path) {
 Route::get('/login/mahasiswa', function() {
     return redirect()->route('login');
 })->name('login.mahasiswa');
-Route::post('/login/mahasiswa', [LoginController::class, 'cekMahasiswa'])->name('cek.mahasiswa')->middleware('isMahasiswaLogin');
-Route::post('/login', [LoginController::class, 'cekMahasiswa'])->middleware('isMahasiswaLogin');
+// Throttle: maks 5 percobaan per menit per IP — mencegah brute-force
+Route::post('/login/mahasiswa', [LoginController::class, 'cekMahasiswa'])->name('cek.mahasiswa')->middleware(['isMahasiswaLogin', 'throttle:5,1']);
+Route::post('/login', [LoginController::class, 'cekMahasiswa'])->middleware(['isMahasiswaLogin', 'throttle:5,1']);
 Route::get('/login/prodi', [LoginController::class, 'loginProdi'])->name('login.prodi')->middleware('isProdiLogin');
-Route::post('/login/prodi', [LoginController::class, 'cekProdi'])->name('cek.prodi')->middleware('isProdiLogin');
+Route::post('/login/prodi', [LoginController::class, 'cekProdi'])->name('cek.prodi')->middleware(['isProdiLogin', 'throttle:5,1']);
 Route::get('/login/dosen', [LoginController::class, 'loginDosen'])->name('login.dosen')->middleware('isDosenLogin');
-Route::post('/login/dosen', [LoginController::class, 'cekDosen'])->name('cek.dosen')->middleware('isDosenLogin');
+Route::post('/login/dosen', [LoginController::class, 'cekDosen'])->name('cek.dosen')->middleware(['isDosenLogin', 'throttle:5,1']);
 Route::get('/login/admin', [LoginController::class, 'loginAdmin'])->name('login.admin')->middleware('isAdminLogin');
-Route::post('/login/admin', [LoginController::class, 'cekAdmin'])->name('cek.admin')->middleware('isAdminLogin');
+Route::post('/login/admin', [LoginController::class, 'cekAdmin'])->name('cek.admin')->middleware(['isAdminLogin', 'throttle:5,1']);
 
 // ✅ REDIRECT: Login himpunan ke KP
 Route::get('/login/himpunan', function() {

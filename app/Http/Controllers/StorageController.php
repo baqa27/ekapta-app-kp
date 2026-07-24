@@ -135,9 +135,20 @@ class StorageController extends Controller
 
     private function sanitizePath($path)
     {
+        // Normalisasi backslash ke forward slash
         $path = str_replace('\\', '/', (string) $path);
 
-        return str_replace(['../', '..\\'], '', $path);
+        // Hapus null bytes (null-byte poisoning)
+        $path = str_replace("\0", '', $path);
+
+        // Hapus segment path traversal menggunakan regex — aman & deterministik
+        // Menghapus: ../, ./, ../../, dsb (termasuk encoded variants)
+        $path = preg_replace('#(\.\.?/)+#', '', $path);
+
+        // Hapus sisa titik ganda di akhir path jika ada
+        $path = str_replace('..', '', $path);
+
+        return ltrim($path, '/');
     }
 
     /**

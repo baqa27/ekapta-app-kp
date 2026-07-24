@@ -373,14 +373,26 @@ class PengajuanController extends Controller
         return back()->with('success', 'Revisi berhasil dihapus');;
     }
 
-    public function editJudulPengajuan(Request $request, $id){
+    public function editJudulPengajuan(Request $request, $id)
+    {
         $pengajuan = Pengajuan::findOrFail($id);
 
-        $pengajuan->update([
-            'judul' => $request->judul,
+        // IDOR check: pastikan pengajuan berada di prodi yang sama dengan prodi yang login
+        $prodiLogin = Auth::guard('prodi')->user();
+        if ($prodiLogin && $pengajuan->prodi_id !== $prodiLogin->id) {
+            abort(403, 'Anda tidak memiliki akses untuk mengubah judul ini.');
+        }
+
+        // Validasi input
+        $validated = $request->validate([
+            'judul' => ['required', 'string', 'min:5', 'max:255'],
         ]);
 
-        return back()->with('success','Judul tugas akhir berhasil di update.');
+        $pengajuan->update([
+            'judul' => $validated['judul'],
+        ]);
+
+        return back()->with('success', 'Judul tugas akhir berhasil di update.');
     }
 }
 

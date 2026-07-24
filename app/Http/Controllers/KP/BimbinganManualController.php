@@ -373,8 +373,8 @@ class BimbinganManualController extends \App\Http\Controllers\Controller
             ? 'Pengajuan bimbingan manual berhasil di-ACC. Mahasiswa bisa lanjut ke BAB berikutnya.'
             : 'Pengajuan bimbingan manual berhasil diverifikasi. Status dari dosen: REVISI. Mahasiswa harus submit ulang.';
 
-        // Redirect ke URL yang dikirim dari form
-        $redirectUrl = $request->input('redirect_url', url()->previous());
+        // Fix Open Redirect: validasi redirect_url hanya ke internal host
+        $redirectUrl = $this->safeRedirectUrl($request->input('redirect_url'));
         return redirect($redirectUrl)->with('success', $successMsg);
     }
 
@@ -447,8 +447,8 @@ class BimbinganManualController extends \App\Http\Controllers\Controller
             ? 'Pengajuan bimbingan manual berhasil ditolak. Status BAB berubah ke REVISI. Mahasiswa harus submit ulang file laporan.'
             : 'Pengajuan bimbingan manual berhasil ditolak. Mahasiswa harus upload ulang lembar bimbingan yang benar.';
 
-        // Redirect ke URL yang dikirim dari form
-        $redirectUrl = $request->input('redirect_url', url()->previous());
+        // Fix Open Redirect: validasi redirect_url hanya ke internal host
+        $redirectUrl = $this->safeRedirectUrl($request->input('redirect_url'));
         return redirect($redirectUrl)->with('success', $successMsg);
     }
 
@@ -503,6 +503,35 @@ class BimbinganManualController extends \App\Http\Controllers\Controller
         }
 
         return $request->validate($rules);
+    }
+
+    /**
+     * Validasi redirect URL untuk mencegah Open Redirect Attack.
+     * Hanya mengizinkan redirect ke URL internal (host yang sama).
+     */
+    private function safeRedirectUrl(?string $url): string
+    {
+        $fallback = url()->previous();
+
+        if (empty($url)) {
+            return $fallback;
+        }
+
+        $parsed = parse_url($url);
+
+        // Jika URL adalah path relatif (tanpa host), aman digunakan
+        if (!isset($parsed['host'])) {
+            return $url;
+        }
+
+        // Jika ada host, pastikan host sama dengan aplikasi
+        $appHost = parse_url(config('app.url'), PHP_URL_HOST);
+        if ($parsed['host'] === $appHost) {
+            return $url;
+        }
+
+        // Jika host berbeda, redirect ke URL sebelumnya (internal)
+        return $fallback;
     }
 }
 

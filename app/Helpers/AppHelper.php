@@ -125,8 +125,36 @@ class AppHelper
     public function uploadLampiran($lampiran, $path)
     {
         if ($lampiran) {
+            // Whitelist ekstensi yang diperbolehkan
+            $allowedExtensions = ['pdf', 'docx', 'doc', 'xls', 'xlsx', 'jpg', 'jpeg', 'png'];
+
+            // Whitelist MIME type yang diperbolehkan (server-side, tidak bisa dimanipulasi client)
+            $allowedMimeTypes = [
+                'application/pdf',
+                'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                'application/msword',
+                'application/vnd.ms-excel',
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'image/jpeg',
+                'image/png',
+            ];
+
+            // Validasi ekstensi dari client (double-check awal)
+            $extension = strtolower($lampiran->getClientOriginalExtension());
+            if (!in_array($extension, $allowedExtensions, true)) {
+                throw new \InvalidArgumentException('Ekstensi file tidak diperbolehkan: ' . $extension);
+            }
+
+            // Validasi MIME type server-side (membaca konten file sesungguhnya)
+            $realMimeType = $lampiran->getMimeType();
+            if (!in_array($realMimeType, $allowedMimeTypes, true)) {
+                throw new \InvalidArgumentException('Tipe file tidak diperbolehkan: ' . $realMimeType);
+            }
+
+            // Penamaan file acak menggunakan UUID v4 untuk mencegah prediksi nama file
             $path = $this->normalizeLampiranStoragePath($path);
-            $lampiranPath = $lampiran->store($path, 'public');
+            $randomFileName = Str::uuid()->toString() . '.' . $extension;
+            $lampiranPath = $lampiran->storeAs($path, $randomFileName, 'public');
             $uploadedToGoogleDrive = $this->syncLampiranToGoogleDrive($lampiranPath);
 
             if (

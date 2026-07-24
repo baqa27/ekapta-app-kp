@@ -40,6 +40,23 @@ class Handler extends ExceptionHandler
             //
         });
 
+        // Tangkap error upload file tidak valid dari AppHelper::uploadLampiran()
+        $this->renderable(function (\InvalidArgumentException $e, Request $request) {
+            $message = $e->getMessage();
+
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'message' => $message,
+                ], 422);
+            }
+
+            return redirect()->back()->withInput($request->except([
+                'lampiran', 'lampiran_1', 'lampiran_2', 'lampiran_3',
+                'lampiran_4', 'lampiran_5', 'lampiran_6', 'lampiran_7',
+                'dokumen_pendukung', 'ttd', 'image',
+            ]))->with('error', $message);
+        });
+
         $this->renderable(function (PostTooLargeException $e, Request $request) {
             $message = 'Ukuran total file yang diupload terlalu besar. Silakan kompres file lalu coba lagi.';
 
