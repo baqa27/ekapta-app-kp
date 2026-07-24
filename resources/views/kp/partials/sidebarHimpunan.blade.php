@@ -45,10 +45,13 @@
     <div class="sidebar">
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
             <div class="image">
-                <img src="{{ asset('ekapta') }}/adminLTE/dist/img/default-profile.png" class="img-circle elevation-2" alt="User Image">
+                <img src="{{ Auth::guard('himpunan')->user()->foto_profil_url }}"
+                     class="img-circle elevation-2"
+                     alt="User Image"
+                     style="width:2.1rem;height:2.1rem;object-fit:cover;">
             </div>
             <div class="info">
-                <a href="#" class="d-block">{{ Auth::guard('himpunan')->user()->nama }}</a>
+                <a href="{{ route('kp.himpunan.account') }}" class="d-block">{{ Auth::guard('himpunan')->user()->nama }}</a>
             </div>
         </div>
 

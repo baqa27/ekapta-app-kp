@@ -20,6 +20,7 @@ class Himpunan extends Authenticatable
         'nama',
         'username',
         'email',
+        'foto_profil',
         'password',
         'prodi_id',
         'is_pendaftaran_seminar_open',
@@ -39,6 +40,17 @@ class Himpunan extends Authenticatable
         'password',
         'remember_token',
     ];
+
+    /**
+     * Accessor URL foto profil — fallback ke default jika belum diisi
+     */
+    public function getFotoProfilUrlAttribute(): string
+    {
+        if ($this->foto_profil && \Storage::disk('public')->exists($this->foto_profil)) {
+            return asset('storage/' . $this->foto_profil);
+        }
+        return asset('ekapta/adminLTE/dist/img/default-profile.png');
+    }
 
     /**
      * Relasi ke Prodi

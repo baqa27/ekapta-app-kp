@@ -391,20 +391,44 @@ class DashboardController extends \App\Http\Controllers\Controller
 
     public function dashboardHimpunan()
     {
-        $seminars = \App\Models\KP\Seminar::all();
+        $seminars         = \App\Models\KP\Seminar::all();
         $seminars_diterima = \App\Models\KP\Seminar::where('is_valid', '1')->get();
-        $seminars_review = \App\Models\KP\Seminar::where('is_valid', '0')->get();
-        $seminars_revisi = \App\Models\KP\Seminar::where('is_valid', '2')->get();
+        $seminars_review  = \App\Models\KP\Seminar::where('is_valid', '0')->get();
+        $seminars_revisi  = \App\Models\KP\Seminar::where('is_valid', '2')->get();
+
+        // -------------------------------------------------------
+        // Rekapan per bulan berdasarkan tanggal_acc (validasi himpunan)
+        // Ambil 12 bulan terakhir
+        // -------------------------------------------------------
+        $rekapPerBulan = \App\Models\KP\Seminar::whereNotNull('tanggal_acc')
+            ->where('tanggal_acc', '>=', now()->subMonths(11)->startOfMonth())
+            ->selectRaw("DATE_FORMAT(tanggal_acc, '%Y-%m') as bulan, COUNT(*) as total")
+            ->groupBy('bulan')
+            ->orderBy('bulan', 'asc')
+            ->pluck('total', 'bulan')
+            ->toArray();
+
+        // Isi bulan yang tidak ada datanya dengan 0 (agar chart tetap lengkap 12 bulan)
+        $labelsBulan = [];
+        $dataBulan   = [];
+        for ($i = 11; $i >= 0; $i--) {
+            $key    = now()->subMonths($i)->format('Y-m');
+            $label  = now()->subMonths($i)->translatedFormat('M Y');
+            $labelsBulan[] = $label;
+            $dataBulan[]   = $rekapPerBulan[$key] ?? 0;
+        }
 
         return view('kp.pages.himpunan.dashboard', [
-            'title' => 'Dashboard Himpunan',
-            'active' => 'dashboard',
-            'module' => 'kp',
-            'sidebar' => 'kp.partials.sidebarHimpunan',
-            'seminars' => $seminars,
+            'title'             => 'Dashboard Himpunan',
+            'active'            => 'dashboard',
+            'module'            => 'kp',
+            'sidebar'           => 'kp.partials.sidebarHimpunan',
+            'seminars'          => $seminars,
             'seminars_diterima' => $seminars_diterima,
-            'seminars_revisi' => $seminars_revisi,
-            'seminars_review' => $seminars_review,
+            'seminars_revisi'   => $seminars_revisi,
+            'seminars_review'   => $seminars_review,
+            'labelsBulan'       => $labelsBulan,
+            'dataBulan'         => $dataBulan,
         ]);
     }
 }

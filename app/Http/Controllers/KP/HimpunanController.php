@@ -43,15 +43,25 @@ class HimpunanController extends \App\Http\Controllers\Controller
         abort_unless($himpunan && (int) $himpunan->id === (int) $id, 403);
 
         $validatedData = $request->validate([
-            'nama' => ['required', 'string', 'max:255'],
-            'email' => ['nullable', 'email', 'max:255', Rule::unique('himpunan_kps', 'email')->ignore($himpunan->id)],
-            'password' => ['nullable', 'string', 'min:6', 'confirmed'],
+            'nama'              => ['required', 'string', 'max:255'],
+            'email'             => ['nullable', 'email', 'max:255', Rule::unique('himpunan_kps', 'email')->ignore($himpunan->id)],
+            'password'          => ['nullable', 'string', 'min:6', 'confirmed'],
+            'foto_profil'       => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
         ]);
 
         $updateData = [
-            'nama' => $validatedData['nama'],
+            'nama'  => $validatedData['nama'],
             'email' => $validatedData['email'] ?: null,
         ];
+
+        // Upload foto profil baru jika ada
+        if ($request->hasFile('foto_profil')) {
+            // Hapus foto lama jika ada
+            if ($himpunan->foto_profil) {
+                \Storage::disk('public')->delete($himpunan->foto_profil);
+            }
+            $updateData['foto_profil'] = $request->file('foto_profil')->store('foto-profil/himpunan', 'public');
+        }
 
         if (!empty($validatedData['password'])) {
             $updateData['password'] = Hash::make($validatedData['password']);
