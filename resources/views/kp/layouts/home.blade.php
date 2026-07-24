@@ -27,7 +27,7 @@
     <script src="{{ asset('ekapta') }}/assets/js/jquery-1.10.2.js"></script>
     <script src="{{ asset('ekapta') }}/assets/js/main.js"></script>
     <!-- Swetalert -->
-    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     @if (session('error'))
     <script>
         Swal.fire({
