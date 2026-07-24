@@ -724,6 +724,7 @@ Route::prefix('kp')->name('kp.')->group(function () {
         Route::post('/seminar/finalisasi-nilai', [HimpunanController::class, 'finalisasiNilai'])->name('seminar.himpunan.finalisasi');
         Route::post('/seminar/input-nilai', [HimpunanController::class, 'inputNilaiManual'])->name('seminar.himpunan.input-nilai');
         Route::get('/seminar/rekap', [HimpunanController::class, 'rekapSeminar'])->name('seminar.himpunan.rekap');
+        Route::get('/seminar/rekap-bulanan', [HimpunanController::class, 'rekapSeminarBulanan'])->name('seminar.himpunan.rekap.bulanan');
 
         // Payment Settings
         Route::get('/payment', [HimpunanController::class, 'paymentSettings'])->name('payment.himpunan');

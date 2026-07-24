@@ -271,17 +271,75 @@ class HimpunanController extends \App\Http\Controllers\Controller
     }
 
     /**
-     * Rekap seminar untuk himpunan
+     * Rekap seminar untuk himpunan (semua data)
      */
     public function rekapSeminar()
     {
         $seminars = Seminar::with(['mahasiswa', 'pengajuan'])->orderBy('created_at', 'desc')->get();
 
         return view('kp.pages.himpunan.seminar.rekap', [
-            'title' => 'Rekap Seminar KP',
-            'active' => 'rekap-kp',
-            'sidebar' => 'kp.partials.sidebarHimpunan',
+            'title'    => 'Rekap Seminar KP',
+            'active'   => 'rekap-kp',
+            'sidebar'  => 'kp.partials.sidebarHimpunan',
             'seminars' => $seminars,
+        ]);
+    }
+
+    /**
+     * Rekap seminar per bulan — difilter berdasarkan tanggal_acc (validasi himpunan)
+     * Input bulan & tahun divalidasi ketat sebelum masuk ke query
+     */
+    public function rekapSeminarBulanan(Request $request)
+    {
+        // Validasi input — hanya angka valid, default bulan & tahun saat ini
+        $bulan = $request->input('bulan');
+        $tahun = $request->input('tahun');
+
+        // Validasi ketat: bulan 1-12, tahun 4 digit (2020–2099)
+        $bulan = (is_numeric($bulan) && $bulan >= 1 && $bulan <= 12)
+            ? (int) $bulan
+            : (int) now()->format('m');
+
+        $tahun = (is_numeric($tahun) && $tahun >= 2020 && $tahun <= 2099)
+            ? (int) $tahun
+            : (int) now()->format('Y');
+
+        // Query hanya berdasarkan tanggal_acc (bukan tanggal submit mahasiswa)
+        $seminars = Seminar::with(['mahasiswa', 'pengajuan'])
+            ->whereNotNull('tanggal_acc')
+            ->whereYear('tanggal_acc', $tahun)
+            ->whereMonth('tanggal_acc', $bulan)
+            ->orderBy('tanggal_acc', 'asc')
+            ->get();
+
+        // Daftar tahun untuk dropdown — dari tahun pertama ada data s/d sekarang
+        $tahunTersedia = Seminar::whereNotNull('tanggal_acc')
+            ->selectRaw('YEAR(tanggal_acc) as tahun')
+            ->distinct()
+            ->orderBy('tahun', 'desc')
+            ->pluck('tahun')
+            ->toArray();
+
+        // Pastikan tahun saat ini selalu ada di list
+        if (!in_array((int) now()->format('Y'), $tahunTersedia)) {
+            array_unshift($tahunTersedia, (int) now()->format('Y'));
+        }
+
+        $namaBulan = [
+            1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April',
+            5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus',
+            9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember',
+        ];
+
+        return view('kp.pages.himpunan.seminar.rekap-bulanan', [
+            'title'          => 'Rekap Seminar Bulanan',
+            'active'         => 'rekap-kp',
+            'sidebar'        => 'kp.partials.sidebarHimpunan',
+            'seminars'       => $seminars,
+            'bulan'          => $bulan,
+            'tahun'          => $tahun,
+            'namaBulan'      => $namaBulan,
+            'tahunTersedia'  => $tahunTersedia,
         ]);
     }
 
