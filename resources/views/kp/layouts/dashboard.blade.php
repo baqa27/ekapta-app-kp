@@ -48,9 +48,9 @@
              border-radius: 10px;
          }
      </style>
-     {{-- Prevent white flash on page load --}}
+     {{-- Match body background with content-wrapper to prevent grey flash on page load --}}
      <style>
-         body { background-color: #343a40 !important; }
+         body { background-color: #f4f6f9 !important; }
          .content-wrapper { background-color: #f4f6f9; }
      </style>
      {{-- Fix sidebar di Android desktop mode --}}

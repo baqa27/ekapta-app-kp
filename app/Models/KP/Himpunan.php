@@ -46,8 +46,8 @@ class Himpunan extends Authenticatable
      */
     public function getFotoProfilUrlAttribute(): string
     {
-        if ($this->foto_profil && \Storage::disk('public')->exists($this->foto_profil)) {
-            return asset('storage/' . $this->foto_profil);
+        if (!empty($this->foto_profil)) {
+            return storage_url($this->foto_profil);
         }
         return asset('ekapta/adminLTE/dist/img/default-profile.png');
     }
