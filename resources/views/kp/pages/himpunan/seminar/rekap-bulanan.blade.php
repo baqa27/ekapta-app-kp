@@ -32,21 +32,22 @@
                                     <a class="nav-link" href="{{ route('kp.seminar.himpunan.rekap') }}">
                                         <i class="fas fa-list mr-1"></i> Rekap Semua
                                     </a>
+                                </li>
                                 <li class="nav-item">
-                                    {{-- Tombol aktif: Rekap Bulanan (pertahankan parameter bulan & tahun saat ini) --}}
-                                    <a class="nav-link active" href="{{ route('kp.seminar.himpunan.rekap.bulanan', ['bulan' => $bulan, 'tahun' => $tahun]) }}">
+                                    {{-- Tab Aktif Rekap Bulanan --}}
+                                    <a class="nav-link active" href="javascript:void(0);">
                                         <i class="fas fa-calendar-alt mr-1"></i> Rekap Bulanan
                                     </a>
                                 </li>
                             </ul>
                         </div>
 
-                        {{-- Filter Bulan & Tahun --}}
+                        {{-- Filter Bulan & Tahun (Auto-submit saat opsi diganti) --}}
                         <div class="card-body border-bottom pb-3">
                             <form method="GET" action="{{ route('kp.seminar.himpunan.rekap.bulanan') }}" class="form-inline">
                                 <div class="form-group mr-3 mb-2">
                                     <label class="mr-2 font-weight-bold">Bulan:</label>
-                                    <select name="bulan" class="form-control form-control-sm">
+                                    <select name="bulan" class="form-control form-control-sm" onchange="this.form.submit()">
                                         @foreach($namaBulan as $num => $nama)
                                             <option value="{{ $num }}" {{ $bulan == $num ? 'selected' : '' }}>
                                                 {{ $nama }}
@@ -56,7 +57,7 @@
                                 </div>
                                 <div class="form-group mr-3 mb-2">
                                     <label class="mr-2 font-weight-bold">Tahun:</label>
-                                    <select name="tahun" class="form-control form-control-sm">
+                                    <select name="tahun" class="form-control form-control-sm" onchange="this.form.submit()">
                                         @foreach($tahunTersedia as $thn)
                                             <option value="{{ $thn }}" {{ $tahun == $thn ? 'selected' : '' }}>
                                                 {{ $thn }}
