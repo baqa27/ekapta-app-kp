@@ -681,7 +681,7 @@ Route::prefix('kp')->name('kp.')->group(function () {
     // Himpunan mengelola jadwal seminar dan verifikasi pembayaran
     //
     Route::get('/login/himpunan', [KPLoginController::class, 'loginHimpunan'])->name('login.himpunan');
-    Route::post('/login/himpunan', [KPLoginController::class, 'cekHimpunan'])->name('cek.himpunan');
+    Route::post('/login/himpunan', [KPLoginController::class, 'cekHimpunan'])->name('cek.himpunan')->middleware('throttle:5,1');
     Route::get('/logout/himpunan', [KPLoginController::class, 'logoutHimpunan'])->name('logout.himpunan');
 
     // ============================================================================
