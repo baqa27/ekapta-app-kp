@@ -707,8 +707,8 @@ class AppHelper
             return asset(Str::after($path, 'public/'));
         }
 
-        // Default: anggap path relatif, gunakan asset()
-        return asset(ltrim($path, '/'));
+        // Default: gunakan route storage.file agar file relatif di storage/app/public atau Google Drive selalu bisa di-serve
+        return route('storage.file', ['path' => ltrim($path, '/')]);
     }
 
     private function normalizeLampiranStoragePath($path)
