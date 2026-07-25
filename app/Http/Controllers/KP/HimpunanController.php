@@ -304,26 +304,44 @@ class HimpunanController extends \App\Http\Controllers\Controller
             ? (int) $tahun
             : (int) now()->format('Y');
 
-        // Query hanya berdasarkan tanggal_acc (bukan tanggal submit mahasiswa)
+        // Query seminar yang di-ACC: periksa tanggal_acc, dengan fallback ke updated_at / created_at (untuk data lama)
         $seminars = Seminar::with(['mahasiswa', 'pengajuan'])
-            ->whereNotNull('tanggal_acc')
-            ->whereYear('tanggal_acc', $tahun)
-            ->whereMonth('tanggal_acc', $bulan)
-            ->orderBy('tanggal_acc', 'asc')
+            ->where(function ($q) use ($bulan, $tahun) {
+                $q->where(function ($q2) use ($bulan, $tahun) {
+                    $q2->whereNotNull('tanggal_acc')
+                       ->whereYear('tanggal_acc', $tahun)
+                       ->whereMonth('tanggal_acc', $bulan);
+                })->orWhere(function ($q2) use ($bulan, $tahun) {
+                    $q2->whereNull('tanggal_acc')
+                       ->where('is_valid', Seminar::DITERIMA)
+                       ->whereYear('updated_at', $tahun)
+                       ->whereMonth('updated_at', $bulan);
+                })->orWhere(function ($q2) use ($bulan, $tahun) {
+                    $q2->whereNull('tanggal_acc')
+                       ->where('is_valid', Seminar::DITERIMA)
+                       ->whereYear('created_at', $tahun)
+                       ->whereMonth('created_at', $bulan);
+                });
+            })
+            ->orderBy('created_at', 'desc')
             ->get();
 
-        // Daftar tahun untuk dropdown — dari tahun pertama ada data s/d sekarang
-        $tahunTersedia = Seminar::whereNotNull('tanggal_acc')
+        // Daftar tahun untuk dropdown — kumpulkan tahun dari tanggal_acc & created_at
+        $tahunAcc = Seminar::whereNotNull('tanggal_acc')
             ->selectRaw('YEAR(tanggal_acc) as tahun')
-            ->distinct()
-            ->orderBy('tahun', 'desc')
             ->pluck('tahun')
             ->toArray();
 
-        // Pastikan tahun saat ini selalu ada di list
-        if (!in_array((int) now()->format('Y'), $tahunTersedia)) {
-            array_unshift($tahunTersedia, (int) now()->format('Y'));
-        }
+        $tahunCreated = Seminar::selectRaw('YEAR(created_at) as tahun')
+            ->pluck('tahun')
+            ->toArray();
+
+        $tahunTersedia = array_values(array_unique(array_filter(array_merge(
+            $tahunAcc,
+            $tahunCreated,
+            [2024, 2025, 2026, (int) now()->format('Y')]
+        ))));
+        rsort($tahunTersedia);
 
         $namaBulan = [
             1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April',

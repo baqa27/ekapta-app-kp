@@ -32,10 +32,9 @@
                                     <a class="nav-link" href="{{ route('kp.seminar.himpunan.rekap') }}">
                                         <i class="fas fa-list mr-1"></i> Rekap Semua
                                     </a>
-                                </li>
                                 <li class="nav-item">
-                                    {{-- Tombol aktif: Rekap Bulanan --}}
-                                    <a class="nav-link active" href="{{ route('kp.seminar.himpunan.rekap.bulanan') }}">
+                                    {{-- Tombol aktif: Rekap Bulanan (pertahankan parameter bulan & tahun saat ini) --}}
+                                    <a class="nav-link active" href="{{ route('kp.seminar.himpunan.rekap.bulanan', ['bulan' => $bulan, 'tahun' => $tahun]) }}">
                                         <i class="fas fa-calendar-alt mr-1"></i> Rekap Bulanan
                                     </a>
                                 </li>
