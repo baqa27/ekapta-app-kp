@@ -78,12 +78,22 @@ class HimpunanController extends \App\Http\Controllers\Controller
      */
     public function seminarIndex()
     {
-        $seminars_review = Seminar::orderBy('created_at', 'desc')->where('is_valid', Seminar::REVIEW)->get();
-        $seminars_revisi = Seminar::orderBy('created_at', 'desc')->where('is_valid', Seminar::REVISI)->get();
-        $seminars_acc = Seminar::orderBy('created_at', 'desc')->where('is_valid', Seminar::DITERIMA)->get();
-        
         $himpunan = Auth::guard('himpunan')->user();
         $is_pendaftaran_open = $himpunan ? $himpunan->is_pendaftaran_seminar_open : true;
+
+        // Filter seminar berdasarkan prodi himpunan yang login
+        $prodiId = $himpunan ? $himpunan->prodi_id : null;
+
+        $baseQuery = Seminar::orderBy('created_at', 'desc')
+            ->when($prodiId, function ($q) use ($prodiId) {
+                $q->whereHas('mahasiswa', function ($mq) use ($prodiId) {
+                    $mq->where('prodi_id', $prodiId);
+                });
+            });
+
+        $seminars_review = (clone $baseQuery)->where('is_valid', Seminar::REVIEW)->get();
+        $seminars_revisi = (clone $baseQuery)->where('is_valid', Seminar::REVISI)->get();
+        $seminars_acc    = (clone $baseQuery)->where('is_valid', Seminar::DITERIMA)->get();
 
         return view('kp.pages.himpunan.seminar.index', [
             'title' => 'Verifikasi Seminar KP',
@@ -91,7 +101,7 @@ class HimpunanController extends \App\Http\Controllers\Controller
             'sidebar' => 'kp.partials.sidebarHimpunan',
             'seminars_review' => $seminars_review,
             'seminars_revisi' => $seminars_revisi,
-            'seminars_acc' => $seminars_acc,
+            'seminars_acc'    => $seminars_acc,
             'is_pendaftaran_open' => $is_pendaftaran_open,
         ]);
     }
@@ -366,25 +376,33 @@ class HimpunanController extends \App\Http\Controllers\Controller
      */
     public function jadwalIndex()
     {
-        $sesi_seminars = SesiSeminar::with(['seminars.mahasiswa', 'dosenPenguji'])
+        $himpunan = Auth::guard('himpunan')->user();
+        $prodiId  = $himpunan ? $himpunan->prodi_id : null;
+
+        $sesi_seminars = SesiSeminar::with(['seminars.mahasiswa', 'dosenPenguji', 'dosenPenguji2'])
             ->orderBy('tanggal', 'desc')
             ->get();
         
-        // Mahasiswa yang siap dijadwalkan (diterima tapi belum ada sesi)
-        // EXCLUDE mahasiswa karyawan (tidak perlu seminar)
+        // Mahasiswa yang siap dijadwalkan (diterima tapi belum ada sesi) — difilter per prodi himpunan
         $seminars_siap = Seminar::where('is_valid', Seminar::DITERIMA)
             ->whereNull('sesi_seminar_id')
             ->whereHas('mahasiswa.pendaftaransKP', function($q) {
                 $q->where('status', 'diterima')
                   ->where('jenis_mahasiswa', '!=', 'karyawan');
             })
+            ->when($prodiId, function ($q) use ($prodiId) {
+                $q->whereHas('mahasiswa', function ($mq) use ($prodiId) {
+                    $mq->where('prodi_id', $prodiId);
+                });
+            })
             ->with(['mahasiswa', 'pengajuan'])
             ->get();
 
-        // Filter dosen berdasarkan prodi himpunan yang login
-        $himpunan = Auth::guard('himpunan')->user();
-        $dosens = Dosen::whereHas('prodis', function($q) use ($himpunan) {
-            $q->where('prodis.id', $himpunan->prodi_id);
+        // Dosen berdasarkan prodi himpunan yang login
+        $dosens = Dosen::when($prodiId, function ($q) use ($prodiId) {
+            $q->whereHas('prodis', function($pq) use ($prodiId) {
+                $pq->where('prodis.id', $prodiId);
+            });
         })->orderBy('nama')->get();
 
         return view('kp.pages.himpunan.seminar.jadwal', [
@@ -393,7 +411,7 @@ class HimpunanController extends \App\Http\Controllers\Controller
             'sidebar' => 'kp.partials.sidebarHimpunan',
             'sesi_seminars' => $sesi_seminars,
             'seminars_siap' => $seminars_siap,
-            'dosens' => $dosens,
+            'dosens'        => $dosens,
         ]);
     }
 
@@ -403,29 +421,31 @@ class HimpunanController extends \App\Http\Controllers\Controller
     public function createSesi(Request $request)
     {
         $request->validate([
-            'tanggal' => 'required|date',
-            'jam_mulai' => 'required',
-            'jam_selesai' => 'required',
-            'tempat' => 'required|string',
+            'tanggal'          => 'required|date',
+            'jam_mulai'        => 'required',
+            'jam_selesai'      => 'required',
+            'tempat'           => 'required|string',
             'dosen_penguji_id' => 'required|exists:dosens,id',
+            'dosen_penguji_id_2' => 'nullable|exists:dosens,id|different:dosen_penguji_id',
             'jumlah_mahasiswa' => 'required|integer|min:1|max:20',
-            'seminars' => 'required|array|min:1',
+            'seminars'         => 'required|array|min:1',
         ]);
 
         // Generate nama sesi otomatis
-        $tanggal = Carbon::parse($request->tanggal);
+        $tanggal   = Carbon::parse($request->tanggal);
         $nama_sesi = 'Sesi ' . $tanggal->translatedFormat('d M Y') . ' - ' . $request->jam_mulai;
 
         // Buat sesi seminar (token_penilaian auto-generated di model boot)
         $sesi = SesiSeminar::create([
-            'nama_sesi' => $nama_sesi,
-            'tanggal' => $request->tanggal,
-            'jam_mulai' => $request->jam_mulai,
-            'jam_selesai' => $request->jam_selesai,
-            'tempat' => $request->tempat,
-            'dosen_penguji_id' => $request->dosen_penguji_id,
-            'jumlah_mahasiswa' => $request->jumlah_mahasiswa,
-            'catatan_teknis' => $request->catatan_teknis,
+            'nama_sesi'          => $nama_sesi,
+            'tanggal'            => $request->tanggal,
+            'jam_mulai'          => $request->jam_mulai,
+            'jam_selesai'        => $request->jam_selesai,
+            'tempat'             => $request->tempat,
+            'dosen_penguji_id'   => $request->dosen_penguji_id,
+            'dosen_penguji_id_2' => $request->dosen_penguji_id_2 ?: null,
+            'jumlah_mahasiswa'   => $request->jumlah_mahasiswa,
+            'catatan_teknis'     => $request->catatan_teknis,
         ]);
 
         // Assign mahasiswa ke sesi dan set urutan presentasi

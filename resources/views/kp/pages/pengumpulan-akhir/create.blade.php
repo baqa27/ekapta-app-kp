@@ -275,13 +275,13 @@
 
                                 <div class="form-group">
                                     <label>
-                                        File Project / Program KP <span class="text-danger">*</span>
-                                        <br><small class="text-muted">File project/program dikompres dalam format .zip atau .rar (Maks 100 MB)</small>
+                                        File Project / Program KP <span class="text-muted">(Opsional)</span>
+                                        <br><small class="text-muted">File project/program dikompres dalam format .zip atau .rar (Maks 100 MB). Kosongkan jika prodi tidak mewajibkan produk.</small>
                                     </label>
                                     <div class="input-group mb-3">
                                         <div class="custom-file">
                                             <input type="file" class="custom-file-input @error('file_project')is-invalid @enderror"
-                                                name="file_project" accept=".zip,.rar" id="file_project" required>
+                                                name="file_project" accept=".zip,.rar" id="file_project">
                                             <label class="custom-file-label" for="file_project">Pilih file ZIP/RAR...</label>
                                         </div>
                                         <div class="input-group-append">
@@ -318,7 +318,7 @@
 
                                 <div class="form-group">
                                     <label>
-                                        Berita Acara Serah Terima Produk <span class="text-danger">*</span>
+                                        Berita Acara Serah Terima Produk <span class="text-muted">(Opsional)</span>
                                         <br><small class="text-muted">Berita acara serah terima produk dengan instansi/tempat penelitian KP dengan template
                                             <a href="https://drive.google.com/file/d/1X9eJxyj5GiPYP2MYHGOZiZEEbWWgGJ0J/view" target="_blank" class="text-primary">https://drive.google.com/file/d/1X9eJxyj5GiPYP2MYHGOZiZEEbWWgGJ0J/view</a>
                                         </small>
@@ -327,7 +327,7 @@
                                     <div class="input-group mb-3">
                                         <div class="custom-file">
                                             <input type="file" class="custom-file-input @error('berita_acara')is-invalid @enderror"
-                                                name="berita_acara" accept=".pdf,.jpg,.jpeg,.png" id="berita_acara" required>
+                                                name="berita_acara" accept=".pdf,.jpg,.jpeg,.png" id="berita_acara">
                                             <label class="custom-file-label" for="berita_acara">Pilih file PDF/Image...</label>
                                         </div>
                                         <div class="input-group-append">
@@ -341,11 +341,11 @@
 
                                 <div class="form-group">
                                     <label>
-                                        Panduan Penggunaan Produk KP <span class="text-danger">*</span>
-                                        <br><small class="text-muted">Format .docx atau Link Google Drive</small>
+                                        Panduan Penggunaan Produk KP <span class="text-muted">(Opsional)</span>
+                                        <br><small class="text-muted">Format .docx atau Link Google Drive. Kosongkan jika tidak ada produk.</small>
                                     </label>
-                                    <select name="type_panduan" id="type_panduan" class="form-control mb-2" onchange="toggleInputFieldsPanduan()" required>
-                                        <option value="">-- Pilih Metode Upload --</option>
+                                    <select name="type_panduan" id="type_panduan" class="form-control mb-2" onchange="toggleInputFieldsPanduan()">
+                                        <option value="">-- Pilih Metode Upload (Jika Ada Produk) --</option>
                                         <option value="upload">Upload File Langsung</option>
                                         <option value="link">Link Google Drive</option>
                                     </select>

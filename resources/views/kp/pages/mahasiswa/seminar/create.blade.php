@@ -197,18 +197,18 @@
                                     </div>
                                 </div>
 
-                                {{-- BAGIAN 4: LINK PRODUK --}}
+                                {{-- BAGIAN 4: LINK PRODUK (OPSIONAL) --}}
                                 <div class="card card-secondary">
                                     <div class="card-header py-2">
-                                        <h5 class="card-title mb-0">4. Link Akses Produk KP</h5>
+                                        <h5 class="card-title mb-0">4. Link Akses Produk KP <span class="badge badge-secondary ml-1">Opsional</span></h5>
                                     </div>
                                     <div class="card-body">
                                         <div class="form-group">
-                                            <label>Link Akses Produk <span class="text-danger">*</span></label>
+                                            <label>Link Akses Produk <span class="text-muted">(opsional)</span></label>
                                             <input type="url" class="form-control @error('link_akses_produk') is-invalid @enderror"
                                                 name="link_akses_produk" placeholder="https://..."
-                                                value="{{ old('link_akses_produk') }}" required>
-                                            <small class="text-muted">Masukkan link untuk mengakses produk KP (Google Drive, GitHub, dll)</small>
+                                                value="{{ old('link_akses_produk') }}">
+                                            <small class="text-muted">Masukkan link produk KP (Google Drive, GitHub, dll). Kosongkan jika tidak ada produk.</small>
                                             @error('link_akses_produk')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror

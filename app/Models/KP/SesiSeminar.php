@@ -28,6 +28,7 @@ class SesiSeminar extends Model
         'terisi',
         'himpunan_id',
         'dosen_penguji_id',
+        'dosen_penguji_id_2',
         'status',
         'pendaftaran_dibuka',
         'catatan',
@@ -90,6 +91,11 @@ class SesiSeminar extends Model
     public function dosenPenguji(): BelongsTo
     {
         return $this->belongsTo(Dosen::class, 'dosen_penguji_id');
+    }
+
+    public function dosenPenguji2(): BelongsTo
+    {
+        return $this->belongsTo(Dosen::class, 'dosen_penguji_id_2');
     }
 
     // Accessors

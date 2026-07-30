@@ -455,7 +455,7 @@ class SeminarController extends \App\Http\Controllers\Controller
 
         $validatedData = $request->validate([
             'no_wa' => ['required', 'string', 'max:20'],
-            'link_akses_produk' => ['required', 'url'],
+            'link_akses_produk' => ['nullable', 'url'],
             'metode_bayar' => ['required', 'string', 'max:255'],
             'file_laporan' => ['nullable', 'mimes:pdf', 'max:5000'],
             'file_bimbingan' => ['nullable', 'mimes:pdf', 'max:5000'],

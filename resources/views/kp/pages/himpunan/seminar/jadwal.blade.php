@@ -81,6 +81,7 @@
                                     <th>Waktu</th>
                                     <th>Tempat</th>
                                     <th>Penguji</th>
+                                    <th>Penguji 2</th>
                                     <th>Peserta</th>
                                     <th>Status Link</th>
                                     <th>Aksi</th>
@@ -93,6 +94,7 @@
                                     <td>{{ \Carbon\Carbon::parse($sesi->jam_mulai)->format('H:i') }} - {{ \Carbon\Carbon::parse($sesi->jam_selesai)->format('H:i') }}</td>
                                     <td>{{ $sesi->tempat }}</td>
                                     <td>{{ $sesi->dosenPenguji ? $sesi->dosenPenguji->nama . ', ' . $sesi->dosenPenguji->gelar : '-' }}</td>
+                                    <td>{{ $sesi->dosenPenguji2 ? $sesi->dosenPenguji2->nama . ', ' . $sesi->dosenPenguji2->gelar : '-' }}</td>
                                     <td><span class="badge bg-info">{{ count($sesi->seminars) }} mahasiswa</span></td>
                                     <td>
                                         @if($sesi->is_token_used)
@@ -167,13 +169,27 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>Dosen Penguji <span class="text-danger">*</span></label>
+                                    <label>Dosen Penguji 1 <span class="text-danger">*</span></label>
                                     <select name="dosen_penguji_id" class="form-control select-1" required>
                                         <option value="">-- Pilih Dosen --</option>
                                         @foreach($dosens as $dosen)
                                         <option value="{{ $dosen->id }}">{{ $dosen->nama . ', ' . $dosen->gelar }}</option>
                                         @endforeach
                                     </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Dosen Penguji 2 <span class="text-muted small">(Opsional)</span></label>
+                                    <select name="dosen_penguji_id_2" class="form-control select-1">
+                                        <option value="">-- Tidak Ada Penguji 2 --</option>
+                                        @foreach($dosens as $dosen)
+                                        <option value="{{ $dosen->id }}">{{ $dosen->nama . ', ' . $dosen->gelar }}</option>
+                                        @endforeach
+                                    </select>
+                                    <small class="text-muted">Penguji 2 opsional. Jika ada, masing-masing penguji bisa menilai sebagian mahasiswa.</small>
                                 </div>
                             </div>
                         </div>

@@ -163,9 +163,9 @@ class PengumpulanAkhirController extends \App\Http\Controllers\Controller
                 'lembar_pengesahan' => ['required', 'mimes:pdf', 'max:5000'], // 5MB
                 'lembar_bimbingan' => ['required', 'mimes:pdf', 'max:5000'], // 5MB
                 'lembar_revisi' => ['required', 'mimes:pdf', 'max:5000'], // 5MB
-                'file_project' => ['required', 'mimes:zip,rar', 'max:30720'], // 30MB (dibawah PHP limit 40MB)
+                'file_project' => ['nullable', 'mimes:zip,rar', 'max:30720'], // 30MB (Opsional)
                 'form_nilai_kp' => ['required', 'mimes:pdf,jpg,jpeg,png', 'max:1024'],
-                'berita_acara' => ['required', 'mimes:pdf,jpg,jpeg,png', 'max:1024'],
+                'berita_acara' => ['nullable', 'mimes:pdf,jpg,jpeg,png', 'max:1024'], // Opsional
                 'panduan' => [Rule::requiredIf(function() use($request){
                     return !empty($request->panduan);
                 }), 'mimes:docx', 'max:10000'],
@@ -194,9 +194,17 @@ class PengumpulanAkhirController extends \App\Http\Controllers\Controller
             $validatedData['lembar_pengesahan'] = StorageHelper::storeKpFile($request->lembar_pengesahan, $mahasiswa->nim, 'pengumpulan_akhir');
             $validatedData['lembar_bimbingan'] = StorageHelper::storeKpFile($request->lembar_bimbingan, $mahasiswa->nim, 'pengumpulan_akhir');
             $validatedData['lembar_revisi'] = StorageHelper::storeKpFile($request->lembar_revisi, $mahasiswa->nim, 'pengumpulan_akhir');
-            $validatedData['file_project'] = StorageHelper::storeKpFile($request->file_project, $mahasiswa->nim, 'pengumpulan_akhir');
+            if ($request->hasFile('file_project')) {
+                $validatedData['file_project'] = StorageHelper::storeKpFile($request->file_project, $mahasiswa->nim, 'pengumpulan_akhir');
+            } else {
+                $validatedData['file_project'] = null;
+            }
             $validatedData['form_nilai_kp'] = StorageHelper::storeKpFile($request->form_nilai_kp, $mahasiswa->nim, 'pengumpulan_akhir');
-            $validatedData['berita_acara'] = StorageHelper::storeKpFile($request->berita_acara, $mahasiswa->nim, 'pengumpulan_akhir');
+            if ($request->hasFile('berita_acara')) {
+                $validatedData['berita_acara'] = StorageHelper::storeKpFile($request->berita_acara, $mahasiswa->nim, 'pengumpulan_akhir');
+            } else {
+                $validatedData['berita_acara'] = null;
+            }
             if ($request->panduan) {
                 $validatedData['panduan'] = StorageHelper::storeKpFile($request->panduan, $mahasiswa->nim, 'pengumpulan_akhir');
             } else {

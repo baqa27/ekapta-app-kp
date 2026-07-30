@@ -41,8 +41,12 @@
                                     <td>: <strong>{{ $sesi->tempat }}</strong></td>
                                 </tr>
                                 <tr>
-                                    <td><i class="fas fa-user-tie mr-2"></i>Penguji</td>
+                                    <td><i class="fas fa-user-tie mr-2"></i>Penguji 1</td>
                                     <td>: <strong>{{ $sesi->dosenPenguji ? $sesi->dosenPenguji->nama . ', ' . $sesi->dosenPenguji->gelar : '-' }}</strong></td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fas fa-user-tie mr-2"></i>Penguji 2</td>
+                                    <td>: <strong>{{ $sesi->dosenPenguji2 ? $sesi->dosenPenguji2->nama . ', ' . $sesi->dosenPenguji2->gelar : '-' }}</strong> <span class="badge badge-secondary ml-1">Opsional</span></td>
                                 </tr>
                                 <tr>
                                     <td><i class="fas fa-users mr-2"></i>Peserta</td>
