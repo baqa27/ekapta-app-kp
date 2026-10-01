@@ -14,6 +14,7 @@ use App\Models\KP\Pengajuan;
 use App\Models\Prodi;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
 class PendaftaranController extends \App\Http\Controllers\Controller
@@ -99,44 +100,38 @@ class PendaftaranController extends \App\Http\Controllers\Controller
     public function store(Request $request)
     {
         $mahasiswa = Mahasiswa::where('nim', Auth::guard('mahasiswa')->user()->nim)->first();
-        $pengajuan = $mahasiswa->pengajuansKP()->where('status', Pengajuan::DITERIMA)->first();
 
-        $pendaftarans_review_acc = Pendaftaran::where('pengajuan_id', $pengajuan->id)->whereIn('status', [Pendaftaran::DITERIMA, Pendaftaran::REVIEW])->get();
+        $validatedData = $request->validate([
+            'nomor_pembayaran' => 'nullable',
+            'tanggal_pembayaran' => 'required',
+            'biaya' => 'required',
+            'lampiran_1' => ['required', 'mimes:pdf', 'max:5000'],
+            'lampiran_2' => ['required', 'mimes:pdf', 'max:5000'],
+            'lampiran_3' => ['required', 'mimes:pdf', 'max:5000'],
+            'lampiran_5' => ['required', 'mimes:pdf,png,jpg,jpeg', 'max:5000'],
+            'lampiran_6' => ['nullable', 'mimes:pdf', 'max:5000'],
+            'lampiran_7' => ['required', 'mimes:pdf', 'max:5000'],
+            'dokumen_pendukung' => ['required', 'mimes:pdf', 'max:5000'],
+        ]);
 
-        if (count($pendaftarans_review_acc) != 0) {
-            return redirect()->route('kp.pendaftaran.mahasiswa')->with('warning', 'Anda sudah melakukan pendaftaran');
-        } else {
-                    $validatedData = $request->validate([
-                'nomor_pembayaran' => 'nullable',
-                'tanggal_pembayaran' => 'required',
-                'biaya' => 'required',
-                'lampiran_1' => ['required', 'mimes:pdf', 'max:5000'],
-                'lampiran_2' => ['required', 'mimes:pdf', 'max:5000'],
-                'lampiran_3' => ['required', 'mimes:pdf', 'max:5000'],
-                'lampiran_5' => ['required', 'mimes:pdf,png,jpg,jpeg', 'max:5000'],
-                'lampiran_6' => ['nullable', 'mimes:pdf', 'max:5000'],
-                'lampiran_7' => ['required', 'mimes:pdf', 'max:5000'],
-                'dokumen_pendukung' => ['required', 'mimes:pdf', 'max:5000'],
-            ]);
+        // Upload file SEBELUM transaction (orphan-acceptable risk: file duplikat tidak corrupt data)
+        $validatedData['lampiran_1'] = StorageHelper::storeKpFile($request->file('lampiran_1'), $mahasiswa->nim, 'pendaftaran');
+        $validatedData['lampiran_2'] = StorageHelper::storeKpFile($request->file('lampiran_2'), $mahasiswa->nim, 'pendaftaran');
+        $validatedData['lampiran_3'] = StorageHelper::storeKpFile($request->file('lampiran_3'), $mahasiswa->nim, 'pendaftaran');
+        $validatedData['lampiran_5'] = StorageHelper::storeKpFile($request->file('lampiran_5'), $mahasiswa->nim, 'pendaftaran');
+        if ($request->file('lampiran_6')) {
+            $validatedData['lampiran_6'] = StorageHelper::storeKpFile($request->file('lampiran_6'), $mahasiswa->nim, 'pendaftaran');
+        }
+        $validatedData['lampiran_7'] = StorageHelper::storeKpFile($request->file('lampiran_7'), $mahasiswa->nim, 'pendaftaran');
+        $validatedData['dokumen_pendukung'] = StorageHelper::storeKpFile($request->file('dokumen_pendukung'), $mahasiswa->nim, 'pendaftaran');
 
-            $validatedData['lampiran_1'] = StorageHelper::storeKpFile($request->file('lampiran_1'), $mahasiswa->nim, 'pendaftaran');
-            $validatedData['lampiran_2'] = StorageHelper::storeKpFile($request->file('lampiran_2'), $mahasiswa->nim, 'pendaftaran');
-            $validatedData['lampiran_3'] = StorageHelper::storeKpFile($request->file('lampiran_3'), $mahasiswa->nim, 'pendaftaran');
-            $validatedData['lampiran_5'] = StorageHelper::storeKpFile($request->file('lampiran_5'), $mahasiswa->nim, 'pendaftaran');
-            if ($request->file('lampiran_6')) {
-                $validatedData['lampiran_6'] = StorageHelper::storeKpFile($request->file('lampiran_6'), $mahasiswa->nim, 'pendaftaran');
-            }
-            $validatedData['lampiran_7'] = StorageHelper::storeKpFile($request->file('lampiran_7'), $mahasiswa->nim, 'pendaftaran');
-            $validatedData['dokumen_pendukung'] = StorageHelper::storeKpFile($request->file('dokumen_pendukung'), $mahasiswa->nim, 'pendaftaran');
-
-            $validatedData['mahasiswa_id'] = $mahasiswa->id;
-        $validatedData['pengajuan_id'] = $pengajuan->id;
+        $validatedData['mahasiswa_id'] = $mahasiswa->id;
 
         // Keep the date in proper format for database (Y-m-d)
         $validatedData['tanggal_pembayaran'] = $request->tanggal_pembayaran;
 
         $biaya = (int) $request->biaya;
-        
+
         // Tentukan jenis_mahasiswa dan kelas berdasarkan data mahasiswa dari database
         // Cek field 'kelas' di tabel mahasiswa
         if ($mahasiswa->kelas == 'B') {
@@ -159,9 +154,30 @@ class PendaftaranController extends \App\Http\Controllers\Controller
             $validatedData['tanggal_perpanjangan_terakhir'] = now();
         }
 
-        Pendaftaran::create($validatedData);
-        return redirect()->route('kp.pendaftaran.mahasiswa')->with('success', 'Berhasil melakukan pendaftaran');
-    }
+        // Transaction + lockForUpdate pada pengajuan untuk cegah race condition double-submit
+        $result = DB::transaction(function () use ($mahasiswa, $validatedData) {
+            $pengajuan = $mahasiswa->pengajuansKP()->where('status', Pengajuan::DITERIMA)->lockForUpdate()->first();
+
+            if (!$pengajuan) {
+                return redirect()->route('kp.pendaftaran.mahasiswa')->with('warning', 'Pengajuan KP belum diterima');
+            }
+
+            $pendaftarans_review_acc = Pendaftaran::where('pengajuan_id', $pengajuan->id)
+                ->whereIn('status', [Pendaftaran::DITERIMA, Pendaftaran::REVIEW])
+                ->lockForUpdate()
+                ->get();
+
+            if (count($pendaftarans_review_acc) != 0) {
+                return redirect()->route('kp.pendaftaran.mahasiswa')->with('warning', 'Anda sudah melakukan pendaftaran');
+            }
+
+            $validatedData['pengajuan_id'] = $pengajuan->id;
+            Pendaftaran::create($validatedData);
+
+            return redirect()->route('kp.pendaftaran.mahasiswa')->with('success', 'Berhasil melakukan pendaftaran');
+        });
+
+        return $result;
     }
 
     public function edit($id)
@@ -346,58 +362,66 @@ class PendaftaranController extends \App\Http\Controllers\Controller
 
     public function accPendaftaran(Request $request)
     {
-        $pendaftaran = Pendaftaran::findOrFail($request->id);
+        return DB::transaction(function () use ($request) {
+            $pendaftaran = Pendaftaran::lockForUpdate()->findOrFail($request->id);
 
-        $mahasiswa = Mahasiswa::where('id', $pendaftaran->mahasiswa_id)->first();
-        $mahasiswa->update([
-            'thmasuk' => $request->tahun_masuk,
-        ]);
-
-        // KP hanya butuh 1 dosen pembimbing (status = 'pembimbing')
-        $dosenPembimbing = $mahasiswa->dosens()->where('status', 'pembimbing')->first();
-
-        $pendaftaran_disabled = Pendaftaran::where('mahasiswa_id', $mahasiswa->id)->where('status', Pendaftaran::DISABLED)->first();
-
-        // Cari prodi berdasarkan kode ATAU namaprodi untuk backward compatibility
-        $prodi = Prodi::where('kode', $mahasiswa->prodi)
-            ->orWhere('namaprodi', $mahasiswa->prodi)
-            ->first();
-
-        // Validasi dosen pembimbing sudah di-assign di tahap pengajuan
-        if (!$dosenPembimbing) {
-            return back()->with('warning', 'Dosen pembimbing belum ditentukan. Pastikan Prodi sudah menentukan dosen pembimbing di tahap Pengajuan KP.');
-        } elseif (!$prodi || count($prodi->bagiansKP()->where("tahun_masuk", "LIKE", "%" . $mahasiswa->thmasuk . "%")->get()) == 0) {
-            return back()->with('warning', 'Bagian bimbingan KP untuk prodi ' . $mahasiswa->prodi . ' dan tahun masuk '.$mahasiswa->thmasuk.' masih kosong');
-        } elseif ($pendaftaran->status == Pendaftaran::DITERIMA) {
-            return back()->with('warning', 'Pendaftaran sudah diacc');
-        } else {
-            $pendaftaran->update([
-                'status' => Pendaftaran::DITERIMA,
-                'tanggal_acc' => now(),
+            $mahasiswa = Mahasiswa::where('id', $pendaftaran->mahasiswa_id)->first();
+            $mahasiswa->update([
+                'thmasuk' => $request->tahun_masuk,
             ]);
 
-            if (!$pendaftaran_disabled) {
-                // KP: Otomatis create bimbingan dengan 1 dosen pembimbing untuk setiap bagian KP
-                foreach ($prodi->bagiansKP()->where("tahun_masuk", "LIKE", "%" . $mahasiswa->thmasuk . "%")->get() as $bagian) {
-                    $bimbingan = Bimbingan::create([
-                        'mahasiswa_id' => $mahasiswa->id,
-                        'bagian_id' => $bagian->id,
-                        'pembimbing' => 'pembimbing', // KP hanya 1 pembimbing
-                        'status' => null, // Status null sampai mahasiswa submit bimbingan
-                    ]);
-                    $bimbingan->dosens()->attach([$dosenPembimbing->id]);
-                }
-            }
-            if ($pendaftaran->mahasiswa->email != '-') {
-                AppHelper::instance()->send_mail([
-                    'mail' => $pendaftaran->mahasiswa->email,
-                    'subject' => 'Pendaftaran Kerja Praktek',
-                    'title' => 'EKAPTA',
-                    'message' => 'Selamat Pendaftaran Kerja Praktek Anda Berstatus DITERIMA. Anda bisa memulai Bimbingan Kerja Praktek.',
+            // KP hanya butuh 1 dosen pembimbing (status = 'pembimbing')
+            $dosenPembimbing = $mahasiswa->dosens()->where('status', 'pembimbing')->first();
+
+            $pendaftaran_disabled = Pendaftaran::where('mahasiswa_id', $mahasiswa->id)->where('status', Pendaftaran::DISABLED)->first();
+
+            // Cari prodi berdasarkan kode ATAU namaprodi untuk backward compatibility
+            $prodi = Prodi::where('kode', $mahasiswa->prodi)
+                ->orWhere('namaprodi', $mahasiswa->prodi)
+                ->first();
+
+            // Validasi dosen pembimbing sudah di-assign di tahap pengajuan
+            if (!$dosenPembimbing) {
+                return back()->with('warning', 'Dosen pembimbing belum ditentukan. Pastikan Prodi sudah menentukan dosen pembimbing di tahap Pengajuan KP.');
+            } elseif (!$prodi || count($prodi->bagiansKP()->where("tahun_masuk", "LIKE", "%" . $mahasiswa->thmasuk . "%")->get()) == 0) {
+                return back()->with('warning', 'Bagian bimbingan KP untuk prodi ' . $mahasiswa->prodi . ' dan tahun masuk '.$mahasiswa->thmasuk.' masih kosong');
+            } elseif ($pendaftaran->status == Pendaftaran::DITERIMA) {
+                return back()->with('warning', 'Pendaftaran sudah diacc');
+            } else {
+                $pendaftaran->update([
+                    'status' => Pendaftaran::DITERIMA,
+                    'tanggal_acc' => now(),
                 ]);
+
+                if (!$pendaftaran_disabled) {
+                    // KP: Otomatis create bimbingan dengan 1 dosen pembimbing untuk setiap bagian KP
+                    foreach ($prodi->bagiansKP()->where("tahun_masuk", "LIKE", "%" . $mahasiswa->thmasuk . "%")->get() as $bagian) {
+                        $exists = Bimbingan::where('mahasiswa_id', $mahasiswa->id)
+                            ->where('bagian_id', $bagian->id)
+                            ->exists();
+
+                        if (!$exists) {
+                            $bimbingan = Bimbingan::create([
+                                'mahasiswa_id' => $mahasiswa->id,
+                                'bagian_id' => $bagian->id,
+                                'pembimbing' => 'pembimbing', // KP hanya 1 pembimbing
+                                'status' => null, // Status null sampai mahasiswa submit bimbingan
+                            ]);
+                            $bimbingan->dosens()->attach([$dosenPembimbing->id]);
+                        }
+                    }
+                }
+                if ($pendaftaran->mahasiswa->email != '-') {
+                    AppHelper::instance()->send_mail([
+                        'mail' => $pendaftaran->mahasiswa->email,
+                        'subject' => 'Pendaftaran Kerja Praktek',
+                        'title' => 'EKAPTA',
+                        'message' => 'Selamat Pendaftaran Kerja Praktek Anda Berstatus DITERIMA. Anda bisa memulai Bimbingan Kerja Praktek.',
+                    ]);
+                }
+                return back()->with('success', 'Pendaftaran berhasil diacc');
             }
-            return back()->with('success', 'Pendaftaran berhasil diacc');
-        }
+        });
     }
 
     public function cancelAcc(Request $request)
