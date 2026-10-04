@@ -631,6 +631,53 @@ class PengumpulanAkhirController extends \App\Http\Controllers\Controller
 
         return back()->with('success', 'Nilai Kerja Praktek berhasil disimpan.');
     }
+
+    /**
+     * Detail Jilid TA untuk Admin
+     * Menampilkan dokumen pengumpulan akhir TA
+     */
+    public function detailTA($id)
+    {
+        $jilid = \App\Models\Jilid::with(['mahasiswa','revisis'])->findOrFail($id);
+        $mahasiswa = $jilid->mahasiswa()->with(['bimbingans'])->first();
+        $prodi = Prodi::where('kode', $mahasiswa->prodi)
+            ->orWhere('namaprodi', $mahasiswa->prodi)
+            ->first();
+
+        return view('kp.pages.pengumpulan-akhir.detail-ta', [
+            'title' => 'Detail Jilid TA',
+            'sidebar' => Auth::guard('admin')->user()->type == Admin::TYPE_SUPER_ADMIN ? 'partials.sidebarAdmin' : null,
+            'active' => 'pengumpulan-akhir',
+            'jilid' => $jilid,
+            'mahasiswa' => $mahasiswa,
+            'prodi' => $prodi,
+            'is_admin' => true,
+            'revisis' => $jilid->revisis()->paginate(5),
+        ]);
+    }
+
+    /**
+     * Detail Jilid TA untuk Prodi
+     * Menampilkan dokumen pengumpulan akhir TA
+     */
+    public function detailProdiTA($id)
+    {
+        $jilid = \App\Models\Jilid::with(['mahasiswa','revisis'])->findOrFail($id);
+        $mahasiswa = $jilid->mahasiswa()->with(['bimbingans'])->first();
+        $prodi = Prodi::where('kode', $mahasiswa->prodi)
+            ->orWhere('namaprodi', $mahasiswa->prodi)
+            ->first();
+
+        return view('kp.pages.pengumpulan-akhir.prodi-detail-ta', [
+            'sidebar' => 'kp.partials.sidebarProdi',
+            'title' => 'Detail Jilid TA',
+            'active' => 'pengumpulan-akhir-kp',
+            'jilid' => $jilid,
+            'mahasiswa' => $mahasiswa,
+            'prodi' => $prodi,
+            'revisis' => $jilid->revisis()->paginate(5),
+        ]);
+    }
 }
 
 
