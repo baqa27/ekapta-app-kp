@@ -781,7 +781,7 @@ Route::prefix('kp')->name('kp.')->group(function () {
     Route::get('/bimbingan/create', [KPBimbinganController::class, 'create'])->name('bimbingan.create')->middleware('isMahasiswa');
     Route::get('/bimbingan/create-manual', [KPBimbinganController::class, 'createManual'])->name('bimbingan.create.manual')->middleware('isMahasiswa');
     Route::post('/bimbingan/store-manual', [KPBimbinganController::class, 'storeManual'])->name('bimbingan.store.manual')->middleware('isMahasiswa');
-    Route::post('/bimbingan/store', [KPBimbinganController::class, 'store'])->name('bimbingan.store')->middleware('isMahasiswa');
+    Route::post('/bimbingan/store', [KPBimbinganController::class, 'store'])->name('kp.bimbingan.store')->middleware('isMahasiswa');
     Route::get('/bimbingan/edit/{id}', [KPBimbinganController::class, 'edit'])->name('bimbingan.edit')->middleware('isMahasiswa');
     Route::post('/bimbingan/update', [KPBimbinganController::class, 'update'])->name('bimbingan.update')->middleware('isMahasiswa');
     Route::post('/bimbingan/delete', [KPBimbinganController::class, 'delete'])->name('bimbingan.delete')->middleware('isMahasiswa');

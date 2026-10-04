@@ -606,6 +606,92 @@ class PengumpulanAkhirController extends \App\Http\Controllers\Controller
         ]);
     }
 
+    /**
+     * Detail TA (Tugas Akhir) jilid untuk admin
+     * Mirror detail() tapi untuk namespace TA
+     */
+    public function detailTA($id)
+    {
+        $JilidTA = \App\Models\Jilid::class;
+        $jilid = $JilidTA::with(['mahasiswa','revisis'])->findOrFail($id);
+        $mahasiswa = $jilid->mahasiswa()->with(['bimbingans', 'ujian.sesiUjian.dosenPenguji', 'ujian.dosenPenguji', 'jilid'])->first();
+        $prodi = Prodi::where('kode', $mahasiswa->prodi)
+            ->orWhere('namaprodi', $mahasiswa->prodi)
+            ->first();
+
+        // Waktu pelaksanaan TA
+        $pendaftaran = $mahasiswa->pendaftarans()->where('status', \App\Models\Pendaftaran::DITERIMA)->first();
+        $latestBimbingan = $mahasiswa->bimbingans()
+            ->where('status', \App\Models\Bimbingan::DITERIMA)
+            ->latest('tanggal_acc')
+            ->first();
+
+        $dateStart = $pendaftaran && $pendaftaran->tanggal_acc ? \Carbon\Carbon::parse($pendaftaran->tanggal_acc) : null;
+        $dateEnd = $latestBimbingan && $latestBimbingan->tanggal_acc ? \Carbon\Carbon::parse($latestBimbingan->tanggal_acc) : null;
+
+        $waktu_pelaksanaan = '-';
+        if ($dateStart && $dateEnd) {
+             $waktu_pelaksanaan = AppHelper::parse_date_short_surat($dateStart) . ' s/d ' . AppHelper::parse_date_short_surat($dateEnd);
+        } elseif ($dateStart) {
+             $waktu_pelaksanaan = AppHelper::parse_date_short_surat($dateStart) . ' s/d -';
+        }
+
+        return view('pages.pengumpulan-akhir.detail', [
+            'title' => 'Detail Jilid TA',
+            'sidebar' => Auth::guard('admin')->user()->type == Admin::TYPE_SUPER_ADMIN ? 'partials.sidebarAdmin' : null,
+            'active' => Auth::guard('admin')->user()->type == Admin::TYPE_SUPER_ADMIN ? 'pengumpulan-akhir' : null,
+            'jilid' => $jilid,
+            'mahasiswa' => $mahasiswa,
+            'prodi' => $prodi,
+            'is_admin' => true,
+            'revisis' => $jilid->revisis()->paginate(5),
+            'waktu_pelaksanaan' => $waktu_pelaksanaan,
+        ]);
+    }
+
+    /**
+     * Detail TA (Tugas Akhir) jilid untuk prodi
+     * Mirror detailProdi() tapi untuk namespace TA
+     */
+    public function detailProdiTA($id)
+    {
+        $JilidTA = \App\Models\Jilid::class;
+        $jilid = $JilidTA::with(['mahasiswa','revisis'])->findOrFail($id);
+        $mahasiswa = $jilid->mahasiswa()->with(['bimbingans', 'ujian.sesiUjian.dosenPenguji', 'ujian.dosenPenguji', 'jilid'])->first();
+        $prodi = $mahasiswa->prodiRelation;
+
+        // Waktu pelaksanaan TA
+        $pendaftaran = $mahasiswa->pendaftarans()->where('status', \App\Models\Pendaftaran::DITERIMA)->first();
+        $latestBimbingan = $mahasiswa->bimbingans()
+            ->where('status', \App\Models\Bimbingan::DITERIMA)
+            ->latest('tanggal_acc')
+            ->first();
+
+        $dateStart = $pendaftaran && $pendaftaran->tanggal_acc ? \Carbon\Carbon::parse($pendaftaran->tanggal_acc) : null;
+        $dateEnd = $latestBimbingan && $latestBimbingan->tanggal_acc ? \Carbon\Carbon::parse($latestBimbingan->tanggal_acc) : null;
+
+        $waktu_pelaksanaan = '-';
+        if ($dateStart && $dateEnd) {
+             $waktu_pelaksanaan = \App\Helpers\AppHelper::parse_date_short_surat($dateStart) . ' s/d ' . \App\Helpers\AppHelper::parse_date_short_surat($dateEnd);
+        } elseif ($dateStart) {
+             $waktu_pelaksanaan = \App\Helpers\AppHelper::parse_date_short_surat($dateStart) . ' s/d -';
+        }
+
+        $is_karyawan = false; // TA context, not KP
+
+        return view('pages.pengumpulan-akhir.prodi-detail', [
+            'sidebar' => 'partials.sidebarProdi',
+            'title' => 'Detail Jilid TA',
+            'active' => 'pengumpulan-akhir-ta',
+            'jilid' => $jilid,
+            'mahasiswa' => $mahasiswa,
+            'prodi' => $prodi,
+            'revisis' => $jilid->revisis()->paginate(5),
+            'waktu_pelaksanaan' => $waktu_pelaksanaan,
+            'is_karyawan' => $is_karyawan,
+        ]);
+    }
+
     public function updateNilai(Request $request, $id)
     {
         $jilid = Jilid::findOrFail($id);
