@@ -2,7 +2,6 @@
 
 namespace App\Helpers;
 
-use App\Enums\EkaptaContext;
 use Illuminate\Support\Facades\Session;
 
 class ContextHelper
@@ -30,18 +29,7 @@ class ContextHelper
         return Session::get(self::SESSION_KEY);
     }
 
-    /**
-     * Get current context as EkaptaContext enum
-     * Returns TA as default if no context set
-     */
-    public static function getEnum(): EkaptaContext
-    {
-        $context = Session::get(self::SESSION_KEY);
-        return match($context) {
-            self::KP => EkaptaContext::KERJA_PRAKTIK,
-            default => EkaptaContext::TUGAS_AKHIR,
-        };
-    }
+
 
     /**
      * Check if context is TA
