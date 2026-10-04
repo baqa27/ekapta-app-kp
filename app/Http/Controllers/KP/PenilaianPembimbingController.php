@@ -71,7 +71,7 @@ class PenilaianPembimbingController extends \App\Http\Controllers\Controller
 
         $pengajuan = $mahasiswa->pengajuansKP()->where('status', 'diterima')->first();
 
-        return view('kp.pages.dosen.penilaian.create', [
+        return view('kp.pages.dosen.penilaian.index', [
             'title' => 'Form Penilaian Pembimbing',
             'active' => 'penilaian-kp',
             'sidebar' => 'kp.partials.sidebarDosen',
