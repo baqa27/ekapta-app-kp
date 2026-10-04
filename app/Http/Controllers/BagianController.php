@@ -122,4 +122,10 @@ class BagianController extends Controller
         $bagian = Bagian::with(['prodi'])->where('id', $id)->first();
         return $prodi = $bagian->prodi()->with(['bagians'])->get();
     }
+
+    public function down($id)
+    {
+        $bagian = Bagian::with(['prodi'])->where('id', $id)->first();
+        return $prodi = $bagian->prodi()->with(['bagians'])->get();
+    }
 }

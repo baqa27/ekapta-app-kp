@@ -354,7 +354,6 @@ Route::group(['middleware' => 'isMahasiswa'], function(){
     Route::get('ujian/detail/{id}', [UjianController::class, 'detail'])->name('ujian.detail');
     Route::get('ujian/edit/{id}', [UjianController::class, 'edit'])->name('ujian.edit');
     Route::put('ujian/update/{id}', [UjianController::class, 'update'])->name('ujian.update');
-    Route::delete('ujian/delete/{id}', [UjianController::class, 'delete'])->name('ujian.delete');
     Route::get('ujian/reviews/{id}', [UjianController::class, 'ujianReviews'])->name('ujian.reviews');
     Route::get('review/ujian/edit/{id}', [ReviewUjianController::class, 'edit'])->name('review.ujian.edit');
     Route::post('review/ujian/update', [ReviewUjianController::class, 'update'])->name('review.ujian.update');
@@ -507,7 +506,8 @@ Route::put('mahasiswa/account/{id}', [MahasiswaController::class, 'accountUpdate
 Route::post('profile/update', [MahasiswaController::class, 'update'])->name('profile.update')->middleware('isMahasiswa');
 
 // Himpunan (Data Master - KP Only)
-Route::get('/himpunans', [KPAdminController::class, 'himpunans'])->name('himpunans')->middleware('isAdmin');
+// HimpunanMasterController redirect ke route('himpunans') tanpa prefix kp.
+Route::get('/himpunans', [HimpunanMasterController::class, 'index'])->name('himpunans')->middleware('isAdmin');
 
 //Dekan
 Route::post('/dekan/store', [DekanController::class, 'store'])->name('dekan.store')->middleware('isAdmin');
@@ -541,7 +541,6 @@ Route::group(['middleware' => 'isLogin'], function (){
     Route::get('/cetak/surat-tugas-bimbingan/{pendaftaran}', [CetakController::class, 'cetakSuratTugasBimbingan']);
     Route::get('/cetak/berita-acara-ujian-proposal/{seminar}', [CetakController::class, 'cetakBeritaAcaraUjianProposal'])->name('cetak.berita.acara.ujian.proposal');
     Route::get('/cetak/berita-acara-ujian-proposal-blank/{ujian_or_seminar}/{type}', [CetakController::class, 'cetakBeritaAcaraUjianProposalBlank'])->name('cetak.berita.acara.ujian.proposal.blank');
-    Route::get('/cetak/berita-acara-ujian-pendadaran/{ujian}', [CetakController::class, 'cetakBeritaAcaraUjianPendadaran'])->name('cetak.berita.acara.ujian.pendadaran');
     Route::get('/cetak/berita-acara-ujian-pendadaran/{ujian}', [CetakController::class, 'cetakBeritaAcaraUjianPendadaran'])->name('cetak.berita.acara.ujian.pendadaran');
     Route::get('/cetak/surat-riwayat-bimbingan-mahasiswa', [CetakController::class, 'cetakRiwayatBimbinganMahasiswa'])->name('cetak.riwayat.bimbingan.mahasiswa');
     Route::get('/cetak/surat-riwayat-bimbingan/{id}', [CetakController::class, 'cetakRiwayatBimbingan'])->name('cetak.riwayat.bimbingan');
@@ -613,10 +612,6 @@ Route::get('/back/dashboard', function () {
 })->name('back.dashboard');
 
 Route::group(['middleware' => 'isAdmin'], function (){
-    Route::get('mahasiswa/reset-password/{id}', [MahasiswaController::class, 'resetPassword'])->name('mahasiswa.reset.password');
-    Route::get('dosen/reset-password/{id}', [DosenController::class, 'resetPassword'])->name('dosen.reset.password');
-    Route::get('prodi/reset-password/{id}', [ProdiController::class, 'resetPassword'])->name('prodi.reset.password');
-
     Route::get('laporan-bimbingan-mahasiswa', [BimbinganController::class, 'bimbinganAdmin'])->name('bimbingan.admin');
 });
 
@@ -673,6 +668,7 @@ Route::group(['middleware' => 'isAdmin'], function (){
 Route::get('/dashboard-ta', [DashboardController::class, 'dashboardMahasiswaTA'])->name('dashboard.mahasiswa.ta')->middleware('isMahasiswa');
 
 Route::prefix('kp')->name('kp.')->group(function () {
+    Route::get('/mahasiswa/reset-password/{id}', [KPMahasiswaController::class, 'resetPassword'])->name('mahasiswa.reset.password')->middleware('isAdmin');
 
     // ============================================================================
     // LOGIN HIMPUNAN (KHUSUS KP)
@@ -855,7 +851,6 @@ Route::prefix('kp')->name('kp.')->group(function () {
         Route::get('/seminar/edit/proposal/{id}', [KPSeminarController::class, 'editProposal'])->name('seminar.edit.proposal');
         Route::put('/seminar/update/proposal/{id}', [KPSeminarController::class, 'updateProposal'])->name('seminar.update.proposal');
         Route::post('/seminar/delete', [KPSeminarController::class, 'delete'])->name('seminar.delete');
-        Route::post('/seminar/upload-revisi/{id}', [KPSeminarController::class, 'uploadRevisi'])->name('seminar.upload.revisi');
         Route::post('/seminar/upload-nilai-instansi/{id}', [KPSeminarController::class, 'uploadNilaiInstansi'])->name('seminar.upload.nilai.instansi');
         Route::get('/review/seminar/edit/{id}', [KPReviewSeminarController::class, 'edit'])->name('review.seminar.edit');
         Route::post('/review/seminar/update', [KPReviewSeminarController::class, 'update'])->name('review.seminar.update');
@@ -971,14 +966,14 @@ Route::prefix('kp')->name('kp.')->group(function () {
     Route::post('/mahasiswa/store', [KPMahasiswaController::class, 'store'])->name('mahasiswa.store')->middleware('isAdmin');
     Route::post('/mahasiswa/import', [KPMahasiswaController::class, 'import'])->name('mahasiswa.import')->middleware('isAdmin');
     Route::post('/mahasiswa/detail/import', [KPMahasiswaController::class, 'importDetail'])->name('mahasiswa.detail.import')->middleware('isAdmin');
-    Route::get('/mahasiswa/reset-password/{id}', [KPMahasiswaController::class, 'resetPassword'])->name('mahasiswa.reset.password')->middleware('isAdmin');
+    // ponytail: reset-password sudah didefinisikan di line 448 (KPMahasiswaController2 alias)
 
     Route::get('/dosen', [KPDosenController::class, 'index'])->name('dosen')->middleware('isAdmin');
     Route::get('/dosen/{id}', [KPDosenController::class, 'edit'])->name('dosen.edit')->middleware('isAdmin');
     Route::post('/dosen/store', [KPDosenController::class, 'store'])->name('dosen.store')->middleware('isAdmin');
     Route::put('/dosen/{id}', [KPDosenController::class, 'update'])->name('dosen.update')->middleware('isAdmin');
     Route::post('/dosen/import', [KPDosenController::class, 'import'])->name('dosen.import')->middleware('isAdmin');
-    Route::get('/dosen/reset-password/{id}', [KPDosenController::class, 'resetPassword'])->name('dosen.reset.password')->middleware('isAdmin');
+    // ponytail: reset-password sudah didefinisikan di line 453 (KPDosenController2 alias)
     Route::get('/dosen/change-manual/{id}', [KPDosenController::class, 'changeManual'])->name('dosen.change.manual')->middleware('isAdmin');
 
     Route::get('/fakultas', [KPFakultasController::class, 'index'])->name('fakultas')->middleware('isAdmin');
@@ -989,7 +984,7 @@ Route::prefix('kp')->name('kp.')->group(function () {
     Route::post('/fakultas/add/prodi', [KPFakultasController::class, 'addProdi'])->name('fakultas.add.prodi')->middleware('isAdmin');
     Route::post('/fakultas/delete/prodi', [KPFakultasController::class, 'deleteProdi'])->name('fakultas.delete.prodi')->middleware('isAdmin');
 
-    Route::get('/prodi/reset-password/{id}', [KPProdiController::class, 'resetPassword'])->name('prodi.reset.password')->middleware('isAdmin');
+    // ponytail: reset-password sudah didefinisikan di line 443 (KPProdiController2 alias)
 
     // Public KP
     Route::get('/public/riwayat-bimbingan/{id}',[KPBimbinganController::class, 'public'])->name('bimbingan.public');

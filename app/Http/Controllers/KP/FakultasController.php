@@ -13,6 +13,17 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class FakultasController extends \App\Http\Controllers\Controller
 {
+    public function store(Request $request)
+    {
+        $validatedData = $request->validate([
+            'namafakultas' => 'required',
+            'image' => 'required|mimes:png,jpg,jpeg|max:300'
+        ]);
+        $validatedData['image'] = AppHelper::instance()->uploadLampiran($request->image, 'images');
+        Fakultas::create($validatedData);
+        return back()->with('success', 'Fakultas berhasil ditambahkan');
+    }
+
     public function index()
     {
         $fakultass = Fakultas::all();

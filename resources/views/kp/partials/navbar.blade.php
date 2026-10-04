@@ -25,9 +25,9 @@
             <div class="text-right container-login-register">
                 @if(Auth::guard('mahasiswa')->user() ||Auth::guard('dosen')->user() || Auth::guard('prodi')->user() ||
                 Auth::guard('admin')->user())
-                <a href="{{ route('kp.back.dashboard') }}" class="btn btn-primary-me btn-login">Dashboard</a>
+                <a href="{{ route('back.dashboard') }}" class="btn btn-primary-me btn-login">Dashboard</a>
                 @else
-                <a href="{{ route('kp.login') }}" class="btn btn-primary-me btn-login">Login</a>
+                <a href="{{ route('login') }}" class="btn btn-primary-me btn-login">Login</a>
                 @endif
             </div>
         </div>

@@ -286,6 +286,75 @@ class CetakController extends \App\Http\Controllers\Controller
 
 
 
+    public function cetakRiwayatBimbingan($id){
+        $mahasiswa = Mahasiswa::where('id', base64_decode($id))->first();
+        if (!$mahasiswa) {
+            abort(404);
+        }
+        $pengajuan = $mahasiswa->pengajuansKP()->where('status', Pengajuan::DITERIMA)->first();
+        $pendaftaran = Pendaftaran::where('pengajuan_id', $pengajuan->id)->first();
+        $prodi = Prodi::where('kode', $mahasiswa->prodi)
+            ->orWhere('namaprodi', $mahasiswa->prodi)
+            ->first();
+
+        $dosenPembimbing = $mahasiswa->dosens()->where('status', 'pembimbing')->first();
+        if (!$dosenPembimbing) {
+            $dosenPembimbing = $mahasiswa->dosens()->where('status', 'utama')->first();
+        }
+        $dosenUtama = $dosenPembimbing;
+        $dosenPendamping = null;
+
+        $qrcode = 'data:image/' . ';base64,' . base64_encode(QrCode::format('svg')->size(200)->errorCorrection('H')->generate(url('public/riwayat-bimbingan/' . base64_encode($mahasiswa->id))));
+
+        $startDate = AppHelper::getBimbinganStartDateFromPendaftaran($pendaftaran);
+        $dateLocale = $startDate ? $startDate->day.' '.$startDate->monthName.' '.$startDate->year : null;
+        $dateExpired = AppHelper::getBimbinganExpiredDateFromPendaftaran($pendaftaran, 6);
+
+        $bimbingan_dosen_utama = $dosenPembimbing ? $dosenPembimbing->bimbingansKP()->with(['revisis','bagian'])->where('mahasiswa_id', $mahasiswa->id)->where('status', 'diterima')->get() : collect([]);
+
+        $bimbingan_manual = \App\Models\KP\AjuanBimbinganManualKP::where('mahasiswa_id', $mahasiswa->id)
+            ->where('status', 'acc')
+            ->with(['bimbingan', 'bimbingan.bagian'])
+            ->get();
+
+        $pendaftarans = Pendaftaran::whereYear('created_at', Carbon::parse($pendaftaran->created_at)->year)->get();
+        $no=0;
+        $no_urut = 000;
+        foreach($pendaftarans as $p){
+            $no++;
+            if($pendaftaran->id == $p->id){
+                $no_urut = sprintf("%03d", $no);
+                break;
+            }
+        }
+
+        $data = [
+            'title' => 'Lembar Bimbingan KP',
+            'kop_surat' => AppHelper::instance()->convertImage('public/ekapta/assets/img/kop-surat.jpg'),
+            'mahasiswa' => $mahasiswa,
+            'pendaftaran' => $pendaftaran,
+            'pengajuan' => $pengajuan,
+            'dosen_utama' => $dosenUtama,
+            'dosen_pendamping' => $dosenPendamping,
+            'prodi' => $prodi,
+            'date' => now(),
+            'dateLocale' => $dateLocale,
+            'qr_code' => $qrcode,
+            'date_expired' => $dateExpired->day.' '.$dateExpired->monthName.' '.$dateExpired->year,
+            'ttd_dosen_utama' => ($dosenUtama && $dosenUtama->ttd) ? AppHelper::instance()->convertStorageImage($dosenUtama->ttd) : null,
+            'ttd_dosen_pendamping' => ($dosenPendamping && $dosenPendamping->ttd) ? AppHelper::instance()->convertStorageImage($dosenPendamping->ttd) : null,
+            'bimbingan_dosen_utama' => $bimbingan_dosen_utama,
+            'bimbingan_manual' => $bimbingan_manual,
+            'bimbingan_dosen_pendamping' => collect([]),
+            'no_urut' => $no_urut,
+        ];
+
+        $pdf = PDF::setOptions(['isHTML5ParserEnabled' => true, 'isRemoteEnabled' => true]);
+        $pdf->loadview('kp.pages.cetak.lembarBimbinganKP', $data);
+        $pdf->setPaper('A4', 'portrait');
+        return $pdf->stream('Lembar-Bimbingan-KP.pdf');
+    }
+
     public function cetakRiwayatBimbinganMahasiswa(){
         $mahasiswa = Mahasiswa::where('nim', Auth::guard('mahasiswa')->user()->nim)->first();
         $pengajuan = $mahasiswa->pengajuansKP()->where('status', Pengajuan::DITERIMA)->first();

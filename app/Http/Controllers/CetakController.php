@@ -398,6 +398,63 @@ class CetakController extends Controller
         return $pdf->stream('Lembar-Bimbingan-Skripsi.pdf');
     }
 
+    public function cetakRiwayatBimbingan($id){
+        $mahasiswa = Mahasiswa::where('id', base64_decode($id))->first();
+        if (!$mahasiswa) {
+            abort(404);
+        }
+        $pengajuan = $mahasiswa->pengajuans()->where('status', Pengajuan::DITERIMA)->first();
+        $pendaftaran = Pendaftaran::where('pengajuan_id', $pengajuan->id)->first();
+        $prodi = Prodi::where('namaprodi', $mahasiswa->prodi)->first();
+        $dosenUtama = $mahasiswa->dosens()->where('status', 'utama')->first();
+        $dosenPendamping = $mahasiswa->dosens()->where('status', 'pendamping')->first();
+
+        $qrcode = 'data:image/' . ';base64,' . base64_encode(\QrCode::format('svg')->size(200)->errorCorrection('H')->generate(url('public/riwayat-bimbingan/' . base64_encode($mahasiswa->id))));
+
+        $dateLocale = Carbon::parse(now())->day.' '.Carbon::parse(now())->monthName.' '.Carbon::parse(now())->year;
+
+        $dateExpired = AppHelper::getBimbinganExpiredDateFromPendaftaran($pendaftaran);
+
+        $bimbingan_dosen_utama = $dosenUtama->bimbingans()->with(['revisis','bagian'])->where('mahasiswa_id', $mahasiswa->id)->get();
+        $bimbingan_dosen_pendamping = $dosenPendamping->bimbingans()->with(['revisis','bagian'])->where('mahasiswa_id', $mahasiswa->id)->get();
+
+        $pendaftarans = Pendaftaran::whereYear('created_at', Carbon::parse($pendaftaran->created_at)->year)->get();
+        $no=0;
+        $no_urut = 000;
+        foreach($pendaftarans as $p){
+            $no++;
+            if($pendaftaran->id == $p->id){
+                $no_urut = sprintf("%03d", $no);
+                break;
+            }
+        }
+
+        $data = [
+            'title' => 'Lembar Bimbingan Skripsi',
+            'kop_surat' => AppHelper::instance()->convertImage('public/ekapta/assets/img/kop-surat.jpg'),
+            'mahasiswa' => $mahasiswa,
+            'pendaftaran' => $pendaftaran,
+            'pengajuan' => $pengajuan,
+            'dosen_utama' => $dosenUtama,
+            'dosen_pendamping' => $dosenPendamping,
+            'prodi' => $prodi,
+            'date' => now(),
+            'dateLocale' => $dateLocale,
+            'qr_code' => $qrcode,
+            'date_expired' => $dateExpired->day.' '.$dateExpired->monthName.' '.$dateExpired->year,
+            'ttd_dosen_utama' => $dosenUtama->ttd != null ? AppHelper::instance()->convertStorageImage($dosenUtama->ttd) : null,
+            'ttd_dosen_pendamping' => $dosenPendamping->ttd != null ? AppHelper::instance()->convertStorageImage($dosenPendamping->ttd) : null,
+            'bimbingan_dosen_utama' => $bimbingan_dosen_utama,
+            'bimbingan_dosen_pendamping' => $bimbingan_dosen_pendamping,
+            'no_urut' => $no_urut,
+        ];
+
+        $pdf = PDF::setOptions(['isHTML5ParserEnabled' => true, 'isRemoteEnabled' => true]);
+        $pdf->loadView('pages.cetak.lembarBimbinganSkripsi', $data);
+        $pdf->setPaper('A4', 'portrait');
+        return $pdf->stream('Lembar-Bimbingan-Skripsi.pdf');
+    }
+
     public function cetakLembarPersetujuan($type){
         $mahasiswa = Mahasiswa::with(['ujians','pengajuans','dosens'])->where('nim', Auth::guard('mahasiswa')->user()->nim)->first();
         
