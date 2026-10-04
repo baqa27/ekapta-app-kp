@@ -961,7 +961,7 @@ Route::prefix('kp')->name('kp.')->group(function () {
     Route::get('/prodi/{id}', [KPProdiController::class, 'detail'])->name('prodi.detail')->middleware('isAdmin');
     Route::post('/prodi/store', [KPProdiController::class, 'store'])->name('prodi.store')->middleware('isAdmin');
     Route::post('/prodi/import', [KPProdiController::class, 'import'])->name('prodi.import')->middleware('isAdmin');
-    Route::get('/prodi/reset-password/{id}', [KPProdiController::class, 'resetPassword'])->name('prodi.reset.password')->middleware('isAdmin');
+    Route::get('/prodi/reset-password/{id}', [KPProdiController2::class, 'resetPassword'])->name('prodi.reset.password')->middleware('isAdmin');
     Route::get('/prodi/presentase-nilai/{id}', [KPProdiController::class, 'presentaseNilai'])->name('prodi.presentase.nilai')->middleware('isAdmin');
     Route::post('/prodi/presentase-nilai/store', [KPProdiController::class, 'presentaseNilaiStore'])->name('prodi.presentase.nilai.store')->middleware('isAdmin');
 
@@ -976,7 +976,7 @@ Route::prefix('kp')->name('kp.')->group(function () {
     Route::post('/dosen/store', [KPDosenController::class, 'store'])->name('dosen.store')->middleware('isAdmin');
     Route::put('/dosen/{id}', [KPDosenController::class, 'update'])->name('dosen.update')->middleware('isAdmin');
     Route::post('/dosen/import', [KPDosenController::class, 'import'])->name('dosen.import')->middleware('isAdmin');
-    Route::get('/dosen/reset-password/{id}', [KPDosenController::class, 'resetPassword'])->name('dosen.reset.password')->middleware('isAdmin');
+    Route::get('/dosen/reset-password/{id}', [KPDosenController2::class, 'resetPassword'])->name('dosen.reset.password')->middleware('isAdmin');
     Route::get('/dosen/change-manual/{id}', [KPDosenController::class, 'changeManual'])->name('dosen.change.manual')->middleware('isAdmin');
 
     Route::get('/fakultas', [KPFakultasController::class, 'index'])->name('fakultas')->middleware('isAdmin');
