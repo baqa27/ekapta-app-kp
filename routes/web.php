@@ -354,6 +354,7 @@ Route::group(['middleware' => 'isMahasiswa'], function(){
     Route::get('ujian/detail/{id}', [UjianController::class, 'detail'])->name('ujian.detail');
     Route::get('ujian/edit/{id}', [UjianController::class, 'edit'])->name('ujian.edit');
     Route::put('ujian/update/{id}', [UjianController::class, 'update'])->name('ujian.update');
+    Route::delete('ujian/delete/{id}', [UjianController::class, 'delete'])->name('ujian.delete');
     Route::get('ujian/reviews/{id}', [UjianController::class, 'ujianReviews'])->name('ujian.reviews');
     Route::get('review/ujian/edit/{id}', [ReviewUjianController::class, 'edit'])->name('review.ujian.edit');
     Route::post('review/ujian/update', [ReviewUjianController::class, 'update'])->name('review.ujian.update');
@@ -781,7 +782,7 @@ Route::prefix('kp')->name('kp.')->group(function () {
     Route::get('/bimbingan/create', [KPBimbinganController::class, 'create'])->name('bimbingan.create')->middleware('isMahasiswa');
     Route::get('/bimbingan/create-manual', [KPBimbinganController::class, 'createManual'])->name('bimbingan.create.manual')->middleware('isMahasiswa');
     Route::post('/bimbingan/store-manual', [KPBimbinganController::class, 'storeManual'])->name('bimbingan.store.manual')->middleware('isMahasiswa');
-    Route::post('/bimbingan/store', [KPBimbinganController::class, 'store'])->name('kp.bimbingan.store')->middleware('isMahasiswa');
+    Route::post('/bimbingan/store', [KPBimbinganController::class, 'store'])->name('bimbingan.store')->middleware('isMahasiswa');
     Route::get('/bimbingan/edit/{id}', [KPBimbinganController::class, 'edit'])->name('bimbingan.edit')->middleware('isMahasiswa');
     Route::post('/bimbingan/update', [KPBimbinganController::class, 'update'])->name('bimbingan.update')->middleware('isMahasiswa');
     Route::post('/bimbingan/delete', [KPBimbinganController::class, 'delete'])->name('bimbingan.delete')->middleware('isMahasiswa');
@@ -851,6 +852,7 @@ Route::prefix('kp')->name('kp.')->group(function () {
         Route::get('/seminar/edit/proposal/{id}', [KPSeminarController::class, 'editProposal'])->name('seminar.edit.proposal');
         Route::put('/seminar/update/proposal/{id}', [KPSeminarController::class, 'updateProposal'])->name('seminar.update.proposal');
         Route::post('/seminar/delete', [KPSeminarController::class, 'delete'])->name('seminar.delete');
+        Route::post('/seminar/upload-revisi/{id}', [KPSeminarController::class, 'uploadRevisi'])->name('seminar.upload.revisi');
         Route::post('/seminar/upload-nilai-instansi/{id}', [KPSeminarController::class, 'uploadNilaiInstansi'])->name('seminar.upload.nilai.instansi');
         Route::get('/review/seminar/edit/{id}', [KPReviewSeminarController::class, 'edit'])->name('review.seminar.edit');
         Route::post('/review/seminar/update', [KPReviewSeminarController::class, 'update'])->name('review.seminar.update');
@@ -959,6 +961,7 @@ Route::prefix('kp')->name('kp.')->group(function () {
     Route::get('/prodi/{id}', [KPProdiController::class, 'detail'])->name('prodi.detail')->middleware('isAdmin');
     Route::post('/prodi/store', [KPProdiController::class, 'store'])->name('prodi.store')->middleware('isAdmin');
     Route::post('/prodi/import', [KPProdiController::class, 'import'])->name('prodi.import')->middleware('isAdmin');
+    Route::get('/prodi/reset-password/{id}', [KPProdiController::class, 'resetPassword'])->name('prodi.reset.password')->middleware('isAdmin');
     Route::get('/prodi/presentase-nilai/{id}', [KPProdiController::class, 'presentaseNilai'])->name('prodi.presentase.nilai')->middleware('isAdmin');
     Route::post('/prodi/presentase-nilai/store', [KPProdiController::class, 'presentaseNilaiStore'])->name('prodi.presentase.nilai.store')->middleware('isAdmin');
 
@@ -966,14 +969,14 @@ Route::prefix('kp')->name('kp.')->group(function () {
     Route::post('/mahasiswa/store', [KPMahasiswaController::class, 'store'])->name('mahasiswa.store')->middleware('isAdmin');
     Route::post('/mahasiswa/import', [KPMahasiswaController::class, 'import'])->name('mahasiswa.import')->middleware('isAdmin');
     Route::post('/mahasiswa/detail/import', [KPMahasiswaController::class, 'importDetail'])->name('mahasiswa.detail.import')->middleware('isAdmin');
-    // ponytail: reset-password sudah didefinisikan di line 448 (KPMahasiswaController2 alias)
+    Route::get('/mahasiswa/reset-password/{id}', [KPMahasiswaController::class, 'resetPassword'])->name('mahasiswa.reset.password')->middleware('isAdmin');
 
     Route::get('/dosen', [KPDosenController::class, 'index'])->name('dosen')->middleware('isAdmin');
     Route::get('/dosen/{id}', [KPDosenController::class, 'edit'])->name('dosen.edit')->middleware('isAdmin');
     Route::post('/dosen/store', [KPDosenController::class, 'store'])->name('dosen.store')->middleware('isAdmin');
     Route::put('/dosen/{id}', [KPDosenController::class, 'update'])->name('dosen.update')->middleware('isAdmin');
     Route::post('/dosen/import', [KPDosenController::class, 'import'])->name('dosen.import')->middleware('isAdmin');
-    // ponytail: reset-password sudah didefinisikan di line 453 (KPDosenController2 alias)
+    Route::get('/dosen/reset-password/{id}', [KPDosenController::class, 'resetPassword'])->name('dosen.reset.password')->middleware('isAdmin');
     Route::get('/dosen/change-manual/{id}', [KPDosenController::class, 'changeManual'])->name('dosen.change.manual')->middleware('isAdmin');
 
     Route::get('/fakultas', [KPFakultasController::class, 'index'])->name('fakultas')->middleware('isAdmin');
@@ -983,8 +986,6 @@ Route::prefix('kp')->name('kp.')->group(function () {
     Route::post('/fakultas/update', [KPFakultasController::class, 'update'])->name('fakultas.update')->middleware('isAdmin');
     Route::post('/fakultas/add/prodi', [KPFakultasController::class, 'addProdi'])->name('fakultas.add.prodi')->middleware('isAdmin');
     Route::post('/fakultas/delete/prodi', [KPFakultasController::class, 'deleteProdi'])->name('fakultas.delete.prodi')->middleware('isAdmin');
-
-    // ponytail: reset-password sudah didefinisikan di line 443 (KPProdiController2 alias)
 
     // Public KP
     Route::get('/public/riwayat-bimbingan/{id}',[KPBimbinganController::class, 'public'])->name('bimbingan.public');

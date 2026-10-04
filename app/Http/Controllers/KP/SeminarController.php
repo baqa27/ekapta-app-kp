@@ -514,6 +514,43 @@ class SeminarController extends \App\Http\Controllers\Controller
         return 'Seminar has been deleted';
     }
 
+    public function uploadRevisi(Request $request, $id)
+    {
+        $seminar = Seminar::findOrFail($id);
+        $revisi = new RevisiSeminar();
+        $revisi->catatan = $request->catatan;
+        $request->validate([
+            'lampiran' => [
+                Rule::requiredIf(function () use ($request) {
+                    if (empty($request->lampiran)) {
+                        return false;
+                    }
+                    return true;
+                }),
+                'mimes:pdf,docx', 'max:5000'
+            ]
+        ]);
+        if ($request->file('lampiran')) {
+            $revisi->lampiran = StorageHelper::storeKpFile($request->lampiran, $seminar->mahasiswa->nim, 'seminar');
+        }
+        if ($seminar->is_valid == Seminar::REVIEW) {
+            $seminar->update([
+                'is_valid' => Seminar::REVISI,
+            ]);
+            $seminar->revisis()->save($revisi);
+            if ($seminar->mahasiswa->email != '-') {
+                AppHelper::instance()->send_mail([
+                    'mail' => $seminar->mahasiswa->email,
+                    'message' => 'Pendaftaran Seminar Kerja Praktek Anda Berstatus REVISI. Silahkan perbaiki kemudian lakukan submit ulang!.<br><br>Catatan revisi: ' . $request->catatan,
+                ]);
+            }
+            return redirect()->route('kp.seminar.admin')->with('success', 'Seminar KP berhasil direvisi');
+        } elseif ($seminar->is_valid == Seminar::REVISI) {
+            $seminar->revisis()->save($revisi);
+            return back()->with('success', 'Revisi berhasil ditambahkan');
+        }
+    }
+
     public function accSeminar(Request $request)
     {
         $seminar = Seminar::findOrFail($request->id);

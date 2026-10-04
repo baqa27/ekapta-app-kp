@@ -583,6 +583,13 @@ public function ujianProdi()
         return back()->with('success', 'Acc Ujian TA berhasil dibatalkan.');
     }
 
+    public function delete(Request $request)
+    {
+        $ujian = Ujian::findOrFail($request->id);
+        $ujian->delete();
+        return back()->with('success', 'Ujian berhasil dihapus');
+    }
+
     public function deleteRevisi(Request $request)
     {
         $revisi = RevisiUjian::findOrFail($request->id);
