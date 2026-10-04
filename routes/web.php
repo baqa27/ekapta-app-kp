@@ -443,17 +443,17 @@ Route::post('/prodi/import', [KPProdiController2::class, 'import'])->name('prodi
 // Route ini digunakan oleh view TA untuk mengelola presentase nilai TA
 Route::get('/prodi/presentase-nilai/{id}', [ProdiController::class, 'presentaseNilai'])->name('prodi.presentase.nilai')->middleware('isAdmin');
 Route::post('/prodi/presentase-nilai/store', [ProdiController::class, 'presentaseNilaiStore'])->name('prodi.presentase.nilai.store')->middleware('isAdmin');
-Route::get('/prodi/reset-password/{id}', [KPProdiController2::class, 'resetPassword'])->name('prodi.reset.password')->middleware('isAdmin');
+Route::get('/prodi/reset-password/{id}', [ProdiController::class, 'resetPassword'])->name('prodi.reset.password')->middleware('isAdmin');
 
 Route::post('/mahasiswa/store', [KPMahasiswaController2::class, 'store'])->name('mahasiswa.store')->middleware('isAdmin');
 Route::post('/mahasiswa/import', [KPMahasiswaController2::class, 'import'])->name('mahasiswa.import')->middleware('isAdmin');
 Route::post('/mahasiswa/detail/import', [KPMahasiswaController2::class, 'importDetail'])->name('mahasiswa.detail.import')->middleware('isAdmin');
-Route::get('/mahasiswa/reset-password/{id}', [KPMahasiswaController2::class, 'resetPassword'])->name('mahasiswa.reset.password')->middleware('isAdmin');
+Route::get('/mahasiswa/reset-password/{id}', [MahasiswaController::class, 'resetPassword'])->name('mahasiswa.reset.password')->middleware('isAdmin');
 
 Route::post('/dosen/store', [KPDosenController2::class, 'store'])->name('dosen.store')->middleware('isAdmin');
 Route::put('/dosen/{id}', [KPDosenController2::class, 'update'])->name('dosen.update')->middleware('isAdmin');
 Route::post('/dosen/import', [KPDosenController2::class, 'import'])->name('dosen.import')->middleware('isAdmin');
-Route::get('/dosen/reset-password/{id}', [KPDosenController2::class, 'resetPassword'])->name('dosen.reset.password')->middleware('isAdmin');
+Route::get('/dosen/reset-password/{id}', [DosenController::class, 'resetPassword'])->name('dosen.reset.password')->middleware('isAdmin');
 Route::get('/dosen/change-manual/{id}', [KPDosenController2::class, 'changeManual'])->name('dosen.change.manual')->middleware('isAdmin');
 
 Route::post('/fakultas/store', [KPFakultasController2::class, 'store'])->name('fakultas.store')->middleware('isAdmin');
