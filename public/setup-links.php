@@ -7,6 +7,10 @@
  * HAPUS FILE INI setelah symbolic links berhasil dibuat!
  */
 
+// File disabled for security in production/public repository.
+http_response_code(410);
+die('Setup disabled for security. Re-enable manually if needed.');
+
 // Prevent direct access from browser for security (optional)
 $secret = isset($_GET['key']) ? $_GET['key'] : '';
 if ($secret !== 'ekapta2026') {

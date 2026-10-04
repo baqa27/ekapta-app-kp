@@ -307,7 +307,7 @@ Route::get('/bimbingan/input-prodi/{dosen_id}/{mahasiswa_id}', [BimbinganControl
 // tapi view response-nya mungkin perlu penyesuaian jika menggunakan back().
 // Namun untuk amannya kita biarkan dulu controller aslinya menangani proses simpan.
 // Jika nanti bermasalah redirectnya, kita ganti ke controller KP.
-Route::post('/bimbingan/store', [BimbinganController::class, 'bimbinganAdminInputStore'])->name('bimbingan.admin.input.store')->middleware('isAdminProdi');
+Route::post('/bimbingan/input/store', [BimbinganController::class, 'bimbinganAdminInputStore'])->name('bimbingan.admin.input.store')->middleware('isAdminProdi');
 Route::post('/bimbingan/store-prodi', [BimbinganController::class, 'bimbinganAdminInputStore'])->name('bimbingan.prodi.input.store')->middleware('isProdi');
 Route::get('bimbingan/acc-submit-manual/{id}', [BimbinganController::class, 'bimbinganAccManual'])->name('bimbingan.acc.submit.manual')->middleware('isAdminProdi');
 Route::put('bimbingan/reject-submit-manual/{id}', [BimbinganController::class, 'bimbinganRejectManual'])->name('bimbingan.reject.submit.manual')->middleware('isAdminProdi');
@@ -961,7 +961,7 @@ Route::prefix('kp')->name('kp.')->group(function () {
     Route::get('/prodi/{id}', [KPProdiController::class, 'detail'])->name('prodi.detail')->middleware('isAdmin');
     Route::post('/prodi/store', [KPProdiController::class, 'store'])->name('prodi.store')->middleware('isAdmin');
     Route::post('/prodi/import', [KPProdiController::class, 'import'])->name('prodi.import')->middleware('isAdmin');
-    Route::get('/prodi/reset-password/{id}', [KPProdiController2::class, 'resetPassword'])->name('prodi.reset.password')->middleware('isAdmin');
+    Route::get('/prodi/reset-password/{id}', [KPProdiController::class, 'resetPassword'])->name('prodi.reset.password')->middleware('isAdmin');
     Route::get('/prodi/presentase-nilai/{id}', [KPProdiController::class, 'presentaseNilai'])->name('prodi.presentase.nilai')->middleware('isAdmin');
     Route::post('/prodi/presentase-nilai/store', [KPProdiController::class, 'presentaseNilaiStore'])->name('prodi.presentase.nilai.store')->middleware('isAdmin');
 
@@ -969,14 +969,13 @@ Route::prefix('kp')->name('kp.')->group(function () {
     Route::post('/mahasiswa/store', [KPMahasiswaController::class, 'store'])->name('mahasiswa.store')->middleware('isAdmin');
     Route::post('/mahasiswa/import', [KPMahasiswaController::class, 'import'])->name('mahasiswa.import')->middleware('isAdmin');
     Route::post('/mahasiswa/detail/import', [KPMahasiswaController::class, 'importDetail'])->name('mahasiswa.detail.import')->middleware('isAdmin');
-    Route::get('/mahasiswa/reset-password/{id}', [KPMahasiswaController::class, 'resetPassword'])->name('mahasiswa.reset.password')->middleware('isAdmin');
 
     Route::get('/dosen', [KPDosenController::class, 'index'])->name('dosen')->middleware('isAdmin');
     Route::get('/dosen/{id}', [KPDosenController::class, 'edit'])->name('dosen.edit')->middleware('isAdmin');
     Route::post('/dosen/store', [KPDosenController::class, 'store'])->name('dosen.store')->middleware('isAdmin');
     Route::put('/dosen/{id}', [KPDosenController::class, 'update'])->name('dosen.update')->middleware('isAdmin');
     Route::post('/dosen/import', [KPDosenController::class, 'import'])->name('dosen.import')->middleware('isAdmin');
-    Route::get('/dosen/reset-password/{id}', [KPDosenController2::class, 'resetPassword'])->name('dosen.reset.password')->middleware('isAdmin');
+    Route::get('/dosen/reset-password/{id}', [KPDosenController::class, 'resetPassword'])->name('dosen.reset.password')->middleware('isAdmin');
     Route::get('/dosen/change-manual/{id}', [KPDosenController::class, 'changeManual'])->name('dosen.change.manual')->middleware('isAdmin');
 
     Route::get('/fakultas', [KPFakultasController::class, 'index'])->name('fakultas')->middleware('isAdmin');

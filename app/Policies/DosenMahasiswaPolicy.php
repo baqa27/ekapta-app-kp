@@ -2,7 +2,6 @@
 
 namespace App\Policies;
 
-use App\Models\DosenMahasiswa;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -25,10 +24,10 @@ class DosenMahasiswaPolicy
      * Determine whether the user can view the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\DosenMahasiswa  $dosenMahasiswa
+     * @param  mixed  $dosenMahasiswa
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, DosenMahasiswa $dosenMahasiswa)
+    public function view(User $user, $dosenMahasiswa)
     {
         //
     }
@@ -48,10 +47,10 @@ class DosenMahasiswaPolicy
      * Determine whether the user can update the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\DosenMahasiswa  $dosenMahasiswa
+     * @param  mixed  $dosenMahasiswa
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user, DosenMahasiswa $dosenMahasiswa)
+    public function update(User $user, $dosenMahasiswa)
     {
         //
     }
@@ -60,10 +59,10 @@ class DosenMahasiswaPolicy
      * Determine whether the user can delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\DosenMahasiswa  $dosenMahasiswa
+     * @param  mixed  $dosenMahasiswa
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(User $user, DosenMahasiswa $dosenMahasiswa)
+    public function delete(User $user, $dosenMahasiswa)
     {
         //
     }
@@ -72,10 +71,10 @@ class DosenMahasiswaPolicy
      * Determine whether the user can restore the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\DosenMahasiswa  $dosenMahasiswa
+     * @param  mixed  $dosenMahasiswa
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function restore(User $user, DosenMahasiswa $dosenMahasiswa)
+    public function restore(User $user, $dosenMahasiswa)
     {
         //
     }
@@ -84,10 +83,10 @@ class DosenMahasiswaPolicy
      * Determine whether the user can permanently delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\DosenMahasiswa  $dosenMahasiswa
+     * @param  mixed  $dosenMahasiswa
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function forceDelete(User $user, DosenMahasiswa $dosenMahasiswa)
+    public function forceDelete(User $user, $dosenMahasiswa)
     {
         //
     }

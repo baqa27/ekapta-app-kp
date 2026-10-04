@@ -15,7 +15,7 @@ use App\Models\Mail;
 use App\Models\Ujian;
 use Illuminate\Support\Facades\Auth;
 
-class AppHelper
+class AppHelperOld
 {
     public function getMahasiswa($nim)
     {
@@ -206,9 +206,9 @@ class AppHelper
         $nilai_pembimbing = 0;
         foreach ($reviews as $review) {
             if($review->dosen_status == 'penguji'){
-                $nilai_penguji += AppHelper::instance()->hitung_nilai_total($review->nilai_1 * $presentase_nilai->presentase_1 / 100,$review->nilai_2 * $presentase_nilai->presentase_2 / 100, $review->nilai_3 * $presentase_nilai->presentase_3 / 100, $review->nilai_4 * $presentase_nilai->presentase_4 / 100);
+                $nilai_penguji += AppHelperOld::instance()->hitung_nilai_total($review->nilai_1 * $presentase_nilai->presentase_1 / 100,$review->nilai_2 * $presentase_nilai->presentase_2 / 100, $review->nilai_3 * $presentase_nilai->presentase_3 / 100, $review->nilai_4 * $presentase_nilai->presentase_4 / 100);
             }else if($review->dosen_status == 'pembimbing'){
-                $nilai_pembimbing += AppHelper::instance()->hitung_nilai_total($review->nilai_1 * $presentase_nilai->presentase_1 / 100,$review->nilai_2 * $presentase_nilai->presentase_2 / 100, $review->nilai_3 * $presentase_nilai->presentase_3 / 100, $review->nilai_4 * $presentase_nilai->presentase_4 / 100);
+                $nilai_pembimbing += AppHelperOld::instance()->hitung_nilai_total($review->nilai_1 * $presentase_nilai->presentase_1 / 100,$review->nilai_2 * $presentase_nilai->presentase_2 / 100, $review->nilai_3 * $presentase_nilai->presentase_3 / 100, $review->nilai_4 * $presentase_nilai->presentase_4 / 100);
             }
         }
 
@@ -252,7 +252,7 @@ class AppHelper
 
     public static function instance()
     {
-        return new AppHelper();
+        return new AppHelperOld();
     }
 
     /**
