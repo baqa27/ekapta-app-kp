@@ -817,6 +817,11 @@ Route::prefix('kp')->name('kp.')->group(function () {
     Route::post('/bimbingan/acc-prodi', [KPBimbinganController::class, 'accBimbinganProdi'])->name('bimbingan.acc.prodi')->middleware('isAdminProdi');
     Route::post('/bimbingan/revisi-prodi', [KPBimbinganController::class, 'revisiBimbinganProdi'])->name('bimbingan.revisi.prodi')->middleware('isAdminProdi');
 
+    // ==================== VALIDASI BIMBINGAN TA (MANUAL INPUT) ====================
+    Route::get('/bimbingan/input-ta', [KPAdminController::class, 'bimbinganInput'])->name('bimbingan.admin.input.ta')->middleware('isAdmin');
+    Route::get('/bimbingan/input-ta/{dosen_id}/{mahasiswa_id}', [KPAdminController::class, 'bimbinganInputCreate'])->name('bimbingan.admin.input.create.ta')->middleware('isAdmin');
+    Route::post('/bimbingan/input-ta/store', [KPAdminController::class, 'bimbinganInputStore'])->name('bimbingan.admin.input.store.ta')->middleware('isAdmin');
+
     // ==================== BIMBINGAN MANUAL KP BARU ====================
     // Mahasiswa - Bimbingan Manual
     Route::get('/bimbingan-manual/create/{bimbingan_id}', [BimbinganManualController::class, 'create'])->name('bimbingan-manual.create')->middleware('isMahasiswa');
@@ -833,11 +838,6 @@ Route::prefix('kp')->name('kp.')->group(function () {
         Route::post('/bimbingan-manual/cancel-acc', [BimbinganManualController::class, 'cancelAcc'])->name('bimbingan-manual.cancel-acc');
     });
     // ==================================================================
-
-    // Bimbingan TA Admin (Integrasi Interface)
-    Route::get('/bimbingan/input', [KPAdminController::class, 'bimbinganInput'])->name('bimbingan.admin.input.ta')->middleware('isAdmin');
-    Route::get('/bimbingan/input-ta/{dosen_id}/{mahasiswa_id}', [KPAdminController::class, 'bimbinganInputCreate'])->name('bimbingan.admin.input.create.ta')->middleware('isAdmin');
-    Route::post('/bimbingan/input-ta/store', [KPAdminController::class, 'bimbinganInputStore'])->name('bimbingan.admin.input.store.ta')->middleware('isAdmin');
 
     // Seminar KP
     Route::get('/seminar/review/{id}', [KPSeminarController::class,'seminarReviewAdmin'])->name('seminar.review.admin')->middleware('isAdminProdi');

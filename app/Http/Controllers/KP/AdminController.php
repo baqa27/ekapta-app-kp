@@ -221,6 +221,7 @@ class AdminController extends \App\Http\Controllers\Controller
                 ->where('dosen_id', $dosen->id)
                 ->first(),
             'route' => 'kp.bimbingan.admin.input.ta',
+            'storeRoute' => 'kp.bimbingan.admin.input.store.ta',
         ]);
     }
 

@@ -41,7 +41,7 @@
                                     Dosen: <b> {{ $dosen->nama . ', ' . $dosen->gelar }}</b>
                                 </div>
                             </div>
-                            <form action="{{ route('kp.bimbingan.admin.input.store') }}" method="post"
+                            <form action="{{ route($storeRoute ?? 'kp.bimbingan.admin.input.store') }}" method="post"
                                 enctype="multipart/form-data">
                                 @csrf
                                 <input type="hidden" name="dosen_id" value="{{ $dosen->id }}">

@@ -168,7 +168,7 @@
                         </li>
                         <li class="nav-item">
                             <a href="{{ route('kp.bimbingan.admin.input.ta') }}"
-                               class="nav-link {{ $active == 'bimbingan-input' ? 'active' : '' }}">
+                               class="nav-link {{ $active == 'bimbingan-input-ta' || $active == 'bimbingan-input' ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Validasi Bimbingan TA</p>
                             </a>
