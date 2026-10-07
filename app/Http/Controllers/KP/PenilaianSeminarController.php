@@ -117,16 +117,8 @@ class PenilaianSeminarController extends \App\Http\Controllers\Controller
             ], 404);
         }
 
-        // Cek keberadaan file di storage
+        // Redirect ke storage.file route — StorageController handle local + Google Drive fallback
         $filePath = StorageHelper::kpSeminarPath($seminar->file_laporan);
-        if (!StorageHelper::fileExists($filePath)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'File laporan tidak ditemukan di storage.'
-            ], 404);
-        }
-
-        // Return download file
         return redirect()->route('storage.file', ['path' => $filePath]);
     }
 
