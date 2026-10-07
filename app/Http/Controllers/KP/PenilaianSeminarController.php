@@ -117,8 +117,11 @@ class PenilaianSeminarController extends \App\Http\Controllers\Controller
             ], 404);
         }
 
-        // Redirect ke storage.file route — StorageController handle local + Google Drive fallback
-        $filePath = StorageHelper::kpSeminarPath($seminar->file_laporan);
+// Redirect ke storage.file route — StorageController handle local + Google Drive fallback
+        // ponytail: ceiling — assumes file_laporan is either bare filename or already prefixed with lampirans/
+        $filePath = str_starts_with($seminar->file_laporan, 'lampirans/')
+            ? $seminar->file_laporan
+            : StorageHelper::kpSeminarPath($seminar->file_laporan);
         return redirect()->route('storage.file', ['path' => $filePath]);
     }
 
