@@ -998,6 +998,7 @@ Route::prefix('kp')->name('kp.')->group(function () {
 
     // Penilaian Seminar KP (Public)
     Route::get('/penilaian-seminar/{token}', [PenilaianSeminarController::class, 'index'])->name('penilaian.seminar');
+    Route::get('/penilaian-seminar/{token}/laporan/{seminarId}', [PenilaianSeminarController::class, 'laporan'])->name('penilaian.seminar.laporan');
     Route::post('/penilaian-seminar/{token}/submit', [PenilaianSeminarController::class, 'submit'])->name('penilaian.seminar.submit');
 });
 
