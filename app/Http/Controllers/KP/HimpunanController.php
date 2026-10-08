@@ -166,6 +166,21 @@ class HimpunanController extends \App\Http\Controllers\Controller
     }
 
     /**
+     * Batal ACC seminar oleh himpunan
+     */
+    public function seminarBatalAcc(Request $request)
+    {
+        $seminar = Seminar::findOrFail($request->id);
+        $seminar->update([
+            'is_valid' => Seminar::REVIEW,
+            'status_seminar' => Seminar::STATUS_MENUNGGU_VERIFIKASI,
+            'tanggal_acc' => null,
+        ]);
+
+        return back()->with('success', 'Status validasi seminar berhasil dibatalkan. Pendaftaran kembali ke status Review.');
+    }
+
+    /**
      * Revisi seminar oleh himpunan
      */
     public function seminarRevisi(Request $request)

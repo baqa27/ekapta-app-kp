@@ -198,6 +198,10 @@
                                 @endif
 
                                 @if ($seminar->is_valid == 1)
+                                    <button type="button" class="btn btn-danger mr-2" data-toggle="modal" data-target="#modal-batal-acc">
+                                        <i class="fas fa-times mr-1"></i> Batal ACC
+                                    </button>
+                                    
                                     <a href="{{ route('kp.jadwal.himpunan') }}" class="btn btn-primary">
                                         <i class="fas fa-calendar-alt mr-1"></i> Lihat Penjadwalan
                                     </a>
@@ -324,6 +328,29 @@
                     </div>
                     <div class="modal-footer justify-content-between">
                         <button type="submit" class="btn btn-success">Simpan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Batal ACC -->
+    <div class="modal fade" id="modal-batal-acc">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form action="{{ route('kp.seminar.himpunan.batal-acc') }}" method="post">
+                    @csrf
+                    <input type="hidden" name="id" value="{{ $seminar->id }}">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Batal ACC Pendaftaran</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Anda yakin ingin membatalkan ACC pendaftaran seminar ini?</p>
+                        <p class="text-danger">Pendaftaran akan kembali ke status Review.</p>
+                    </div>
+                    <div class="modal-footer justify-content-between">
+                        <button type="submit" class="btn btn-danger">Batalkan ACC</button>
                     </div>
                 </form>
             </div>

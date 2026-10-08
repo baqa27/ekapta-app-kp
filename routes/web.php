@@ -714,6 +714,7 @@ Route::prefix('kp')->name('kp.')->group(function () {
         Route::get('/seminar', [HimpunanController::class, 'seminarIndex'])->name('seminar.himpunan');
         Route::get('/seminar/review/{id}', [HimpunanController::class, 'seminarReview'])->name('seminar.himpunan.review');
         Route::post('/seminar/acc', [HimpunanController::class, 'seminarAcc'])->name('seminar.himpunan.acc');
+        Route::post('/seminar/batal-acc', [HimpunanController::class, 'seminarBatalAcc'])->name('seminar.himpunan.batal-acc');
         Route::post('/seminar/revisi', [HimpunanController::class, 'seminarRevisi'])->name('seminar.himpunan.revisi');
         Route::post('/seminar/toggle-pendaftaran', [HimpunanController::class, 'togglePendaftaranSeminar'])->name('seminar.himpunan.toggle');
         Route::get('/jadwal', [HimpunanController::class, 'jadwalIndex'])->name('jadwal.himpunan');
