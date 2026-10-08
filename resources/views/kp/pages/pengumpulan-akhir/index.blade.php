@@ -27,7 +27,7 @@
                 $is_karyawan = \App\Helpers\AppHelper::isKaryawanKP(Auth::guard('mahasiswa')->user());
             @endphp
 
-            @if (!$jilid)
+            @if (!$jilid || $jilid->isDraft())
                 <a href="{{ route('kp.pengumpulan-akhir.create') }}" class="btn btn-primary mb-4">
                     <i class="fas fa-plus mr-2"></i> Submit Jilid KP
                 </a>

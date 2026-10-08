@@ -28,7 +28,7 @@ class HimpunanMasterController extends \App\Http\Controllers\Controller
     {
         $request->validate([
             'nama' => 'required|string|max:255',
-            'username' => 'required|string|max:50|unique:himpunans,username',
+            'username' => 'required|string|max:50|unique:himpunan_kps,username',
             'email' => 'nullable|email|max:255',
             'password' => 'required|string|min:6',
             'prodi_id' => 'required|exists:prodis,id',
@@ -49,9 +49,9 @@ class HimpunanMasterController extends \App\Http\Controllers\Controller
     public function update(Request $request)
     {
         $request->validate([
-            'id' => 'required|exists:himpunans,id',
+            'id' => 'required|exists:himpunan_kps,id',
             'nama' => 'required|string|max:255',
-            'username' => 'required|string|max:50|unique:himpunans,username,' . $request->id,
+            'username' => 'required|string|max:50|unique:himpunan_kps,username,' . $request->id,
             'email' => 'nullable|email|max:255',
             'prodi_id' => 'required|exists:prodis,id',
         ]);
@@ -116,7 +116,7 @@ class HimpunanMasterController extends \App\Http\Controllers\Controller
     public function updatePayment(Request $request)
     {
         $request->validate([
-            'id' => 'required|exists:himpunans,id',
+            'id' => 'required|exists:himpunan_kps,id',
             'biaya_seminar' => 'required|integer|min:0',
         ]);
 

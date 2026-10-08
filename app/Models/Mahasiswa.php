@@ -30,6 +30,8 @@ class Mahasiswa extends Authenticatable
 {
     use HasFactory;
 
+    protected $table = 'mahasiswas';
+
     protected $hidden = [
         'password',
     ];

@@ -80,16 +80,15 @@ class HimpunanController extends \App\Http\Controllers\Controller
     {
         $himpunan = Auth::guard('himpunan')->user();
         $is_pendaftaran_open = $himpunan ? $himpunan->is_pendaftaran_seminar_open : true;
-
-        // Filter seminar berdasarkan prodi himpunan yang login
         $prodiId = $himpunan ? $himpunan->prodi_id : null;
 
-        $baseQuery = Seminar::orderBy('created_at', 'desc')
+        $baseQuery = Seminar::with(['mahasiswa', 'pengajuan'])
             ->when($prodiId, function ($q) use ($prodiId) {
                 $q->whereHas('mahasiswa', function ($mq) use ($prodiId) {
                     $mq->where('prodi_id', $prodiId);
                 });
-            });
+            })
+            ->orderBy('created_at', 'desc');
 
         $seminars_review = (clone $baseQuery)->where('is_valid', Seminar::REVIEW)->get();
         $seminars_revisi = (clone $baseQuery)->where('is_valid', Seminar::REVISI)->get();
@@ -124,7 +123,16 @@ class HimpunanController extends \App\Http\Controllers\Controller
      */
     public function seminarReview($id)
     {
-        $seminar = Seminar::with(['mahasiswa', 'pengajuan', 'revisis'])->findOrFail($id);
+        $himpunan = Auth::guard('himpunan')->user();
+        $prodiId = $himpunan ? $himpunan->prodi_id : null;
+
+        $seminar = Seminar::when($prodiId, function ($q) use ($prodiId) {
+                $q->whereHas('mahasiswa', function ($mq) use ($prodiId) {
+                    $mq->where('prodi_id', $prodiId);
+                });
+            })
+            ->with(['mahasiswa', 'pengajuan', 'revisis'])
+            ->findOrFail($id);
         $revisis = $seminar->revisis()->orderBy('created_at', 'desc')->paginate(5);
 
         return view('kp.pages.himpunan.seminar.review', [
@@ -141,10 +149,19 @@ class HimpunanController extends \App\Http\Controllers\Controller
      */
     public function seminarAcc(Request $request)
     {
-        $seminar = Seminar::findOrFail($request->id);
+        $himpunan = Auth::guard('himpunan')->user();
+        $prodiId = $himpunan ? $himpunan->prodi_id : null;
+
+        $seminar = Seminar::when($prodiId, function ($q) use ($prodiId) {
+                $q->whereHas('mahasiswa', function ($mq) use ($prodiId) {
+                    $mq->where('prodi_id', $prodiId);
+                });
+            })
+            ->findOrFail($request->id);
         $seminar->update([
             'is_valid' => Seminar::DITERIMA,
             'status_seminar' => Seminar::STATUS_DITERIMA,
+            'is_lulus' => 1,
             'tanggal_acc' => now(),
         ]);
 
@@ -170,7 +187,15 @@ class HimpunanController extends \App\Http\Controllers\Controller
      */
     public function seminarBatalAcc(Request $request)
     {
-        $seminar = Seminar::findOrFail($request->id);
+        $himpunan = Auth::guard('himpunan')->user();
+        $prodiId = $himpunan ? $himpunan->prodi_id : null;
+
+        $seminar = Seminar::when($prodiId, function ($q) use ($prodiId) {
+                $q->whereHas('mahasiswa', function ($mq) use ($prodiId) {
+                    $mq->where('prodi_id', $prodiId);
+                });
+            })
+            ->findOrFail($request->id);
         $seminar->update([
             'is_valid' => Seminar::REVIEW,
             'status_seminar' => Seminar::STATUS_MENUNGGU_VERIFIKASI,
@@ -185,7 +210,15 @@ class HimpunanController extends \App\Http\Controllers\Controller
      */
     public function seminarRevisi(Request $request)
     {
-        $seminar = Seminar::findOrFail($request->id);
+        $himpunan = Auth::guard('himpunan')->user();
+        $prodiId = $himpunan ? $himpunan->prodi_id : null;
+
+        $seminar = Seminar::when($prodiId, function ($q) use ($prodiId) {
+                $q->whereHas('mahasiswa', function ($mq) use ($prodiId) {
+                    $mq->where('prodi_id', $prodiId);
+                });
+            })
+            ->findOrFail($request->id);
         $seminar->update([
             'is_valid' => Seminar::REVISI,
             'status_seminar' => Seminar::STATUS_REVISI,
@@ -218,7 +251,15 @@ class HimpunanController extends \App\Http\Controllers\Controller
      */
     public function setJadwalSeminar(Request $request)
     {
-        $seminar = Seminar::findOrFail($request->seminar_id);
+        $himpunan = Auth::guard('himpunan')->user();
+        $prodiId = $himpunan ? $himpunan->prodi_id : null;
+
+        $seminar = Seminar::when($prodiId, function ($q) use ($prodiId) {
+                $q->whereHas('mahasiswa', function ($mq) use ($prodiId) {
+                    $mq->where('prodi_id', $prodiId);
+                });
+            })
+            ->findOrFail($request->seminar_id);
         
         $validatedData = $request->validate([
             'tanggal_ujian' => 'required',
@@ -262,7 +303,15 @@ class HimpunanController extends \App\Http\Controllers\Controller
      */
     public function plotingPenguji(Request $request)
     {
-        $seminar = Seminar::findOrFail($request->seminar_id);
+        $himpunan = Auth::guard('himpunan')->user();
+        $prodiId = $himpunan ? $himpunan->prodi_id : null;
+
+        $seminar = Seminar::when($prodiId, function ($q) use ($prodiId) {
+                $q->whereHas('mahasiswa', function ($mq) use ($prodiId) {
+                    $mq->where('prodi_id', $prodiId);
+                });
+            })
+            ->findOrFail($request->seminar_id);
 
         // Cek apakah sudah ada penguji yang sudah memberikan nilai
         $reviews_check = $seminar->reviews()
@@ -300,7 +349,17 @@ class HimpunanController extends \App\Http\Controllers\Controller
      */
     public function rekapSeminar()
     {
-        $seminars = Seminar::with(['mahasiswa', 'pengajuan'])->orderBy('created_at', 'desc')->get();
+        $himpunan = Auth::guard('himpunan')->user();
+        $prodiId = $himpunan ? $himpunan->prodi_id : null;
+
+        $seminars = Seminar::with(['mahasiswa', 'pengajuan'])
+            ->when($prodiId, function ($q) use ($prodiId) {
+                $q->whereHas('mahasiswa', function ($mq) use ($prodiId) {
+                    $mq->where('prodi_id', $prodiId);
+                });
+            })
+            ->orderBy('created_at', 'desc')
+            ->get();
 
         return view('kp.pages.himpunan.seminar.rekap', [
             'title'    => 'Rekap Seminar KP',
@@ -316,6 +375,9 @@ class HimpunanController extends \App\Http\Controllers\Controller
      */
     public function rekapSeminarBulanan(Request $request)
     {
+        $himpunan = Auth::guard('himpunan')->user();
+        $prodiId = $himpunan ? $himpunan->prodi_id : null;
+
         // Validasi input — hanya angka valid, default bulan & tahun saat ini
         $bulan = $request->input('bulan');
         $tahun = $request->input('tahun');
@@ -331,6 +393,11 @@ class HimpunanController extends \App\Http\Controllers\Controller
 
         // Query seminar yang di-ACC: periksa tanggal_acc, dengan fallback ke updated_at / created_at (untuk data lama)
         $seminars = Seminar::with(['mahasiswa', 'pengajuan'])
+            ->when($prodiId, function ($q) use ($prodiId) {
+                $q->whereHas('mahasiswa', function ($mq) use ($prodiId) {
+                    $mq->where('prodi_id', $prodiId);
+                });
+            })
             ->where(function ($q) use ($bulan, $tahun) {
                 $q->where(function ($q2) use ($bulan, $tahun) {
                     $q2->whereNotNull('tanggal_acc')
@@ -446,6 +513,21 @@ class HimpunanController extends \App\Http\Controllers\Controller
             'seminars'         => 'required|array|min:1',
         ]);
 
+        $himpunan = Auth::guard('himpunan')->user();
+        $prodiId = $himpunan ? $himpunan->prodi_id : null;
+
+        // Verify all seminars belong to prodi
+        if ($prodiId) {
+            $ownedCount = Seminar::whereIn('id', $request->seminars)
+                ->whereHas('mahasiswa', function ($mq) use ($prodiId) {
+                    $mq->where('prodi_id', $prodiId);
+                })
+                ->count();
+            if ($ownedCount !== count($request->seminars)) {
+                abort(403, 'Unauthorized access to seminars');
+            }
+        }
+
         // Generate nama sesi otomatis
         $tanggal   = Carbon::parse($request->tanggal);
         $nama_sesi = 'Sesi ' . $tanggal->translatedFormat('d M Y') . ' - ' . $request->jam_mulai;
@@ -506,7 +588,22 @@ class HimpunanController extends \App\Http\Controllers\Controller
      */
     public function detailSesi($id)
     {
+        $himpunan = Auth::guard('himpunan')->user();
+        $prodiId = $himpunan ? $himpunan->prodi_id : null;
+
         $sesi = SesiSeminar::with(['seminars.mahasiswa', 'seminars.pengajuan', 'dosenPenguji'])->findOrFail($id);
+
+        // Verify all seminars in sesi belong to prodi
+        if ($prodiId) {
+            $ownedCount = $sesi->seminars()
+                ->whereHas('mahasiswa', function ($mq) use ($prodiId) {
+                    $mq->where('prodi_id', $prodiId);
+                })
+                ->count();
+            if ($ownedCount !== $sesi->seminars->count()) {
+                abort(403, 'Unauthorized access to sesi');
+            }
+        }
 
         return view('kp.pages.himpunan.seminar.detail-sesi', [
             'title' => 'Detail Sesi Seminar',
@@ -522,7 +619,21 @@ class HimpunanController extends \App\Http\Controllers\Controller
      */
     public function validasiSelesaiSeminar(Request $request)
     {
+        $himpunan = Auth::guard('himpunan')->user();
+        $prodiId = $himpunan ? $himpunan->prodi_id : null;
+
         $sesi = SesiSeminar::findOrFail($request->sesi_id);
+
+        if ($prodiId) {
+            $ownedCount = $sesi->seminars()
+                ->whereHas('mahasiswa', function ($mq) use ($prodiId) {
+                    $mq->where('prodi_id', $prodiId);
+                })
+                ->count();
+            if ($ownedCount !== $sesi->seminars()->count()) {
+                abort(403, 'Unauthorized access to sesi');
+            }
+        }
 
         // Cek apakah link sudah digunakan
         if (!$sesi->is_token_used) {
@@ -565,7 +676,21 @@ class HimpunanController extends \App\Http\Controllers\Controller
      */
     public function deleteSesi($id)
     {
+        $himpunan = Auth::guard('himpunan')->user();
+        $prodiId = $himpunan ? $himpunan->prodi_id : null;
+
         $sesi = SesiSeminar::findOrFail($id);
+
+        if ($prodiId) {
+            $ownedCount = $sesi->seminars()
+                ->whereHas('mahasiswa', function ($mq) use ($prodiId) {
+                    $mq->where('prodi_id', $prodiId);
+                })
+                ->count();
+            if ($ownedCount !== $sesi->seminars()->count()) {
+                abort(403, 'Unauthorized access to sesi');
+            }
+        }
 
         // Cek apakah token sudah digunakan
         if ($sesi->is_token_used) {
@@ -594,7 +719,15 @@ class HimpunanController extends \App\Http\Controllers\Controller
      */
     public function validasiRevisiPasca(Request $request)
     {
-        $seminar = Seminar::findOrFail($request->seminar_id);
+        $himpunan = Auth::guard('himpunan')->user();
+        $prodiId = $himpunan ? $himpunan->prodi_id : null;
+
+        $seminar = Seminar::when($prodiId, function ($q) use ($prodiId) {
+                $q->whereHas('mahasiswa', function ($mq) use ($prodiId) {
+                    $mq->where('prodi_id', $prodiId);
+                });
+            })
+            ->findOrFail($request->seminar_id);
         
         if ($request->action === 'setuju') {
             $seminar->update([
@@ -617,7 +750,15 @@ class HimpunanController extends \App\Http\Controllers\Controller
      */
     public function finalisasiNilai(Request $request)
     {
-        $seminar = Seminar::findOrFail($request->seminar_id);
+        $himpunan = Auth::guard('himpunan')->user();
+        $prodiId = $himpunan ? $himpunan->prodi_id : null;
+
+        $seminar = Seminar::when($prodiId, function ($q) use ($prodiId) {
+                $q->whereHas('mahasiswa', function ($mq) use ($prodiId) {
+                    $mq->where('prodi_id', $prodiId);
+                });
+            })
+            ->findOrFail($request->seminar_id);
         
         $seminar->hitungNilaiAkhir();
         $seminar->update([

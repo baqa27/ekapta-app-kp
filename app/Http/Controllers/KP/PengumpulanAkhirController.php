@@ -71,15 +71,10 @@ class PengumpulanAkhirController extends \App\Http\Controllers\Controller
             return redirect()->route('kp.seminar.mahasiswa')->with('warning', 'Selesaikan tahap Seminar KP terlebih dahulu. Anda harus lulus seminar untuk mengakses Pengumpulan Akhir.');
         }
 
-        // Jika ada jilid draft (hanya nilai dari dosen), arahkan ke create untuk upload dokumen
-        if ($mahasiswa->jilidKP && $mahasiswa->jilidKP->isDraft()) {
-            return redirect()->route('kp.pengumpulan-akhir.create')->with('info', 'Dosen pembimbing sudah memberikan nilai. Silahkan upload dokumen Jilid KP.');
-        }
-
         return view('kp.pages.pengumpulan-akhir.index', [
             'title' => 'Pengumpulan Akhir KP',
             'active' => 'pengumpulan-akhir-kp',
-            'jilids' => $mahasiswa->jilidKP ? [$mahasiswa->jilidKP] : [],
+            'jilids' => $mahasiswa->jilidKP && !$mahasiswa->jilidKP->isDraft() ? [$mahasiswa->jilidKP] : [],
             'jilid' => $mahasiswa->jilidKP,
         ]);
     }
