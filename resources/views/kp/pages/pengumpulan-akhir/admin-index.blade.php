@@ -10,7 +10,7 @@
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="#">Jilid KP</a></li>
+                        <li class="breadcrumb-item"><a href="#">Pengumpulan Akhir KP</a></li>
                         <li class="breadcrumb-item active">Dashboard</li>
                     </ol>
                 </div><!-- /.col -->
@@ -39,11 +39,12 @@
                 </div>
                 {{-- Card Statistik untuk Admin Fotokopi --}}
                 <div class="row mb-4">
+                    @if(config('kp.tahap_jilid_perpus_aktif'))
                     <div class="col-lg-3 col-6">
                         <div class="small-box bg-info">
                             <div class="inner">
                                 <h3>{{ $jilids_kp->where('status', \App\Models\KP\Jilid::JILID_VALID)->count() }}</h3>
-                                <p>Menunggu Jilid KP</p>
+                                <p>Menunggu Pengumpulan Akhir KP</p>
                             </div>
                             <div class="icon">
                                 <i class="fas fa-clock"></i>
@@ -54,13 +55,26 @@
                         <div class="small-box bg-success">
                             <div class="inner">
                                 <h3>{{ $jilids_kp->where('status', \App\Models\KP\Jilid::JILID_SELESAI)->count() }}</h3>
-                                <p>Selesai Jilid KP</p>
+                                <p>Selesai Pengumpulan Akhir KP</p>
                             </div>
                             <div class="icon">
                                 <i class="fas fa-check-circle"></i>
                             </div>
                         </div>
                     </div>
+                    @else
+                    <div class="col-lg-3 col-6">
+                        <div class="small-box bg-primary">
+                            <div class="inner">
+                                <h3>{{ $jilids_kp->where('status', \App\Models\KP\Jilid::JILID_VALID)->count() }}</h3>
+                                <p>Dokumen Valid KP</p>
+                            </div>
+                            <div class="icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                        </div>
+                    </div>
+                    @endif
                     <div class="col-lg-3 col-6">
                         <div class="small-box bg-warning">
                             <div class="inner">
@@ -164,66 +178,68 @@
                                         </table>
                                     </div>
 
-                                    {{-- Tab Selesai --}}
-                                    <div class="tab-pane" id="tab_2">
-                                        <table id="example2" class="table table-bordered table-striped">
-                                            <thead>
-                                                <tr>
-                                                    <th>No</th>
-                                                    <th>NIM</th>
-                                                    <th>Nama Mahasiswa</th>
-                                                    <th>Total Pembayaran</th>
-                                                    <th>Status</th>
-                                                    <th>Aksi</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @php $no = 1; @endphp
-                                                @foreach ($jilids_kp as $jilid)
-                                                    @php
-                                                        $is_karyawan = \App\Helpers\AppHelper::isKaryawanKP($jilid->mahasiswa);
-                                                    @endphp
-                                                    @if ($jilid->status == \App\Models\KP\Jilid::JILID_SELESAI)
-                                                        <tr>
-                                                            <td>{{ $no++ }}</td>
-                                                            <td>{{ $jilid->mahasiswa->nim }}</td>
-                                                            <td>
-                                                                {{ $jilid->mahasiswa->nama }}
-                                                                @if($is_karyawan)
-                                                                    <br><small class="badge badge-info">Kelas Karyawan</small>
-                                                                @endif
-                                                            </td>
-                                                            <td>
-                                                                @if ($jilid->total_pembayaran)
-                                                                    Rp {{ number_format($jilid->total_pembayaran, 0, ',', '.') }}
-                                                                @else
-                                                                    -
-                                                                @endif
-                                                            </td>
-                                                            <td>
-                                                                <span class="badge bg-success">Selesai</span>
-                                                                @if ($jilid->is_completed)
-                                                                    <br><small class="text-primary">Sudah setor perpus</small>
-                                                                @endif
-                                                            </td>
-                                                            <td>
-                                                                <a href="{{ route('kp.pengumpulan-akhir.detail', $jilid->id) }}" class="btn btn-info btn-sm">
-                                                                    <i class="fas fa-info-circle mr-1"></i> Detail
-                                                                </a>
-                                                                @if (!$jilid->is_completed)
-                                                                    <a href="{{ route('kp.pengumpulan-akhir.confirm.completed', $jilid->id) }}"
-                                                                        class="btn btn-success btn-sm"
-                                                                        onclick="return confirm('Yakin ingin konfirmasi bahwa mahasiswa sudah setor ke perpustakaan?')">
-                                                                        <i class="fas fa-check mr-1"></i> Konfirmasi Setor
-                                                                    </a>
-                                                                @endif
-                                                            </td>
-                                                        </tr>
-                                                    @endif
-                                                @endforeach
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                     @if(config('kp.tahap_jilid_perpus_aktif'))
+                                     {{-- Tab Selesai --}}
+                                     <div class="tab-pane" id="tab_2">
+                                         <table id="example2" class="table table-bordered table-striped">
+                                             <thead>
+                                                 <tr>
+                                                     <th>No</th>
+                                                     <th>NIM</th>
+                                                     <th>Nama Mahasiswa</th>
+                                                     <th>Total Pembayaran</th>
+                                                     <th>Status</th>
+                                                     <th>Aksi</th>
+                                                 </tr>
+                                             </thead>
+                                             <tbody>
+                                                 @php $no = 1; @endphp
+                                                 @foreach ($jilids_kp as $jilid)
+                                                     @php
+                                                         $is_karyawan = \App\Helpers\AppHelper::isKaryawanKP($jilid->mahasiswa);
+                                                     @endphp
+                                                     @if ($jilid->status == \App\Models\KP\Jilid::JILID_SELESAI)
+                                                         <tr>
+                                                             <td>{{ $no++ }}</td>
+                                                             <td>{{ $jilid->mahasiswa->nim }}</td>
+                                                             <td>
+                                                                 {{ $jilid->mahasiswa->nama }}
+                                                                 @if($is_karyawan)
+                                                                     <br><small class="badge badge-info">Kelas Karyawan</small>
+                                                                 @endif
+                                                             </td>
+                                                             <td>
+                                                                 @if ($jilid->total_pembayaran)
+                                                                     Rp {{ number_format($jilid->total_pembayaran, 0, ',', '.') }}
+                                                                 @else
+                                                                     -
+                                                                 @endif
+                                                             </td>
+                                                             <td>
+                                                                 <span class="badge bg-success">Selesai</span>
+                                                                 @if ($jilid->is_completed)
+                                                                     <br><small class="text-primary">Sudah setor perpus</small>
+                                                                 @endif
+                                                             </td>
+                                                             <td>
+                                                                 <a href="{{ route('kp.pengumpulan-akhir.detail', $jilid->id) }}" class="btn btn-info btn-sm">
+                                                                     <i class="fas fa-info-circle mr-1"></i> Detail
+                                                                 </a>
+                                                                 @if (!$jilid->is_completed)
+                                                                     <a href="{{ route('kp.pengumpulan-akhir.confirm.completed', $jilid->id) }}"
+                                                                         class="btn btn-success btn-sm"
+                                                                         onclick="return confirm('Yakin ingin konfirmasi bahwa mahasiswa sudah setor ke perpustakaan?')">
+                                                                         <i class="fas fa-check mr-1"></i> Konfirmasi Setor
+                                                                     </a>
+                                                                 @endif
+                                                             </td>
+                                                         </tr>
+                                                     @endif
+                                                 @endforeach
+                                             </tbody>
+                                         </table>
+                                     </div>
+                                     @endif
 
                                     {{-- Tab Revisi --}}
                                     <div class="tab-pane" id="tab_3">
@@ -326,7 +342,7 @@
                                 <ul class="nav nav-pills mb-3">
                                     <li class="nav-item">
                                         <a class="nav-link active" href="#tab_kp" data-toggle="tab">
-                                            <i class="fas fa-briefcase mr-1"></i> Jilid KP
+                                            <i class="fas fa-briefcase mr-1"></i> Pengumpulan Akhir KP
                                         </a>
                                     </li>
                     <li class="nav-item">
@@ -353,7 +369,7 @@
                                         </ul>
 
                                         <div class="tab-content">
-                                            {{-- Tab Menunggu Jilid KP --}}
+                                            {{-- Tab Menunggu Pengumpulan Akhir KP --}}
                                             <div class="tab-pane active" id="tab_kp_valid">
                                                 <table id="table_kp_valid" class="table table-bordered table-striped">
                                                     <thead>
@@ -398,68 +414,70 @@
                                                 </table>
                                             </div>
 
-                                            {{-- Tab Selesai Jilid KP --}}
-                                            <div class="tab-pane" id="tab_kp_selesai">
-                                                <table id="table_kp_selesai" class="table table-bordered table-striped">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>No</th>
-                                                            <th>NIM</th>
-                                                            <th>Nama Mahasiswa</th>
-                                                            <th>Total Pembayaran</th>
-                                                            <th>Status</th>
-                                                            <th>Aksi</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        @php $no = 1; @endphp
-                                                        @foreach ($jilids_kp as $jilid)
-                                                            @php
-                                                                $is_karyawan = \App\Helpers\AppHelper::isKaryawanKP($jilid->mahasiswa);
-                                                            @endphp
-                                                            @if ($jilid->status == \App\Models\KP\Jilid::JILID_SELESAI)
-                                                            <tr>
-                                                                <td>{{ $no++ }}</td>
-                                                                <td>{{ $jilid->mahasiswa->nim }}</td>
-                                                                <td>
-                                                                    {{ $jilid->mahasiswa->nama }}
-                                                                    @if($is_karyawan)
-                                                                        <br><small class="badge badge-info">Karyawan</small>
-                                                                    @endif
-                                                                </td>
-                                                                <td>
-                                                                    @if ($jilid->total_pembayaran)
-                                                                        <span class="text-success font-weight-bold">
-                                                                            Rp {{ number_format($jilid->total_pembayaran, 0, ',', '.') }}
-                                                                        </span>
-                                                                    @else
-                                                                        -
-                                                                    @endif
-                                                                </td>
-                                                                <td>
-                                                                    <span class="badge bg-success">Selesai</span>
-                                                                    @if ($jilid->is_completed)
-                                                                        <br><small class="text-primary">Sudah setor perpus</small>
-                                                                    @endif
-                                                                </td>
-                                                                <td>
-                                                                    <a href="{{ route('kp.pengumpulan-akhir.detail', $jilid->id) }}" class="btn btn-info btn-sm">
-                                                                        <i class="fas fa-info-circle mr-1"></i> Detail
-                                                                    </a>
-                                                                    @if (!$jilid->is_completed)
-                                                                        <a href="{{ route('kp.pengumpulan-akhir.confirm.completed', $jilid->id) }}"
-                                                                            class="btn btn-success btn-sm"
-                                                                            onclick="return confirm('Yakin ingin konfirmasi bahwa mahasiswa sudah setor ke perpustakaan?')">
-                                                                            <i class="fas fa-check mr-1"></i> Konfirmasi Setor
-                                                                        </a>
-                                                                    @endif
-                                                                </td>
-                                                            </tr>
-                                                            @endif
-                                                        @endforeach
-                                                    </tbody>
-                                                </table>
-                                            </div>
+                                             @if(config('kp.tahap_jilid_perpus_aktif'))
+                                             {{-- Tab Selesai Pengumpulan Akhir KP --}}
+                                             <div class="tab-pane" id="tab_kp_selesai">
+                                                 <table id="table_kp_selesai" class="table table-bordered table-striped">
+                                                     <thead>
+                                                         <tr>
+                                                             <th>No</th>
+                                                             <th>NIM</th>
+                                                             <th>Nama Mahasiswa</th>
+                                                             <th>Total Pembayaran</th>
+                                                             <th>Status</th>
+                                                             <th>Aksi</th>
+                                                         </tr>
+                                                     </thead>
+                                                     <tbody>
+                                                         @php $no = 1; @endphp
+                                                         @foreach ($jilids_kp as $jilid)
+                                                             @php
+                                                                 $is_karyawan = \App\Helpers\AppHelper::isKaryawanKP($jilid->mahasiswa);
+                                                             @endphp
+                                                             @if ($jilid->status == \App\Models\KP\Jilid::JILID_SELESAI)
+                                                             <tr>
+                                                                 <td>{{ $no++ }}</td>
+                                                                 <td>{{ $jilid->mahasiswa->nim }}</td>
+                                                                 <td>
+                                                                     {{ $jilid->mahasiswa->nama }}
+                                                                     @if($is_karyawan)
+                                                                         <br><small class="badge badge-info">Karyawan</small>
+                                                                     @endif
+                                                                 </td>
+                                                                 <td>
+                                                                     @if ($jilid->total_pembayaran)
+                                                                         <span class="text-success font-weight-bold">
+                                                                             Rp {{ number_format($jilid->total_pembayaran, 0, ',', '.') }}
+                                                                         </span>
+                                                                     @else
+                                                                         -
+                                                                     @endif
+                                                                 </td>
+                                                                 <td>
+                                                                     <span class="badge bg-success">Selesai</span>
+                                                                     @if ($jilid->is_completed)
+                                                                         <br><small class="text-primary">Sudah setor perpus</small>
+                                                                     @endif
+                                                                 </td>
+                                                                 <td>
+                                                                     <a href="{{ route('kp.pengumpulan-akhir.detail', $jilid->id) }}" class="btn btn-info btn-sm">
+                                                                         <i class="fas fa-info-circle mr-1"></i> Detail
+                                                                     </a>
+                                                                     @if (!$jilid->is_completed)
+                                                                         <a href="{{ route('kp.pengumpulan-akhir.confirm.completed', $jilid->id) }}"
+                                                                             class="btn btn-success btn-sm"
+                                                                             onclick="return confirm('Yakin ingin konfirmasi bahwa mahasiswa sudah setor ke perpustakaan?')">
+                                                                             <i class="fas fa-check mr-1"></i> Konfirmasi Setor
+                                                                         </a>
+                                                                     @endif
+                                                                 </td>
+                                                             </tr>
+                                                             @endif
+                                                         @endforeach
+                                                     </tbody>
+                                                 </table>
+                                             </div>
+                                             @endif
                                         </div>
                                     </div>
 

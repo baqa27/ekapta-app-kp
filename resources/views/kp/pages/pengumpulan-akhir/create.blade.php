@@ -10,7 +10,7 @@
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="#">Jilid KP</a></li>
+                        <li class="breadcrumb-item"><a href="#">Pengumpulan Akhir KP</a></li>
                         <li class="breadcrumb-item active">Submit</li>
                     </ol>
                 </div><!-- /.col -->
@@ -51,7 +51,7 @@
                         @if($jilid->catatan)
                         <p class="mb-0">Catatan: {{ $jilid->catatan }}</p>
                         @endif
-                        <p class="mb-0 mt-2"><em>Silahkan upload dokumen Jilid KP di bawah ini.</em></p>
+                        <p class="mb-0 mt-2"><em>Silahkan upload dokumen Pengumpulan Akhir KP di bawah ini.</em></p>
                     </div>
                     @endif
 
@@ -370,7 +370,7 @@
                                         <i class="fas fa-arrow-left mr-1"></i> Kembali
                                     </a>
                                     <button type="submit" class="btn btn-success">
-                                        <i class="fas fa-paper-plane mr-1"></i> Submit Jilid KP
+                                        <i class="fas fa-paper-plane mr-1"></i> Submit Pengumpulan Akhir KP
                                     </button>
                                 </div>
                             </form>

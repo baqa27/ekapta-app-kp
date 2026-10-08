@@ -141,6 +141,12 @@ class ReviewSeminarController extends \App\Http\Controllers\Controller
             'tanggal_acc' => $request->type ? $review_seminar->tanggal_acc_manual: now(),
         ]);
         $review_seminar->revisis()->save($revisi);
+        
+        // Set is_lulus = 1 untuk seminar agar mahasiswa bisa akses Pengumpulan Akhir
+        $review_seminar->seminar->update([
+            'is_lulus' => 1,
+        ]);
+        
         if ($review_seminar->seminar->mahasiswa->email != '-') {
             AppHelper::instance()->send_mail([
                 'mail' => $review_seminar->seminar->mahasiswa->email,

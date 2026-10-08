@@ -928,6 +928,7 @@ Route::prefix('kp')->name('kp.')->group(function () {
     // Pengumpulan Akhir KP (Prodi)
     Route::get('/pengumpulan-akhir-prodi', [PengumpulanAkhirController::class, 'indexProdi'])->name('pengumpulan-akhir.prodi.index')->middleware('isProdi');
     Route::get('/pengumpulan-akhir-prodi/detail/{id}', [PengumpulanAkhirController::class, 'detailProdi'])->name('pengumpulan-akhir.prodi.detail')->middleware('isProdi');
+    Route::put('/pengumpulan-akhir-prodi/acc/{id}', [PengumpulanAkhirController::class, 'accProdi'])->name('pengumpulan-akhir.prodi.acc')->middleware('isProdi');
     Route::put('/pengumpulan-akhir-prodi/update-nilai/{id}', [PengumpulanAkhirController::class, 'updateNilai'])->name('pengumpulan-akhir.prodi.update-nilai')->middleware('isProdi');
 
     // Pengumpulan Akhir TA - Detail dokumen untuk Admin dan Prodi

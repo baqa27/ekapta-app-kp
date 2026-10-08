@@ -10,7 +10,7 @@
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="{{ route('kp.pengumpulan-akhir.prodi.index') }}">Jilid KP</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('kp.pengumpulan-akhir.prodi.index') }}">Pengumpulan Akhir KP</a></li>
                         <li class="breadcrumb-item active">{{ $title }}</li>
                     </ol>
                 </div>
@@ -216,153 +216,281 @@
                             <h5 class="mt-3"><strong>Dokumen Pengumpulan Akhir</strong></h5>
                             <hr>
 
-                            @php
-                                $has_documents = $jilid->lembar_pengesahan || $jilid->lembar_bimbingan || 
-                                                $jilid->lembar_revisi || $jilid->laporan_pdf || $jilid->laporan_word || 
-                                                $jilid->file_project || $jilid->link_project || $jilid->form_nilai_kp || 
-                                                $jilid->berita_acara || $jilid->panduan;
-                            @endphp
-
-                            @if(!$has_documents)
-                            <div class="alert alert-warning">
-                                <i class="fas fa-exclamation-triangle mr-2"></i>
-                                <strong>Belum ada dokumen yang diupload.</strong>
-                            </div>
-                            @endif
-
-                            @if($jilid->lembar_pengesahan)
-                            <div class="row">
-                                <div class="col-md-4">Lembar Pengesahan (TTD)</div>
-                                <div class="col-md-8">
-                                    <a href="{{ storage_url($jilid->lembar_pengesahan) }}" target="_blank" class="text-primary">
-                                        <i class="fas fa-paperclip"></i> {{ basename($jilid->lembar_pengesahan) }}
-                                    </a>
-                                </div>
-                            </div>
-                            <hr>
-                            @endif
-
-                            @if($jilid->lembar_bimbingan)
-                            <div class="row">
-                                <div class="col-md-4">Lembar Bimbingan KP</div>
-                                <div class="col-md-8">
-                                    <a href="{{ storage_url($jilid->lembar_bimbingan) }}" target="_blank" class="text-primary">
-                                        <i class="fas fa-paperclip"></i> {{ basename($jilid->lembar_bimbingan) }}
-                                    </a>
-                                </div>
-                            </div>
-                            <hr>
-                            @endif
-
-                            @if($jilid->lembar_revisi)
-                            <div class="row">
-                                <div class="col-md-4">Lembar Revisi (ACC Penguji)</div>
-                                <div class="col-md-8">
-                                    <a href="{{ storage_url($jilid->lembar_revisi) }}" target="_blank" class="text-primary">
-                                        <i class="fas fa-paperclip"></i> {{ basename($jilid->lembar_revisi) }}
-                                    </a>
-                                </div>
-                            </div>
-                            <hr>
-                            @endif
-
-                            @if($jilid->laporan_pdf)
                             <div class="row">
                                 <div class="col-md-4">Laporan KP (PDF)</div>
                                 <div class="col-md-8">
-                                    @if(filter_var($jilid->laporan_pdf, FILTER_VALIDATE_URL))
-                                        <a href="{{ $jilid->laporan_pdf }}" target="_blank" class="text-primary">
-                                            <i class="fas fa-external-link-alt"></i> Buka Link Google Drive
-                                        </a>
+                                    @if($jilid->laporan_pdf)
+                                        @if(filter_var($jilid->laporan_pdf, FILTER_VALIDATE_URL))
+                                            <a href="{{ $jilid->laporan_pdf }}" target="_blank" class="text-primary">
+                                                <i class="fas fa-external-link-alt"></i> Buka Link Google Drive
+                                            </a>
+                                        @else
+                                            <a href="{{ storage_url($jilid->laporan_pdf) }}" target="_blank" class="text-primary">
+                                                <i class="fas fa-paperclip"></i> {{ basename($jilid->laporan_pdf) }}
+                                            </a>
+                                        @endif
                                     @else
-                                        <a href="{{ storage_url($jilid->laporan_pdf) }}" target="_blank" class="text-primary">
-                                            <i class="fas fa-paperclip"></i> {{ basename($jilid->laporan_pdf) }}
-                                        </a>
+                                        <span class="text-muted">Belum diunggah</span>
                                     @endif
                                 </div>
                             </div>
                             <hr>
-                            @endif
 
-                            @if($jilid->laporan_word)
                             <div class="row">
                                 <div class="col-md-4">Laporan KP (Word)</div>
                                 <div class="col-md-8">
-                                    @if(filter_var($jilid->laporan_word, FILTER_VALIDATE_URL))
-                                        <a href="{{ $jilid->laporan_word }}" target="_blank" class="text-primary">
-                                            <i class="fas fa-external-link-alt"></i> Buka Link Google Drive
-                                        </a>
+                                    @if($jilid->laporan_word)
+                                        @if(filter_var($jilid->laporan_word, FILTER_VALIDATE_URL))
+                                            <a href="{{ $jilid->laporan_word }}" target="_blank" class="text-primary">
+                                                <i class="fas fa-external-link-alt"></i> Buka Link Google Drive
+                                            </a>
+                                        @else
+                                            <a href="{{ storage_url($jilid->laporan_word) }}" target="_blank" class="text-primary">
+                                                <i class="fas fa-paperclip"></i> {{ basename($jilid->laporan_word) }}
+                                            </a>
+                                        @endif
                                     @else
-                                        <a href="{{ storage_url($jilid->laporan_word) }}" target="_blank" class="text-primary">
-                                            <i class="fas fa-paperclip"></i> {{ basename($jilid->laporan_word) }}
-                                        </a>
+                                        <span class="text-muted">Belum diunggah</span>
                                     @endif
                                 </div>
                             </div>
                             <hr>
-                            @endif
 
-                            @if($jilid->file_project)
+                            <div class="row">
+                                <div class="col-md-4">Lembar Keaslian</div>
+                                <div class="col-md-8">
+                                    @if($jilid->lembar_keaslian)
+                                        <a href="{{ storage_url($jilid->lembar_keaslian) }}" target="_blank" class="text-primary">
+                                            <i class="fas fa-paperclip"></i> {{ basename($jilid->lembar_keaslian) }}
+                                        </a>
+                                    @else
+                                        <span class="text-muted">Belum diunggah</span>
+                                    @endif
+                                </div>
+                            </div>
+                            <hr>
+
+                            <div class="row">
+                                <div class="col-md-4">Lembar Persetujuan Pembimbing (TTD)</div>
+                                <div class="col-md-8">
+                                    @if($jilid->lembar_persetujuan_pembimbing)
+                                        <a href="{{ storage_url($jilid->lembar_persetujuan_pembimbing) }}" target="_blank" class="text-primary">
+                                            <i class="fas fa-paperclip"></i> {{ basename($jilid->lembar_persetujuan_pembimbing) }}
+                                        </a>
+                                    @else
+                                        <span class="text-muted">Belum diunggah</span>
+                                    @endif
+                                </div>
+                            </div>
+                            <hr>
+
+                            <div class="row">
+                                <div class="col-md-4">Lembar Persetujuan Penguji (TTD)</div>
+                                <div class="col-md-8">
+                                    @if($jilid->lembar_persetujuan_penguji)
+                                        <a href="{{ storage_url($jilid->lembar_persetujuan_penguji) }}" target="_blank" class="text-primary">
+                                            <i class="fas fa-paperclip"></i> {{ basename($jilid->lembar_persetujuan_penguji) }}
+                                        </a>
+                                    @else
+                                        <span class="text-muted">Belum diunggah</span>
+                                    @endif
+                                </div>
+                            </div>
+                            <hr>
+
+                            <div class="row">
+                                <div class="col-md-4">Lembar Pengesahan (TTD)</div>
+                                <div class="col-md-8">
+                                    @if($jilid->lembar_pengesahan)
+                                        <a href="{{ storage_url($jilid->lembar_pengesahan) }}" target="_blank" class="text-primary">
+                                            <i class="fas fa-paperclip"></i> {{ basename($jilid->lembar_pengesahan) }}
+                                        </a>
+                                    @else
+                                        <span class="text-muted">Belum diunggah</span>
+                                    @endif
+                                </div>
+                            </div>
+                            <hr>
+
+                            <div class="row">
+                                <div class="col-md-4">Lembar Bimbingan KP</div>
+                                <div class="col-md-8">
+                                    @if($jilid->lembar_bimbingan)
+                                        <a href="{{ storage_url($jilid->lembar_bimbingan) }}" target="_blank" class="text-primary">
+                                            <i class="fas fa-paperclip"></i> {{ basename($jilid->lembar_bimbingan) }}
+                                        </a>
+                                    @else
+                                        <span class="text-muted">Belum diunggah</span>
+                                    @endif
+                                </div>
+                            </div>
+                            <hr>
+
+                            <div class="row">
+                                <div class="col-md-4">Lembar Revisi (ACC Penguji)</div>
+                                <div class="col-md-8">
+                                    @if($jilid->lembar_revisi)
+                                        <a href="{{ storage_url($jilid->lembar_revisi) }}" target="_blank" class="text-primary">
+                                            <i class="fas fa-paperclip"></i> {{ basename($jilid->lembar_revisi) }}
+                                        </a>
+                                    @else
+                                        <span class="text-muted">Belum diunggah</span>
+                                    @endif
+                                </div>
+                            </div>
+                            <hr>
+
+                            <div class="row">
+                                <div class="col-md-4">Artikel KP (Word)</div>
+                                <div class="col-md-8">
+                                    @if($jilid->artikel)
+                                        @if(filter_var($jilid->artikel, FILTER_VALIDATE_URL))
+                                            <a href="{{ $jilid->artikel }}" target="_blank" class="text-primary">
+                                                <i class="fas fa-external-link-alt"></i> Buka Link Google Drive
+                                            </a>
+                                        @else
+                                            <a href="{{ storage_url($jilid->artikel) }}" target="_blank" class="text-primary">
+                                                <i class="fas fa-paperclip"></i> {{ basename($jilid->artikel) }}
+                                            </a>
+                                        @endif
+                                    @else
+                                        <span class="text-muted">Belum diunggah</span>
+                                    @endif
+                                </div>
+                            </div>
+                            <hr>
+
                             <div class="row">
                                 <div class="col-md-4">File Project/Program KP</div>
                                 <div class="col-md-8">
-                                    <a href="{{ storage_url($jilid->file_project) }}" target="_blank" class="text-primary">
-                                        <i class="fas fa-paperclip"></i> {{ basename($jilid->file_project) }}
-                                    </a>
+                                    @if($jilid->file_project)
+                                        <a href="{{ storage_url($jilid->file_project) }}" target="_blank" class="text-primary">
+                                            <i class="fas fa-paperclip"></i> {{ basename($jilid->file_project) }}
+                                        </a>
+                                    @else
+                                        <span class="text-muted">Belum diunggah</span>
+                                    @endif
                                 </div>
                             </div>
                             <hr>
-                            @endif
 
-                            @if($jilid->link_project)
                             <div class="row">
                                 <div class="col-md-4">Link Project KP</div>
                                 <div class="col-md-8">
-                                    <a href="{{ $jilid->link_project }}" target="_blank" class="btn btn-sm btn-outline-success">
-                                        <i class="fas fa-external-link-alt"></i> Buka Link
-                                    </a>
+                                    @if($jilid->link_project)
+                                        <a href="{{ $jilid->link_project }}" target="_blank" class="btn btn-sm btn-outline-success">
+                                            <i class="fas fa-external-link-alt"></i> Buka Link
+                                        </a>
+                                    @else
+                                        <span class="text-muted">Belum diunggah</span>
+                                    @endif
                                 </div>
                             </div>
                             <hr>
-                            @endif
 
-                            @if($jilid->form_nilai_kp)
                             <div class="row">
                                 <div class="col-md-4">Form Nilai KP</div>
                                 <div class="col-md-8">
-                                    <a href="{{ storage_url($jilid->form_nilai_kp) }}" target="_blank" class="text-primary">
-                                        <i class="fas fa-paperclip"></i> {{ basename($jilid->form_nilai_kp) }}
-                                    </a>
+                                    @if($jilid->form_nilai_kp)
+                                        <a href="{{ storage_url($jilid->form_nilai_kp) }}" target="_blank" class="text-primary">
+                                            <i class="fas fa-paperclip"></i> {{ basename($jilid->form_nilai_kp) }}
+                                        </a>
+                                    @else
+                                        <span class="text-muted">Belum diunggah</span>
+                                    @endif
                                 </div>
                             </div>
                             <hr>
-                            @endif
 
-                            @if($jilid->berita_acara)
                             <div class="row">
                                 <div class="col-md-4">Berita Acara Serah Terima Produk</div>
                                 <div class="col-md-8">
-                                    <a href="{{ storage_url($jilid->berita_acara) }}" target="_blank" class="text-primary">
-                                        <i class="fas fa-paperclip"></i> {{ basename($jilid->berita_acara) }}
-                                    </a>
+                                    @if($jilid->berita_acara)
+                                        <a href="{{ storage_url($jilid->berita_acara) }}" target="_blank" class="text-primary">
+                                            <i class="fas fa-paperclip"></i> {{ basename($jilid->berita_acara) }}
+                                        </a>
+                                    @else
+                                        <span class="text-muted">Belum diunggah</span>
+                                    @endif
                                 </div>
                             </div>
                             <hr>
-                            @endif
 
-                            @if($jilid->panduan)
                             <div class="row">
                                 <div class="col-md-4">Panduan Penggunaan Produk KP</div>
                                 <div class="col-md-8">
-                                    @if(filter_var($jilid->panduan, FILTER_VALIDATE_URL))
-                                        <a href="{{ $jilid->panduan }}" target="_blank" class="text-primary">
-                                            <i class="fas fa-external-link-alt"></i> Buka Link Google Drive
+                                    @if($jilid->panduan)
+                                        @if(filter_var($jilid->panduan, FILTER_VALIDATE_URL))
+                                            <a href="{{ $jilid->panduan }}" target="_blank" class="text-primary">
+                                                <i class="fas fa-external-link-alt"></i> Buka Link Google Drive
+                                            </a>
+                                        @else
+                                            <a href="{{ storage_url($jilid->panduan) }}" target="_blank" class="text-primary">
+                                                <i class="fas fa-paperclip"></i> {{ basename($jilid->panduan) }}
+                                            </a>
+                                        @endif
+                                    @else
+                                        <span class="text-muted">Belum diunggah</span>
+                                    @endif
+                                </div>
+                            </div>
+                            <hr>
+
+                            <div class="row">
+                                <div class="col-md-4">Bukti Nilai Instansi</div>
+                                <div class="col-md-8">
+                                    @if($jilid->bukti_nilai_instansi)
+                                        <a href="{{ storage_url($jilid->bukti_nilai_instansi) }}" target="_blank" class="text-primary">
+                                            <i class="fas fa-paperclip"></i> {{ basename($jilid->bukti_nilai_instansi) }}
                                         </a>
                                     @else
-                                        <a href="{{ storage_url($jilid->panduan) }}" target="_blank" class="text-primary">
-                                            <i class="fas fa-paperclip"></i> {{ basename($jilid->panduan) }}
-                                        </a>
+                                        <span class="text-muted">Belum diunggah</span>
                                     @endif
+                                </div>
+                            </div>
+                            <hr>
+
+                            <div class="row">
+                                <div class="col-md-4">Dokumen Lampiran Lainnya</div>
+                                <div class="col-md-8">
+                                    @if($jilid->lampiran)
+                                        <a href="{{ storage_url($jilid->lampiran) }}" target="_blank" class="text-primary">
+                                            <i class="fas fa-paperclip"></i> {{ basename($jilid->lampiran) }}
+                                        </a>
+                                    @else
+                                        <span class="text-muted">Belum diunggah</span>
+                                    @endif
+                                </div>
+                            </div>
+                            <hr>
+
+                            {{-- Validasi Prodi: ACC / Revisi (hanya saat status REVIEW) --}}
+                            @if ($jilid->status == \App\Models\KP\Jilid::JILID_REVIEW)
+                            <h5 class="mt-4"><strong>Validasi Pengumpulan Akhir</strong></h5>
+                            <hr>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <form action="{{ route('kp.pengumpulan-akhir.prodi.acc', $jilid->id) }}" method="POST">
+                                        @csrf
+                                        @method('PUT')
+                                        <input type="hidden" name="status" value="{{ \App\Models\KP\Jilid::JILID_VALID }}">
+                                        <button type="submit" class="btn btn-success btn-block" onclick="return confirm('ACC pengajuan ini?');">
+                                            <i class="fas fa-check mr-1"></i> ACC Pengumpulan Akhir
+                                        </button>
+                                    </form>
+                                </div>
+                                <div class="col-md-6">
+                                    <form action="{{ route('kp.pengumpulan-akhir.prodi.acc', $jilid->id) }}" method="POST">
+                                        @csrf
+                                        @method('PUT')
+                                        <input type="hidden" name="status" value="{{ \App\Models\KP\Jilid::JILID_REVISI }}">
+                                        <div class="input-group">
+                                            <input type="text" name="catatan" class="form-control" placeholder="Catatan revisi..." required>
+                                            <button type="submit" class="btn btn-danger" onclick="return confirm('Kirim revisi ke mahasiswa?');">
+                                                <i class="fas fa-times mr-1"></i> Revisi
+                                            </button>
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
                             <hr>

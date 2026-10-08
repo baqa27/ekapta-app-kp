@@ -10,7 +10,7 @@
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="#">Jilid KP</a></li>
+                        <li class="breadcrumb-item"><a href="#">Pengumpulan Akhir KP</a></li>
                         <li class="breadcrumb-item active">Dashboard</li>
                     </ol>
                 </div>
@@ -43,7 +43,7 @@
                         <div class="small-box bg-info">
                             <div class="inner">
                                 <h3>{{ $jilids_kp->where('status', \App\Models\KP\Jilid::JILID_VALID)->count() }}</h3>
-                                <p>Menunggu Jilid KP</p>
+                                <p>Menunggu Pengumpulan Akhir KP</p>
                             </div>
                             <div class="icon"><i class="fas fa-clock"></i></div>
                         </div>
@@ -52,7 +52,7 @@
                         <div class="small-box bg-success">
                             <div class="inner">
                                 <h3>{{ $jilids_kp->where('status', \App\Models\KP\Jilid::JILID_SELESAI)->count() }}</h3>
-                                <p>Selesai Jilid KP</p>
+                                <p>Selesai Pengumpulan Akhir KP</p>
                             </div>
                             <div class="icon"><i class="fas fa-check-circle"></i></div>
                         </div>
@@ -263,7 +263,7 @@
                                 <ul class="nav nav-tabs mb-3">
                                     <li class="nav-item">
                                         <a class="nav-link active" href="#jilid-kp" data-toggle="tab">
-                                            <i class="fas fa-briefcase mr-1"></i> Jilid KP
+                                            <i class="fas fa-briefcase mr-1"></i> Pengumpulan Akhir KP
                                         </a>
                                     </li>
                                     <li class="nav-item">
@@ -290,7 +290,7 @@
                                         </ul>
 
                                         <div class="tab-content">
-                                            {{-- Menunggu Jilid KP --}}
+                                            {{-- Menunggu Pengumpulan Akhir KP --}}
                                             <div class="tab-pane active" id="kp-menunggu">
                                                 <table id="table_kp_valid" class="table table-bordered table-hover">
                                                     <thead class="thead-light">

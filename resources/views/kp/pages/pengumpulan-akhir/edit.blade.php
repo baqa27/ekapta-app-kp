@@ -10,7 +10,7 @@
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="#">Jilid KP</a></li>
+                        <li class="breadcrumb-item"><a href="#">Pengumpulan Akhir KP</a></li>
                         <li class="breadcrumb-item active">Revisi</li>
                     </ol>
                 </div><!-- /.col -->
@@ -27,7 +27,7 @@
                     @if (count($revisis) != 0)
                         <div class="alert alert-warning alert-dismissible">
                             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                            Pengajuan Jilid KP Anda berstatus <strong>REVISI</strong>. Silahkan submit ulang dokumen yang diperlukan.
+                            Pengajuan Pengumpulan Akhir KP Anda berstatus <strong>REVISI</strong>. Silahkan submit ulang dokumen yang diperlukan.
                             <br>
                             <a href="{{ route('kp.pengumpulan-akhir.detail.mahasiswa', $jilid->id) }}" class="btn btn-sm btn-outline-dark mt-2">
                                 <i class="fas fa-eye mr-1"></i> Lihat Catatan Revisi

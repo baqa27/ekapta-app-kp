@@ -6,11 +6,11 @@
         <div class="container">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Jilid KP</h1>
+                    <h1 class="m-0">Pengumpulan Akhir KP</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="#">Jilid KP</a></li>
+                        <li class="breadcrumb-item"><a href="#">Pengumpulan Akhir KP</a></li>
                         <li class="breadcrumb-item active">Home</li>
                     </ol>
                 </div><!-- /.col -->
@@ -29,12 +29,12 @@
 
             @if (!$jilid || $jilid->isDraft())
                 <a href="{{ route('kp.pengumpulan-akhir.create') }}" class="btn btn-primary mb-4">
-                    <i class="fas fa-plus mr-2"></i> Submit Jilid KP
+                    <i class="fas fa-plus mr-2"></i> Submit Pengumpulan Akhir KP
                 </a>
             @else
                 @if ($jilid->status == 4)
                     <div class="alert alert-success">
-                        <h5><i class="fas fa-check-circle mr-2"></i> JILID KP SELESAI</h5>
+                        <h5><i class="fas fa-check-circle mr-2"></i> PENGUMPULAN AKHIR KP SELESAI</h5>
                         Proses jilid KP Anda sudah selesai. Silahkan ambil ke Fotokopi dan bayar sebesar
                         <strong>Rp {{ number_format($jilid->total_pembayaran ?? 0, 0, ',', '.') }}</strong>
                     </div>
@@ -65,7 +65,7 @@
                 <div class="col-md-12">
                     <div class="card card-primary card-outline">
                         <div class="card-header">
-                            <h3 class="card-title">Jilid KP Anda</h3>
+                            <h3 class="card-title">Pengumpulan Akhir KP Anda</h3>
                         </div>
                         <div class="card-body">
                             <table id="example1" class="table table-bordered table-striped">

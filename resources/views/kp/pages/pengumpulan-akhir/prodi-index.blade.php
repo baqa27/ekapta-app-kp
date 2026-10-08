@@ -10,7 +10,7 @@
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="#">Jilid KP</a></li>
+                        <li class="breadcrumb-item"><a href="#">Pengumpulan Akhir KP</a></li>
                         <li class="breadcrumb-item active">Dashboard</li>
                     </ol>
                 </div><!-- /.col -->
@@ -30,18 +30,58 @@
                             <h3 class="card-title p-3">{{ $title }}</h3>
                             <ul class="nav nav-pills ml-auto p-2">
                                 <li class="nav-item">
-                                    <a class="nav-link active" href="#tab_1" data-toggle="tab">Valid (Menunggu Jilid)</a>
+                                    <a class="nav-link active" href="#tab_1" data-toggle="tab">Menunggu Review</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="#tab_2" data-toggle="tab">Selesai</a>
+                                    <a class="nav-link" href="#tab_2" data-toggle="tab">Valid (Menunggu Jilid)</a>
                                 </li>
+                                @if (config('kp.tahap_jilid_perpus_aktif'))
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#tab_3" data-toggle="tab">Selesai</a>
+                                </li>
+                                @endif
                             </ul>
                         </div>
                         <div class="card-body">
                             <div class="tab-content">
-                                {{-- Tab Valid --}}
+                                {{-- Tab Menunggu Review --}}
                                 <div class="tab-pane active" id="tab_1">
                                     <table id="example1" class="table table-bordered table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>No</th>
+                                                <th>NIM</th>
+                                                <th>Nama Mahasiswa</th>
+                                                <th>Status</th>
+                                                <th>Aksi</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @php $no = 1; @endphp
+                                            @foreach ($jilids_kp as $jilid)
+                                                @if ($jilid->status == \App\Models\KP\Jilid::JILID_REVIEW)
+                                                    <tr>
+                                                        <td>{{ $no++ }}</td>
+                                                        <td>{{ $jilid->mahasiswa->nim }}</td>
+                                                        <td>{{ $jilid->mahasiswa->nama }}</td>
+                                                        <td>
+                                                            <span class="badge bg-warning">Menunggu Review Prodi</span>
+                                                        </td>
+                                                        <td>
+                                                            <a href="{{ route('kp.pengumpulan-akhir.prodi.detail', $jilid->id) }}" class="btn btn-info btn-sm">
+                                                                <i class="fas fa-info-circle mr-1"></i> Detail
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                @endif
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                {{-- Tab Valid --}}
+                                <div class="tab-pane" id="tab_2">
+                                    <table id="example2" class="table table-bordered table-striped">
                                         <thead>
                                             <tr>
                                                 <th>No</th>
@@ -74,9 +114,10 @@
                                     </table>
                                 </div>
 
+                                @if (config('kp.tahap_jilid_perpus_aktif'))
                                 {{-- Tab Selesai --}}
-                                <div class="tab-pane" id="tab_2">
-                                    <table id="example2" class="table table-bordered table-striped">
+                                <div class="tab-pane" id="tab_3">
+                                    <table id="example3" class="table table-bordered table-striped">
                                         <thead>
                                             <tr>
                                                 <th>No</th>
@@ -119,6 +160,7 @@
                                         </tbody>
                                     </table>
                                 </div>
+                                @endif
                             </div>
                         </div>
                     </div>

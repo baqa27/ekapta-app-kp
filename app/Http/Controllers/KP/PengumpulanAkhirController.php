@@ -18,6 +18,7 @@ use App\Models\Prodi;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 
 class PengumpulanAkhirController extends \App\Http\Controllers\Controller
@@ -49,7 +50,7 @@ class PengumpulanAkhirController extends \App\Http\Controllers\Controller
         }
 
         return view('kp.pages.pengumpulan-akhir.admin-index', [
-            'title' => 'Jilid KP',
+            'title' => 'Pengumpulan Akhir KP',
             'active' => 'pengumpulan-akhir-kp',
             'sidebar' => Auth::guard('admin')->user()->type == Admin::TYPE_SUPER_ADMIN ? 'partials.sidebarAdmin' : null,
             'jilids' => $jilids_kp, // Backward compatibility
@@ -275,7 +276,7 @@ class PengumpulanAkhirController extends \App\Http\Controllers\Controller
         }
 
         return view('kp.pages.pengumpulan-akhir.detail', [
-            'title' => 'Detail Jilid KP',
+            'title' => 'Detail Pengumpulan Akhir KP',
             'sidebar' => Auth::guard('admin')->user()->type == Admin::TYPE_SUPER_ADMIN ? 'partials.sidebarAdmin' : null,
             'active' => Auth::guard('admin')->user()->type == Admin::TYPE_SUPER_ADMIN ? 'pengumpulan-akhir' : null,
             'jilid' => $jilid,
@@ -318,7 +319,7 @@ class PengumpulanAkhirController extends \App\Http\Controllers\Controller
         }
 
         return view('kp.pages.pengumpulan-akhir.detail', [
-            'title' => 'Detail Jilid KP',
+            'title' => 'Detail Pengumpulan Akhir KP',
             'active' => 'pengumpulan-akhir-kp',
             'jilid' => $jilid,
             'mahasiswa' => $mahasiswa,
@@ -491,7 +492,7 @@ class PengumpulanAkhirController extends \App\Http\Controllers\Controller
 
         $jilid->update($updateData);
 
-        if ($request->status == Jilid::JILID_SELESAI) {
+        if ($request->status == Jilid::JILID_SELESAI && config('kp.tahap_jilid_perpus_aktif')) {
             $message = 'Pengumpulan Akhir KP Anda Berstatus SELESAI. Selamat!';
             if ($request->total_pembayaran) {
                 $message .= ' Silahkan ambil di FOTOKOPIAN FASTIKOM dan lakukan pembayaran sebesar Rp ' . number_format($request->total_pembayaran, 0, ',', '.');
@@ -503,11 +504,17 @@ class PengumpulanAkhirController extends \App\Http\Controllers\Controller
                 'message' => $message,
             ]);
         } elseif ($request->status == Jilid::JILID_VALID) {
+            $emailMessage = 'Dokumen Kerja Praktek sudah dikonfirmasi oleh admin';
+            if (config('kp.tahap_jilid_perpus_aktif')) {
+                $emailMessage .= ' dan siap untuk dijilid. Silahkan konfirmasi dan melakukan pembayaran ke Fotocopy Fastikom dengan membawa dokumen-dokumen asli.';
+            } else {
+                $emailMessage .= '. Proses pengumpulan akhir KP Anda telah selesai.';
+            }
             AppHelper::instance()->send_mail([
                 'mail' => $jilid->mahasiswa->email,
                 'subject' => 'Pengumpulan Akhir KP',
                 'title' => 'EKAPTA',
-                'message' => 'Dokumen Kerja Praktek sudah dikonfirmasi oleh admin dan siap untuk dijilid. Silahkan konfirmasi dan melakukan pembayaran ke Fotocopy Fastikom dengan membawa dokumen-dokumen asli.',
+                'message' => $emailMessage,
             ]);
         } elseif ($request->status == Jilid::JILID_REVISI) {
             AppHelper::instance()->send_mail([
@@ -521,8 +528,70 @@ class PengumpulanAkhirController extends \App\Http\Controllers\Controller
         return redirect()->route('kp.pengumpulan-akhir.index')->with('success', 'Pengajuan pengumpulan akhir berhasil di update');
     }
 
+    public function accProdi(Request $request, $id)
+    {
+        $jilid = Jilid::findOrFail($id);
+
+        // Scope: jilid harus milik mahasiswa prodi ini
+        $userProdi = Auth::guard('prodi')->user();
+        $mahasiswa = $jilid->mahasiswa;
+        if (!($mahasiswa->prodi_id == $userProdi->id || $mahasiswa->prodi == $userProdi->kode || $mahasiswa->prodi == $userProdi->namaprodi)) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        // Hanya bisa ACC/Revisi saat status REVIEW
+        if ($jilid->status != Jilid::JILID_REVIEW) {
+            return back()->with('warning', 'Pengajuan sudah divalidasi');
+        }
+
+        $request->validate([
+            'status' => ['required', Rule::in([Jilid::JILID_VALID, Jilid::JILID_REVISI])],
+            'catatan' => ['nullable', 'string'],
+        ]);
+
+        if ($request->catatan) {
+            $revisi = new RevisiJilid;
+            $revisi->catatan = $request->catatan;
+            $revisi->jilid_id = $jilid->id;
+            $jilid->revisis()->save($revisi);
+        }
+
+        $updateData = [
+            'status' => $request->status,
+        ];
+
+        // Tambahkan total_pembayaran jika ada (dari fotokopian)
+        if ($request->total_pembayaran) {
+            $updateData['total_pembayaran'] = $request->total_pembayaran;
+        }
+
+        $jilid->update($updateData);
+
+        if ($request->status == Jilid::JILID_VALID) {
+            AppHelper::instance()->send_mail([
+                'mail' => $jilid->mahasiswa->email,
+                'subject' => 'Pengumpulan Akhir KP',
+                'title' => 'EKAPTA',
+                'message' => 'Dokumen Kerja Praktek sudah dikonfirmasi oleh prodi. Silahkan lanjutkan ke tahap berikutnya.',
+            ]);
+        } elseif ($request->status == Jilid::JILID_REVISI) {
+            AppHelper::instance()->send_mail([
+                'mail' => $jilid->mahasiswa->email,
+                'subject' => 'Pengumpulan Akhir KP',
+                'title' => 'EKAPTA',
+                'message' => 'Dokumen Kerja Praktek Berstatus REVISI. Silahkan submit ulang! <br>Ket: '. $request->catatan,
+            ]);
+        }
+
+        return redirect()->route('kp.pengumpulan-akhir.prodi.index')->with('success', 'Pengajuan pengumpulan akhir berhasil di update');
+    }
+
     public function confirmCompleted($id)
     {
+        if (!config('kp.tahap_jilid_perpus_aktif')) {
+            return back()->with('error', 'Fitur setor perpustakaan tidak aktif');
+        }
+
         $jilid = Jilid::findOrFail($id);
 
         if ($jilid->status != Jilid::JILID_SELESAI) {
@@ -542,7 +611,7 @@ class PengumpulanAkhirController extends \App\Http\Controllers\Controller
 
         // Ambil data KP filter by prodi (exclude draft)
         $jilids_kp = Jilid::with('mahasiswa')
-            ->where('status', '!=', Jilid::JILID_DRAFT)
+            ->whereIn('status', [Jilid::JILID_REVIEW, Jilid::JILID_VALID, Jilid::JILID_SELESAI])
             ->whereHas('mahasiswa', function($q) use ($userProdi) {
                 // Coba cocokan dengan namaprodi atau kode atau ID
                 $q->where('prodi_id', $userProdi->id)
@@ -554,7 +623,7 @@ class PengumpulanAkhirController extends \App\Http\Controllers\Controller
 
         return view('kp.pages.pengumpulan-akhir.prodi-index', [
             'sidebar' => 'kp.partials.sidebarProdi',
-            'title' => 'Data Jilid KP',
+            'title' => 'Data Pengumpulan Akhir KP',
             'active' => 'pengumpulan-akhir-kp',
             'jilids_kp' => $jilids_kp,
         ]);
@@ -590,7 +659,7 @@ class PengumpulanAkhirController extends \App\Http\Controllers\Controller
 
         return view('kp.pages.pengumpulan-akhir.prodi-detail', [
             'sidebar' => 'kp.partials.sidebarProdi',
-            'title' => 'Detail Jilid KP',
+            'title' => 'Detail Pengumpulan Akhir KP',
             'active' => 'pengumpulan-akhir-kp',
             'jilid' => $jilid,
             'mahasiswa' => $mahasiswa,
