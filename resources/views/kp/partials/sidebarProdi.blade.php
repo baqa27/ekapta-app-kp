@@ -121,7 +121,7 @@
                             <a href="{{ route('kp.pengumpulan-akhir.prodi.index') }}"
                                class="nav-link {{ $active=='pengumpulan-akhir-kp' ? 'active' : '' }}">
                                 <i class="nav-icon far fa-circle"></i>
-                                <p>Data Jilid KP</p>
+                                <p>Data Pengumpulan Akhir KP</p>
                             </a>
                         </li>
                     </ul>

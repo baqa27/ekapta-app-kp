@@ -27,13 +27,20 @@ class CetakController extends Controller
         $dosenUtama = $mahasiswa->dosens()->where('status', 'utama')->first();
         $dosenPendamping = $mahasiswa->dosens()->where('status', 'pendamping')->first();
 
+        if (!$pengajuan) {
+            return back()->with('error', 'Data pengajuan yang diterima tidak ditemukan.');
+        }
+        if (!$prodi) {
+            return back()->with('error', 'Data prodi tidak ditemukan.');
+        }
+        // Dosen boleh null: lembar dicetak kosong, dosen mengisi manual.
         $data = [
             'title' => 'Lembar Persetujuan Pembimbing',
             'kop_surat' => AppHelper::instance()->convertImage('public/ekapta/assets/img/kop-surat.jpg'),
             'mahasiswa' => $mahasiswa,
             'pengajuan' => $pengajuan,
-            'dosen_utama' => $dosenUtama ? $dosenUtama : null,
-            'dosen_pendamping' => $dosenPendamping ? $dosenPendamping : null,
+            'dosen_utama' => $dosenUtama,
+            'dosen_pendamping' => $dosenPendamping,
             'prodi' => $prodi,
         ];
 

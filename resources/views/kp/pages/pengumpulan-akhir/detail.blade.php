@@ -260,34 +260,13 @@
                                 </div>
                             @else
                                 {{-- Tampilan Lengkap untuk Super Admin dan Mahasiswa --}}
-                                @php
-                                    $documents = [
-                                        ['field' => 'lembar_keaslian', 'label' => 'Lembar Keaslian'],
-                                        ['field' => 'lembar_persetujuan_pembimbing', 'label' => 'Lembar Persetujuan Pembimbing (TTD)'],
-                                        ['field' => 'lembar_persetujuan_penguji', 'label' => 'Lembar Persetujuan Penguji (TTD)'],
-                                        ['field' => 'lembar_pengesahan', 'label' => 'Lembar Pengesahan (TTD)'],
-                                        ['field' => 'lembar_bimbingan', 'label' => 'Lembar Bimbingan KP'],
-                                        ['field' => 'lembar_revisi', 'label' => 'Lembar Revisi (ACC Penguji)'],
-                                        ['field' => 'laporan_pdf', 'label' => 'Laporan KP (PDF)'],
-                                        ['field' => 'laporan_word', 'label' => 'Laporan KP (Word)'],
-                                        ['field' => 'artikel', 'label' => 'Artikel KP (Word)'],
-                                        ['field' => 'file_project', 'label' => 'File Project/Program KP'],
-                                        ['field' => 'link_project', 'label' => 'Link Project KP', 'button' => true],
-                                        ['field' => 'form_nilai_kp', 'label' => 'Form Nilai KP'],
-                                        ['field' => 'berita_acara', 'label' => 'Berita Acara Serah Terima Produk'],
-                                        ['field' => 'panduan', 'label' => 'Panduan Penggunaan Produk KP'],
-                                        ['field' => 'bukti_nilai_instansi', 'label' => 'Bukti Nilai Instansi'],
-                                        ['field' => 'lampiran', 'label' => 'Dokumen Lampiran Lainnya'],
-                                    ];
-                                @endphp
-
-                                @foreach($documents as $document)
+                                @foreach(config('kp.dokumen_pengumpulan_akhir') as $document)
                                     @php($value = $jilid->{$document['field']})
                                     <div class="row">
                                         <div class="col-md-4">{{ $document['label'] }}</div>
                                         <div class="col-md-8">
                                             @if($value)
-                                                @if(!empty($document['button']))
+                                                @if($document['field'] === 'link_project')
                                                     <a href="{{ $value }}" target="_blank" class="btn btn-sm btn-outline-success">
                                                         <i class="fas fa-external-link-alt"></i> Buka Link
                                                     </a>
@@ -307,7 +286,7 @@
                                     </div>
                                     <hr>
                                 @endforeach
-
+                            @endif
 
                             {{-- End of document display --}}
 
@@ -324,12 +303,12 @@
                                                 <span class="input-group-text">Rp</span>
                                             </div>
                                             <input type="number" name="total_pembayaran" class="form-control"
-                                                placeholder="Nominal pembayaran jilid KP"
+                                                placeholder="Nominal pembayaran Pengumpulan Akhir KP"
                                                 value="{{ $jilid->total_pembayaran }}">
                                         </div>
                                     </div>
                                     <button type="submit" class="btn btn-success">
-                                        <i class="fas fa-check mr-1"></i> Selesaikan Proses Jilid
+                                        <i class="fas fa-check mr-1"></i> Selesaikan Proses Pengumpulan Akhir
                                     </button>
                                 @elseif ($jilid->status == 1)
                                     <div class="form-group">

@@ -535,6 +535,34 @@ class AppHelper
     }
 
     /**
+     * Cek apakah mahasiswa boleh SUBMIT bimbingan KP baru
+     * Blokir hanya jika: batas waktu HABIS DAN bimbingan BELUM complete
+     * Izinkan jika: batas belum habis, ATAU bimbingan sudah complete, ATAU sudah diperpanjang
+     */
+    public static function canSubmitBimbinganKP($mahasiswa)
+    {
+        $pendaftaran = $mahasiswa->pendaftaransKP()
+            ->where('status', \App\Models\KP\Pendaftaran::DITERIMA)
+            ->first();
+
+        if (!$pendaftaran) {
+            return false;
+        }
+
+        // Jika sudah diperpanjang (jumlah_perpanjangan > 0), tidak cek expired
+        if (!empty($pendaftaran->jumlah_perpanjangan) && $pendaftaran->jumlah_perpanjangan > 0) {
+            return true;
+        }
+
+        $isComplete = self::check_bimbingan_kp_is_complete($mahasiswa);
+        $isExpired = self::isBimbinganExpiredFromPendaftaran($pendaftaran, 6);
+
+        // Izinkan submit jika: belum expired ATAU sudah complete
+        // Blokir hanya jika: expired DAN belum complete
+        return !$isExpired || $isComplete;
+    }
+
+    /**
      * Alias untuk check_bimbingan_kp_is_complete
      * Digunakan oleh SeminarController
      */

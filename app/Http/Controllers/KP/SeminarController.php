@@ -17,6 +17,7 @@ use App\Models\KP\Seminar;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 
 class SeminarController extends \App\Http\Controllers\Controller
@@ -109,14 +110,41 @@ class SeminarController extends \App\Http\Controllers\Controller
     public function seminarDosen()
     {
         $dosen = Dosen::findOrFail(Auth::guard('dosen')->user()->id);
+        
+        // Get mahasiswa IDs where this dosen is pembimbing
+        $mahasiswaIds = $dosen->mahasiswasKP()
+            ->wherePivot('status', 'pembimbing')
+            ->pluck('mahasiswas.id');
+        
+        // Fallback: also check 'utama' for old data
+        if ($mahasiswaIds->isEmpty()) {
+            $mahasiswaIds = $dosen->mahasiswasKP()
+                ->wherePivot('status', 'utama')
+                ->pluck('mahasiswas.id');
+        }
+        
+        // Get seminars for those mahasiswa
+        $seminarsReview = Seminar::whereIn('mahasiswa_id', $mahasiswaIds)
+            ->where('is_valid', Seminar::REVIEW)
+            ->orderBy('created_at', 'desc')
+            ->get();
+        $seminarsAcc = Seminar::whereIn('mahasiswa_id', $mahasiswaIds)
+            ->where('is_valid', Seminar::DITERIMA)
+            ->orderBy('created_at', 'desc')
+            ->get();
+        $seminarsRevisi = Seminar::whereIn('mahasiswa_id', $mahasiswaIds)
+            ->where('is_valid', Seminar::REVISI)
+            ->orderBy('created_at', 'desc')
+            ->get();
+        
         $data = [
             'title' => 'Review Seminar KP',
             'active' => 'seminar-kp',
             'sidebar' => 'kp.partials.sidebarDosen',
             'module' => 'kp',
-            'seminars_review' => $dosen->seminarsKP()->where('status', ReviewSeminar::REVIEW)->get(),
-            'seminars_acc' => $dosen->seminarsKP()->where('status', ReviewSeminar::DITERIMA)->get(),
-            'seminars_revisi' => $dosen->seminarsKP()->where('status', ReviewSeminar::REVISI)->get(),
+            'seminars_review' => $seminarsReview,
+            'seminars_acc' => $seminarsAcc,
+            'seminars_revisi' => $seminarsRevisi,
         ];
 
         return view('kp.pages.dosen.seminar.seminar', $data);
@@ -321,9 +349,7 @@ class SeminarController extends \App\Http\Controllers\Controller
 
         $pendaftaran_acc = Pendaftaran::orderBy('created_at', 'desc')->where('mahasiswa_id', $pengajuan->mahasiswa->id)->where('status', 'diterima')->first();
 
-        if (AppHelper::isBimbinganExpiredFromPendaftaran($pendaftaran_acc, 6)) {
-            return redirect()->route('kp.pendaftaran.mahasiswa');
-        } else if ($pengajuan->seminar) {
+        if ($pengajuan->seminar) {
             return redirect()->route('kp.seminar.mahasiswa')->with('warning', 'Sudah mendaftar seminar KP');
         }
 

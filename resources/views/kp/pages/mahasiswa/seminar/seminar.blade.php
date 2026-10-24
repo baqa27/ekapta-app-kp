@@ -24,11 +24,12 @@
                 $is_karyawan = \App\Helpers\AppHelper::isKaryawanKP(Auth::guard('mahasiswa')->user());
             @endphp
 
+
             @if($is_karyawan)
                 <div class="alert alert-info">
                     <h5><i class="icon fas fa-info-circle"></i> Informasi Kelas Karyawan</h5>
                     Mahasiswa Program Kelas Karyawan <strong>TIDAK PERLU</strong> mengikuti Seminar KP.
-                    Silahkan langsung melanjutkan ke tahap <b><a href="{{ route('kp.pengumpulan-akhir.mahasiswa') }}" class="text-white" style="text-decoration: underline;">Jilid KP / Pengumpulan Akhir</a></b> setelah semua bimbingan selesai (ACC).
+                    Silahkan langsung melanjutkan ke tahap <b><a href="{{ route('kp.pengumpulan-akhir.mahasiswa') }}" class="text-white" style="text-decoration: underline;">Pengumpulan Akhir KP</a></b> setelah semua bimbingan selesai (ACC).
                 </div>
             @endif
 
@@ -49,7 +50,7 @@
                 @if ($seminar->status_seminar == 'selesai' || $seminar->status_seminar == 'selesai_seminar')
                     <div class="alert alert-success alert-dismissible">
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                        Selamat! Seminar KP anda sudah selesai. Silahkan lanjut ke <b><a href="{{ route('kp.pengumpulan-akhir.create') }}">Jilid KP.</a></b>
+                        Selamat! Seminar KP anda sudah selesai. Silahkan lanjut ke <b><a href="{{ route('kp.pengumpulan-akhir.create') }}">Pengumpulan Akhir KP.</a></b>
                     </div>
                 @elseif ($seminar->status_seminar == 'revisi')
                     <div class="alert alert-warning alert-dismissible">

@@ -83,8 +83,22 @@ class CetakController extends \App\Http\Controllers\Controller
     public function cetakSuratTugasBimbingan($pendaftaran)
     {
         $pendaftaran = Pendaftaran::findOrFail($pendaftaran);
+
+        if (!$pendaftaran->pengajuan) {
+            abort(404, 'Data pengajuan tidak ditemukan untuk pendaftaran ini.');
+        }
+
         $mahasiswa = $pendaftaran->pengajuan->mahasiswa;
+
+        if (!$mahasiswa) {
+            abort(404, 'Data mahasiswa tidak ditemukan untuk pendaftaran ini.');
+        }
+
         $pengajuan = $mahasiswa->pengajuansKP()->where('status', Pengajuan::DITERIMA)->first();
+
+        if (!$pengajuan) {
+            abort(404, 'Data pengajuan KP belum diterima untuk mahasiswa ini.');
+        }
         // Cari prodi berdasarkan kode ATAU namaprodi untuk backward compatibility
         $prodi = Prodi::where('kode', $mahasiswa->prodi)
             ->orWhere('namaprodi', $mahasiswa->prodi)
@@ -102,10 +116,18 @@ class CetakController extends \App\Http\Controllers\Controller
         $qrcode = 'data:image/' . ';base64,' . base64_encode(QrCode::format('svg')->size(400)->errorCorrection('H')->generate(url('kp/cetak/surat-tugas-bimbingan/' . $pendaftaran->id)));
         $qrcode_bimbingan = 'data:image/' . ';base64,' . base64_encode(QrCode::format('svg')->size(200)->errorCorrection('H')->generate(url('public/riwayat-bimbingan/' . base64_encode($mahasiswa->id))));
 
+        if (!$pendaftaran->tanggal_acc) {
+            abort(400, 'Tanggal ACC belum tersedia. Surat tugas bimbingan belum dapat dicetak.');
+        }
+
         $tanggal_acc = Carbon::parse($pendaftaran->tanggal_acc);
         $dateLocale = $tanggal_acc->day.' '.$tanggal_acc->monthName.' '.$tanggal_acc->year;
 
         $dateExpired = AppHelper::getBimbinganExpiredDateFromPendaftaran($pendaftaran, 6);
+        if (!$dateExpired) {
+            abort(400, 'Tanggal expired tidak dapat dihitung. Periksa tanggal ACC atau tanggal pembayaran.');
+        }
+
         $tanggalPembayaran = AppHelper::parseFlexibleDate($pendaftaran->tanggal_pembayaran);
         $tanggalPembayaranLocale = $tanggalPembayaran
             ? $tanggalPembayaran->locale('id')->isoFormat('D MMMM Y')
@@ -126,6 +148,16 @@ class CetakController extends \App\Http\Controllers\Controller
             }
         }
 
+        $bimbingan_dosen_utama = \App\Models\KP\Bimbingan::with(['revisis','bagian'])
+            ->where('mahasiswa_id', $mahasiswa->id)
+            ->where('status', 'diterima')
+            ->get();
+
+        $bimbingan_manual = \App\Models\KP\AjuanBimbinganManualKP::where('mahasiswa_id', $mahasiswa->id)
+            ->where('status', 'acc')
+            ->with(['bimbingan', 'bimbingan.bagian'])
+            ->get();
+
         $data = [
             'title' => 'Surat Tugas Bimbingan',
             'kop_surat' => AppHelper::instance()->convertImage('public/ekapta/assets/img/kop-surat.jpg'),
@@ -145,6 +177,8 @@ class CetakController extends \App\Http\Controllers\Controller
             'no_urut' => $no_urut,
              'pengajuan' => $pengajuan,
              'qr_code_bimbingan' => $qrcode_bimbingan,
+             'bimbingan_dosen_utama' => $bimbingan_dosen_utama,
+             'bimbingan_manual' => $bimbingan_manual,
         ];
 
         $pdf = PDF::setOptions(['isHTML5ParserEnabled' => true, 'isRemoteEnabled' => true]);
@@ -155,9 +189,21 @@ class CetakController extends \App\Http\Controllers\Controller
 
     public function cetakSuratTugasBimbinganMahasiswa()
     {
+        if (!Auth::guard('mahasiswa')->check()) {
+            abort(403, 'Halaman ini hanya untuk mahasiswa.');
+        }
         $mahasiswa = Mahasiswa::where('nim', Auth::guard('mahasiswa')->user()->nim)->first();
+        if (!$mahasiswa) {
+            abort(404, 'Data mahasiswa tidak ditemukan.');
+        }
         $pengajuan = $mahasiswa->pengajuansKP()->where('status', Pengajuan::DITERIMA)->first();
+        if (!$pengajuan) {
+            abort(404, 'Data pengajuan KP belum diterima.');
+        }
         $pendaftaran = Pendaftaran::where('pengajuan_id', $pengajuan->id)->first();
+        if (!$pendaftaran) {
+            abort(404, 'Data pendaftaran KP tidak ditemukan.');
+        }
         // Cari prodi berdasarkan kode ATAU namaprodi untuk backward compatibility
         $prodi = Prodi::with('fakultas.dekans')
             ->where(function($q) use ($mahasiswa) {
@@ -201,6 +247,16 @@ class CetakController extends \App\Http\Controllers\Controller
             }
         }
 
+        $bimbingan_dosen_utama = \App\Models\KP\Bimbingan::with(['revisis','bagian'])
+            ->where('mahasiswa_id', $mahasiswa->id)
+            ->where('status', 'diterima')
+            ->get();
+
+        $bimbingan_manual = \App\Models\KP\AjuanBimbinganManualKP::where('mahasiswa_id', $mahasiswa->id)
+            ->where('status', 'acc')
+            ->with(['bimbingan', 'bimbingan.bagian'])
+            ->get();
+
         $data = [
             'title' => 'Surat Tugas Bimbingan',
             'kop_surat' => AppHelper::instance()->convertImage('public/ekapta/assets/img/kop-surat.jpg'),
@@ -220,6 +276,8 @@ class CetakController extends \App\Http\Controllers\Controller
             'no_urut' => $no_urut,
             'pengajuan' => $pengajuan,
             'qr_code_bimbingan' => $qrcode_bimbingan,
+            'bimbingan_dosen_utama' => $bimbingan_dosen_utama,
+            'bimbingan_manual' => $bimbingan_manual,
         ];
 
         $pdf = PDF::setOptions(['isHTML5ParserEnabled' => true, 'isRemoteEnabled' => true]);
@@ -311,7 +369,11 @@ class CetakController extends \App\Http\Controllers\Controller
         $dateExpired = AppHelper::getBimbinganExpiredDateFromPendaftaran($pendaftaran, 6);
 
         // KP: Ambil bimbingan online yang ACC
-        $bimbingan_dosen_utama = $dosenPembimbing ? $dosenPembimbing->bimbingansKP()->with(['revisis','bagian'])->where('mahasiswa_id', $mahasiswa->id)->where('status', 'diterima')->get() : collect([]);
+        // Query langsung skip pivot untuk backward compatibility dengan data lama
+        $bimbingan_dosen_utama = \App\Models\KP\Bimbingan::with(['revisis','bagian'])
+            ->where('mahasiswa_id', $mahasiswa->id)
+            ->where('status', 'diterima')
+            ->get();
 
         // KP: Ambil bimbingan manual yang ACC
         $bimbingan_manual = \App\Models\KP\AjuanBimbinganManualKP::where('mahasiswa_id', $mahasiswa->id)
@@ -584,7 +646,8 @@ class CetakController extends \App\Http\Controllers\Controller
 
         // Ambil nilai dari seminar_kps
         $nilai_pembimbing = $seminar->nilai_pembimbing ?? 0;
-        $nilai_penguji = $seminar->nilai_penguji ?? 0;
+        // Prioritas: nilai_seminar (dari link penilaian), fallback ke nilai_penguji
+        $nilai_penguji = $seminar->nilai_seminar ?? $seminar->nilai_penguji ?? 0;
         $nilai_instansi = $seminar->nilai_instansi ?? 0;
 
         // Hitung bobot x nilai

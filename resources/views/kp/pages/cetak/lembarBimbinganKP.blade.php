@@ -92,216 +92,224 @@
         .table-border tbody {
             display: table-row-group;
         }
+
+        /* Table fixes for DomPDF - consistent with surat tugas */
+        .table-border th {
+            background-color: #d9d9d9 !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+            font-weight: bold;
+            padding: 8px 6px;
+        }
+        .table-border td {
+            padding: 6px;
+        }
+        .notes-cell {
+            font-size: 10pt;
+            line-height: 1.3;
+        }
+        .notes-cell ul {
+            margin: 2px 0 0 0;
+            padding-left: 14px;
+        }
+        .notes-cell li {
+            margin: 1px 0;
+            list-style-type: disc;
+        }
+        .notes-cell .divider {
+            border: 0;
+            border-top: 1px dashed #999;
+            margin: 3px 0;
+        }
+        .notes-cell .empty {
+            font-style: italic;
+            color: #666;
+        }
+        .notes-cell .note-block {
+            margin-bottom: 4px;
+        }
+
+        .page-break {
+            page-break-before: always;
+        }
+
+        .header-block {
+            page-break-inside: avoid;
+        }
+
+        .bimbingan-table {
+            page-break-inside: auto;
+        }
+
+        .bimbingan-table tr {
+            page-break-inside: avoid;
+        }
     </style>
 </head>
 
 <body>
-    <table>
-        <tr>
-            <td>
-                <img src="{{ $kop_surat }}" alt="Kop Surat" height="151">
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <center>
-                    <h3>LEMBAR BIMBINGAN KERJA PRAKTEK (KP)</h3>
-                    <br>
-                </center>
-            </td>
-        </tr>
-    </table>
+@php
+        $flattened = collect([]);
 
-    <img src="{{ $qr_code }}" alt="QR Code" height="80" id="qr-code">
+        // Online bimbingan
+        foreach ($bimbingan_dosen_utama as $bimb) {
+            $bagianName = $bimb->bagian ? $bimb->bagian->bagian : 'Lainnya';
 
-    <table class="margin-left">
-        <tr>
-            <td width="150">NAMA</td>
-            <td width="2">:</td>
-            <td width="350">{{ $mahasiswa->nama }}</td>
-        </tr>
-        <tr>
-            <td>NIM</td>
-            <td width="2">:</td>
-            <td>{{ $mahasiswa->nim }}</td>
-        </tr>
-        <tr>
-            <td>PRODI</td>
-            <td width="2">:</td>
-            <td>{{ $prodi->namaprodi ?? $mahasiswa->prodi }}</td>
-        </tr>
-        <tr>
-            <td style="text-align: left;vertical-align: top;">JUDUL KP</td>
-            <td width="2" style="text-align: left;vertical-align: top;">:</td>
-            <td>{{ $pengajuan->judul }}</td>
-        </tr>
-        <tr>
-            <td>PEMBIMBING</td>
-            <td width="2">:</td>
-            <td>{{ $dosen_utama->nama }}{{ $dosen_utama->gelar ? ', ' . $dosen_utama->gelar : '' }}</td>
-        </tr>
-        <tr>
-            <td>NO SURAT TUGAS</td>
-            <td width="2">:</td>
-            <td>
-                @if($no_urut)
-                    {{ $no_urut }}/ST.KP/FASTIKOM-UNSIQ/{{$bulan}}/{{ $date->format('Y') }}
-                @else
-                    -
-                @endif
-            </td>
-        </tr>
-        <tr>
-            <td>MASA BERLAKU</td>
-            <td width="2">:</td>
-            <td>{{ $dateLocale }} s/d {{ $date_expired }}</td>
-        </tr>
-    </table>
+            // If the bimbingan itself has a keterangan (mahasiswa's note), add a row for it
+            if (!empty($bimb->keterangan)) {
+                $flattened->push([
+                    'type' => 'online',
+                    'bagian_name' => $bagianName,
+                    'tanggal' => $bimb->tanggal_bimbingan ?? $bimb->tanggal_acc,
+                    'catatan' => $bimb->keterangan, // mahasiswa's note
+                    'note_type' => 'mahasiswa',
+                ]);
+            }
 
-    <br>
+            // Each revisi (dosen's note)
+            foreach ($bimb->revisis as $revisi) {
+                $flattened->push([
+                    'type' => 'online',
+                    'bagian_name' => $bagianName,
+                    'tanggal' => $revisi->created_at, // revisi has no date, use created_at
+                    'catatan' => $revisi->catatan, // dosen's note
+                    'note_type' => 'dosen',
+                ]);
+            }
+        }
 
-    <table class="margin-left table-border">
-        <thead>
-            <tr style="background-color: #d9d9d9">
-                <th width="30" class="text-center">No</th>
-                <th width="120" class="text-center">Bagian (BAB)</th>
-                <th width="80" class="text-center">Tanggal</th>
-                <th class="text-center">Keterangan / Catatan</th>
-                <th width="60" class="text-center">Tanda Tangan</th>
-            </tr>
-        </thead>
-        <tbody>
-            @php
-                $no = 1;
-                $all_bimbingan = collect([]);
-                
-                // Online
-                foreach ($bimbingan_dosen_utama as $bimb) {
-                    $all_bimbingan->push([
-                        'type' => 'online',
-                        'bagian_id' => $bimb->bagian_id,
-                        'bagian_name' => $bimb->bagian ? $bimb->bagian->bagian : 'Lainnya',
-                        'tanggal' => $bimb->tanggal_acc,
-                        'catatan_mahasiswa' => $bimb->keterangan,
-                        'catatan_dosen' => $bimb->revisis,
-                        'id_for_sort' => $bimb->id,
-                    ]);
-                }
-                
-                // Manual
-                foreach ($bimbingan_manual as $manual) {
-                    $all_bimbingan->push([
-                        'type' => 'manual',
-                        'bagian_id' => $manual->bimbingan->bagian_id ?? 'manual',
-                        'bagian_name' => $manual->bimbingan && $manual->bimbingan->bagian ? $manual->bimbingan->bagian->bagian : 'Bimbingan Manual',
-                        'tanggal' => $manual->tanggal_bimbingan,
-                        'catatan_mahasiswa' => $manual->keterangan,
-                        'catatan_dosen' => $manual->catatan_reviewer,
-                        'id_for_sort' => $manual->id,
-                    ]);
-                }
-                
-                // Grouping: Use bagian_name as the key.
-                $bimbingan_grouped = $all_bimbingan->groupBy('bagian_name');
-                
-                // Sort groups by the date of their first item
-                $bimbingan_grouped = $bimbingan_grouped->sortBy(function ($group) {
-                        return $group->min('tanggal');
-                });
-            @endphp
-            
-            @forelse ($bimbingan_grouped as $bagian_name => $items)
-                @php
-                    // Sort items within the group by date
-                    $sorted_items = $items->sortBy('tanggal');
-                    $rowspan = $sorted_items->count();
-                @endphp
-                
-                @foreach ($sorted_items as $bimbingan)
-                    <tr>
-                        @if ($loop->first)
-                            <td class="text-center" rowspan="{{ $rowspan }}">{{ $no++ }}</td>
-                            <td rowspan="{{ $rowspan }}" style="padding-left: 8px;"><b>{{ $bagian_name }}</b></td>
+        // Manual bimbingan
+        foreach ($bimbingan_manual as $manual) {
+            $bagianName = $manual->bimbingan && $manual->bimbingan->bagian ? $manual->bimbingan->bagian->bagian : 'Bimbingan Manual';
+            $flattened->push([
+                'type' => 'manual',
+                'bagian_name' => $bagianName,
+                'tanggal' => $manual->tanggal_bimbingan,
+                'catatan' => $manual->keterangan, // mahasiswa's note only
+                'note_type' => 'mahasiswa',
+            ]);
+        }
+
+        // Sort by tanggal ascending
+        $all_bimbingan = $flattened->sortBy('tanggal')->values();
+        $no = 1;
+    @endphp
+
+    <div class="header-block">
+            <table>
+                <tr>
+                    <td>
+                        <img src="{{ $kop_surat }}" alt="Kop Surat" height="151">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <center>
+                            <h3>LEMBAR BIMBINGAN KERJA PRAKTEK (KP)</h3>
+                            <br>
+                        </center>
+                    </td>
+                </tr>
+            </table>
+
+            <img src="{{ $qr_code }}" alt="QR Code" height="80" id="qr-code">
+
+            <table class="margin-left">
+                <tr>
+                    <td width="150">NAMA</td>
+                    <td width="2">:</td>
+                    <td width="350">{{ $mahasiswa->nama }}</td>
+                </tr>
+                <tr>
+                    <td>NIM</td>
+                    <td width="2">:</td>
+                    <td>{{ $mahasiswa->nim }}</td>
+                </tr>
+                <tr>
+                    <td>PRODI</td>
+                    <td width="2">:</td>
+                    <td>{{ $prodi->namaprodi ?? $mahasiswa->prodi }}</td>
+                </tr>
+                <tr>
+                    <td style="text-align: left;vertical-align: top;">JUDUL KP</td>
+                    <td width="2" style="text-align: left;vertical-align: top;">:</td>
+                    <td>{{ $pengajuan->judul }}</td>
+                </tr>
+                <tr>
+                    <td>PEMBIMBING</td>
+                    <td width="2">:</td>
+                    <td>{{ $dosen_utama->nama }}{{ $dosen_utama->gelar ? ', ' . $dosen_utama->gelar : '' }}</td>
+                </tr>
+                <tr>
+                    <td>NO SURAT TUGAS</td>
+                    <td width="2">:</td>
+                    <td>
+                        @if($no_urut)
+                            {{ $no_urut }}/ST.KP/FASTIKOM-UNSIQ/{{$bulan}}/{{ $date->format('Y') }}
+                        @else
+                            -
                         @endif
-                        
-                        <td class="text-center">
-                            {{ \Carbon\Carbon::parse($bimbingan['tanggal'])->translatedFormat('d M Y') }}
-                        </td>
-                        <td>
-                            {{-- Bimbingan Online: Catatan Mahasiswa dan Dosen --}}
-                            @if ($bimbingan['type'] == 'online')
-                                {{-- Catatan Mahasiswa --}}
-                                @if(!empty($bimbingan['catatan_mahasiswa']))
-                                    <div style="margin-bottom: 6px;">
-                                        <strong>Mahasiswa:</strong><br>
-                                        {{ strip_tags($bimbingan['catatan_mahasiswa']) }}
-                                    </div>
-                                @endif
+                    </td>
+                </tr>
+                <tr>
+                    <td>MASA BERLAKU</td>
+                    <td width="2">:</td>
+                    <td>{{ $dateLocale }} s/d {{ $date_expired }}</td>
+                </tr>
+            </table>
 
-                                {{-- Catatan Dosen --}}
-                                @if (count($bimbingan['catatan_dosen']) > 0)
-                                    @if(!empty($bimbingan['catatan_mahasiswa']))
-                                        <hr style="margin: 4px 0; border: 0; border-top: 1px dashed #ccc;">
-                                    @endif
-                                    <strong>Dosen:</strong>
-                                    <ul>
-                                        @foreach ($bimbingan['catatan_dosen'] as $revisi)
-                                            <li>{{ strip_tags($revisi->catatan) }}</li>
-                                        @endforeach
-                                    </ul>
-                                @endif
+            <br>
+        </div>
+
+        <table class="margin-left table-border">
+            <thead>
+                <tr style="background-color: #d9d9d9">
+                    <th width="30" class="text-center">No</th>
+                    <th width="80" class="text-center">Tanggal</th>
+                    <th width="120" class="text-center">Bagian (BAB)</th>
+                    <th class="text-center">Keterangan / Catatan</th>
+                    <th width="60" class="text-center">Tanda Tangan</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse ($all_bimbingan as $bimbingan)
+                    <tr>
+                        <td class="text-center">{{ $no++ }}</td>
+                        <td class="text-center">
+                            {{ $bimbingan['tanggal'] ? \Carbon\Carbon::parse($bimbingan['tanggal'])->translatedFormat('d M Y') : '-' }}
+                        </td>
+                        <td style="padding-left: 8px;"><b>{{ $bimbingan['bagian_name'] }}</b></td>
+                        <td class="notes-cell" style="padding: 6px;">
+                            @if(!empty($bimbingan['catatan']))
+                                {{ strip_tags($bimbingan['catatan']) }}
                             @else
-                                {{-- Bimbingan Manual: Catatan Pembimbing dan Prodi/Admin --}}
-                                {{-- Catatan Pembimbing --}}
-                                @if(!empty($bimbingan['catatan_mahasiswa']))
-                                    <div style="margin-bottom: 6px;">
-                                        <strong>Pembimbing:</strong><br>
-                                        {{ strip_tags($bimbingan['catatan_mahasiswa']) }}
-                                    </div>
-                                @endif
-
-                                {{-- Catatan Prodi/Admin --}}
-                                @if (!empty($bimbingan['catatan_dosen']))
-                                    @if(!empty($bimbingan['catatan_mahasiswa']))
-                                        <hr style="margin: 4px 0; border: 0; border-top: 1px dashed #ccc;">
-                                    @endif
-                                    <strong>Prodi/Admin:</strong><br>
-                                    {{ strip_tags($bimbingan['catatan_dosen']) }}
-                                @endif
-                            @endif
-
-                            {{-- Fallback jika kosong --}}
-                            @if(empty($bimbingan['catatan_mahasiswa']) && 
-                                (($bimbingan['type'] == 'online' && count($bimbingan['catatan_dosen']) == 0) || 
-                                    ($bimbingan['type'] == 'manual' && empty($bimbingan['catatan_dosen']))))
-                                <i>Tidak ada catatan</i>
+                                <span class="empty">Tidak ada catatan</span>
                             @endif
                         </td>
                         <td class="text-center">
-                            @if($ttd_dosen_utama) 
+                            @if($ttd_dosen_utama)
                                 <img src="{{ $ttd_dosen_utama }}" height="40" style="max-width: 100%; object-fit:contain;">
                             @endif
                         </td>
                     </tr>
-                @endforeach
-            @empty
-                <tr>
-                    <td colspan="5" class="text-center" style="padding: 20px;">
-                        <i>Belum ada data bimbingan.</i>
-                    </td>
-                </tr>
-            @endforelse
-        </tbody>
-    </table>
+                @empty
+                    <tr>
+                        <td colspan="5" class="text-center" style="padding: 20px;">
+                            <i>Belum ada data bimbingan.</i>
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
 
-    <table class="margin-left" style="margin-top: 10px;">
-        <tr>
-            <td>
-                <p style="font-size: 10pt; color: rgb(255, 89, 191);">
-                   <b> NB. BATAS MAKSIMAL SAMPAI PADA : {{ $date_expired }}</b>
-                </p>
-            </td>
-        </tr>
-    </table>
+        <table class="margin-left" style="margin-top: 10px;">
+            <tr>
+                <td>
+                    <p style="font-size: 10pt; color: rgb(255, 89, 191);">
+                       <b> NB. BATAS MAKSIMAL SAMPAI PADA : {{ $date_expired }}</b>
+                    </p>
+                </td>
+            </tr>
+        </table>
 </body>
 </html>

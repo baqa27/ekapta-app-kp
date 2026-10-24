@@ -55,7 +55,7 @@
                                                 <th>Dosen Pembimbing</th>
                                                 <th>Penguji Seminar</th>
                                                 <th>Tanggal Seminar KP</th>
-                                                <th>Tanggal Jilid KP</th>
+                                                <th>Tanggal Pengumpulan Akhir KP</th>
                                                 <th>Aksi</th>
                                             </tr>
                                         </thead>
@@ -218,7 +218,7 @@
                                                 <th>Dosen Pembimbing</th>
                                                 <th>Penguji Seminar</th>
                                                 <th>Tanggal Seminar KP</th>
-                                                <th>Tanggal Jilid KP</th>
+                                                <th>Tanggal Pengumpulan Akhir KP</th>
                                                 <th>Aksi</th>
                                             </tr>
                                         </tfoot>
@@ -241,7 +241,7 @@
                                                 <th>Dosen Pembimbing</th>
                                                 <th>Penguji Seminar</th>
                                                 <th>Tanggal Seminar KP</th>
-                                                <th>Tanggal Jilid KP</th>
+                                                <th>Tanggal Pengumpulan Akhir KP</th>
                                                 <th>Aksi</th>
                                             </tr>
                                         </thead>
@@ -399,7 +399,7 @@
                                                 <th>Dosen Pembimbing</th>
                                                 <th>Penguji Seminar</th>
                                                 <th>Tanggal Seminar KP</th>
-                                                <th>Tanggal Jilid KP</th>
+                                                <th>Tanggal Pengumpulan Akhir KP</th>
                                                 <th>Aksi</th>
                                             </tr>
                                         </tfoot>

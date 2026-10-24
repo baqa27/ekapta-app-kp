@@ -135,31 +135,37 @@
                                     <div class="card-body">
                                         <div class="row">
                                             <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label>Sertifikat 1 <span class="text-danger">*</span></label>
-                                                    <div class="input-group mb-3">
-                                                        <div class="custom-file">
-                                                            <input type="file" class="custom-file-input" name="lampiran_1" accept=".pdf,.jpg,.jpeg,.png" required>
-                                                            <label class="custom-file-label">Pilih file</label>
-                                                        </div>
-                                                        <div class="input-group-append">
-                                                            <span class="input-group-text">Dokumen</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                                 <div class="form-group">
+                                                     <label>Sertifikat 1 <span class="text-danger">*</span></label>
+                                                     <div class="input-group mb-3">
+                                                         <div class="custom-file">
+                                                             <input type="file" class="custom-file-input @error('lampiran_1') is-invalid @enderror" name="lampiran_1" accept=".pdf,.jpg,.jpeg,.png" required>
+                                                             <label class="custom-file-label">Pilih file</label>
+                                                         </div>
+                                                         <div class="input-group-append">
+                                                             <span class="input-group-text">Dokumen</span>
+                                                         </div>
+                                                     </div>
+                                                     @error('lampiran_1')
+                                                         <small class="text-danger">{{ $message }}</small>
+                                                     @enderror
+                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label>Sertifikat 2 <span class="text-danger">*</span></label>
                                                     <div class="input-group mb-3">
                                                         <div class="custom-file">
-                                                            <input type="file" class="custom-file-input" name="lampiran_2" accept=".pdf,.jpg,.jpeg,.png" required>
+                                                            <input type="file" class="custom-file-input @error('lampiran_2') is-invalid @enderror" name="lampiran_2" accept=".pdf,.jpg,.jpeg,.png" required>
                                                             <label class="custom-file-label">Pilih file</label>
                                                         </div>
                                                         <div class="input-group-append">
                                                             <span class="input-group-text">Dokumen</span>
                                                         </div>
                                                     </div>
+                                                    @error('lampiran_2')
+                                                        <small class="text-danger">{{ $message }}</small>
+                                                    @enderror
                                                 </div>
                                             </div>
                                         </div>
@@ -169,13 +175,16 @@
                                                     <label>Sertifikat 3 <span class="text-danger">*</span></label>
                                                     <div class="input-group mb-3">
                                                         <div class="custom-file">
-                                                            <input type="file" class="custom-file-input" name="lampiran_3" accept=".pdf,.jpg,.jpeg,.png" required>
+                                                            <input type="file" class="custom-file-input @error('lampiran_3') is-invalid @enderror" name="lampiran_3" accept=".pdf,.jpg,.jpeg,.png" required>
                                                             <label class="custom-file-label">Pilih file</label>
                                                         </div>
                                                         <div class="input-group-append">
                                                             <span class="input-group-text">Dokumen</span>
                                                         </div>
                                                     </div>
+                                                    @error('lampiran_3')
+                                                        <small class="text-danger">{{ $message }}</small>
+                                                    @enderror
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
@@ -183,13 +192,16 @@
                                                     <label>Sertifikat 4 <span class="text-danger">*</span></label>
                                                     <div class="input-group mb-3">
                                                         <div class="custom-file">
-                                                            <input type="file" class="custom-file-input" name="lampiran_4" accept=".pdf,.jpg,.jpeg,.png" required>
+                                                            <input type="file" class="custom-file-input @error('lampiran_4') is-invalid @enderror" name="lampiran_4" accept=".pdf,.jpg,.jpeg,.png" required>
                                                             <label class="custom-file-label">Pilih file</label>
                                                         </div>
                                                         <div class="input-group-append">
                                                             <span class="input-group-text">Dokumen</span>
                                                         </div>
                                                     </div>
+                                                    @error('lampiran_4')
+                                                        <small class="text-danger">{{ $message }}</small>
+                                                    @enderror
                                                 </div>
                                             </div>
                                         </div>

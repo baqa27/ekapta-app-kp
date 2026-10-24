@@ -88,7 +88,7 @@
                             <hr>
                             @endif
 
-                            <h5 class="mt-3"><strong>Dokumen Pengumpulan Akhir TA</strong></h5>
+                            <h5 class="mt-3"><strong>Dokumen Jilid TA</strong></h5>
                             <hr>
 
                             @if($jilid->lembar_pengesahan)

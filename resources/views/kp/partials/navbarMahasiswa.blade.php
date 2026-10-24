@@ -44,8 +44,8 @@
                            class="nav-link {{ ($active ?? '') == 'seminar' ? 'active' : '' }}">Seminar KP</a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('kp.pengumpulan-akhir.mahasiswa') }}"
-                           class="nav-link {{ ($active ?? '') == 'pengumpulan-akhir' ? 'active' : '' }}">Jilid KP</a>
+<a href="{{ route('kp.pengumpulan-akhir.mahasiswa') }}"
+                            class="nav-link {{ ($active ?? '') == 'pengumpulan-akhir' ? 'active' : '' }}">Pengumpulan Akhir KP</a>
                     </li>
                 </ul>
             </div>

@@ -157,12 +157,12 @@
                                         </div>
                                     </div>
                                 </div>
-                                <!-- Jilid KP -->
+                                <!-- Pengumpulan Akhir KP -->
                                 <div class="card card-primary">
                                     <div class="card-header">
                                         <h4 class="card-title w-100">
                                             <a class="d-block w-100" data-toggle="collapse" href="#collapseFive">
-                                                <span class="badge bg-white textprimary">5</span> Jilid KP
+                                                <span class="badge bg-white textprimary">5</span> Pengumpulan Akhir KP
                                             </a>
                                         </h4>
                                     </div>
@@ -279,7 +279,7 @@
                                         data-content="And here's some amazing content. It's very engaging. Right?"
                                         data-original-title="2020">
                                         <div class="inner-circle"></div>
-                                        <p class="h6 mt-3 mb-1">Jilid KP</p>
+                                        <p class="h6 mt-3 mb-1">Pengumpulan Akhir KP</p>
                                         @if($is_pengumpulan_akhir_completed === true)
                                             <div class="bg-soft-success text-success rounded mt-3">Selesai</div>
                                         @else

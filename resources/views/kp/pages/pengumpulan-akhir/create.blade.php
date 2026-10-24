@@ -154,63 +154,176 @@
                                     </div>
                                 </div>
 
+                                @php
+                                    // Cek apakah admin fotokopi
+                                    $is_fotokopi = false; // mahasiswa view, always false
+                                    
+                                    // Cek apakah mahasiswa karyawan
+                                    $is_karyawan = \App\Helpers\AppHelper::isKaryawanKP($mahasiswa);
+                                    
+                                    // Ambil presentase nilai dari database (relasi presentaseNilaiKP)
+                                    $prodi_obj = \App\Models\Prodi::where('kode', $mahasiswa->prodi)
+                                        ->orWhere('namaprodi', $mahasiswa->prodi)
+                                        ->first();
+                                    $presentase_nilai = $prodi_obj && $prodi_obj->presentaseNilaiKP ? $prodi_obj->presentaseNilaiKP : null;
+                                @endphp
+
+                                @if(!$is_fotokopi)
+                                {{-- Nilai KP - Hanya untuk Super Admin dan Mahasiswa --}}
+                                <h5 class="mt-3"><strong>Nilai Kerja Praktek</strong></h5>
+                                <hr>
+
+                                {{-- Nilai Pembimbing dari seminar_kps.nilai_pembimbing atau jilid_kps.nilai_pembimbing --}}
+                                <div class="row">
+                                    <div class="col-md-4">Nilai Dosen Pembimbing</div>
+                                    <div class="col-md-8">
+                                        @php
+                                            // Logika sama dengan Prodi: cek seminar dulu, baru jilid
+                                            $nilai_pembimbing = 0;
+                                            if($mahasiswa->seminarKP && $mahasiswa->seminarKP->nilai_pembimbing) {
+                                                $nilai_pembimbing = $mahasiswa->seminarKP->nilai_pembimbing;
+                                            } elseif(isset($jilid) && $jilid && $jilid->nilai_pembimbing) {
+                                                $nilai_pembimbing = $jilid->nilai_pembimbing;
+                                            } elseif($mahasiswa->jilidKP && $mahasiswa->jilidKP->nilai_pembimbing) {
+                                                $nilai_pembimbing = $mahasiswa->jilidKP->nilai_pembimbing;
+                                            }
+                                        @endphp
+                                        @if($nilai_pembimbing > 0)
+                                            <b>{{ number_format($nilai_pembimbing, 2) }}</b>
+                                            @php
+                                                $dosen_pembimbing_nilai = $mahasiswa->dosens()->whereIn('status', ['pembimbing', 'utama'])->first();
+                                            @endphp
+                                            @if($dosen_pembimbing_nilai)
+                                            <small class="text-muted">({{ $dosen_pembimbing_nilai->nama }})</small>
+                                            @endif
+                                        @else
+                                            <span class="text-muted">Belum dinilai</span>
+                                        @endif
+                                    </div>
+                                </div>
+                                <hr>
+
+                                @if(!$is_karyawan)
+                                {{-- Nilai Penguji - HANYA untuk mahasiswa reguler --}}
+                                <div class="row">
+                                    <div class="col-md-4">Nilai Dosen Penguji</div>
+                                    <div class="col-md-8">
+                                        @php
+                                            $nilai_penguji = 0;
+                                            if($mahasiswa->seminarKP) {
+                                                // Prioritas: nilai_seminar (dari link penilaian), fallback ke nilai_penguji
+                                                $nilai_penguji = $mahasiswa->seminarKP->nilai_seminar ?? $mahasiswa->seminarKP->nilai_penguji ?? 0;
+                                            }
+                                        @endphp
+                                        @if($nilai_penguji > 0)
+                                            <b>{{ number_format($nilai_penguji, 2) }}</b>
+                                            @if($mahasiswa->seminarKP && $mahasiswa->seminarKP->sesiSeminar && $mahasiswa->seminarKP->sesiSeminar->dosenPenguji)
+                                            <small class="text-muted">({{ $mahasiswa->seminarKP->sesiSeminar->dosenPenguji->nama ?? '-' }})</small>
+                                            @endif
+                                        @else
+                                            <span class="text-muted">Belum dinilai</span>
+                                        @endif
+                                    </div>
+                                </div>
+                                <hr>
+                                @endif
+
+                                {{-- Nilai Instansi --}}
+                                <div class="row">
+                                    <div class="col-md-4">Nilai Instansi</div>
+                                    <div class="col-md-8">
+                                        @php
+                                            $nilai_instansi = 0;
+                                            if($mahasiswa->seminarKP) {
+                                                $nilai_instansi = $mahasiswa->seminarKP->nilai_instansi ?? 0;
+                                            }
+                                        @endphp
+                                        @if($nilai_instansi > 0)
+                                            <b>{{ number_format($nilai_instansi, 2) }}</b>
+                                        @else
+                                            <span class="text-muted">Belum dinilai</span>
+                                        @endif
+                                    </div>
+                                </div>
+                                <hr>
+
+                                {{-- Nilai Akhir KP --}}
+                                @php
+                                    // Hitung nilai akhir berdasarkan jenis mahasiswa dan presentase dari database
+                                    $nilai_pembimbing_display = $nilai_pembimbing;
+                                    $nilai_penguji_display = $is_karyawan ? 0 : ($nilai_penguji ?? 0);
+                                    $nilai_instansi_display = $nilai_instansi;
+                                    
+                                    // Ambil bobot dari database atau gunakan default
+                                    if ($presentase_nilai) {
+                                        $bobot_pembimbing = $presentase_nilai->bobot_pembimbing;
+                                        $bobot_penguji = $is_karyawan ? 0 : $presentase_nilai->bobot_penguji;
+                                        $bobot_instansi = 100 - $bobot_pembimbing - $bobot_penguji;
+                                    } else {
+                                        // Default jika tidak ada presentase_nilai
+                                        $bobot_pembimbing = $is_karyawan ? 40 : 40;
+                                        $bobot_penguji = $is_karyawan ? 0 : 30;
+                                        $bobot_instansi = $is_karyawan ? 60 : 30;
+                                    }
+                                    
+                                    // Hitung nilai akhir
+                                    $nilai_akhir_calculated = ($nilai_pembimbing_display * $bobot_pembimbing / 100) + 
+                                                             ($nilai_penguji_display * $bobot_penguji / 100) + 
+                                                             ($nilai_instansi_display * $bobot_instansi / 100);
+                                @endphp
+
+                                <div class="row">
+                                    <div class="col-md-4"><strong>Nilai Akhir KP</strong></div>
+                                    <div class="col-md-8">
+                                        @if($nilai_akhir_calculated > 0)
+                                            <h4 class="text-success"><b>{{ number_format($nilai_akhir_calculated, 2) }}</b></h4>
+                                        @else
+                                            <h4 class="text-muted"><b>0.00</b></h4>
+                                        @endif
+                                        <small class="text-muted">
+                                            @if($is_karyawan)
+                                                Formula: (Pembimbing × {{ $bobot_pembimbing }}%) + (Instansi × {{ $bobot_instansi }}%)
+                                            @else
+                                                Formula: (Pembimbing × {{ $bobot_pembimbing }}%) + (Penguji × {{ $bobot_penguji }}%) + (Instansi × {{ $bobot_instansi }}%)
+                                            @endif
+                                        </small>
+                                    </div>
+                                </div>
+                                <hr>
+                                @endif
+                                {{-- End Nilai KP --}}
+
                                 <h5 class="mt-4"><strong>Dokumen Utama</strong></h5>
                                 <hr>
 
+                                @foreach(config('kp.dokumen_pengumpulan_akhir') as $document)
+                                    @if(!in_array($document['field'], ['laporan_pdf', 'laporan_word', 'panduan', 'link_project', 'file_project']))
+                                        @php
+                                            $section = array_search($document['field'], ['lembar_pengesahan','lembar_bimbingan','lembar_revisi']) !== false ? 'utama' : 'pendukung';
+                                        @endphp
+                                        @if($section === 'utama')
                                 <div class="form-group">
-                                    <label>Lembar Pengesahan KP (TTD) <span class="text-danger">*</span></label>
+                                    <label>{{ $document['label'] }}@if($document['required']) <span class="text-danger">*</span>@endif</label>
                                     <div class="input-group mb-3">
                                         <div class="custom-file">
-                                            <input type="file" class="custom-file-input @error('lembar_pengesahan')is-invalid @enderror"
-                                                name="lembar_pengesahan" accept=".pdf" id="lembar_pengesahan" required>
-                                            <label class="custom-file-label" for="lembar_pengesahan">Pilih file PDF...</label>
+                                            <input type="file" class="custom-file-input @error($document['field'])is-invalid @enderror"
+                                                name="{{ $document['field'] }}" accept=".pdf" id="{{ $document['field'] }}" @if($document['required']) required @endif>
+                                            <label class="custom-file-label" for="{{ $document['field'] }}">Pilih file PDF...</label>
                                         </div>
                                         <div class="input-group-append">
                                             <span class="input-group-text">Dokumen</span>
                                         </div>
                                     </div>
-                                    <small class="text-muted">Lembar pengesahan yang sudah ditandatangani pembimbing, penguji, dan pihak terkait</small>
-                                    @error('lembar_pengesahan')
+                                    @if(!empty($document['keterangan']))
+                                        <small class="text-muted">{{ $document['keterangan'] }}</small>
+                                    @endif
+                                    @error($document['field'])
                                         <small class="text-danger">{{ $message }}</small>
                                     @enderror
                                 </div>
-
-                                <div class="form-group">
-                                    <label>
-                                        Lembar Bimbingan KP <span class="text-danger">*</span>
-                                        <br><small><a href="{{ route('kp.cetak.riwayat.bimbingan.mahasiswa') }}" target="_blank" class="text-primary"><i class="fas fa-download"></i> Download Lembar Bimbingan</a></small>
-                                    </label>
-                                    <div class="input-group mb-3">
-                                        <div class="custom-file">
-                                            <input type="file" class="custom-file-input @error('lembar_bimbingan')is-invalid @enderror"
-                                                name="lembar_bimbingan" accept=".pdf" id="lembar_bimbingan" required>
-                                            <label class="custom-file-label" for="lembar_bimbingan">Pilih file PDF...</label>
-                                        </div>
-                                        <div class="input-group-append">
-                                            <span class="input-group-text">Dokumen</span>
-                                        </div>
-                                    </div>
-                                    @error('lembar_bimbingan')
-                                        <small class="text-danger">{{ $message }}</small>
-                                    @enderror
-                                </div>
-
-                                <div class="form-group">
-                                    <label>Lembar Revisi (ACC Penguji, 1 file) <span class="text-danger">*</span></label>
-                                    <div class="input-group mb-3">
-                                        <div class="custom-file">
-                                            <input type="file" class="custom-file-input @error('lembar_revisi')is-invalid @enderror"
-                                                name="lembar_revisi" accept=".pdf" id="lembar_revisi" required>
-                                            <label class="custom-file-label" for="lembar_revisi">Pilih file PDF...</label>
-                                        </div>
-                                        <div class="input-group-append">
-                                            <span class="input-group-text">Dokumen</span>
-                                        </div>
-                                    </div>
-                                    @error('lembar_revisi')
-                                        <small class="text-danger">{{ $message }}</small>
-                                    @enderror
-                                </div>
+                                        @endif
+                                    @endif
+                                @endforeach
 
                                 <h5 class="mt-4"><strong>Laporan Kerja Praktek</strong></h5>
                                 <hr>
@@ -267,14 +380,6 @@
 
                                 <div class="form-group">
                                     <label>
-                                        Link Produk KP
-                                        <br><small class="text-muted">Opsional - Upload ke Google Drive</small>
-                                    </label>
-                                    <input type="url" class="form-control" name="link_project" value="{{ old('link_project') }}" placeholder="https://drive.google.com/...">
-                                </div>
-
-                                <div class="form-group">
-                                    <label>
                                         File Project / Program KP <span class="text-muted">(Opsional)</span>
                                         <br><small class="text-muted">File project/program dikompres dalam format .zip atau .rar (Maks 100 MB). Kosongkan jika prodi tidak mewajibkan produk.</small>
                                     </label>
@@ -293,13 +398,22 @@
                                     @enderror
                                 </div>
 
+                                <div class="form-group">
+                                    <label>
+                                        Link Produk KP
+                                        <br><small class="text-muted">Opsional - Upload ke Google Drive</small>
+                                    </label>
+                                    <input type="url" class="form-control" name="link_project" value="{{ old('link_project') }}" placeholder="https://drive.google.com/...">
+                                </div>
+
                                 <h5 class="mt-4"><strong>Dokumen Pendukung</strong></h5>
                                 <hr>
 
+                                {{-- Form Nilai KP --}}
                                 <div class="form-group">
                                     <label>
                                         Form Nilai KP <span class="text-danger">*</span>
-                                        <br><small><a href="{{ route('kp.cetak.formulir.nilai.akhir') }}" target="_blank" class="text-primary"><i class="fas fa-download"></i> Download Formulir Nilai Akhir KP</a></small>
+                                         <!-- <br><small><a href="{{ route('kp.cetak.formulir.nilai.akhir') }}" target="_blank" class="text-primary"><i class="fas fa-download"></i> Download Formulir Nilai Akhir KP</a></small> -->
                                     </label>
                                     <div class="input-group mb-3">
                                         <div class="custom-file">
@@ -311,14 +425,16 @@
                                             <span class="input-group-text">Dokumen</span>
                                         </div>
                                     </div>
+                                    <small class="text-muted">Form nilai lengkap (Pembimbing, Penguji, Instansi)</small>
                                     @error('form_nilai_kp')
                                         <small class="text-danger">{{ $message }}</small>
                                     @enderror
                                 </div>
 
+                                {{-- Berita Acara --}}
                                 <div class="form-group">
                                     <label>
-                                        Berita Acara Serah Terima Produk <span class="text-muted">(Opsional)</span>
+                                        Berita Acara Serah Terima Produk KP <span class="text-muted">(Opsional)</span>
                                         <br><small class="text-muted">Berita acara serah terima produk dengan instansi/tempat penelitian KP dengan template
                                             <a href="https://drive.google.com/file/d/1X9eJxyj5GiPYP2MYHGOZiZEEbWWgGJ0J/view" target="_blank" class="text-primary">https://drive.google.com/file/d/1X9eJxyj5GiPYP2MYHGOZiZEEbWWgGJ0J/view</a>
                                         </small>
@@ -334,7 +450,50 @@
                                             <span class="input-group-text">Dokumen</span>
                                         </div>
                                     </div>
+                                    <small class="text-info d-block mb-2"><i class="fas fa-info-circle"></i> Wajib untuk prodi Teknik Informatika</small>
                                     @error('berita_acara')
+                                        <small class="text-danger">{{ $message }}</small>
+                                    @enderror
+                                </div>
+
+                                {{-- Bukti Nilai Instansi --}}
+                                <div class="form-group">
+                                    <label>
+                                        Bukti Nilai Instansi <span class="text-muted">(Opsional)</span>
+                                        <br><small class="text-muted">Surat atau dokumen yang menunjukkan nilai yang diberikan instansi tempat KP</small>
+                                    </label>
+                                    <div class="input-group mb-3">
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input @error('bukti_nilai_instansi')is-invalid @enderror"
+                                                name="bukti_nilai_instansi" accept=".pdf,.jpg,.jpeg,.png" id="bukti_nilai_instansi">
+                                            <label class="custom-file-label" for="bukti_nilai_instansi">Pilih file PDF/Image...</label>
+                                        </div>
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">Dokumen</span>
+                                        </div>
+                                    </div>
+                                    @error('bukti_nilai_instansi')
+                                        <small class="text-danger">{{ $message }}</small>
+                                    @enderror
+                                </div>
+
+                                {{-- Lampiran --}}
+                                <div class="form-group">
+                                    <label>
+                                        Dokumen Lampiran Lainnya <span class="text-muted">(Opsional)</span>
+                                        <br><small class="text-muted">Dokumen pendukung lain yang relevan dengan KP</small>
+                                    </label>
+                                    <div class="input-group mb-3">
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input @error('lampiran')is-invalid @enderror"
+                                                name="lampiran" accept=".pdf" id="lampiran">
+                                            <label class="custom-file-label" for="lampiran">Pilih file PDF...</label>
+                                        </div>
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">Dokumen</span>
+                                        </div>
+                                    </div>
+                                    @error('lampiran')
                                         <small class="text-danger">{{ $message }}</small>
                                     @enderror
                                 </div>
@@ -359,10 +518,13 @@
                                     <div id="panduan_link_field" style="display:none;">
                                         <input type="url" name="panduan_link" class="form-control" placeholder="https://drive.google.com/..." id="panduan_link">
                                     </div>
+                                    <small class="text-info d-block mb-2"><i class="fas fa-info-circle"></i> Wajib untuk prodi Teknik Informatika</small>
                                     @error('panduan')
                                         <small class="text-danger">{{ $message }}</small>
                                     @enderror
                                 </div>
+
+
 
                                 <hr>
                                 <div class="d-flex justify-content-between">

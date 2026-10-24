@@ -65,7 +65,7 @@ class Jilid extends Model
         // Catatan
         'catatan',
         'catatan_admin',
-        // Legacy fields
+        // Legacy fields. Removed KP submission documents retained for existing data compatibility.
         'total_pembayaran',
         'lembar_keaslian',
         'lembar_persetujuan_penguji',
@@ -76,10 +76,15 @@ class Jilid extends Model
         'artikel',
         'lampiran',
         'is_completed',
+        // Reviewer tracking (siapa yang memvalidasi)
+        'reviewed_by',
+        'reviewer_type',
+        'tanggal_review',
     ];
 
     protected $casts = [
         'tanggal_arsip' => 'datetime',
+        'tanggal_review' => 'datetime',
         'nilai_pembimbing' => 'decimal:2',
         'nilai_penguji' => 'decimal:2',
         'nilai_instansi' => 'decimal:2',
@@ -147,5 +152,26 @@ class Jilid extends Model
     public function isDraft()
     {
         return $this->status == self::JILID_DRAFT || $this->status == self::STATUS_DRAFT;
+    }
+
+    /**
+     * Accessor: is_completed
+     * Returns true if:
+     * - DB is_completed = 1, OR
+     * - status = JILID_VALID AND tahap_jilid_perpus_aktif = false (no perpus step needed)
+     */
+    public function getIsCompletedAttribute($value)
+    {
+        // DB value set
+        if ($value == 1) {
+            return 1;
+        }
+
+        // Flag off: JILID_VALID = completed
+        if (!config('kp.tahap_jilid_perpus_aktif', false) && $this->attributes['status'] == self::JILID_VALID) {
+            return 1;
+        }
+
+        return 0;
     }
 }

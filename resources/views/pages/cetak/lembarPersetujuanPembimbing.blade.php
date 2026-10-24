@@ -36,6 +36,13 @@
     </style>
 </head>
 <body>
+    @php
+        $kosong = str_repeat('.', 45);
+        $namaUtama = $dosen_utama ? $dosen_utama->nama.', '.$dosen_utama->gelar : $kosong;
+        $nidnUtama = $dosen_utama ? $dosen_utama->nidn : $kosong;
+        $namaPendamping = $dosen_pendamping ? $dosen_pendamping->nama.', '.$dosen_pendamping->gelar : $kosong;
+        $nidnPendamping = $dosen_pendamping ? $dosen_pendamping->nidn : $kosong;
+    @endphp
     <table>
         <tr>
             <td>
@@ -66,7 +73,7 @@
                 <p class="titik-dua">:</p>
             </td>
             <td>
-                <p>{{ $dosen_utama->nama.', '.$dosen_utama->gelar }}</p>
+                <p>{{ $namaUtama }}</p>
             </td>
         </tr>
         <tr>
@@ -77,7 +84,7 @@
                 <p class="titik-dua">:</p>
             </td>
             <td>
-                <p>{{ $dosen_utama->nidn }}</p>
+                <p>{{ $nidnUtama }}</p>
             </td>
         </tr>
         <tr>
@@ -102,7 +109,7 @@
                 <p class="titik-dua">:</p>
             </td>
             <td>
-                <p>{{ $dosen_pendamping->nama.', '.$dosen_pendamping->gelar }}</p>
+                <p>{{ $namaPendamping }}</p>
             </td>
         </tr>
         <tr>
@@ -113,7 +120,7 @@
                 <p class="titik-dua">:</p>
             </td>
             <td>
-                <p>{{ $dosen_pendamping->nidn }}</p>
+                <p>{{ $nidnPendamping }}</p>
             </td>
         </tr>
         <tr>
@@ -210,8 +217,13 @@
                 <center>
                     <p>
                         Calon Pembimbing 1 <br><br><br><br>
-                        <b><u>{{ $dosen_utama->nama.', '.$dosen_utama->gelar }}</u></b><br>
-                        <b>NIDN. {{ $dosen_utama->nidn }}</b>
+                        @if ($dosen_utama)
+                            <b><u>{{ $namaUtama }}</u></b><br>
+                            <b>NIDN. {{ $nidnUtama }}</b>
+                        @else
+                            {{ str_repeat('.', 30) }}<br>
+                            NIDN. {{ str_repeat('.', 20) }}
+                        @endif
                     </p>
                 </center>
             </td>
@@ -219,8 +231,13 @@
                 <center>
                     <p>
                         Calon Pembimbing 2 <br><br><br><br>
-                        <b><u>{{ $dosen_pendamping->nama.', '.$dosen_pendamping->gelar }}</u></b><br>
-                        <b>NIDN. {{ $dosen_pendamping->nidn }}</b>
+                        @if ($dosen_pendamping)
+                            <b><u>{{ $namaPendamping }}</u></b><br>
+                            <b>NIDN. {{ $nidnPendamping }}</b>
+                        @else
+                            {{ str_repeat('.', 30) }}<br>
+                            NIDN. {{ str_repeat('.', 20) }}
+                        @endif
                     </p>
                 </center>
             </td>

@@ -125,8 +125,8 @@
                                                 @elseif ($pengajuan->status == 'revisi')
                                                     <div class="d-flex flex-wrap gap-1">
                                                         <a href="{{ route('kp.pengajuan.detail', $pengajuan->id) }}"
-                                                           class="btn btn-primary btn-sm shadow mr-2 mb-1">
-                                                            <i class="fas fa-info-circle mr-1"></i> Detail
+                                                           class="btn btn-info btn-sm shadow mr-2 mb-1">
+                                                            <i class="fas fa-eye mr-1"></i> Detail
                                                         </a>
                                                         <a href="{{ route('kp.pengajuan.edit', $pengajuan->id) }}"
                                                            class="btn btn-success btn-sm shadow mb-1"><i

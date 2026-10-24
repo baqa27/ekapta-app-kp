@@ -148,8 +148,9 @@
                                                 @endif
                                             </td>
                                             <td>
-                                                @if($mahasiswa->pendaftaransKP()->where('status','diterima')->first())
-                                                <a href="{{ route('kp.cetak.surat.tugas.bimbingan') }}"
+                                                @php $pendaftaran = $mahasiswa->pendaftaransKP()->where('status','diterima')->first(); @endphp
+                                                @if($pendaftaran)
+                                                <a href="{{ route('kp.cetak.surat.tugas.bimbingan.pendaftaran', $pendaftaran->id) }}"
                                                     target="_blank" class="btn btn-success btn-sm"><i class="fas fa-download"></i> Surat Tugas Bimbingan KP</a>
                                                 @endif
                                             </td>

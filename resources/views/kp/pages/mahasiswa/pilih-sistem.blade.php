@@ -142,7 +142,7 @@
                                 </div>
                                 <div class="d-flex align-items-center mb-2">
                                     <span class="badge badge-primary mr-2">6</span>
-                                    <span>Pengumpulan Jilid</span>
+                                    <span>Pengumpulan Akhir</span>
                                 </div>
                             </div>
                         </div>

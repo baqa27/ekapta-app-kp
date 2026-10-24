@@ -106,9 +106,15 @@
                                                         @endif
                                                     </div>
                                                 @elseif ($pengajuan->status == 'revisi')
-                                                    <a href="{{ url('/pengajuan/edit/' . $pengajuan->id) }}"
-                                                        class="btn btn-primary btn-sm shadow" type="submit"><i
-                                                            class="fas fa-upload mr-1"></i>Submit</a>
+                                                    <div class="d-flex">
+                                                        <a href="{{ url('/pengajuan/detail/' . $pengajuan->id) }}"
+                                                            class="btn btn-info btn-sm shadow mr-2">
+                                                            <i class="fas fa-eye mr-1"></i> Detail
+                                                        </a>
+                                                        <a href="{{ url('/pengajuan/edit/' . $pengajuan->id) }}"
+                                                            class="btn btn-primary btn-sm shadow" type="submit"><i
+                                                                class="fas fa-upload mr-1"></i>Submit</a>
+                                                    </div>
                                                 @elseif ($pengajuan->status == 'diterima')
                                                     <div class="d-flex">
                                                         <a href="{{ url('/pengajuan/detail/' . $pengajuan->id) }}"
@@ -121,9 +127,11 @@
                                                                 <i class="bi bi-download"></i> Lembar Persetujuan Pembimbing
                                                             </a>
                                                         @else
-                                                        <a href="#" class="btn btn-secondary btn-sm shadow">
-                                                            <i class="bi bi-hourglass-bottom mr-1"></i> Menunggu Ploting Dosen Pembimbing
-                                                        </a>
+                                                            <a href="{{ route('cetak.lembar.persetujuan.mahasiswa') }}"
+                                                                class="btn btn-warning btn-sm shadow" target="_blank"
+                                                                title="Dosen pembimbing belum diploting. Nama dosen diisi manual.">
+                                                                <i class="bi bi-download"></i> Lembar Persetujuan (Kosong - Belum Ploting Dosen)
+                                                            </a>
                                                         @endif
                                                     </div>
                                                 @elseif ($pengajuan->status == 'ditolak' || $pengajuan->status == 'dibatalkan')

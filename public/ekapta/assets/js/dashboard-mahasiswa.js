@@ -58,6 +58,8 @@ $(function() {
                                 $(this).html(event.strftime(
                                     "<span class='mr-2'><b class='bg-white text-dark rounded p-1'>%D</b> Hari</span> <span class='mr-2'><b class='bg-white text-dark rounded p-1'>%-H</b> Jam</span> <span class='mr-2'><b class='bg-white text-dark rounded p-1'>%M</b> Menit</span> <span class='mr-2'><b class='bg-white text-dark rounded p-1'>%S</b> Detik</span>"
                                 ));
+                            }).on('finish.countdown', function() {
+                                $(this).html("<span>Waktu bimbingan telah berakhir</span>");
                             });
                         });
                     }

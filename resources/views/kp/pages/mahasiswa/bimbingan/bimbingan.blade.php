@@ -24,12 +24,30 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-10">
-                    @if (\App\Helpers\AppHelper::check_bimbingan_kp_is_complete($mahasiswa))
-                        <a href="{{ route('kp.cetak.riwayat.bimbingan.mahasiswa') }}" class="btn btn-primary mb-3"
-                            target="_blank"><i class="fas fa-download"></i> DOWNLOAD LEMBAR BIMBINGAN KP</a>
+                    @php
+                        $isManualDosen = ($dosen_utama && $dosen_utama->is_manual);
+                    @endphp
+                    <div class="d-flex align-items-center flex-wrap mb-1">
+                        <a href="https://drive.google.com/drive/folders/1k2jyiYRaPY96uoXkWVKzun3YasYgVWSJ?usp=sharing" class="btn btn-primary mr-2 mb-2" target="_blank">
+                            <i class="fas fa-folder-open"></i> Dokumen Pendukung Kerja Praktek
+                        </a>
+                        @if (\App\Helpers\AppHelper::check_bimbingan_kp_is_complete($mahasiswa))
+                            <a href="{{ route('kp.cetak.riwayat.bimbingan.mahasiswa') }}" class="btn btn-primary mb-2"
+                                target="_blank"><i class="fas fa-download"></i> DOWNLOAD LEMBAR BIMBINGAN KP</a>
+                        @endif
+                    </div>
+                    <small class="text-muted d-block mb-1">Dokumen pendukung dapat diunduh melalui link di atas atau menu download website FASTIKOM / Program Studi masing-masing.</small>
+                    @if($isManualDosen)
+                        <small class="text-info d-block mb-3"><i class="fas fa-user-tie mr-1"></i> <strong>Bimbingan Offline/Manual:</strong> Unggah file laporan terlebih dahulu melalui tombol <strong>"Submit"</strong>, kemudian konsultasi langsung dengan dosen pembimbing. Setelah itu, unggah hasil diskusi/catatan bimbingan melalui tombol <strong>"Bimbingan Manual"</strong> di kolom Aksi.</small>
+                    @else
+                        <small class="text-info d-block mb-3"><i class="fas fa-laptop mr-1"></i> <strong>Bimbingan Online:</strong> Unggah file laporan bimbingan secara lengkap sesuai ketentuan prodi melalui tombol <strong>"Submit"</strong> di kolom Aksi. Dosen akan mereviu secara online.</small>
                     @endif
 
-                    @if ($is_expired)
+                    @php
+                        $canSubmitBimbingan = \App\Helpers\AppHelper::canSubmitBimbinganKP($mahasiswa);
+                    @endphp
+
+                    @if ($is_expired && !$canSubmitBimbingan)
                         <div class="mb-3 bg-danger rounded p-2">
                             Masa bimbingan anda sudah habis, silahkan lakukan <a
                                 href="{{ route('kp.pendaftaran.disable', $pendaftaran_acc->id) }}"><u><b>Perpanjangan
@@ -131,7 +149,7 @@
                                                                 @endif
                                                             </td>
                                                             <td>
-                                                                @if (!$is_expired)
+                                                                @if ($canSubmitBimbingan)
                                                                     @php
                                                                         $showManualBtn = ($dosen_utama && $dosen_utama->is_manual);
                                                                     @endphp

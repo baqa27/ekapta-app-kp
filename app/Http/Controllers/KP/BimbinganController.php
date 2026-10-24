@@ -9,6 +9,7 @@ use App\Models\Prodi;
 use App\Models\KP\RevisiBimbingan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use App\Helpers\AppHelper;
 use App\Helpers\StorageHelper;
 use App\Models\KP\BimbinganCanceled;
@@ -55,34 +56,86 @@ class BimbinganController extends \App\Http\Controllers\Controller
     {
         $dosen = Dosen::findOrFail(Auth::guard('dosen')->user()->id);
 
-        // Filter bimbingan hanya untuk mahasiswa yang sudah pengajuan diterima
+        // Ambil IDs mahasiswa yang di-plot ke dosen ini (fallback untuk data lama tanpa pivot dosen_bimbingan_kps)
+        $mahasiswaIds = $dosen->mahasiswasKP()
+            ->wherePivot('status', 'pembimbing')
+            ->pluck('mahasiswas.id');
+
+        // Query bimbingan: prioritas via pivot dosen_bimbingan_kps, fallback via mahasiswa
+        $baseQueryReview = $dosen->bimbingansKP()
+            ->where('status', 'review')
+            ->whereNull('tanggal_manual_acc')
+            ->whereHas('mahasiswa.pengajuansKP', function($query) {
+                $query->where('status', 'diterima');
+            });
+        
+        $baseQueryDiterima = $dosen->bimbingansKP()
+            ->where('status', 'diterima')
+            ->whereHas('mahasiswa.pengajuansKP', function($query) {
+                $query->where('status', 'diterima');
+            });
+        
+        $baseQueryRevisi = $dosen->bimbingansKP()
+            ->where('status', 'revisi')
+            ->whereHas('mahasiswa.pengajuansKP', function($query) {
+                $query->where('status', 'diterima');
+            });
+
+        // Fallback: jika pivot kosong, ambil dari mahasiswa yang di-plot
+        if ($mahasiswaIds->isNotEmpty()) {
+            $bimbingans = $baseQueryReview->get();
+            if ($bimbingans->isEmpty()) {
+                $bimbingans = Bimbingan::whereIn('mahasiswa_id', $mahasiswaIds)
+                    ->where('status', 'review')
+                    ->whereNull('tanggal_manual_acc')
+                    ->whereHas('mahasiswa.pengajuansKP', function($query) {
+                        $query->where('status', 'diterima');
+                    })
+                    ->orderBy('tanggal_bimbingan', 'desc')
+                    ->get();
+            } else {
+                $bimbingans = $bimbingans->sortByDesc('tanggal_bimbingan');
+            }
+
+            $bimbingans_diterima = $baseQueryDiterima->get();
+            if ($bimbingans_diterima->isEmpty()) {
+                $bimbingans_diterima = Bimbingan::whereIn('mahasiswa_id', $mahasiswaIds)
+                    ->where('status', 'diterima')
+                    ->whereHas('mahasiswa.pengajuansKP', function($query) {
+                        $query->where('status', 'diterima');
+                    })
+                    ->orderBy('tanggal_bimbingan', 'desc')
+                    ->get();
+            } else {
+                $bimbingans_diterima = $bimbingans_diterima->sortByDesc('tanggal_bimbingan');
+            }
+
+            $bimbingans_revisi = $baseQueryRevisi->get();
+            if ($bimbingans_revisi->isEmpty()) {
+                $bimbingans_revisi = Bimbingan::whereIn('mahasiswa_id', $mahasiswaIds)
+                    ->where('status', 'revisi')
+                    ->whereHas('mahasiswa.pengajuansKP', function($query) {
+                        $query->where('status', 'diterima');
+                    })
+                    ->orderBy('tanggal_bimbingan', 'desc')
+                    ->get();
+            } else {
+                $bimbingans_revisi = $bimbingans_revisi->sortByDesc('tanggal_bimbingan');
+            }
+        } else {
+            $bimbingans = $baseQueryReview->orderBy('tanggal_bimbingan', 'desc')->get();
+            $bimbingans_diterima = $baseQueryDiterima->orderBy('tanggal_bimbingan', 'desc')->get();
+            $bimbingans_revisi = $baseQueryRevisi->orderBy('tanggal_bimbingan', 'desc')->get();
+        }
+
         return view('kp.pages.dosen.bimbingan.bimbingan', [
             'title' => 'Bimbingan Kerja Praktek',
             'active' => 'bimbingan-kp',
             'sidebar' => 'kp.partials.sidebarDosen',
             'module' => 'kp',
-            'bimbingans' => $dosen->bimbingansKP()
-                ->where('status', 'review')
-                ->whereNull('tanggal_manual_acc')
-                ->whereHas('mahasiswa.pengajuansKP', function($query) {
-                    $query->where('status', 'diterima');
-                })
-                ->orderBy('tanggal_bimbingan', 'desc')
-                ->get(),
-            'bimbingans_diterima' => $dosen->bimbingansKP()
-                ->where('status', 'diterima')
-                ->whereHas('mahasiswa.pengajuansKP', function($query) {
-                    $query->where('status', 'diterima');
-                })
-                ->orderBy('tanggal_bimbingan', 'desc')
-                ->get(),
-            'bimbingans_revisi' => $dosen->bimbingansKP()
-                ->where('status', 'revisi')
-                ->whereHas('mahasiswa.pengajuansKP', function($query) {
-                    $query->where('status', 'diterima');
-                })
-                ->orderBy('tanggal_bimbingan', 'desc')
-                ->get(),
+            'bimbingans' => $bimbingans,
+            'bimbingans_diterima' => $bimbingans_diterima,
+            'bimbingans_revisi' => $bimbingans_revisi,
         ]);
     }
 
@@ -193,6 +246,11 @@ class BimbinganController extends \App\Http\Controllers\Controller
     {
         $mahasiswa = Mahasiswa::findOrFail(Auth::guard('mahasiswa')->user()->id);
 
+        // Cek apakah mahasiswa boleh submit bimbingan
+        if (!AppHelper::canSubmitBimbinganKP($mahasiswa)) {
+            return redirect()->route('kp.bimbingan.mahasiswa')->with('warning', 'Masa bimbingan anda sudah habis, silahkan lakukan perpanjangan KP');
+        }
+
         // Ambil bagian_id dari URL
         $bagian_id = request()->get('bagian_id');
         if (!$bagian_id) {
@@ -224,6 +282,11 @@ class BimbinganController extends \App\Http\Controllers\Controller
     public function store(Request $request)
     {
         $mahasiswa = Mahasiswa::findOrFail(Auth::guard('mahasiswa')->user()->id);
+
+        // Cek apakah mahasiswa boleh submit bimbingan
+        if (!AppHelper::canSubmitBimbinganKP($mahasiswa)) {
+            return redirect()->route('kp.bimbingan.mahasiswa')->with('warning', 'Masa bimbingan anda sudah habis, silahkan lakukan perpanjangan KP');
+        }
 
         // Cek apakah bagian ini sudah pernah dibuat dan statusnya review/revisi
         $bimbinganPending = Bimbingan::where('mahasiswa_id', $mahasiswa->id)
@@ -291,6 +354,11 @@ class BimbinganController extends \App\Http\Controllers\Controller
     {
         $mahasiswa = Mahasiswa::findOrFail(Auth::guard('mahasiswa')->user()->id);
 
+        // Cek apakah mahasiswa boleh submit bimbingan
+        if (!AppHelper::canSubmitBimbinganKP($mahasiswa)) {
+            return redirect()->route('kp.bimbingan.mahasiswa')->with('warning', 'Masa bimbingan anda sudah habis, silahkan lakukan perpanjangan KP');
+        }
+
         // Cek apakah dosen is_manual
         $dosenPembimbing = $mahasiswa->dosens()->where('status', 'pembimbing')->first();
         if (!$dosenPembimbing) {
@@ -333,6 +401,11 @@ class BimbinganController extends \App\Http\Controllers\Controller
     public function storeManual(Request $request)
     {
         $mahasiswa = Mahasiswa::findOrFail(Auth::guard('mahasiswa')->user()->id);
+
+        // Cek apakah mahasiswa boleh submit bimbingan
+        if (!AppHelper::canSubmitBimbinganKP($mahasiswa)) {
+            return redirect()->route('kp.bimbingan.mahasiswa')->with('warning', 'Masa bimbingan anda sudah habis, silahkan lakukan perpanjangan KP');
+        }
 
         // Cek apakah dosen is_manual
         $dosenPembimbing = $mahasiswa->dosens()->where('status', 'pembimbing')->first();
@@ -408,10 +481,8 @@ class BimbinganController extends \App\Http\Controllers\Controller
             $query->where('is_seminar', 1);
         })->get();
 
-        if($pendaftaran){
-            if (AppHelper::isBimbinganExpiredFromPendaftaran($pendaftaran, 6)) {
-                return redirect()->route('kp.bimbingan.mahasiswa')->with('warning', 'Masa aktif bimbingan anda sudah berakhir, silahkan lakukan pendaftaran ulang');
-            }
+        if (!AppHelper::canSubmitBimbinganKP($mahasiswa)) {
+            return redirect()->route('kp.bimbingan.mahasiswa')->with('warning', 'Masa aktif bimbingan anda sudah berakhir, silahkan lakukan pendaftaran ulang');
         }
 
         $bimbingan = Bimbingan::with(['dosens'])->findOrFail($id);
@@ -500,12 +571,13 @@ class BimbinganController extends \App\Http\Controllers\Controller
 
     public function update(Request $request)
     {
+        $mahasiswa = Auth::guard('mahasiswa')->user();
         $bimbingan = Bimbingan::findOrFail($request->id);
-        $cekBimbingan = Bimbingan::where('mahasiswa_id', Auth::guard('mahasiswa')->user()->id)->where('status', 'review')->get();
+        $cekBimbingan = Bimbingan::where('mahasiswa_id', $mahasiswa->id)->where('status', 'review')->get();
 
-        $pendaftaran = Pendaftaran::orderBy('created_at', 'desc')->where('mahasiswa_id', Auth::guard('mahasiswa')->user()->id)->where('status', 'diterima')->first();
+        $pendaftaran = Pendaftaran::orderBy('created_at', 'desc')->where('mahasiswa_id', $mahasiswa->id)->where('status', 'diterima')->first();
 
-        if (AppHelper::isBimbinganExpiredFromPendaftaran($pendaftaran, 6)) {
+        if (!AppHelper::canSubmitBimbinganKP($mahasiswa)) {
             return redirect()->route('kp.bimbingan.mahasiswa')->with('warning', 'Masa aktif bimbingan anda sudah berakhir, silahkan lakukan pendaftaran ulang');
         }
 

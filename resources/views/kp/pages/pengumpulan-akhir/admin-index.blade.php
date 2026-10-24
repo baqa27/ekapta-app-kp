@@ -40,28 +40,42 @@
                 {{-- Card Statistik untuk Admin Fotokopi --}}
                 <div class="row mb-4">
                     @if(config('kp.tahap_jilid_perpus_aktif'))
-                    <div class="col-lg-3 col-6">
-                        <div class="small-box bg-info">
-                            <div class="inner">
-                                <h3>{{ $jilids_kp->where('status', \App\Models\KP\Jilid::JILID_VALID)->count() }}</h3>
-                                <p>Menunggu Pengumpulan Akhir KP</p>
-                            </div>
-                            <div class="icon">
-                                <i class="fas fa-clock"></i>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-6">
-                        <div class="small-box bg-success">
-                            <div class="inner">
-                                <h3>{{ $jilids_kp->where('status', \App\Models\KP\Jilid::JILID_SELESAI)->count() }}</h3>
-                                <p>Selesai Pengumpulan Akhir KP</p>
-                            </div>
-                            <div class="icon">
-                                <i class="fas fa-check-circle"></i>
-                            </div>
-                        </div>
-                    </div>
+                                    @if(config('kp.tahap_jilid_perpus_aktif'))
+                                    <div class="col-lg-3 col-6">
+                                        <div class="small-box bg-info">
+                                            <div class="inner">
+                                                <h3>{{ $jilids_kp->where('status', \App\Models\KP\Jilid::JILID_VALID)->count() }}</h3>
+                                                <p>Menunggu Pengumpulan Akhir KP</p>
+                                            </div>
+                                            <div class="icon">
+                                                <i class="fas fa-clock"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 col-6">
+                                        <div class="small-box bg-success">
+                                            <div class="inner">
+                                                <h3>{{ $jilids_kp->where('status', \App\Models\KP\Jilid::JILID_SELESAI)->count() }}</h3>
+                                                <p>Selesai Pengumpulan Akhir KP</p>
+                                            </div>
+                                            <div class="icon">
+                                                <i class="fas fa-check-circle"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @else
+                                    <div class="col-lg-3 col-6">
+                                        <div class="small-box bg-primary">
+                                            <div class="inner">
+                                                <h3>{{ $jilids_kp->where('status', \App\Models\KP\Jilid::JILID_VALID)->count() }}</h3>
+                                                <p>Dokumen Valid KP</p>
+                                            </div>
+                                            <div class="icon">
+                                                <i class="fas fa-check-circle"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @endif
                     @else
                     <div class="col-lg-3 col-6">
                         <div class="small-box bg-primary">
@@ -116,11 +130,15 @@
                                         <a class="nav-link" href="#tab_3" data-toggle="tab">Revisi</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" href="#tab_4" data-toggle="tab">Valid</a>
+                                        <a class="nav-link" href="#tab_4" data-toggle="tab">
+                                            {{ config('kp.tahap_jilid_perpus_aktif') ? 'Valid' : 'Selesai' }}
+                                        </a>
                                     </li>
+                                    @if(config('kp.tahap_jilid_perpus_aktif'))
                                     <li class="nav-item">
                                         <a class="nav-link" href="#tab_2" data-toggle="tab">Selesai</a>
                                     </li>
+                                    @endif
                                 </ul>
                             @endif
                         </div>
@@ -323,7 +341,11 @@
                                                                 @endif
                                                             </td>
                                                             <td>
-                                                                <span class="badge bg-primary">Valid</span>
+                                                                @if(config('kp.tahap_jilid_perpus_aktif'))
+                                                                    <span class="badge bg-primary">Valid</span>
+                                                                @else
+                                                                    <span class="badge bg-success">Selesai</span>
+                                                                @endif
                                                             </td>
                                                             <td>
                                                                 <a href="{{ route('kp.pengumpulan-akhir.detail', $jilid->id) }}" class="btn btn-primary btn-sm">
@@ -355,18 +377,20 @@
                                 <div class="tab-content">
                                     {{-- TAB JILID KP --}}
                                     <div class="tab-pane active" id="tab_kp">
+                                        @if(config('kp.tahap_jilid_perpus_aktif'))
                                         <ul class="nav nav-pills mb-3">
                                             <li class="nav-item">
                                                 <a class="nav-link active" href="#tab_kp_valid" data-toggle="tab">
-                                                    <i class="fas fa-clock mr-1"></i> Menunggu Jilid
+                                                    <i class="fas fa-clock mr-1"></i> Menunggu Pengumpulan Akhir KP
                                                 </a>
                                             </li>
                                             <li class="nav-item">
                                                 <a class="nav-link" href="#tab_kp_selesai" data-toggle="tab">
-                                                    <i class="fas fa-check-circle mr-1"></i> Selesai Jilid
+                                                    <i class="fas fa-check-circle mr-1"></i> Selesai Pengumpulan Akhir KP
                                                 </a>
                                             </li>
                                         </ul>
+                                        @endif
 
                                         <div class="tab-content">
                                             {{-- Tab Menunggu Pengumpulan Akhir KP --}}
@@ -400,12 +424,22 @@
                                                                 </td>
                                                                 <td>{{ $jilid->created_at->format('d M Y H:i') }}</td>
                                                                 <td>
-                                                                    <span class="badge bg-primary">Menunggu Jilid</span>
+                                                                    @if(config('kp.tahap_jilid_perpus_aktif'))
+                                                                        <span class="badge bg-primary">Menunggu Pengumpulan Akhir</span>
+                                                                    @else
+                                                                        <span class="badge bg-success">Selesai</span>
+                                                                    @endif
                                                                 </td>
                                                                 <td>
-                                                                    <a href="{{ route('kp.pengumpulan-akhir.detail', $jilid->id) }}" class="btn btn-primary btn-sm">
-                                                                        <i class="fas fa-book mr-1"></i> Proses Jilid
-                                                                    </a>
+                                                                    @if(config('kp.tahap_jilid_perpus_aktif'))
+                                                                        <a href="{{ route('kp.pengumpulan-akhir.detail', $jilid->id) }}" class="btn btn-primary btn-sm">
+                                                                            <i class="fas fa-book mr-1"></i> Proses Pengumpulan Akhir
+                                                                        </a>
+                                                                    @else
+                                                                        <a href="{{ route('kp.pengumpulan-akhir.detail', $jilid->id) }}" class="btn btn-info btn-sm">
+                                                                            <i class="fas fa-eye mr-1"></i> Detail
+                                                                        </a>
+                                                                    @endif
                                                                 </td>
                                                             </tr>
                                                             @endif
@@ -486,12 +520,12 @@
                                         <ul class="nav nav-pills mb-3">
                                             <li class="nav-item">
                                                 <a class="nav-link active" href="#tab_ta_valid" data-toggle="tab">
-                                                    <i class="fas fa-clock mr-1"></i> Menunggu Jilid
+                                                    <i class="fas fa-clock mr-1"></i> Menunggu Pengumpulan Akhir
                                                 </a>
                                             </li>
                                             <li class="nav-item">
                                                 <a class="nav-link" href="#tab_ta_selesai" data-toggle="tab">
-                                                    <i class="fas fa-check-circle mr-1"></i> Selesai Jilid
+                                                    <i class="fas fa-check-circle mr-1"></i> Selesai Pengumpulan Akhir
                                                 </a>
                                             </li>
                                         </ul>
@@ -520,11 +554,11 @@
                                                                 <td>{{ $jilid->mahasiswa->nama }}</td>
                                                                 <td>{{ $jilid->created_at->format('d M Y H:i') }}</td>
                                                                 <td>
-                                                                    <span class="badge bg-primary">Menunggu Jilid</span>
+                                                                    <span class="badge bg-primary">Menunggu Pengumpulan Akhir</span>
                                                                 </td>
                                                                 <td>
                                                                     <a href="{{ route('jilid.detail', $jilid->id) }}" class="btn btn-primary btn-sm">
-                                                                        <i class="fas fa-book mr-1"></i> Proses Jilid
+                                                                        <i class="fas fa-book mr-1"></i> Proses Pengumpulan Akhir
                                                                     </a>
                                                                 </td>
                                                             </tr>

@@ -150,21 +150,24 @@ class PengumpulanAkhirController extends \App\Http\Controllers\Controller
         try {
             $validatedData = $request->validate([
                 // lokasi_kp dan waktu_pelaksanaan_kp tidak disimpan ke database (hanya untuk display)
-                'laporan_pdf' => [Rule::requiredIf(function() use($request){
-                    return !empty($request->laporan_pdf);
-                }), 'mimes:pdf', 'max:10000'],
-                'laporan_word' => [Rule::requiredIf(function() use($request){
-                    return !empty($request->laporan_word);
-                }), 'mimes:docx', 'max:10000'],
-                'lembar_pengesahan' => ['required', 'mimes:pdf', 'max:5000'], // 5MB
-                'lembar_bimbingan' => ['required', 'mimes:pdf', 'max:5000'], // 5MB
-                'lembar_revisi' => ['required', 'mimes:pdf', 'max:5000'], // 5MB
-                'file_project' => ['nullable', 'mimes:zip,rar', 'max:30720'], // 30MB (Opsional)
-                'form_nilai_kp' => ['required', 'mimes:pdf,jpg,jpeg,png', 'max:1024'],
-                'berita_acara' => ['nullable', 'mimes:pdf,jpg,jpeg,png', 'max:1024'], // Opsional
-                'panduan' => [Rule::requiredIf(function() use($request){
-                    return !empty($request->panduan);
-                }), 'mimes:docx', 'max:10000'],
+                 'laporan_pdf' => [Rule::requiredIf(function() use($request){
+                     return !empty($request->laporan_pdf);
+                 }), 'mimes:pdf', 'max:10000'],
+                 'laporan_word' => [Rule::requiredIf(function() use($request){
+                     return !empty($request->laporan_word);
+                 }), 'mimes:docx', 'max:10000'],
+                 'lembar_pengesahan' => ['required', 'mimes:pdf', 'max:5000'], // 5MB
+                  'lembar_bimbingan' => ['required', 'mimes:pdf', 'max:5000'], // 5MB
+                  'lembar_revisi' => ['required', 'mimes:pdf', 'max:5000'], // 5MB
+                  'file_project' => ['nullable', 'mimes:zip,rar', 'max:30720'], // 30MB (Opsional)
+                  'form_nilai_kp' => ['required', 'mimes:pdf,jpg,jpeg,png', 'max:5000'],
+                  'berita_acara' => ['nullable', 'mimes:pdf,jpg,jpeg,png', 'max:5000'],
+                  'panduan' => [Rule::requiredIf(function() use($request){
+                      return !empty($request->panduan);
+                  }), 'mimes:docx', 'max:10000'],
+                  'bukti_nilai_instansi' => ['nullable', 'mimes:pdf,jpg,jpeg,png', 'max:5000'],
+                  'lampiran' => ['nullable', 'mimes:pdf', 'max:5000'],
+                  'link_project' => ['nullable', 'url', 'max:2048'],
             ]);
             
             \Log::info('Validation passed');
@@ -205,6 +208,12 @@ class PengumpulanAkhirController extends \App\Http\Controllers\Controller
                 $validatedData['panduan'] = StorageHelper::storeKpFile($request->panduan, $mahasiswa->nim, 'pengumpulan_akhir');
             } else {
                 $validatedData['panduan'] = $request->panduan_link;
+            }
+            if ($request->bukti_nilai_instansi) {
+                $validatedData['bukti_nilai_instansi'] = StorageHelper::storeKpFile($request->bukti_nilai_instansi, $mahasiswa->nim, 'pengumpulan_akhir');
+            }
+            if ($request->lampiran) {
+                $validatedData['lampiran'] = StorageHelper::storeKpFile($request->lampiran, $mahasiswa->nim, 'pengumpulan_akhir');
             }
             $validatedData['mahasiswa_id'] = $mahasiswa->id;
             $validatedData['status'] = Jilid::JILID_REVIEW;
@@ -371,27 +380,29 @@ class PengumpulanAkhirController extends \App\Http\Controllers\Controller
 
     public function update(Request $request, $id)
     {
-        $jilid = Jilid::with(['mahasiswa'])->where('id', $id)->first();
+        $jilid = Jilid::with(['mahasiswa'])->findOrFail($id);
+        if ($jilid->mahasiswa_id != Auth::guard('mahasiswa')->id()) {
+            abort(403);
+        }
         if ($jilid->status != Jilid::JILID_REVISI) {
-            return back();
+            return redirect()->route('kp.pengumpulan-akhir.mahasiswa')->with('warning', 'Pengajuan tidak sedang berstatus revisi.');
         }
 
         $validatedData = $request->validate([
             // lokasi_kp dan waktu_pelaksanaan_kp tidak disimpan ke database (hanya untuk display)
-            'laporan_pdf' => [Rule::requiredIf(fn() => !empty($request->laporan_pdf)), 'mimes:pdf', 'max:5000'],
-            'laporan_word' => [Rule::requiredIf(fn() => !empty($request->laporan_word)), 'mimes:docx', 'max:5000'],
-            'lembar_pengesahan' => [Rule::requiredIf(fn() => !empty($request->lembar_pengesahan)), 'mimes:pdf', 'max:500'],
-            'lembar_keaslian' => [Rule::requiredIf(fn() => !empty($request->lembar_keaslian)), 'mimes:pdf', 'max:500'],
-            'lembar_persetujuan_pembimbing' => [Rule::requiredIf(fn() => !empty($request->lembar_persetujuan_pembimbing)), 'mimes:pdf', 'max:500'],
-            'lembar_persetujuan_penguji' => [Rule::requiredIf(fn() => !empty($request->lembar_persetujuan_penguji)), 'mimes:pdf', 'max:500'],
-            'lembar_bimbingan' => [Rule::requiredIf(fn() => !empty($request->lembar_bimbingan)), 'mimes:pdf', 'max:500'],
-            'lembar_revisi' => [Rule::requiredIf(fn() => !empty($request->lembar_revisi)), 'mimes:pdf', 'max:500'],
-            'artikel' => [Rule::requiredIf(fn() => !empty($request->artikel)), 'mimes:docx', 'max:5000'],
-            'berita_acara' => [Rule::requiredIf(fn() => !empty($request->berita_acara)), 'mimes:pdf', 'max:1000'],
-            'panduan' => [Rule::requiredIf(fn() => !empty($request->panduan)), 'mimes:docx', 'max:5000'],
-            'lampiran' => [Rule::requiredIf(fn() => !empty($request->lampiran)), 'mimes:pdf', 'max:1000'],
+            // Batas ukuran disamakan dengan store() (create form menjanjikan 5MB PDF, 10MB laporan)
+            'laporan_pdf' => [Rule::requiredIf(fn() => !empty($request->laporan_pdf)), 'mimes:pdf', 'max:10000'],
+            'laporan_word' => [Rule::requiredIf(fn() => !empty($request->laporan_word)), 'mimes:docx', 'max:10000'],
+            'lembar_pengesahan' => [Rule::requiredIf(fn() => !empty($request->lembar_pengesahan)), 'mimes:pdf', 'max:5000'],
+            'lembar_bimbingan' => [Rule::requiredIf(fn() => !empty($request->lembar_bimbingan)), 'mimes:pdf', 'max:5000'],
+            'lembar_revisi' => [Rule::requiredIf(fn() => !empty($request->lembar_revisi)), 'mimes:pdf', 'max:5000'],
+            'berita_acara' => [Rule::requiredIf(fn() => !empty($request->berita_acara)), 'mimes:pdf,jpg,jpeg,png', 'max:5000'],
+            'panduan' => [Rule::requiredIf(fn() => !empty($request->panduan)), 'mimes:docx', 'max:10000'],
+            'bukti_nilai_instansi' => [Rule::requiredIf(fn() => !empty($request->bukti_nilai_instansi)), 'mimes:pdf,jpg,jpeg,png', 'max:5000'],
+            'lampiran' => [Rule::requiredIf(fn() => !empty($request->lampiran)), 'mimes:pdf', 'max:5000'],
+            'link_project' => ['nullable', 'url', 'max:2048'],
             'file_project' => [Rule::requiredIf(fn() => !empty($request->file_project)), 'mimes:zip,rar', 'max:30720'],
-            'form_nilai_kp' => [Rule::requiredIf(fn() => !empty($request->form_nilai_kp)), 'mimes:pdf,jpg,jpeg,png', 'max:1024'],
+            'form_nilai_kp' => [Rule::requiredIf(fn() => !empty($request->form_nilai_kp)), 'mimes:pdf,jpg,jpeg,png', 'max:5000'],
         ]);
 
         $mahasiswa = $jilid->mahasiswa;
@@ -414,19 +425,7 @@ class PengumpulanAkhirController extends \App\Http\Controllers\Controller
             StorageHelper::deleteKpFile($jilid->lembar_pengesahan);
             $validatedData['lembar_pengesahan'] = StorageHelper::storeKpFile($request->lembar_pengesahan, $mahasiswa->nim, 'pengumpulan_akhir');
         }
-        if ($request->lembar_keaslian) {
-            StorageHelper::deleteKpFile($jilid->lembar_keaslian);
-            $validatedData['lembar_keaslian'] = StorageHelper::storeKpFile($request->lembar_keaslian, $mahasiswa->nim, 'pengumpulan_akhir');
-        }
-        if ($request->lembar_persetujuan_pembimbing) {
-            StorageHelper::deleteKpFile($jilid->lembar_persetujuan_pembimbing);
-            $validatedData['lembar_persetujuan_pembimbing'] = StorageHelper::storeKpFile($request->lembar_persetujuan_pembimbing, $mahasiswa->nim, 'pengumpulan_akhir');
-        }
-        if ($request->lembar_persetujuan_penguji) {
-            StorageHelper::deleteKpFile($jilid->lembar_persetujuan_penguji);
-            $validatedData['lembar_persetujuan_penguji'] = StorageHelper::storeKpFile($request->lembar_persetujuan_penguji, $mahasiswa->nim, 'pengumpulan_akhir');
-        }
-        if ($request->lembar_bimbingan) {
+         if ($request->lembar_bimbingan) {
             StorageHelper::deleteKpFile($jilid->lembar_bimbingan);
             $validatedData['lembar_bimbingan'] = StorageHelper::storeKpFile($request->lembar_bimbingan, $mahasiswa->nim, 'pengumpulan_akhir');
         }
@@ -434,37 +433,39 @@ class PengumpulanAkhirController extends \App\Http\Controllers\Controller
             StorageHelper::deleteKpFile($jilid->lembar_revisi);
             $validatedData['lembar_revisi'] = StorageHelper::storeKpFile($request->lembar_revisi, $mahasiswa->nim, 'pengumpulan_akhir');
         }
-        if ($request->berita_acara) {
-            StorageHelper::deleteKpFile($jilid->berita_acara);
-            $validatedData['berita_acara'] = StorageHelper::storeKpFile($request->berita_acara, $mahasiswa->nim, 'pengumpulan_akhir');
-        }
-        if ($request->artikel) {
-            StorageHelper::deleteKpFile($jilid->artikel);
-            $validatedData['artikel'] = StorageHelper::storeKpFile($request->artikel, $mahasiswa->nim, 'pengumpulan_akhir');
-        } elseif ($request->artikel_link) {
-            StorageHelper::deleteKpFile($jilid->artikel);
-            $validatedData['artikel'] = $request->artikel_link;
-        }
-        if ($request->panduan) {
-            StorageHelper::deleteKpFile($jilid->panduan);
-            $validatedData['panduan'] = StorageHelper::storeKpFile($request->panduan, $mahasiswa->nim, 'pengumpulan_akhir');
-        } elseif ($request->panduan_link) {
-            $validatedData['panduan'] = $request->panduan_link;
-        }
-        if ($request->lampiran) {
-            StorageHelper::deleteKpFile($jilid->lampiran);
-            $validatedData['lampiran'] = StorageHelper::storeKpFile($request->lampiran, $mahasiswa->nim, 'pengumpulan_akhir');
-        }
+          if ($request->berita_acara) {
+              StorageHelper::deleteKpFile($jilid->berita_acara);
+              $validatedData['berita_acara'] = StorageHelper::storeKpFile($request->berita_acara, $mahasiswa->nim, 'pengumpulan_akhir');
+          }
+          if ($request->panduan) {
+             StorageHelper::deleteKpFile($jilid->panduan);
+             $validatedData['panduan'] = StorageHelper::storeKpFile($request->panduan, $mahasiswa->nim, 'pengumpulan_akhir');
+         } elseif ($request->panduan_link) {
+             $validatedData['panduan'] = $request->panduan_link;
+         }
+         if ($request->bukti_nilai_instansi) {
+             StorageHelper::deleteKpFile($jilid->bukti_nilai_instansi);
+             $validatedData['bukti_nilai_instansi'] = StorageHelper::storeKpFile($request->bukti_nilai_instansi, $mahasiswa->nim, 'pengumpulan_akhir');
+         }
+         if ($request->lampiran) {
+             StorageHelper::deleteKpFile($jilid->lampiran);
+             $validatedData['lampiran'] = StorageHelper::storeKpFile($request->lampiran, $mahasiswa->nim, 'pengumpulan_akhir');
+         }
         if ($request->file_project) {
             StorageHelper::deleteKpFile($jilid->file_project);
             $validatedData['file_project'] = StorageHelper::storeKpFile($request->file_project, $mahasiswa->nim, 'pengumpulan_akhir');
         }
-        if ($request->form_nilai_kp) {
-            StorageHelper::deleteKpFile($jilid->form_nilai_kp);
-            $validatedData['form_nilai_kp'] = StorageHelper::storeKpFile($request->form_nilai_kp, $mahasiswa->nim, 'pengumpulan_akhir');
-        }
+         if ($request->form_nilai_kp) {
+             StorageHelper::deleteKpFile($jilid->form_nilai_kp);
+             $validatedData['form_nilai_kp'] = StorageHelper::storeKpFile($request->form_nilai_kp, $mahasiswa->nim, 'pengumpulan_akhir');
+         }
 
-        $validatedData['status'] = Jilid::JILID_REVIEW;
+         // Update link_project jika ada
+         if ($request->filled('link_project')) {
+             $validatedData['link_project'] = $request->link_project;
+         }
+
+         $validatedData['status'] = Jilid::JILID_REVIEW;
         $jilid->update($validatedData);
 
         return redirect()->route('kp.pengumpulan-akhir.mahasiswa')->with('success', 'Pengajuan pengumpulan akhir berhasil. Silahkan tunggu validasi dari Admin');
@@ -474,7 +475,7 @@ class PengumpulanAkhirController extends \App\Http\Controllers\Controller
     {
         $jilid = Jilid::findOrFail($id);
 
-        if ($request->catatan) {
+        if ($request->status == Jilid::JILID_REVISI && $request->catatan) {
             $revisi = new RevisiJilid;
             $revisi->catatan = $request->catatan;
             $revisi->jilid_id = $jilid->id;
@@ -483,6 +484,9 @@ class PengumpulanAkhirController extends \App\Http\Controllers\Controller
 
         $updateData = [
             'status' => $request->status,
+            'reviewed_by' => Auth::guard('admin')->user()->id,
+            'reviewer_type' => 'admin',
+            'tanggal_review' => now(),
         ];
 
         // Tambahkan total_pembayaran jika ada (dari fotokopian)
@@ -549,7 +553,7 @@ class PengumpulanAkhirController extends \App\Http\Controllers\Controller
             'catatan' => ['nullable', 'string'],
         ]);
 
-        if ($request->catatan) {
+        if ($request->status == Jilid::JILID_REVISI && $request->catatan) {
             $revisi = new RevisiJilid;
             $revisi->catatan = $request->catatan;
             $revisi->jilid_id = $jilid->id;
@@ -558,6 +562,9 @@ class PengumpulanAkhirController extends \App\Http\Controllers\Controller
 
         $updateData = [
             'status' => $request->status,
+            'reviewed_by' => Auth::guard('prodi')->user()->id,
+            'reviewer_type' => 'prodi',
+            'tanggal_review' => now(),
         ];
 
         // Tambahkan total_pembayaran jika ada (dari fotokopian)
@@ -611,12 +618,11 @@ class PengumpulanAkhirController extends \App\Http\Controllers\Controller
 
         // Ambil data KP filter by prodi (exclude draft)
         $jilids_kp = Jilid::with('mahasiswa')
-            ->whereIn('status', [Jilid::JILID_REVIEW, Jilid::JILID_VALID, Jilid::JILID_SELESAI])
+            ->whereIn('status', [Jilid::JILID_REVIEW, Jilid::JILID_REVISI, Jilid::JILID_VALID, Jilid::JILID_SELESAI])
             ->whereHas('mahasiswa', function($q) use ($userProdi) {
-                // Coba cocokan dengan namaprodi atau kode atau ID
                 $q->where('prodi_id', $userProdi->id)
-                  ->orWhere('prodi', $userProdi->kode)
-                  ->orWhere('prodi', $userProdi->namaprodi);
+                  ->orWhereRaw('LOWER(mahasiswas.prodi) = ?', [strtolower($userProdi->kode)])
+                  ->orWhereRaw('LOWER(mahasiswas.prodi) = ?', [strtolower($userProdi->namaprodi)]);
             })
             ->orderBy('created_at','desc')
             ->get();

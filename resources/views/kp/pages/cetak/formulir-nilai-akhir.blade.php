@@ -139,24 +139,24 @@
             <td height="60" style="border: 1px solid black; text-align: center;">1</td>
             <td style="border: 1px solid black; padding-left:5px;">Pembimbing</td>
             <td style="border: 1px solid black; text-align:center;"><b>{{ $bobot_pembimbing }}%</b></td>
-            <td style="border: 1px solid black; text-align:center;"><b></b></td>
-            <td style="border: 1px solid black; text-align:center;"><b></b></td>
+            <td style="border: 1px solid black; text-align:center;"><b>{{ $nilai_pembimbing > 0 ? number_format($nilai_pembimbing, 2) : '' }}</b></td>
+            <td style="border: 1px solid black; text-align:center;"><b>{{ $nilai_pembimbing > 0 ? number_format($bobot_x_nilai_pembimbing, 2) : '' }}</b></td>
             <td style="border: 1px solid black; text-align:center;"></td>
         </tr>
         <tr>
             <td height="60" style="border: 1px solid black; text-align: center;">2</td>
             <td style="border: 1px solid black; padding-left:5px;">Penguji</td>
             <td style="border: 1px solid black; text-align:center;"><b>{{ $bobot_penguji }}%</b></td>
-            <td style="border: 1px solid black; text-align:center;"><b></b></td>
-            <td style="border: 1px solid black; text-align:center;"><b></b></td>
+            <td style="border: 1px solid black; text-align:center;"><b>{{ $nilai_penguji > 0 ? number_format($nilai_penguji, 2) : '' }}</b></td>
+            <td style="border: 1px solid black; text-align:center;"><b>{{ $nilai_penguji > 0 ? number_format($bobot_x_nilai_penguji, 2) : '' }}</b></td>
             <td style="border: 1px solid black; text-align:center;"></td>
         </tr>
         <tr>
             <td height="60" style="border: 1px solid black; text-align: center;">3</td>
             <td style="border: 1px solid black; padding-left:5px;">Perusahaan</td>
             <td style="border: 1px solid black; text-align:center;"><b>{{ $bobot_instansi }}%</b></td>
-            <td style="border: 1px solid black; text-align:center;"><b></b></td>
-            <td style="border: 1px solid black; text-align:center;"><b></b></td>
+            <td style="border: 1px solid black; text-align:center;"><b>{{ $nilai_instansi > 0 ? number_format($nilai_instansi, 2) : '' }}</b></td>
+            <td style="border: 1px solid black; text-align:center;"><b>{{ $nilai_instansi > 0 ? number_format($bobot_x_nilai_instansi, 2) : '' }}</b></td>
             <td style="border: 1px solid black; text-align:center;"></td>
         </tr>
         <tr>
@@ -164,7 +164,7 @@
                 <h4><b>NILAI AKHIR</b></h4>
             </td>
             <td style="border: 1px solid black; text-align:center;" colspan="2">
-                <h4><b></b></h4>
+                <h4><b>{{ $nilai_akhir > 0 ? number_format($nilai_akhir, 2) : '' }}</b></h4>
             </td>
         </tr>
     </table>

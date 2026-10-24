@@ -58,7 +58,7 @@
                             @if ($is_admin)
                                 @if (Auth::guard('admin')->user()->type == \App\Models\Admin::TYPE_SUPER_ADMIN)
                                     {{-- SUPER ADMIN: Semua dokumen di semua status --}}
-                                    <h5 class="mt-3"><strong>Dokumen Pengumpulan Akhir TA</strong></h5>
+                                    <h5 class="mt-3"><strong>Dokumen Jilid TA</strong></h5>
                                     <hr>
                                     <div class="mt-3">
                                         @if($jilid->lembar_pengesahan)
@@ -189,7 +189,7 @@
 
                             @else
                                 {{-- VIEW PRODI / MAHASISWA DENGAN LIST YANG RAPI --}}
-                                <h5 class="mt-3"><strong>Dokumen Pengumpulan Akhir TA</strong></h5>
+                                <h5 class="mt-3"><strong>Dokumen Jilid TA</strong></h5>
                                 <hr>
 
                                 @if($jilid->lembar_pengesahan)
