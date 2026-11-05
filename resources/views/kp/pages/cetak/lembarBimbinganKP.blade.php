@@ -148,52 +148,7 @@
 </head>
 
 <body>
-@php
-        $flattened = collect([]);
-
-        // Online bimbingan
-        foreach ($bimbingan_dosen_utama as $bimb) {
-            $bagianName = $bimb->bagian ? $bimb->bagian->bagian : 'Lainnya';
-
-            // If the bimbingan itself has a keterangan (mahasiswa's note), add a row for it
-            if (!empty($bimb->keterangan)) {
-                $flattened->push([
-                    'type' => 'online',
-                    'bagian_name' => $bagianName,
-                    'tanggal' => $bimb->tanggal_bimbingan ?? $bimb->tanggal_acc,
-                    'catatan' => $bimb->keterangan, // mahasiswa's note
-                    'note_type' => 'mahasiswa',
-                ]);
-            }
-
-            // Each revisi (dosen's note)
-            foreach ($bimb->revisis as $revisi) {
-                $flattened->push([
-                    'type' => 'online',
-                    'bagian_name' => $bagianName,
-                    'tanggal' => $revisi->created_at, // revisi has no date, use created_at
-                    'catatan' => $revisi->catatan, // dosen's note
-                    'note_type' => 'dosen',
-                ]);
-            }
-        }
-
-        // Manual bimbingan
-        foreach ($bimbingan_manual as $manual) {
-            $bagianName = $manual->bimbingan && $manual->bimbingan->bagian ? $manual->bimbingan->bagian->bagian : 'Bimbingan Manual';
-            $flattened->push([
-                'type' => 'manual',
-                'bagian_name' => $bagianName,
-                'tanggal' => $manual->tanggal_bimbingan,
-                'catatan' => $manual->keterangan, // mahasiswa's note only
-                'note_type' => 'mahasiswa',
-            ]);
-        }
-
-        // Sort by tanggal ascending
-        $all_bimbingan = $flattened->sortBy('tanggal')->values();
-        $no = 1;
-    @endphp
+@php $no = 1; @endphp
 
     <div class="header-block">
             <table>
@@ -272,26 +227,24 @@
                 </tr>
             </thead>
             <tbody>
-                @forelse ($all_bimbingan as $bimbingan)
+                @forelse ($riwayat_bimbingan as $grup)
+                    @foreach ($grup['rows'] as $row)
                     <tr>
-                        <td class="text-center">{{ $no++ }}</td>
-                        <td class="text-center">
-                            {{ $bimbingan['tanggal'] ? \Carbon\Carbon::parse($bimbingan['tanggal'])->translatedFormat('d M Y') : '-' }}
-                        </td>
-                        <td style="padding-left: 8px;"><b>{{ $bimbingan['bagian_name'] }}</b></td>
-                        <td class="notes-cell" style="padding: 6px;">
-                            @if(!empty($bimbingan['catatan']))
-                                {{ strip_tags($bimbingan['catatan']) }}
-                            @else
-                                <span class="empty">Tidak ada catatan</span>
-                            @endif
-                        </td>
+                        @if ($loop->first)
+                            <td class="text-center" rowspan="{{ count($grup['rows']) }}">{{ $no++ }}</td>
+                        @endif
+                        <td class="text-center">{{ $row['tanggal']->translatedFormat('d M Y') }}</td>
+                        @if ($loop->first)
+                            <td style="padding-left: 8px;" rowspan="{{ count($grup['rows']) }}"><b>{{ $grup['bagian'] }}</b></td>
+                        @endif
+                        <td class="notes-cell" style="padding: 6px;">{{ $row['catatan'] }}</td>
                         <td class="text-center">
                             @if($ttd_dosen_utama)
                                 <img src="{{ $ttd_dosen_utama }}" height="40" style="max-width: 100%; object-fit:contain;">
                             @endif
                         </td>
                     </tr>
+                    @endforeach
                 @empty
                     <tr>
                         <td colspan="5" class="text-center" style="padding: 20px;">

@@ -370,7 +370,7 @@ class CetakController extends \App\Http\Controllers\Controller
 
         // KP: Ambil bimbingan online yang ACC
         // Query langsung skip pivot untuk backward compatibility dengan data lama
-        $bimbingan_dosen_utama = \App\Models\KP\Bimbingan::with(['revisis','bagian'])
+        $bimbingan_dosen_utama = \App\Models\KP\Bimbingan::with(['revisis' => fn ($q) => $q->orderBy('id'), 'bagian'])
             ->where('mahasiswa_id', $mahasiswa->id)
             ->where('status', 'diterima')
             ->get();
@@ -380,6 +380,8 @@ class CetakController extends \App\Http\Controllers\Controller
             ->where('status', 'acc')
             ->with(['bimbingan', 'bimbingan.bagian'])
             ->get();
+
+        $riwayat_bimbingan = $this->susunRiwayatBimbingan($bimbingan_dosen_utama, $bimbingan_manual);
 
         $pendaftarans = Pendaftaran::whereYear('created_at', Carbon::parse($pendaftaran->created_at)->year)->get();
         $no=0;
@@ -410,6 +412,7 @@ class CetakController extends \App\Http\Controllers\Controller
             'bimbingan_dosen_utama' => $bimbingan_dosen_utama,
             'bimbingan_manual' => $bimbingan_manual,
             'bimbingan_dosen_pendamping' => collect([]),
+            'riwayat_bimbingan' => $riwayat_bimbingan,
             'no_urut' => $no_urut,
         ];
 
@@ -417,6 +420,72 @@ class CetakController extends \App\Http\Controllers\Controller
         $pdf->loadview('kp.pages.cetak.lembarBimbinganKP', $data);
         $pdf->setPaper('A4', 'portrait');
         return $pdf->stream('Lembar-Bimbingan-KP.pdf');
+    }
+
+    /**
+     * Susun baris lembar bimbingan: satu catatan = satu baris + tanggalnya sendiri.
+     * Keterangan mahasiswa sengaja tidak dipakai.
+     * Dedup: ajuan manual dilewati jika bimbingan terkait sudah punya baris online
+     * dengan tanggal (Y-m-d) sama dan catatan sama.
+     */
+    private function susunRiwayatBimbingan($online, $manual): array
+    {
+        $groups = [];
+        $add = function (string $bagian, $tanggal, $id, string $catatan, string $src, $bimbinganId = null) use (&$groups) {
+            $groups[$bagian][] = [
+                'tanggal' => Carbon::parse($tanggal),
+                'id' => $id,
+                'catatan' => $catatan,
+                'src' => $src,
+                'bimbingan_id' => $bimbinganId,
+            ];
+        };
+
+        foreach ($online as $b) {
+            $bagian = $b->bagian ? $b->bagian->bagian : 'Lainnya';
+            $acc = $b->tanggal_acc;
+            $last = $b->revisis->last();
+            $lastIsAcc = $last && $acc
+                && abs(($last->created_at->hour * 60 + $last->created_at->minute) - ($acc->hour * 60 + $acc->minute)) <= 2;
+
+            foreach ($b->revisis as $r) {
+                $isAcc = $lastIsAcc && $r->id === $last->id;
+                $catatan = trim(strip_tags((string) $r->catatan));
+                if ($catatan === '') {
+                    $catatan = $isAcc ? 'ACC ' . $bagian : '-';
+                }
+                $add($bagian, $isAcc ? $acc : $r->created_at, $r->id, $catatan, 'online', $b->id);
+            }
+
+            if (!$lastIsAcc) {
+                $add($bagian, $acc ?? $b->updated_at, PHP_INT_MAX, 'ACC ' . $bagian, 'online', $b->id);
+            }
+        }
+
+        foreach ($manual as $m) {
+            $bagian = $m->bimbingan && $m->bimbingan->bagian ? $m->bimbingan->bagian->bagian : 'Bimbingan Manual';
+            $catatan = trim(strip_tags((string) $m->catatan_reviewer));
+            if ($catatan === '') {
+                $catatan = $m->status_mahasiswa === 'acc' ? 'ACC ' . $bagian : '-';
+            }
+            $tgl = Carbon::parse($m->tanggal_bimbingan);
+            $dup = collect($groups[$bagian] ?? [])->contains(fn ($r) => $r['src'] === 'online'
+                && $r['bimbingan_id'] === $m->bimbingan_id
+                && $r['tanggal']->isSameDay($tgl)
+                && $r['catatan'] === $catatan);
+            if (!$dup) {
+                $add($bagian, $tgl, $m->id, $catatan, 'manual', $m->bimbingan_id);
+            }
+        }
+
+        $result = [];
+        foreach ($groups as $bagian => $rows) {
+            usort($rows, fn ($a, $b) => [$a['tanggal']->getTimestamp(), $a['id']] <=> [$b['tanggal']->getTimestamp(), $b['id']]);
+            $result[] = ['bagian' => $bagian, 'rows' => $rows];
+        }
+        usort($result, fn ($a, $b) => $a['rows'][0]['tanggal']->getTimestamp() <=> $b['rows'][0]['tanggal']->getTimestamp());
+
+        return $result;
     }
 
     public function cetakLembarPersetujuan($type){
@@ -695,6 +764,10 @@ class CetakController extends \App\Http\Controllers\Controller
               ->orWhere('namaprodi', $mahasiswa->prodi);
         })->first();
 
+        // Dosen pembimbing (fallback ke data lama 'utama')
+        $dosenPembimbing = $mahasiswa->dosens()->where('status', 'pembimbing')->first()
+            ?? $mahasiswa->dosens()->where('status', 'utama')->first();
+
         // Tanggal hari ini
         $date = Carbon::now()->locale('id');
         $hariList = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
@@ -714,6 +787,7 @@ class CetakController extends \App\Http\Controllers\Controller
             'mahasiswa' => $mahasiswa,
             'pengajuan' => $pengajuan,
             'prodi' => $prodi,
+            'dosen_pembimbing' => $dosenPembimbing,
             'hari' => $hariList[$date->dayOfWeek],
             'tanggal_text' => $terbilangAngka[$date->day],
             'bulan_text' => $bulanList[$date->month],

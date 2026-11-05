@@ -17,13 +17,13 @@
         }
 
         .container {
-            margin: 60px 70px 60px 80px;
+            margin: 40px 60px 40px 70px;
         }
 
         h3 {
             text-decoration: underline;
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
 
         p {
@@ -39,7 +39,7 @@
         }
 
         .info-table .label {
-            width: 100px;
+            width: 125px;
             padding-left: 40px;
         }
 
@@ -65,7 +65,7 @@
 
         .ttd-table {
             width: 100%;
-            margin-top: 40px;
+            margin-top: 15px;
         }
 
         .ttd-table td {
@@ -75,7 +75,7 @@
         }
 
         .ttd-space {
-            height: 100px;
+            height: 70px;
         }
 
         .underline {
@@ -109,6 +109,17 @@
                 <td class="label">Nama</td>
                 <td class="separator">:</td>
                 <td>{{ $mahasiswa->nama }}</td>
+            </tr>
+            <tr>
+                <td class="label">Dosen Pembimbing</td>
+                <td class="separator">:</td>
+                <td>
+                    @if($dosen_pembimbing)
+                        {{ $dosen_pembimbing->nama }}{{ $dosen_pembimbing->gelar ? ', ' . $dosen_pembimbing->gelar : '' }}
+                    @else
+                        ...............................................
+                    @endif
+                </td>
             </tr>
             <tr>
                 <td class="label">Institusi</td>
@@ -181,7 +192,7 @@
                 <td width="50%"><strong>PIHAK KEDUA</strong></td>
             </tr>
             <tr>
-                <td>Yang menyerahkan,</td>
+                <td>Mahasiswa,</td>
                 <td>Yang menerima,</td>
             </tr>
             <tr>
@@ -191,6 +202,27 @@
             <tr>
                 <td><span class="underline">{{ $mahasiswa->nama }}</span></td>
                 <td><span class="underline">...............................................</span></td>
+            </tr>
+            <tr>
+                <td colspan="2">&nbsp;</td>
+            </tr>
+            <tr>
+                <td>Dosen Pembimbing,</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td class="ttd-space"></td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>
+                    @if($dosen_pembimbing)
+                        <span class="underline">{{ $dosen_pembimbing->nama }}{{ $dosen_pembimbing->gelar ? ', ' . $dosen_pembimbing->gelar : '' }}</span>
+                    @else
+                        <span class="underline">...............................................</span>
+                    @endif
+                </td>
+                <td>&nbsp;</td>
             </tr>
         </table>
     </div>
