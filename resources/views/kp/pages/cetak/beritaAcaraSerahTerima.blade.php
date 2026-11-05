@@ -39,7 +39,7 @@
         }
 
         .info-table .label {
-            width: 125px;
+            width: 100px;
             padding-left: 40px;
         }
 
@@ -108,16 +108,10 @@
             <tr>
                 <td class="label">Nama</td>
                 <td class="separator">:</td>
-                <td>{{ $mahasiswa->nama }}</td>
-            </tr>
-            <tr>
-                <td class="label">Dosen Pembimbing</td>
-                <td class="separator">:</td>
                 <td>
+                    {{ $mahasiswa->nama }}
                     @if($dosen_pembimbing)
-                        {{ $dosen_pembimbing->nama }}{{ $dosen_pembimbing->gelar ? ', ' . $dosen_pembimbing->gelar : '' }}
-                    @else
-                        ...............................................
+                        ; {{ $dosen_pembimbing->nama }}{{ $dosen_pembimbing->gelar ? ', ' . $dosen_pembimbing->gelar : '' }}
                     @endif
                 </td>
             </tr>
