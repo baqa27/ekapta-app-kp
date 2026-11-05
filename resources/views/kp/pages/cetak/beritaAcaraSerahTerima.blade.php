@@ -17,19 +17,19 @@
         }
 
         .container {
-            margin: 40px 60px 40px 70px;
+            margin: 35px 70px 30px 80px;
         }
 
         h3 {
             text-decoration: underline;
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         p {
             font-size: 12pt;
             text-align: justify;
-            line-height: 1.6;
+            line-height: 1.45;
         }
 
         .info-table td {
@@ -55,17 +55,17 @@
         ol {
             margin-left: 20px;
             font-size: 12pt;
-            line-height: 1.8;
+            line-height: 1.5;
         }
 
         ol li {
             text-align: justify;
-            margin-bottom: 5px;
+            margin-bottom: 3px;
         }
 
         .ttd-table {
             width: 100%;
-            margin-top: 15px;
+            margin-top: 20px;
         }
 
         .ttd-table td {
@@ -75,7 +75,7 @@
         }
 
         .ttd-space {
-            height: 70px;
+            height: 55px;
         }
 
         .underline {
@@ -202,27 +202,6 @@
             <tr>
                 <td><span class="underline">{{ $mahasiswa->nama }}</span></td>
                 <td><span class="underline">...............................................</span></td>
-            </tr>
-            <tr>
-                <td colspan="2">&nbsp;</td>
-            </tr>
-            <tr>
-                <td>Dosen Pembimbing,</td>
-                <td>&nbsp;</td>
-            </tr>
-            <tr>
-                <td class="ttd-space"></td>
-                <td>&nbsp;</td>
-            </tr>
-            <tr>
-                <td>
-                    @if($dosen_pembimbing)
-                        <span class="underline">{{ $dosen_pembimbing->nama }}{{ $dosen_pembimbing->gelar ? ', ' . $dosen_pembimbing->gelar : '' }}</span>
-                    @else
-                        <span class="underline">...............................................</span>
-                    @endif
-                </td>
-                <td>&nbsp;</td>
             </tr>
         </table>
     </div>
