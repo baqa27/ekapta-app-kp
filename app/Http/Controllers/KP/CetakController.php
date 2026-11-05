@@ -464,7 +464,16 @@ class CetakController extends \App\Http\Controllers\Controller
 
         foreach ($manual as $m) {
             $bagian = $m->bimbingan && $m->bimbingan->bagian ? $m->bimbingan->bagian->bagian : 'Bimbingan Manual';
-            $catatan = trim(strip_tags((string) $m->catatan_reviewer));
+            $catatanReviewer = trim(strip_tags((string) $m->catatan_reviewer));
+            $catatanMahasiswa = trim(strip_tags((string) $m->keterangan));
+            $parts = [];
+            if ($catatanReviewer !== '') {
+                $parts[] = $catatanReviewer;
+            }
+            if ($catatanMahasiswa !== '') {
+                $parts[] = $catatanMahasiswa;
+            }
+            $catatan = implode(' | ', $parts);
             if ($catatan === '') {
                 $catatan = $m->status_mahasiswa === 'acc' ? 'ACC ' . $bagian : '-';
             }
