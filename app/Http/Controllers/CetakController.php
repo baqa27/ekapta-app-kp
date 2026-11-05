@@ -365,8 +365,19 @@ class CetakController extends Controller
 
         $dateExpired = AppHelper::getBimbinganExpiredDateFromPendaftaran($pendaftaran);
 
-        $bimbingan_dosen_utama = $dosenUtama->bimbingans()->with(['revisis','bagian'])->where('mahasiswa_id', $mahasiswa->id)->get();
-        $bimbingan_dosen_pendamping = $dosenPendamping->bimbingans()->with(['revisis','bagian'])->where('mahasiswa_id', $mahasiswa->id)->get();
+        $bimbingan_dosen_utama = $dosenUtama->bimbingans()
+            ->with(['revisis' => fn($q) => $q->orderBy('id'), 'bagian'])
+            ->where('mahasiswa_id', $mahasiswa->id)
+            ->where('status', 'diterima')
+            ->get();
+        $bimbingan_dosen_pendamping = $dosenPendamping->bimbingans()
+            ->with(['revisis' => fn($q) => $q->orderBy('id'), 'bagian'])
+            ->where('mahasiswa_id', $mahasiswa->id)
+            ->where('status', 'diterima')
+            ->get();
+
+        $riwayat_utama = $this->susunRiwayatBimbinganTA($bimbingan_dosen_utama);
+        $riwayat_pendamping = $this->susunRiwayatBimbinganTA($bimbingan_dosen_pendamping);
 
         $pendaftarans = Pendaftaran::whereYear('created_at', Carbon::parse($pendaftaran->created_at)->year)->get();
         $no=0;
@@ -396,6 +407,8 @@ class CetakController extends Controller
             'ttd_dosen_pendamping' => $dosenPendamping->ttd != null ? AppHelper::instance()->convertStorageImage($dosenPendamping->ttd) : null,
             'bimbingan_dosen_utama' => $bimbingan_dosen_utama,
             'bimbingan_dosen_pendamping' => $bimbingan_dosen_pendamping,
+            'riwayat_utama' => $riwayat_utama,
+            'riwayat_pendamping' => $riwayat_pendamping,
             'no_urut' => $no_urut,
         ];
 
@@ -403,6 +416,52 @@ class CetakController extends Controller
         $pdf->loadView('pages.cetak.lembarBimbinganSkripsi', $data);
         $pdf->setPaper('A4', 'portrait');
         return $pdf->stream('Lembar-Bimbingan-Skripsi.pdf');
+    }
+
+    /**
+     * Susun baris lembar bimbingan TA: satu catatan = satu baris.
+     * Keterangan mahasiswa tidak dipakai.
+     */
+    private function susunRiwayatBimbinganTA($bimbingans): array
+    {
+        $groups = [];
+        foreach ($bimbingans as $b) {
+            $bagian = $b->bagian ? $b->bagian->bagian : 'Lainnya';
+            $acc = $b->tanggal_acc;
+            $last = $b->revisis->last();
+            $lastIsAcc = $last && $acc
+                && abs(($last->created_at->hour * 60 + $last->created_at->minute) - ($acc->hour * 60 + $acc->minute)) <= 2;
+
+            foreach ($b->revisis as $r) {
+                $isAcc = $lastIsAcc && $r->id === $last->id;
+                $catatan = trim(strip_tags((string) $r->catatan));
+                if ($catatan === '') {
+                    $catatan = $isAcc ? 'ACC ' . $bagian : '-';
+                }
+                $groups[$bagian][] = [
+                    'tanggal' => \Carbon\Carbon::parse($isAcc ? $acc : $r->created_at),
+                    'catatan' => $catatan,
+                    'id' => $r->id,
+                ];
+            }
+
+            if (!$lastIsAcc) {
+                $groups[$bagian][] = [
+                    'tanggal' => \Carbon\Carbon::parse($acc ?? $b->updated_at),
+                    'catatan' => 'ACC ' . $bagian,
+                    'id' => PHP_INT_MAX,
+                ];
+            }
+        }
+
+        $result = [];
+        foreach ($groups as $bagian => $rows) {
+            usort($rows, fn($a, $b) => [$a['tanggal']->getTimestamp(), $a['id']] <=> [$b['tanggal']->getTimestamp(), $b['id']]);
+            $result[] = ['bagian' => $bagian, 'rows' => $rows];
+        }
+        usort($result, fn($a, $b) => $a['rows'][0]['tanggal']->getTimestamp() <=> $b['rows'][0]['tanggal']->getTimestamp());
+
+        return $result;
     }
 
     public function cetakLembarPersetujuan($type){

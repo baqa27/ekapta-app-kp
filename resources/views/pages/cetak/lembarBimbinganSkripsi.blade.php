@@ -37,6 +37,7 @@ $bulan = 'XII';
     <style>
         * {
             margin: 0;
+            font-family: 'Times New Roman', Times, serif;
         }
 
         .margin-left {
@@ -48,249 +49,253 @@ $bulan = 'XII';
             text-align: justify
         }
 
-        .margin-right {
-            margin-right: 40px;
-        }
-
-        .margin-top {
-            position: relative;
-            top: 10px;
-        }
-
-        .titik-dua {
-            margin-left: 10px;
-            margin-right: 10px;
-        }
-
-        .top {
-            position: relative;
-            top: -24px;
-        }
-
-        .text-keterangan {
-            position: relative;
-            left: 495px;
-        }
-
-        #qr-code {
-            margin-top: -40px;
-            margin-left: 670px;
-        }
-
         .text-expired {
             margin-left: 80px;
             color: rgb(255, 89, 191);
         }
 
-        .d-flex {
-            display: flex;
+        .table-border {
+            margin-left: 80px;
+            width: 580px;
+            border-collapse: collapse;
         }
 
-        #stempel {
-            opacity: 20%;
-            position: relative;
-            top: 10px;
-            right: -10px;
+        .table-border th,
+        .table-border td {
+            border: 1px solid black;
+            padding: 5px;
+            vertical-align: top;
+            font-size: 11pt;
+            page-break-inside: avoid;
         }
 
-        #ttd {
-            position: relative;
-            left: -80px;
-            max-width: 140px;
-            top: -30px;
+        .table-border th {
+            background-color: #d9d9d9 !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+            font-weight: bold;
+            text-align: center;
         }
 
-        #detail-dekan {
-            position: relative;
-            top: -70px
+        /* Repeat kop + kolom header tiap halaman */
+        .table-border thead {
+            display: table-header-group;
+        }
+
+        .table-border tbody {
+            display: table-row-group;
+        }
+
+        .table-border td.plain-cell,
+        .table-border .plain td {
+            border: 0;
+            padding: 1px 2px;
+            page-break-inside: auto;
+        }
+
+        .table-border td.plain-cell {
+            padding: 0;
+        }
+
+        .table-border td.plain-cell h3 {
+            text-decoration: underline;
+            margin: 4px 0 10px 0;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .notes-cell {
+            font-size: 10pt;
+            line-height: 1.3;
+        }
+
+        .page-break {
+            page-break-before: always;
         }
     </style>
 </head>
 
 <body>
-    <table>
-        <tr>
-            <td>
-                <img src="{{ $kop_surat }}" alt="Kop Surat" height="151">
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <center>
-                    <h3>LEMBAR BIMBINGAN SKRIPSI / TUGAS AKHIR (TA)</h3>
-                    <br>
-                </center>
-            </td>
-        </tr>
-    </table>
-    <img src="{{ $qr_code }}" alt="QR Code" height="80" id="qr-code">
-
-    <table class="margin-left">
-         <tr>
-            <td width="120">NAMA</td>
-            <td width="2">:</td>
-            <td width="350">{{ $mahasiswa->nama }}</td>
-        </tr>
-        <tr>
-            <td>NIM</td>
-            <td width="2">:</td>
-            <td>{{ $mahasiswa->nim }}</td>
-        </tr>
-        <tr>
-            <td>PRODI</td>
-            <td width="2">:</td>
-            <td>{{ $prodi->namaprodi }}</td>
-        </tr>
-        <tr>
-            <td style="text-align: left;vertical-align: top;">JUDUL TA</td>
-            <td width="2" style="text-align: left;vertical-align: top;">:</td>
-            <td>{{ $pengajuan->judul }}</td>
-        </tr>
-        <tr>
-            <td>PEMBIMBING 1</td>
-            <td width="2">:</td>
-            <td>{{ $dosen_utama->nama . ', ' . $dosen_utama->gelar }}</td>
-        </tr>
-        <tr>
-            <td>NO SURAT TUGAS</td>
-            <td width="2">:</td>
-            <td>{{ $no_urut }}/ST.TA/FASTIKOM-UNSIQ/{{$bulan}}/{{ $date->format('Y') }}</td>
-        </tr>
-    </table>
-
-    <table class="margin-left table-border" style="border: 1px solid black; border-collapse: collapse;height: 670px;">
-        <tr style="background-color: gray">
-            <td width="20" style="text-align:center; border: 1px solid black; border-collapse: collapse;">No</td>
-            <td width="100" style="text-align:center; border: 1px solid black; border-collapse: collapse;">TANGGAL
-            </td>
-            <td width="250" style="text-align:center; border: 1px solid black; border-collapse: collapse;">KETERANGAN
-            </td>
-            <td width="100" style="text-align:center; border: 1px solid black; border-collapse: collapse;">TANDA
-                TANGAN</td>
-        </tr>
-        @php
-            $no_utama = 1;
-        @endphp
-        @foreach ($bimbingan_dosen_utama as $bimbingan)
-            @if($bimbingan->status == 'diterima')
+    <table class="table-border">
+        <thead>
+            <tr>
+                <td colspan="5" class="plain-cell">
+                    <table class="plain" style="width:100%;">
+                        <tr>
+                            <td colspan="2" style="text-align:center;">
+                                <img src="{{ $kop_surat }}" alt="Kop Surat" height="151">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="text-align:center;">
+                                <h3>LEMBAR BIMBINGAN SKRIPSI / TUGAS AKHIR (TA)</h3>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="vertical-align:top;">
+                                <table class="plain">
+                                    <tr>
+                                        <td width="120">NAMA</td>
+                                        <td width="2">:</td>
+                                        <td>{{ $mahasiswa->nama }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>NIM</td>
+                                        <td>:</td>
+                                        <td>{{ $mahasiswa->nim }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>PRODI</td>
+                                        <td>:</td>
+                                        <td>{{ $prodi->namaprodi }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="vertical-align:top;">JUDUL TA</td>
+                                        <td style="vertical-align:top;">:</td>
+                                        <td>{{ $pengajuan->judul }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>PEMBIMBING 1</td>
+                                        <td>:</td>
+                                        <td>{{ $dosen_utama->nama . ', ' . $dosen_utama->gelar }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>NO SURAT TUGAS</td>
+                                        <td>:</td>
+                                        <td>{{ $no_urut }}/ST.TA/FASTIKOM-UNSIQ/{{ $bulan }}/{{ $date->format('Y') }}</td>
+                                    </tr>
+                                </table>
+                            </td>
+                            <td width="90" style="vertical-align:top; text-align:right;">
+                                <img src="{{ $qr_code }}" alt="QR Code" height="80">
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <th width="30">No</th>
+                <th width="100">TANGGAL</th>
+                <th width="120">BAGIAN (BAB)</th>
+                <th width="250">KETERANGAN / CATATAN</th>
+                <th width="80">TANDA TANGAN</th>
+            </tr>
+        </thead>
+        <tbody>
+            @php $no_utama = 1; @endphp
+            @forelse ($riwayat_utama as $grup)
+                @foreach ($grup['rows'] as $row)
                 <tr>
-                    <td style="text-align:center; border: 1px solid black; border-collapse: collapse;">{{ $no_utama++ }}
-                    </td>
-                    <td style="border: 1px solid black; border-collapse: collapse;">
-                        {{ \App\Helpers\AppHelper::parse_date_short($bimbingan->tanggal_acc) }}</td>
-                    <td style="border: 1px solid black; border-collapse: collapse;">
-                        <p>{{ $bimbingan->bagian->bagian }}</p>
-                        @if (count($bimbingan->revisis) != 0)
-                            <ul>
-                                @foreach ($bimbingan->revisis as $revisi)
-                                    <li>{{ strip_tags($revisi->catatan) }}</li>
-                                @endforeach
-                            </ul>
+                    <td class="text-center">{{ $no_utama++ }}</td>
+                    <td class="text-center">{{ $row['tanggal']->translatedFormat('d M Y') }}</td>
+                    <td><b>{{ $grup['bagian'] }}</b></td>
+                    <td class="notes-cell">{{ $row['catatan'] }}</td>
+                    <td class="text-center">
+                        @if($ttd_dosen_utama)
+                            <img src="{{ $ttd_dosen_utama }}" height="50" style="max-width:60px;">
                         @endif
-                        {{-- <ul>
-                            <li>Lorem ipsum dolor sit amet</li>
-                            <li>consectetur adipisicing elit.</li>
-                        </ul> --}}
-                    </td>
-                    <td style="text-align:center; border: 1px solid black; border-collapse: collapse;">
-                        <img src="{{ $ttd_dosen_utama }}" height="50"  style="max-width:60px;">
                     </td>
                 </tr>
-            @endif
-        @endforeach
-    </table>
-    <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-    <table>
-        <tr>
-            <td>
-                <img src="{{ $kop_surat }}" alt="Kop Surat" height="151">
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <center>
-                    <h3>LEMBAR BIMBINGAN SKRIPSI / TUGAS AKHIR (TA)</h3>
-                    <br>
-                </center>
-            </td>
-        </tr>
-    </table>
-    <img src="{{ $qr_code }}" alt="QR Code" height="80" id="qr-code">
-
-    <table class="margin-left">
-        <tr>
-            <td width="120">NAMA</td>
-            <td width="2">:</td>
-            <td width="350">{{ $mahasiswa->nama }}</td>
-        </tr>
-        <tr>
-            <td>NIM</td>
-            <td width="2">:</td>
-            <td>{{ $mahasiswa->nim }}</td>
-        </tr>
-        <tr>
-            <td>PRODI</td>
-            <td width="2">:</td>
-            <td>{{ $prodi->namaprodi }}</td>
-        </tr>
-        <tr>
-            <td style="text-align: left;vertical-align: top;">JUDUL TA</td>
-            <td width="2" style="text-align: left;vertical-align: top;">:</td>
-            <td>{{ $pengajuan->judul }}</td>
-        </tr>
-        <tr>
-            <td>PEMBIMBING 2</td>
-            <td width="2">:</td>
-            <td>{{ $dosen_pendamping->nama . ', ' . $dosen_pendamping->gelar }}</td>
-        </tr>
-        <tr>
-            <td>NO SURAT TUGAS</td>
-            <td width="2">:</td>
-            <td>{{ $no_urut }}/ST.TA/FASTIKOM-UNSIQ/{{$bulan}}/{{ $date->format('Y') }}</td>
-        </tr>
-    </table>
-
-    <table class="margin-left table-border" style="border: 1px solid black; border-collapse: collapse;height: 670px;">
-        <tr style="background-color: gray">
-            <td width="20" style="text-align:center; border: 1px solid black; border-collapse: collapse;">No</td>
-            <td width="100" style="text-align:center; border: 1px solid black; border-collapse: collapse;">TANGGAL
-            </td>
-            <td width="250" style="text-align:center; border: 1px solid black; border-collapse: collapse;">KETERANGAN
-            </td>
-            <td width="100" style="text-align:center; border: 1px solid black; border-collapse: collapse;">TANDA
-                TANGAN</td>
-        </tr>
-        @php
-            $no_pendamping = 1;
-        @endphp
-        @foreach ($bimbingan_dosen_pendamping as $bimbingan)
-            @if($bimbingan->status == 'diterima')
+                @endforeach
+            @empty
                 <tr>
-                    <td style="text-align:center; border: 1px solid black; border-collapse: collapse;">
-                        {{ $no_pendamping++ }}
-                    </td>
-                    <td style="border: 1px solid black; border-collapse: collapse;">
-                        {{ \App\Helpers\AppHelper::parse_date_short($bimbingan->tanggal_acc) }}</td>
-                    <td style="border: 1px solid black; border-collapse: collapse;">
-                        <p>{{ $bimbingan->bagian->bagian }}</p>
-                        @if (count($bimbingan->revisis) != 0)
-                            <ul>
-                                @foreach ($bimbingan->revisis as $revisi)
-                                    <li>{{ strip_tags($revisi->catatan) }}</li>
-                                @endforeach
-                            </ul>
+                    <td colspan="5" class="text-center"><i>Belum ada data bimbingan.</i></td>
+                </tr>
+            @endforelse
+        </tbody>
+    </table>
+
+    <div class="page-break"></div>
+
+    <table class="table-border">
+        <thead>
+            <tr>
+                <td colspan="5" class="plain-cell">
+                    <table class="plain" style="width:100%;">
+                        <tr>
+                            <td colspan="2" style="text-align:center;">
+                                <img src="{{ $kop_surat }}" alt="Kop Surat" height="151">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="text-align:center;">
+                                <h3>LEMBAR BIMBINGAN SKRIPSI / TUGAS AKHIR (TA)</h3>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="vertical-align:top;">
+                                <table class="plain">
+                                    <tr>
+                                        <td width="120">NAMA</td>
+                                        <td width="2">:</td>
+                                        <td>{{ $mahasiswa->nama }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>NIM</td>
+                                        <td>:</td>
+                                        <td>{{ $mahasiswa->nim }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>PRODI</td>
+                                        <td>:</td>
+                                        <td>{{ $prodi->namaprodi }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="vertical-align:top;">JUDUL TA</td>
+                                        <td style="vertical-align:top;">:</td>
+                                        <td>{{ $pengajuan->judul }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>PEMBIMBING 2</td>
+                                        <td>:</td>
+                                        <td>{{ $dosen_pendamping->nama . ', ' . $dosen_pendamping->gelar }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>NO SURAT TUGAS</td>
+                                        <td>:</td>
+                                        <td>{{ $no_urut }}/ST.TA/FASTIKOM-UNSIQ/{{ $bulan }}/{{ $date->format('Y') }}</td>
+                                    </tr>
+                                </table>
+                            </td>
+                            <td width="90" style="vertical-align:top; text-align:right;">
+                                <img src="{{ $qr_code }}" alt="QR Code" height="80">
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <th width="30">No</th>
+                <th width="100">TANGGAL</th>
+                <th width="120">BAGIAN (BAB)</th>
+                <th width="250">KETERANGAN / CATATAN</th>
+                <th width="80">TANDA TANGAN</th>
+            </tr>
+        </thead>
+        <tbody>
+            @php $no_pendamping = 1; @endphp
+            @forelse ($riwayat_pendamping as $grup)
+                @foreach ($grup['rows'] as $row)
+                <tr>
+                    <td class="text-center">{{ $no_pendamping++ }}</td>
+                    <td class="text-center">{{ $row['tanggal']->translatedFormat('d M Y') }}</td>
+                    <td><b>{{ $grup['bagian'] }}</b></td>
+                    <td class="notes-cell">{{ $row['catatan'] }}</td>
+                    <td class="text-center">
+                        @if($ttd_dosen_pendamping)
+                            <img src="{{ $ttd_dosen_pendamping }}" height="50" style="max-width:60px;">
                         @endif
-                        {{-- <ul>
-                            <li>Lorem ipsum dolor sit amet</li>
-                            <li>consectetur adipisicing elit.</li>
-                        </ul> --}}
-                    </td>
-                    <td style="text-align:center; border: 1px solid black; border-collapse: collapse;">
-                        <img src="{{ $ttd_dosen_pendamping }}" height="50" style="max-width:60px;">
                     </td>
                 </tr>
-            @endif
-        @endforeach
+                @endforeach
+            @empty
+                <tr>
+                    <td colspan="5" class="text-center"><i>Belum ada data bimbingan.</i></td>
+                </tr>
+            @endforelse
+        </tbody>
     </table>
 
     <p class="text-expired">
