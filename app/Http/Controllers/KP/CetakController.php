@@ -424,7 +424,7 @@ class CetakController extends \App\Http\Controllers\Controller
 
     /**
      * Susun baris lembar bimbingan: satu catatan = satu baris + tanggalnya sendiri.
-     * Keterangan mahasiswa sengaja tidak dipakai.
+     * Keterangan mahasiswa dan catatan verifikator sengaja tidak dipakai.
      * Dedup: ajuan manual dilewati jika bimbingan terkait sudah punya baris online
      * dengan tanggal (Y-m-d) sama dan catatan sama.
      */
@@ -464,19 +464,7 @@ class CetakController extends \App\Http\Controllers\Controller
 
         foreach ($manual as $m) {
             $bagian = $m->bimbingan && $m->bimbingan->bagian ? $m->bimbingan->bagian->bagian : 'Bimbingan Manual';
-            $catatanReviewer = trim(strip_tags((string) $m->catatan_reviewer));
-            $catatanMahasiswa = trim(strip_tags((string) $m->keterangan));
-            $parts = [];
-            if ($catatanReviewer !== '') {
-                $parts[] = $catatanReviewer;
-            }
-            if ($catatanMahasiswa !== '') {
-                $parts[] = $catatanMahasiswa;
-            }
-            $catatan = implode(' | ', $parts);
-            if ($catatan === '') {
-                $catatan = $m->status_mahasiswa === 'acc' ? 'ACC ' . $bagian : '-';
-            }
+            $catatan = $m->status_mahasiswa === 'acc' ? 'ACC ' . $bagian : '-';
             $tgl = Carbon::parse($m->tanggal_bimbingan);
             $dup = collect($groups[$bagian] ?? [])->contains(fn ($r) => $r['src'] === 'online'
                 && $r['bimbingan_id'] === $m->bimbingan_id
