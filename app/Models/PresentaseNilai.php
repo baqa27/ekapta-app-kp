@@ -14,6 +14,7 @@ class PresentaseNilai extends Model
         'presentase_2',
         'presentase_3',
         'presentase_4',
+        'presentase_5',
         'prodi_id',
         'bobot_penguji',
         'bobot_pembimbing',

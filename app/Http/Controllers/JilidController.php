@@ -124,6 +124,8 @@ class JilidController extends Controller
             'link_artikel' => ['nullable', 'url', 'max:500'],
             'nama_jurnal' => ['nullable', 'string', 'max:255'],
             'kategori_jurnal' => ['nullable', 'in:Jurnal Internasional Bereputasi,Jurnal Internasional,SINTA 1,SINTA 2,SINTA 3,SINTA 4,SINTA 5,SINTA 6,Non-SINTA'],
+            'judul_artikel' => ['nullable', 'string', 'max:255'],
+            'penulis' => ['nullable', 'string', 'max:255'],
         ]);
         // return $request->all();
         if ($request->laporan_pdf) {
@@ -169,6 +171,10 @@ class JilidController extends Controller
         $validatedData['nama_jurnal'] = $request->nama_jurnal ?: null;
         // Kategori jurnal (opsional)
         $validatedData['kategori_jurnal'] = $request->kategori_jurnal ?: null;
+        // Judul artikel (opsional)
+        $validatedData['judul_artikel'] = $request->judul_artikel ?: null;
+        // Penulis (opsional)
+        $validatedData['penulis'] = $request->penulis ?: null;
         $validatedData['mahasiswa_id'] = $mahasiswa->id;
         $validatedData['status'] = Jilid::JILID_REVIEW;
         $validatedData['link_project'] = $request->link_project;
@@ -314,6 +320,8 @@ class JilidController extends Controller
             'link_artikel' => ['nullable', 'url', 'max:500'],
             'nama_jurnal' => ['nullable', 'string', 'max:255'],
             'kategori_jurnal' => ['nullable', 'in:Jurnal Internasional Bereputasi,Jurnal Internasional,SINTA 1,SINTA 2,SINTA 3,SINTA 4,SINTA 5,SINTA 6,Non-SINTA'],
+            'judul_artikel' => ['nullable', 'string', 'max:255'],
+            'penulis' => ['nullable', 'string', 'max:255'],
         ]);
         if ($request->laporan_pdf) {
             AppHelper::instance()->deleteLampiran($jilid->laporan_pdf);
@@ -387,6 +395,9 @@ class JilidController extends Controller
         }
         $validatedData['nama_jurnal'] = $request->nama_jurnal ?: $jilid->nama_jurnal;
         $validatedData['kategori_jurnal'] = $request->kategori_jurnal ?: $jilid->kategori_jurnal;
+        // Judul artikel & penulis (boleh dikosongkan)
+        $validatedData['judul_artikel'] = $request->has('judul_artikel') ? ($request->judul_artikel ?: null) : $jilid->judul_artikel;
+        $validatedData['penulis'] = $request->has('penulis') ? ($request->penulis ?: null) : $jilid->penulis;
         $validatedData['status'] = Jilid::JILID_REVIEW;
         $jilid->update($validatedData);
         return redirect()->route('jilid.mahasiswa')->with('success', 'Pengajuan pengumpulan behasil. Silahkan tunggu validasi dari Admin');

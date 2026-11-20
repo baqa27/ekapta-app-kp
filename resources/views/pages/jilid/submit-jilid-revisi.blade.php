@@ -496,6 +496,36 @@
                                     @endif
                                 </div>
 
+                                {{-- Judul Artikel (Opsional) --}}
+                                <div class="form-group">
+                                    <label for="judul_artikel">Judul Artikel (Opsional)<br>
+                                        <small>Masukkan judul artikel tugas akhir yang disubmit/diterbitkan</small>
+                                    </label>
+                                    <input type="text" class="form-control @error('judul_artikel')is-invalid @enderror"
+                                        name="judul_artikel" id="judul_artikel"
+                                        placeholder="Contoh: Sistem Informasi Pengelolaan Data Berbasis Web"
+                                        value="{{ old('judul_artikel', $jilid->judul_artikel) }}">
+                                    @error('judul_artikel')
+                                        <small class="text-danger"
+                                            style="position:relative;top:-5px;left:5px">{{ $message }}</small>
+                                    @enderror
+                                </div>
+
+                                {{-- Penulis (Opsional) --}}
+                                <div class="form-group">
+                                    <label for="penulis">Penulis (Opsional)<br>
+                                        <small>Nama penulis artikel beserta nama dosen pembimbing, pisahkan dengan koma</small>
+                                    </label>
+                                    <input type="text" class="form-control @error('penulis')is-invalid @enderror"
+                                        name="penulis" id="penulis"
+                                        placeholder="Contoh: Nama Mahasiswa, Nama Dosen Pembimbing"
+                                        value="{{ old('penulis', $jilid->penulis) }}">
+                                    @error('penulis')
+                                        <small class="text-danger"
+                                            style="position:relative;top:-5px;left:5px">{{ $message }}</small>
+                                    @enderror
+                                </div>
+
                                 {{-- File LoA (Opsional) --}}
                                 <div class="form-group">
                                     <label for="file_loa">File LoA / Letter of Acceptance (Opsional)<br>

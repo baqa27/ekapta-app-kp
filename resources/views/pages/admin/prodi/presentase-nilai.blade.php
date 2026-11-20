@@ -35,7 +35,7 @@
                                 <input type="hidden" name="prodi_id" value="{{ $prodi->id }}">
                                 <div class="row border mb-3">
                                     <div class="col-md-12">
-                                        <p>Total Presentase ke 4 Nilai Harus 100</p>
+                                        <p>Total Presentase ke 5 Nilai Harus 100</p>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group">
@@ -81,6 +81,18 @@
                                                    value="{{ $presentase_nilai ? $presentase_nilai->presentase_4 : '' }}"
                                                    required>
                                             @error('presentase_4')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="exampleInputFile">Penguasaan Materi / Tanya Jawab %</label>
+                                            <input type="number" name="presentase_5"
+                                                   class="form-control @error('presentase_5') is-invalid @enderror"
+                                                   value="{{ $presentase_nilai ? $presentase_nilai->presentase_5 : '' }}"
+                                                   required>
+                                            @error('presentase_5')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
                                         </div>

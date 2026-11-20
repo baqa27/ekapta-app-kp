@@ -64,7 +64,9 @@ class ProdiController extends Controller
         $prodi = Prodi::findOrFail($request->prodi_id);
         $presentase_nilai = $prodi->presentase_nilai;
 
-        if ($request->presentase_1 + $request->presentase_2 + $request->presentase_3 + $request->presentase_4 != 100 || $request->bobot_penguji + $request->bobot_pembimbing != 100) {
+        $total_presentase = $request->presentase_1 + $request->presentase_2 + $request->presentase_3 + $request->presentase_4 + ($request->presentase_5 ?? 0);
+
+        if ($total_presentase != 100 || $request->bobot_penguji + $request->bobot_pembimbing != 100) {
             return back()->with('error', 'Total Presentase Nilai Harus 100%');
         }
 
@@ -74,6 +76,7 @@ class ProdiController extends Controller
                 'presentase_2' => $request->presentase_2,
                 'presentase_3' => $request->presentase_3,
                 'presentase_4' => $request->presentase_4,
+                'presentase_5' => $request->presentase_5 ?? 0,
                 'bobot_penguji' => $request->bobot_penguji,
                 'bobot_pembimbing' => $request->bobot_pembimbing,
             ]);
@@ -85,6 +88,7 @@ class ProdiController extends Controller
             'presentase_2' => $request->presentase_2,
             'presentase_3' => $request->presentase_3,
             'presentase_4' => $request->presentase_4,
+            'presentase_5' => $request->presentase_5 ?? 0,
             'bobot_penguji' => $request->bobot_penguji,
             'bobot_pembimbing' => $request->bobot_pembimbing,
         ]);

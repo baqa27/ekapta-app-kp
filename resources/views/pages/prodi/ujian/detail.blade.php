@@ -353,6 +353,7 @@
                                 <th>Kompetensi Ilmu</th>
                                 <th>Metodologi dan Redaksi TA</th>
                                 <th>Presentasi</th>
+                                <th>Penguasaan Materi / Tanya Jawab</th>
                                 <th>Rata-Rata</th>
                             </tr>
                         </thead>
@@ -379,7 +380,11 @@
                                         <input type="number" class="form-control" name="nilai_4"
                                             data-review-id="{{ $review->id }}" value="{{ $review->nilai_4 }}">
                                     </td>
-                                    <td>{{ round(\App\Helpers\AppHelper::instance()->hitung_nilai_mean($review->nilai_1, $review->nilai_2, $review->nilai_3, $review->nilai_4), 2) }}
+                                    <td>
+                                        <input type="number" class="form-control" name="nilai_5"
+                                            data-review-id="{{ $review->id }}" value="{{ $review->nilai_5 }}">
+                                    </td>
+                                    <td>{{ round(\App\Helpers\AppHelper::instance()->hitung_nilai_mean($review->nilai_1, $review->nilai_2, $review->nilai_3, $review->nilai_4, $review->nilai_5), 2) }}
                                     </td>
                                 </tr>
                             @endforeach
@@ -387,15 +392,15 @@
 
                         <tfoot>
                             <tr bgcolor="#a9a9a9" class="text-white">
-                                <th colspan="6">RATA - RATA NILAI DOSEN PEMBIMBING</th>
+                                <th colspan="7">RATA - RATA NILAI DOSEN PEMBIMBING</th>
                                 <th>{{ $nilai_dosen_pembimbing }}</th>
                             </tr>
                             <tr bgcolor="#a9a9a9" class="text-white">
-                                <th colspan="6">RATA - RATA NILAI DOSEN PENGUJI</th>
+                                <th colspan="7">RATA - RATA NILAI DOSEN PENGUJI</th>
                                 <th>{{ $nilai_dosen_penguji }}</th>
                             </tr>
                             <tr bgcolor="#808080" class="text-white">
-                                <th colspan="6">NILAI AKHIR</th>
+                                <th colspan="7">NILAI AKHIR</th>
                                 <th>{{ $nilai }}</th>
                             </tr>
                         </tfoot>

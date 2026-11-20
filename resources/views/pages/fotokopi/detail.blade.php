@@ -116,6 +116,18 @@
                                             <a href="{{ storage_url($jilid->file_artikel) }}" class="btn btn-info mb-3"
                                                 target="_blank"><i class="fas fa-download"></i> FILE ARTIKEL</a>
                                         @endif
+                                        @if ($jilid->judul_artikel)
+                                            <div class="mb-2">
+                                                <span class="text-muted"><i class="fas fa-heading"></i> Judul Artikel:</span>
+                                                <strong>{{ $jilid->judul_artikel }}</strong>
+                                            </div>
+                                        @endif
+                                        @if ($jilid->penulis)
+                                            <div class="mb-2">
+                                                <span class="text-muted"><i class="fas fa-user-edit"></i> Penulis:</span>
+                                                <strong>{{ $jilid->penulis }}</strong>
+                                            </div>
+                                        @endif
                                         @if ($jilid->file_loa)
                                             <a href="{{ storage_url($jilid->file_loa) }}" class="btn btn-info mb-3"
                                                 target="_blank"><i class="fas fa-download"></i> FILE LOA</a>
@@ -368,6 +380,26 @@
                                         <a href="{{ storage_url($jilid->file_artikel) }}" target="_blank" class="text-primary">
                                             <i class="fas fa-paperclip"></i> Buka File
                                         </a>
+                                    </div>
+                                </div>
+                                <hr>
+                                @endif
+
+                                @if($jilid->judul_artikel)
+                                <div class="row mb-2">
+                                    <div class="col-md-4">Judul Artikel</div>
+                                    <div class="col-md-8">
+                                        <strong>{{ $jilid->judul_artikel }}</strong>
+                                    </div>
+                                </div>
+                                <hr>
+                                @endif
+
+                                @if($jilid->penulis)
+                                <div class="row mb-2">
+                                    <div class="col-md-4">Penulis</div>
+                                    <div class="col-md-8">
+                                        <strong>{{ $jilid->penulis }}</strong>
                                     </div>
                                 </div>
                                 <hr>

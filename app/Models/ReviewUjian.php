@@ -23,6 +23,7 @@ class ReviewUjian extends Model
         'nilai_2',
         'nilai_3',
         'nilai_4',
+        'nilai_5',
         'tanggal_acc',
         'dosen_status',
         'lampiran',

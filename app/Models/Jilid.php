@@ -55,6 +55,8 @@ class Jilid extends Model
         'link_artikel',
         'nama_jurnal',
         'kategori_jurnal',
+        'judul_artikel',
+        'penulis',
     ];
 
     public function mahasiswa()

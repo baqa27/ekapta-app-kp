@@ -430,14 +430,20 @@ class AppHelper
         return now()->gt($expiredDate->copy()->endOfDay());
     }
 
-    public function hitung_nilai_mean($nilai_1, $nilai_2, $nilai_3, $nilai_4)
+    public function hitung_nilai_mean($nilai_1, $nilai_2, $nilai_3, $nilai_4, $nilai_5 = null)
     {
-        return ($nilai_1 + $nilai_2 + $nilai_3 + $nilai_4) / 4;
+        if ($nilai_5 === null) {
+            return ($nilai_1 + $nilai_2 + $nilai_3 + $nilai_4) / 4;
+        }
+        return ($nilai_1 + $nilai_2 + $nilai_3 + $nilai_4 + $nilai_5) / 5;
     }
 
-    public function hitung_nilai_total($nilai_1, $nilai_2, $nilai_3, $nilai_4)
+    public function hitung_nilai_total($nilai_1, $nilai_2, $nilai_3, $nilai_4, $nilai_5 = null)
     {
-        return $nilai_1 + $nilai_2 + $nilai_3 + $nilai_4;
+        if ($nilai_5 === null) {
+            return $nilai_1 + $nilai_2 + $nilai_3 + $nilai_4;
+        }
+        return $nilai_1 + $nilai_2 + $nilai_3 + $nilai_4 + $nilai_5;
     }
 
     public static function parse_date($date){
@@ -632,9 +638,9 @@ class AppHelper
         $nilai_pembimbing = 0;
         foreach ($reviews as $review) {
             if($review->dosen_status == 'penguji'){
-                $nilai_penguji += AppHelper::instance()->hitung_nilai_total($review->nilai_1 * $presentase_nilai->presentase_1 / 100,$review->nilai_2 * $presentase_nilai->presentase_2 / 100, $review->nilai_3 * $presentase_nilai->presentase_3 / 100, $review->nilai_4 * $presentase_nilai->presentase_4 / 100);
+                $nilai_penguji += AppHelper::instance()->hitung_nilai_total($review->nilai_1 * $presentase_nilai->presentase_1 / 100,$review->nilai_2 * $presentase_nilai->presentase_2 / 100, $review->nilai_3 * $presentase_nilai->presentase_3 / 100, $review->nilai_4 * $presentase_nilai->presentase_4 / 100, $review->nilai_5 * ($presentase_nilai->presentase_5 ?? 0) / 100);
             }else if($review->dosen_status == 'pembimbing'){
-                $nilai_pembimbing += AppHelper::instance()->hitung_nilai_total($review->nilai_1 * $presentase_nilai->presentase_1 / 100,$review->nilai_2 * $presentase_nilai->presentase_2 / 100, $review->nilai_3 * $presentase_nilai->presentase_3 / 100, $review->nilai_4 * $presentase_nilai->presentase_4 / 100);
+                $nilai_pembimbing += AppHelper::instance()->hitung_nilai_total($review->nilai_1 * $presentase_nilai->presentase_1 / 100,$review->nilai_2 * $presentase_nilai->presentase_2 / 100, $review->nilai_3 * $presentase_nilai->presentase_3 / 100, $review->nilai_4 * $presentase_nilai->presentase_4 / 100, $review->nilai_5 * ($presentase_nilai->presentase_5 ?? 0) / 100);
             }
         }
 

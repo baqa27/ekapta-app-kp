@@ -45,6 +45,10 @@
 </head>
 
 <body>
+    @php
+        // Template ini dipakai bersama oleh Ujian TA (5 komponen) dan Seminar TA (4 komponen)
+        $is_ujian = $ujian_or_seminar instanceof \App\Models\Ujian;
+    @endphp
     <table>
         <tr>
             <td>
@@ -282,6 +286,7 @@
                         $review->nilai_2,
                         $review->nilai_3,
                         $review->nilai_4,
+                        $review->nilai_5,
                     ),
                     2,
                 );
@@ -377,11 +382,20 @@
             </tr>
             <tr>
                 <td height="40" style="border: 1px solid black; text-align: center;">4. </td>
-                <td height="40" style="border: 1px solid black;padding-left:5px;">Presentasi : 25%</td>
+                <td height="40" style="border: 1px solid black;padding-left:5px;">Presentasi : {{ $is_ujian ? '15' : '25' }}%</td>
                 <td height="40" style="border: 1px solid black; text-align:center;">
                     {{ $is_blank ? '……………' : $review->nilai_4 }}
                 </td>
             </tr>
+            @if ($is_ujian)
+            <tr>
+                <td height="40" style="border: 1px solid black; text-align: center;">5. </td>
+                <td height="40" style="border: 1px solid black;padding-left:5px;">Penguasaan Materi / Tanya Jawab : 10%</td>
+                <td height="40" style="border: 1px solid black; text-align:center;">
+                    {{ $is_blank ? '……………' : $review->nilai_5 }}
+                </td>
+            </tr>
+            @endif
             <tr>
                 <td height="40" style="border: 1px solid black; text-align: center;"></td>
                 <td height="40" style="border: 1px solid black;padding-left:5px; text-align:center;">
@@ -457,6 +471,7 @@
                         $review->nilai_2,
                         $review->nilai_3,
                         $review->nilai_4,
+                        $review->nilai_5,
                     ),
                     2,
                 );
@@ -556,11 +571,20 @@
                 </tr>
                 <tr>
                     <td height="40" style="border: 1px solid black; text-align: center;">4. </td>
-                    <td height="40" style="border: 1px solid black;padding-left:5px;">Presentasi : 25%</td>
+                    <td height="40" style="border: 1px solid black;padding-left:5px;">Presentasi : {{ $is_ujian ? '15' : '25' }}%</td>
                     <td height="40" style="border: 1px solid black; text-align:center;">
                         {{ $is_blank ? '……………' : $review->nilai_4 }}
                     </td>
                 </tr>
+                @if ($is_ujian)
+                <tr>
+                    <td height="40" style="border: 1px solid black; text-align: center;">5. </td>
+                    <td height="40" style="border: 1px solid black;padding-left:5px;">Penguasaan Materi / Tanya Jawab : 10%</td>
+                    <td height="40" style="border: 1px solid black; text-align:center;">
+                        {{ $is_blank ? '……………' : $review->nilai_5 }}
+                    </td>
+                </tr>
+                @endif
                 <tr>
                     <td height="40" style="border: 1px solid black; text-align: center;"></td>
                     <td height="40" style="border: 1px solid black;padding-left:5px; text-align:center;">

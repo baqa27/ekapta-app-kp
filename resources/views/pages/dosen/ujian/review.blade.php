@@ -190,6 +190,15 @@
                                                 @enderror
                                             </div>
                                         </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="exampleInputFile">Penguasaan Materi / Tanya Jawab</label>
+                                                <input type="number" name="nilai_5" class="form-control @error('nilai_5') is-invalid @enderror" value="{{ $review_ujian->nilai_5 }}" required>
+                                                @error('nilai_5')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                        </div>
 
                                         @if($form_status == 1)
                                             <div class="col-md-6">

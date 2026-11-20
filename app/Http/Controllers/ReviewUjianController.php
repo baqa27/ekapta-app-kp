@@ -179,6 +179,7 @@ class ReviewUjianController extends Controller
             'nilai_2' => $request->nilai_2,
             'nilai_3' => $request->nilai_3,
             'nilai_4' => $request->nilai_4,
+            'nilai_5' => $request->nilai_5,
             'status' => ReviewUjian::DITERIMA,
         ]);
 
@@ -237,7 +238,8 @@ class ReviewUjianController extends Controller
                 $review->nilai_1,
                 $review->nilai_2,
                 $review->nilai_3,
-                $review->nilai_4
+                $review->nilai_4,
+                $review->nilai_5
             );
 
             return response()->json(['message' => 'Nilai berhasil diperbarui', 'nilai_akhir' => $nilai_akhir]);
