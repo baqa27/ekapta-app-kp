@@ -169,17 +169,26 @@ class ReviewUjianController extends Controller
         $review_ujian = ReviewUjian::findOrFail($request->id);
 
         if ($request->is_lulus) {
+            $request->validate(['is_lulus' => 'required|in:1,2']);
             $review_ujian->ujian->update([
                 'is_lulus' => $request->is_lulus,
             ]);
         }
 
+        $validated = $request->validate([
+            'nilai_1' => 'nullable|numeric|min:0|max:100',
+            'nilai_2' => 'nullable|numeric|min:0|max:100',
+            'nilai_3' => 'nullable|numeric|min:0|max:100',
+            'nilai_4' => 'nullable|numeric|min:0|max:100',
+            'nilai_5' => 'nullable|numeric|min:0|max:100',
+        ]);
+
         $review_ujian->update([
-            'nilai_1' => $request->nilai_1,
-            'nilai_2' => $request->nilai_2,
-            'nilai_3' => $request->nilai_3,
-            'nilai_4' => $request->nilai_4,
-            'nilai_5' => $request->nilai_5,
+            'nilai_1' => $validated['nilai_1'],
+            'nilai_2' => $validated['nilai_2'],
+            'nilai_3' => $validated['nilai_3'],
+            'nilai_4' => $validated['nilai_4'],
+            'nilai_5' => $validated['nilai_5'],
             'status' => ReviewUjian::DITERIMA,
         ]);
 
@@ -224,7 +233,7 @@ class ReviewUjianController extends Controller
         $request->validate([
             'review_id' => 'required|integer',
             'field_name' => 'required|string|in:nilai_1,nilai_2,nilai_3,nilai_4,nilai_5',
-            'field_value' => 'required|integer',
+            'field_value' => 'required|integer|min:0|max:100',
         ]);
 
         $review = ReviewUjian::find($request->review_id);

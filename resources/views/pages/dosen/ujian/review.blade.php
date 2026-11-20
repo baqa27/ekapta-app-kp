@@ -193,7 +193,7 @@
                                         <div class="col-md-3">
                                             <div class="form-group">
                                                 <label for="exampleInputFile">Penguasaan Materi / Tanya Jawab</label>
-                                                <input type="number" name="nilai_5" class="form-control @error('nilai_5') is-invalid @enderror" value="{{ $review_ujian->nilai_5 }}" required>
+                                                <input type="number" name="nilai_5" class="form-control @error('nilai_5') is-invalid @enderror" value="{{ $review_ujian->nilai_5 }}" required min="0" max="100">
                                                 @error('nilai_5')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                                 @enderror

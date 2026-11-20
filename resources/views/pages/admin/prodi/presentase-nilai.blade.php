@@ -91,7 +91,7 @@
                                             <input type="number" name="presentase_5"
                                                    class="form-control @error('presentase_5') is-invalid @enderror"
                                                    value="{{ $presentase_nilai ? $presentase_nilai->presentase_5 : '' }}"
-                                                   required>
+                                                   required min="0" max="100">
                                             @error('presentase_5')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror

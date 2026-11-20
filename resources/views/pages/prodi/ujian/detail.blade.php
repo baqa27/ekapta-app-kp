@@ -382,7 +382,7 @@
                                     </td>
                                     <td>
                                         <input type="number" class="form-control" name="nilai_5"
-                                            data-review-id="{{ $review->id }}" value="{{ $review->nilai_5 }}">
+                                            data-review-id="{{ $review->id }}" value="{{ $review->nilai_5 }}" min="0" max="100">
                                     </td>
                                     <td>{{ round(\App\Helpers\AppHelper::instance()->hitung_nilai_mean($review->nilai_1, $review->nilai_2, $review->nilai_3, $review->nilai_4, $review->nilai_5), 2) }}
                                     </td>

@@ -64,33 +64,43 @@ class ProdiController extends Controller
         $prodi = Prodi::findOrFail($request->prodi_id);
         $presentase_nilai = $prodi->presentase_nilai;
 
-        $total_presentase = $request->presentase_1 + $request->presentase_2 + $request->presentase_3 + $request->presentase_4 + ($request->presentase_5 ?? 0);
+        $validated = $request->validate([
+            'presentase_1' => 'required|integer|min:0|max:100',
+            'presentase_2' => 'required|integer|min:0|max:100',
+            'presentase_3' => 'required|integer|min:0|max:100',
+            'presentase_4' => 'required|integer|min:0|max:100',
+            'presentase_5' => 'nullable|integer|min:0|max:100',
+            'bobot_penguji' => 'required|integer|min:0|max:100',
+            'bobot_pembimbing' => 'required|integer|min:0|max:100',
+        ]);
 
-        if ($total_presentase != 100 || $request->bobot_penguji + $request->bobot_pembimbing != 100) {
+        $total_presentase = $validated['presentase_1'] + $validated['presentase_2'] + $validated['presentase_3'] + $validated['presentase_4'] + ($validated['presentase_5'] ?? 0);
+
+        if ($total_presentase != 100 || $validated['bobot_penguji'] + $validated['bobot_pembimbing'] != 100) {
             return back()->with('error', 'Total Presentase Nilai Harus 100%');
         }
 
         if ($presentase_nilai) {
             $presentase_nilai->update([
-                'presentase_1' => $request->presentase_1,
-                'presentase_2' => $request->presentase_2,
-                'presentase_3' => $request->presentase_3,
-                'presentase_4' => $request->presentase_4,
-                'presentase_5' => $request->presentase_5 ?? 0,
-                'bobot_penguji' => $request->bobot_penguji,
-                'bobot_pembimbing' => $request->bobot_pembimbing,
+                'presentase_1' => $validated['presentase_1'],
+                'presentase_2' => $validated['presentase_2'],
+                'presentase_3' => $validated['presentase_3'],
+                'presentase_4' => $validated['presentase_4'],
+                'presentase_5' => $validated['presentase_5'] ?? 0,
+                'bobot_penguji' => $validated['bobot_penguji'],
+                'bobot_pembimbing' => $validated['bobot_pembimbing'],
             ]);
         }
 
         PresentaseNilai::create([
             'prodi_id' => $prodi->id,
-            'presentase_1' => $request->presentase_1,
-            'presentase_2' => $request->presentase_2,
-            'presentase_3' => $request->presentase_3,
-            'presentase_4' => $request->presentase_4,
-            'presentase_5' => $request->presentase_5 ?? 0,
-            'bobot_penguji' => $request->bobot_penguji,
-            'bobot_pembimbing' => $request->bobot_pembimbing,
+            'presentase_1' => $validated['presentase_1'],
+            'presentase_2' => $validated['presentase_2'],
+            'presentase_3' => $validated['presentase_3'],
+            'presentase_4' => $validated['presentase_4'],
+            'presentase_5' => $validated['presentase_5'] ?? 0,
+            'bobot_penguji' => $validated['bobot_penguji'],
+            'bobot_pembimbing' => $validated['bobot_pembimbing'],
         ]);
 
         return back()->with('success', 'Presentase Nilai Berhasil Disimpan');
