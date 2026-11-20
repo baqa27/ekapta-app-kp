@@ -223,7 +223,7 @@ class ReviewUjianController extends Controller
     {
         $request->validate([
             'review_id' => 'required|integer',
-            'field_name' => 'required|string',
+            'field_name' => 'required|string|in:nilai_1,nilai_2,nilai_3,nilai_4,nilai_5',
             'field_value' => 'required|integer',
         ]);
 
